@@ -21,6 +21,9 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  */
 public final class Constants {
 
+  public static final int driveFXEncoderCPR = 2048;
+  public static final int turningCANcoderCPR = 4096;
+
   public static final class PathPlannerConstants {
 
     // Autonomous Period Constants TODO: Tune all of these values
@@ -94,6 +97,23 @@ public final class Constants {
 
   public static final class ArmConstants {
     
+  }
+
+  public static final class ElevatorConstants {
+
+    public static final int elevatorMotorPort = 0-9;
+    public static final int elevatorEncoderPort = 0-9;
+    public static final boolean elevatorInverted = false;
+
+    public static final int bottomLimitSwitchPort = 0-9;
+    public static final int topLimitSwitchPort = 0-9;
+
+    public static final double pElevator = 0; //TODO: Tune these 
+    public static final double iElevator = 0; //Do not use
+    public static final double dElevator = 0; //Tune 
+
+    public static final double elevatorMinValue = 0; //TODO: Get these values experimentally
+    public static final double elevatorMaxValue = 0;
   }
 
 }
