@@ -96,7 +96,11 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
-    
+    //TODO: Find out how the Arm works
+  }
+
+  public static final class HandConstants {
+    //TODO: Find out how the Hand works
   }
 
   public static final class ElevatorConstants {
