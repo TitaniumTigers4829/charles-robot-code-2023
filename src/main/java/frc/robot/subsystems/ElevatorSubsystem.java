@@ -4,10 +4,12 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
@@ -19,6 +21,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private final DigitalInput bottomLimitSwitch;
   private final DigitalInput topLimitSwitch;
+
+  private final PIDController elevatorPID = 
+    new PIDController(
+      ElevatorConstants.pElevator, 
+      ElevatorConstants.iElevator, 
+      ElevatorConstants.dElevator
+    );
   
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
@@ -38,6 +47,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   }
 
+
+
   public double getEncoderValue() {
     return elevatorEncoder.getPosition();
   }
@@ -49,10 +60,13 @@ public class ElevatorSubsystem extends SubsystemBase {
   public boolean topLimitSwitchPressed() {
     return topLimitSwitch.get();
   }
-
-  public double getElevatorMotorHeightNoLimits() {
-    
-  }
  
+  public void setElevatorSpeed(double speed) {
+    elevatorMotor.set(ControlMode.PercentOutput, speed);
+  }
+  
+  public void stopElevator() {
+    elevatorMotor.set(ControlMode.PercentOutput, 0.0);
+  }
 
 }
