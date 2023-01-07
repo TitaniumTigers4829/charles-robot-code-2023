@@ -66,7 +66,18 @@ public class LEDSubsystem extends SubsystemBase {
     ledSpark.set(LEDPatterns.HEARTBEAT_RED);
   }
 
-  //TODO: Create more methods for different situations.
+  public void setLEDScoring() {
+    ledSpark.set(LEDPatterns.GOLD);
+  }
 
+  public void setLEDBalancing() {
+    ledSpark.set(LEDPatterns.LAWN_GREEN);
+  }
+
+  public void setLEDIntake() {
+    ledSpark.set(LEDPatterns.MAGENTA);
+  }
+
+  //TODO: Create more led methods for different situations.
 
 }
