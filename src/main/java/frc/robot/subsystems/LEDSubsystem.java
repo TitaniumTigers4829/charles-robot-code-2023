@@ -51,11 +51,24 @@ public class LEDSubsystem extends SubsystemBase {
     }
   }
 
+  /** Set the LED color to OCEAN or FIRE depending on whether the alliance is BLUE or RED respectively. */
+  public void setLEDCoolAllianceColor() {
+    if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+        ledSpark.set(LEDPatterns.FIRE);
+    } else {
+        ledSpark.set(LEDPatterns.OCEAN);
+    }
+  }
+
   /** Sets the LED to its default value.
    * This can be changed if needed.
    */
   public void setLEDDefault() {
-    setLEDAllianceColor();
+    if (DriverStation.isAutonomous()) {
+      setLEDAuto();
+    } else {
+      setLEDCoolAllianceColor();
+    }
   }
 
   public void setLEDWarning() {
@@ -76,6 +89,10 @@ public class LEDSubsystem extends SubsystemBase {
 
   public void setLEDIntake() {
     ledSpark.set(LEDPatterns.MAGENTA);
+  }
+
+  public void setLEDAuto() {
+    ledSpark.set(LEDPatterns.DARK_GREEN);
   }
 
   //TODO: Create more led methods for different situations.
