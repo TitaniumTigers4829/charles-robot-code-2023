@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.JoystickConstants;
+import frc.robot.commands.appendages.arm_and_claw.Grab;
+import frc.robot.subsystems.ArmSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -17,6 +20,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
+  public ArmSubsystem armSubsystem;
+
+  public Joystick buttonBoard;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -31,6 +38,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    buttonBoard = new Joystick(JoystickConstants.buttonBoardID);
+    JoystickButton clawButton = new JoystickButton(buttonBoard, JoystickConstants.clawButtonID);
+    clawButton.whileTrue(new Grab(armSubsystem));
   }
 
   public Command getAutonomousCommand() {

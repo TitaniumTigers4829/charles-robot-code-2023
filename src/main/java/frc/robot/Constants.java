@@ -97,11 +97,16 @@ public final class Constants {
 
   public static final class ArmConstants {
     //TODO: Find out how the Arm works
+
+    public static final class ClawConstants {
+      //TODO: Find out how the Hand works
+  
+      public static final int solenoidForward = 0-9; // ID for opening claw
+      public static final int solenoidBackward = 0-9; // ID for closing claw
+    }
   }
 
-  public static final class HandConstants {
-    //TODO: Find out how the Hand works
-  }
+  
 
   public static final class ElevatorConstants {
 
@@ -118,6 +123,15 @@ public final class Constants {
 
     public static final double elevatorMinValue = 0; //TODO: Get these values experimentally
     public static final double elevatorMaxValue = 0;
+  }
+
+  public static final class JoystickConstants {
+
+    // Ports:
+    public static final int buttonBoardID = 0-9;
+
+    // Button Bindings:
+    public static final int clawButtonID = 0-9;
   }
 
 }
