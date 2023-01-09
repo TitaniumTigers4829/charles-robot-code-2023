@@ -95,14 +95,36 @@ public final class Constants {
       public static final double BLACK = 0.99;    }
   }
 
-  public static final class ArmConstants {
+  public static final class LimbConstants {
     //TODO: Find out how the Arm works
 
+    public static final class WristConstants {
+      public static final int wristMotorID = 0-9;
+      public static final int wristEncoderID = 0-9;
+      public static final boolean isMotorInverted = false;
+
+      public static final double wristP = 0-9; //TODO: Tune this
+      public static final double wristI = 0-9; //Do not use
+      public static final double wristD = 0-9; //Tune this too
+      public static final double wristS = 0-9; //TODO: Set these
+      public static final double wristV = 0-9;
+      public static final double wristA = 0-9;
+
+      public static final double wristMaxAcceleration = 0-9; //TODO: Set these to real value
+      public static final double wristMaxVelocity = 0-9;
+
+    }
+
     public static final class ClawConstants {
-      //TODO: Find out how the Hand works
+      //TODO: Find out how the Claw works
   
       public static final int solenoidForward = 0-9; // ID for opening claw
       public static final int solenoidBackward = 0-9; // ID for closing claw
+    }
+
+    public static final class ArmConstants {
+      public static final int armForward  = 0-9;
+      public static final int armBackward = 0-9;
     }
   }
 
@@ -117,12 +139,26 @@ public final class Constants {
     public static final int bottomLimitSwitchPort = 0-9;
     public static final int topLimitSwitchPort = 0-9;
 
-    public static final double pElevator = 0; //TODO: Tune these 
-    public static final double iElevator = 0; //Do not use
-    public static final double dElevator = 0; //Tune 
+    public static final double elevatorP = 0-9; //TODO: Tune these
+    public static final double elevatorI = 0-9; //Do not use
+    public static final double elevatorD = 0-9; //Tune
 
-    public static final double elevatorMinValue = 0; //TODO: Get these values experimentally
-    public static final double elevatorMaxValue = 0;
+    public static final double elevatorS = 0-9; //TODO: Set these
+    public static final double elevatorV = 0-9;
+    public static final double elevatorA = 0-9;
+
+    public static final double elevatorMaxAcceleration = 0-9; //TODO: Set these
+    public static final double elevatorMaxVelocity = 0-9;
+
+
+    public static final double elevatorMinValue = 0-9; //TODO: Get these values experimentally
+
+    public static final double elevatorMaxEncoderUnits = 0-9;
+    public static final double elevatorMaxValue = 0-9;
+    public static final double elevatorMinEncoderUnits = 0-9;
+
+    public static final double elevatorMaxHeight = 0-9;
+    public static final double elevatorMinHeight = 0-9;
   }
 
   public static final class JoystickConstants {

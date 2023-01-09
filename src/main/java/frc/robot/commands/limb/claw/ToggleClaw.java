@@ -7,11 +7,11 @@ package frc.robot.commands.limb.claw;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.LimbSubsystem;
 
-public class Grab extends CommandBase {
+public class ToggleClaw extends CommandBase {
 
   private LimbSubsystem limbSubsystem;
 
-  public Grab(LimbSubsystem limbSubsystem) {
+  public ToggleClaw(LimbSubsystem limbSubsystem) {
     this.limbSubsystem = limbSubsystem;
     addRequirements(limbSubsystem);
   }

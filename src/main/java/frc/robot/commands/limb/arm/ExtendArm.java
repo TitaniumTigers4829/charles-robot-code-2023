@@ -1,24 +1,26 @@
-package frc.robot.commands.arm.arm;
-
+package frc.robot.commands.limb.arm;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.LimbSubsystem;
 
 
 public class ExtendArm extends CommandBase {
 
-    public ExtendArm() {
-        // each subsystem used by the command must be passed into the
-        // addRequirements() method (which takes a vararg of Subsystem)
-        addRequirements();
-    }
+    private LimbSubsystem limbSubsystem;
 
-    @Override
-    public void initialize() {
-
+    public ExtendArm(LimbSubsystem limbSubsystem) {
+        this.limbSubsystem = limbSubsystem;
+        addRequirements(limbSubsystem);
     }
 
     @Override
     public void execute() {
+        limbSubsystem.ExtendArm();
+    }
 
+
+    @Override
+    public void end(boolean interrupted) {
+        limbSubsystem.CloseArm();
     }
 
     @Override
@@ -27,8 +29,4 @@ public class ExtendArm extends CommandBase {
         return false;
     }
 
-    @Override
-    public void end(boolean interrupted) {
-
-    }
 }

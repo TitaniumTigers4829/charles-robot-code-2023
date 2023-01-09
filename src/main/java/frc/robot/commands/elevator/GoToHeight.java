@@ -1,34 +1,32 @@
-package frc.robot.commands.limb.elevator;
+package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.LimbSubsystem;
+
+import java.util.function.DoubleSupplier;
 
 
 public class GoToHeight extends CommandBase {
 
-    public GoToHeight() {
-        // each subsystem used by the command must be passed into the
-        // addRequirements() method (which takes a vararg of Subsystem)
+    private final double desiredPosition;
+    private final ElevatorSubsystem elevatorSubsystem;
+
+    public GoToHeight(DoubleSupplier desiredPosition, ElevatorSubsystem elevatorSubsystem) {
+        this.desiredPosition = desiredPosition.getAsDouble();
+        this.elevatorSubsystem = elevatorSubsystem;
         addRequirements();
     }
 
-    @Override
-    public void initialize() {
-
-    }
 
     @Override
     public void execute() {
-
+        elevatorSubsystem.setDesiredElevatorHeight(desiredPosition);
     }
 
     @Override
     public boolean isFinished() {
-        // TODO: Make this return true when this Command no longer needs to run execute()
         return false;
     }
 
-    @Override
-    public void end(boolean interrupted) {
-
-    }
 }

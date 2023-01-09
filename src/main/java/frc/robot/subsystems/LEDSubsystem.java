@@ -63,7 +63,7 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   public void setLEDBalancing() {
-    ledSpark.set(LEDPatterns.INDIGO);
+    ledSpark.set(LEDPatterns.CYAN);
   }
 
   public void setLEDIntake() {
@@ -71,7 +71,7 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   public void setLEDAuto() {
-    ledSpark.set(LEDPatterns.CYAN);
+    ledSpark.set(LEDPatterns.RAINBOW);
   }
   
   public void setLEDTest() {

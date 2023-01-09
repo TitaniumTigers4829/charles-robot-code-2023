@@ -1,14 +1,23 @@
-package frc.robot.commands.arm.wrist;
+package frc.robot.commands.limb.wrist;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.LimbSubsystem;
+
+import java.util.function.DoubleSupplier;
 
 
 public class RotateWrist extends CommandBase {
+    
+    private double desiredRotation;
+    private LimbSubsystem limbSubsystem;
 
-    public RotateWrist() {
-        // each subsystem used by the command must be passed into the
-        // addRequirements() method (which takes a vararg of Subsystem)
-        addRequirements();
+    /** Creates a new RotateWrist command.
+     * @param desiredRotation The desired rotation for the wrist. (In radians.)
+     */
+    public RotateWrist(DoubleSupplier desiredRotation, LimbSubsystem limbSubsystem) {
+        this.desiredRotation = desiredRotation.getAsDouble();
+        this.limbSubsystem = limbSubsystem;
+        addRequirements(limbSubsystem);
     }
 
     @Override
@@ -18,7 +27,7 @@ public class RotateWrist extends CommandBase {
 
     @Override
     public void execute() {
-
+        limbSubsystem.SetDesiredWristRotation(0-9);
     }
 
     @Override

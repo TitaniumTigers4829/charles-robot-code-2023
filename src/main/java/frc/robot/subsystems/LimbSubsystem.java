@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -17,7 +18,7 @@ import frc.robot.Constants.LimbConstants;
 import frc.robot.Constants.LimbConstants.WristConstants;
 import frc.robot.Constants.LimbConstants.ClawConstants;
 
-public class ArmSubsystem extends SubsystemBase {
+public class LimbSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
@@ -31,14 +32,22 @@ public class ArmSubsystem extends SubsystemBase {
 
   private final ProfiledPIDController wristPID =
           new ProfiledPIDController(
-                  Constants.ElevatorConstants.pElevator,
-                  Constants.ElevatorConstants.iElevator,
-                  Constants.ElevatorConstants.dElevator,
+                  WristConstants.wristP,
+                  WristConstants.wristI,
+                  WristConstants.wristD,
                   new TrapezoidProfile.Constraints(WristConstants.wristMaxVelocity, WristConstants.wristMaxAcceleration)
           );
 
+  private final SimpleMotorFeedforward wristFeedForward = new SimpleMotorFeedforward(
+            WristConstants.wristS,
+            WristConstants.wristV,
+            WristConstants.wristA
+  );
+
+  private boolean clawOpen = false;
+
   /** Creates a new ArmSubsystem. */
-  public ArmSubsystem() {
+  public LimbSubsystem() {
 
 
     //Initialize Motor
@@ -60,29 +69,51 @@ public class ArmSubsystem extends SubsystemBase {
             ClawConstants.solenoidBackward
     );
     CloseClaw();
+    CloseArm();
   }
 
-  public void CloseClaw() {
+  private void CloseClaw() {
     clawSolenoid.set(DoubleSolenoid.Value.kForward);
   }
 
-  public void OpenClaw() {
+  private void OpenClaw() {
     clawSolenoid.set(DoubleSolenoid.Value.kReverse);
+  }
+
+  public void ToggleClaw() {
+    clawOpen = !clawOpen;
+    if (clawOpen) {
+      OpenClaw();
+    } else {
+      CloseClaw();
+    }
   }
 
   public void ExtendArm() {
     armSolenoid.set(DoubleSolenoid.Value.kForward);
   }
+
+  public void CloseArm() {
+    armSolenoid.set(DoubleSolenoid.Value.kReverse);
+  }
+
   public void SetWristMotor(double speed) {
     wristMotor.set(speed);
   }
 
-  public void GetWristMotor(double speed) {
-    wristMotor.get();
+  public double GetEncoderValue() {
+    return wristEncoder.getPosition();
   }
 
   public void StopWristMotor() {
     wristMotor.stopMotor();
+  }
+
+  /** Sets the desired rotation for the wrist.
+   * @param rotation The desired rotation (in radians.)
+   */
+  public void SetDesiredWristRotation(double rotation) {
+
   }
 
 
