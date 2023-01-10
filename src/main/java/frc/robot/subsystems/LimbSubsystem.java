@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.LimbConstants;
-import frc.robot.Constants.LimbConstants.WristConstants;
 import frc.robot.Constants.LimbConstants.ClawConstants;
 
 public class LimbSubsystem extends SubsystemBase {
@@ -27,37 +26,11 @@ public class LimbSubsystem extends SubsystemBase {
 
   private final DoubleSolenoid clawSolenoid;
   private final DoubleSolenoid armSolenoid;
-  private final WPI_TalonFX wristMotor;
-  private final CANCoder wristEncoder;
-
-  private final ProfiledPIDController wristPID =
-          new ProfiledPIDController(
-                  WristConstants.wristP,
-                  WristConstants.wristI,
-                  WristConstants.wristD,
-                  new TrapezoidProfile.Constraints(WristConstants.wristMaxVelocity, WristConstants.wristMaxAcceleration)
-          );
-
-  private final SimpleMotorFeedforward wristFeedForward = new SimpleMotorFeedforward(
-            WristConstants.wristS,
-            WristConstants.wristV,
-            WristConstants.wristA
-  );
 
   private boolean clawOpen = false;
 
   /** Creates a new ArmSubsystem. */
   public LimbSubsystem() {
-
-
-    //Initialize Motor
-    wristMotor = new WPI_TalonFX(WristConstants.wristMotorID);
-    wristMotor.setInverted(WristConstants.isMotorInverted);
-    wristMotor.setNeutralMode(NeutralMode.Brake);
-
-    // Initialize Encoder
-    wristEncoder = new CANCoder(WristConstants.wristEncoderID);
-    wristEncoder.configSensorDirection(false);
 
     // Initialize Solenoids
     armSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
@@ -95,18 +68,6 @@ public class LimbSubsystem extends SubsystemBase {
 
   public void CloseArm() {
     armSolenoid.set(DoubleSolenoid.Value.kReverse);
-  }
-
-  public void SetWristMotor(double speed) {
-    wristMotor.set(speed);
-  }
-
-  public double GetEncoderValue() {
-    return wristEncoder.getPosition();
-  }
-
-  public void StopWristMotor() {
-    wristMotor.stopMotor();
   }
 
   /** Sets the desired rotation for the wrist.
