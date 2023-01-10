@@ -75,7 +75,7 @@ public class LEDSubsystem extends SubsystemBase {
   }
   
   public void setLEDTest() {
-    ledSpark.set(LEDPatterns.RAINBOW);
+    ledSpark.set(LEDPatterns.RAINBOW_WAVE);
   }
 
   //TODO: Create more led methods for different situations.

@@ -25,19 +25,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private final DigitalInput bottomLimitSwitch;
   private final DigitalInput topLimitSwitch;
-
-  private final ProfiledPIDController elevatorPID = new ProfiledPIDController(
-      ElevatorConstants.elevatorP,
-      ElevatorConstants.elevatorI,
-      ElevatorConstants.elevatorD,
-          new TrapezoidProfile.Constraints(ElevatorConstants.elevatorMaxVelocity, ElevatorConstants.elevatorMaxAcceleration)
-  );
-
-  private final SimpleMotorFeedforward elevatorFeedForward = new SimpleMotorFeedforward(
-          ElevatorConstants.elevatorS,
-          ElevatorConstants.elevatorV,
-          ElevatorConstants.elevatorA
-  );
   
   /** Creates a new ElevatorSubsystem. */
   public ElevatorSubsystem() {
@@ -68,32 +55,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   public double getMotorOutput(ProfiledPIDController controller, SimpleMotorFeedforward feedforward, double desiredPosition, double currentPosition) {
     controller.calculate(currentPosition, desiredPosition);
     return ((desiredPosition - currentPosition) * controller.getP()) + feedforward.calculate((controller.getGoal().velocity));
-  }
-
-  /** Moves the motor to the desired height using PID and FeedForward.
-   * @param desiredHeight The high the elevator should move to.
-   */
-  public void setDesiredElevatorHeight(double desiredHeight) {
-    double output = getMotorOutput(elevatorPID, elevatorFeedForward, desiredHeight, getHeight());
-    elevatorMotor.set(ControlMode.PercentOutput, output);
-  }
-
-  public double getHeight() {
-    double multiplier =
-            (ElevatorConstants.elevatorMaxValue - ElevatorConstants.elevatorMinValue)
-            / (0 - ElevatorConstants.elevatorMinEncoderUnits);
-    if (!bottomLimitSwitchPressed() && !topLimitSwitchPressed()) {
-      return multiplier * getEncoderValue()
-              + ElevatorConstants.elevatorMaxHeight;
-    } else if (bottomLimitSwitchPressed() && !topLimitSwitchPressed()) {
-      return ElevatorConstants.elevatorMinHeight;
-    } else if (!bottomLimitSwitchPressed() && topLimitSwitchPressed()) {
-      return ElevatorConstants.elevatorMaxHeight;
-    } else { // (If both limit switches are pressed)
-      SmartDashboard.putBoolean("Elevator Limit Switch Error:", true);
-      //Return average of min and max heights so no error happens.
-      return (ElevatorConstants.elevatorMinHeight + ElevatorConstants.elevatorMaxHeight) / 2.0;
-    }
   }
 
   public boolean bottomLimitSwitchPressed() {
