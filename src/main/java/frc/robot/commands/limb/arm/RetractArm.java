@@ -3,18 +3,18 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.LimbSubsystem;
 
 
-public class ExtendArm extends CommandBase {
+public class RetractArm extends CommandBase {
 
     private LimbSubsystem limbSubsystem;
 
-    public ExtendArm(LimbSubsystem limbSubsystem) {
+    public RetractArm(LimbSubsystem limbSubsystem) {
         this.limbSubsystem = limbSubsystem;
         addRequirements(limbSubsystem);
     }
 
     @Override
     public void execute() {
-        limbSubsystem.ExtendArm();
+        limbSubsystem.CloseArm();
     }
 
 
