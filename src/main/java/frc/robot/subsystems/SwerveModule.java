@@ -18,8 +18,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
@@ -28,9 +28,6 @@ public class SwerveModule {
   private final WPI_TalonFX m_turningMotor;
 
   private final CANCoder m_turnEncoder;
-  // Driving encoder uses the integrated FX encoder
-  // e.g. testMotor.getSelectedSensorPosition();
-
 
   private final PIDController m_drivePIDController =
       new PIDController(
@@ -46,10 +43,10 @@ public class SwerveModule {
           ModuleConstants.moduleTurnControllerD,
           ModuleConstants.moduleTurnConstraints);
 
-  SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(
+  private final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(
       DriveConstants.voltsS, DriveConstants.voltSecondsPerMeterV, DriveConstants.voltSecondsSquaredPerMeterA);
 
-  SimpleMotorFeedforward turnFeedForward = new SimpleMotorFeedforward(
+  private final SimpleMotorFeedforward turnFeedForward = new SimpleMotorFeedforward(
       DriveConstants.turningS, DriveConstants.turningV, DriveConstants.turningA);
 
   /**
@@ -60,7 +57,6 @@ public class SwerveModule {
    * @param angleZero CANCoder offset
    * @param encoderReversed is the turn encoder reversed
    * @param driveReversed is the drive motor reversed
-   * @param container shuffleboard container to print debug to
    */
   public SwerveModule(
       int driveMotorChannel,
@@ -68,26 +64,25 @@ public class SwerveModule {
       int turningEncoderChannel,
       double angleZero,
       boolean encoderReversed,
-      boolean driveReversed,
-      ShuffleboardLayout container
+      boolean driveReversed
       ) {
-
     // Initialize the motors
     m_driveMotor = new WPI_TalonFX(driveMotorChannel);
     m_turningMotor = new WPI_TalonFX(turningMotorChannel);
 
-    // For testing, can be removed later
+    // Set motors to brake mode
     m_driveMotor.setNeutralMode(NeutralMode.Brake);
     m_turningMotor.setNeutralMode(NeutralMode.Brake);
 
     // Handle whether motor should be reversed or not
     m_driveMotor.setInverted(driveReversed);
+    // TODO: check this
     m_turningMotor.setInverted(true);
 
     // Configure drive motor sensor
     m_driveMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
     
-    // turn CANCoder config
+    // CANCoder config
     m_turnEncoder = new CANCoder(turningEncoderChannel);
     m_turnEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
     m_turnEncoder.configMagnetOffset(angleZero);
@@ -137,6 +132,11 @@ public class SwerveModule {
     return new SwerveModuleState(m_speedMetersPerSecond, new Rotation2d(m_turningRadians));
   }
 
+  public SwerveModulePosition getPosition() {
+    return new SwerveModulePosition(
+      ModuleConstants.drivetoMetersPerSecond * m_driveMotor.getSelectedSensorVelocity(), 
+      Rotation2d.fromDegrees(getCANCoderABS()));
+  }
 
   /**
    * Sets the desired state for the module and sends calculated output from controller to the motor.
@@ -153,7 +153,7 @@ public class SwerveModule {
     SwerveModuleState state =
         SwerveModuleState.optimize(desiredState, new Rotation2d(m_turnRadians));
 
-//    stop the code to stop it from moving if the speed is very, very small
+    // stop the code to stop it from moving if the speed is very, very small
     if (Math.abs(state.speedMetersPerSecond) <= 0.01){
       m_turningMotor.set(0);
       m_driveMotor.set(0);
@@ -174,14 +174,6 @@ public class SwerveModule {
   }
 
   /**
-   * Gets the current position of the CANCoder
-   * @return cancoder position with magnet offset
-   */
-  public double getCANCoder(){
-    return m_turnEncoder.getPosition();
-  }
-
-  /**
    * Gets the current position of the CANCoder in relation to the magnet
    * @return current CANCoder position
    */
@@ -195,11 +187,4 @@ public class SwerveModule {
       m_turnEncoder.setPosition(0);
       m_driveMotor.setSelectedSensorPosition(0);
   }
-
-  public void periodic_func() {
-//    SmartDashboard.putNumber(shuffleboardContainer.getTitle() + " ABS", m_turnEncoder.getAbsolutePosition());
-//    SmartDashboard.putNumber(shuffleboardContainer.getTitle() + " pos", m_turnEncoder.getPosition());
-  }
-
-
 }
