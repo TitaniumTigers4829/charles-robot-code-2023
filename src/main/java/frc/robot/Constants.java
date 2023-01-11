@@ -106,6 +106,7 @@ public final class Constants {
     }
 
     public static final class ArmConstants {
+      public static final int armSolenoid = 0-9;
       public static final int armForward  = 0-9;
       public static final int armBackward = 0-9;
     }
