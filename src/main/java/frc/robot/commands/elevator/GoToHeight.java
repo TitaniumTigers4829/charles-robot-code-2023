@@ -21,7 +21,7 @@ public class GoToHeight extends CommandBase {
 
     @Override
     public void execute() {
-        elevatorSubsystem.setDesiredElevatorHeight(desiredPosition);
+        // elevatorSubsystem.setDesiredElevatorHeight(desiredPosition);
     }
 
     @Override
