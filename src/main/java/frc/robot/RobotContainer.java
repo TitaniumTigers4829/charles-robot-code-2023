@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.JoystickConstants;
 import frc.robot.commands.limb.claw.ToggleClaw;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.LimbSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -22,14 +22,14 @@ import frc.robot.subsystems.LimbSubsystem;
  */
 public class RobotContainer {
 
-  public LimbSubsystem limbSubsystem;
+  public ArmSubsystem armSubsystem;
   public ElevatorSubsystem elevatorSubsystem;
 
   public Joystick buttonBoard;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    limbSubsystem = new LimbSubsystem();
+    armSubsystem = new ArmSubsystem();
     elevatorSubsystem = new ElevatorSubsystem();
 
     // Configure the button bindings
@@ -45,7 +45,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
     buttonBoard = new Joystick(JoystickConstants.buttonBoardID);
     JoystickButton clawButton = new JoystickButton(buttonBoard, JoystickConstants.clawButtonID);
-    clawButton.whileTrue(new ToggleClaw(limbSubsystem));
+    clawButton.whileTrue(new ToggleClaw(armSubsystem));
   }
 
   public Command getAutonomousCommand() {

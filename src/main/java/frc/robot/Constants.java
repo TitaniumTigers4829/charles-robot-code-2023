@@ -95,20 +95,15 @@ public final class Constants {
       public static final double BLACK = 0.99;    }
   }
 
-  public static final class LimbConstants {
-    //TODO: Find out how the Arm works
+  public static final class ArmConstants {
+    public static final int armForward  = 0-9;
+    public static final int armBackward = 0-9;
 
     public static final class ClawConstants {
       //TODO: Find out how the Claw works
   
       public static final int solenoidForward = 0-9; // ID for opening claw
       public static final int solenoidBackward = 0-9; // ID for closing claw
-    }
-
-    public static final class ArmConstants {
-      public static final int armSolenoid = 0-9;
-      public static final int armForward  = 0-9;
-      public static final int armBackward = 0-9;
     }
   }
 

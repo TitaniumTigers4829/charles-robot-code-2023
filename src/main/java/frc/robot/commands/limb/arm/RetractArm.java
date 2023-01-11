@@ -1,20 +1,20 @@
 package frc.robot.commands.limb.arm;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.LimbSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
 
 
 public class RetractArm extends CommandBase {
 
-    private LimbSubsystem limbSubsystem;
+    private ArmSubsystem armSubsystem;
 
-    public RetractArm(LimbSubsystem limbSubsystem) {
-        this.limbSubsystem = limbSubsystem;
-        addRequirements(limbSubsystem);
+    public RetractArm(ArmSubsystem armSubsystem) {
+        this.armSubsystem = armSubsystem;
+        addRequirements(armSubsystem);
     }
 
     @Override
     public void execute() {
-        limbSubsystem.CloseArm();
+        armSubsystem.CloseArm();
     }
 
 

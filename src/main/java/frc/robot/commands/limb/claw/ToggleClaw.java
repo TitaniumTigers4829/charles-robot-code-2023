@@ -5,21 +5,21 @@
 package frc.robot.commands.limb.claw;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.LimbSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
 
 public class ToggleClaw extends CommandBase {
 
-  private LimbSubsystem limbSubsystem;
+  private ArmSubsystem armSubsystem;
 
-  public ToggleClaw(LimbSubsystem limbSubsystem) {
-    this.limbSubsystem = limbSubsystem;
-    addRequirements(limbSubsystem);
+  public ToggleClaw(ArmSubsystem armSubsystem) {
+    this.armSubsystem = armSubsystem;
+    addRequirements(armSubsystem);
   }
 
 
   @Override
   public void initialize() {
-    limbSubsystem.ToggleClaw();
+    armSubsystem.ToggleClaw();
   }
 
   @Override

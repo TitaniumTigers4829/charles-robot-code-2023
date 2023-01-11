@@ -7,10 +7,10 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.LimbConstants;
-import frc.robot.Constants.LimbConstants.ClawConstants;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ArmConstants.ClawConstants;
 
-public class LimbSubsystem extends SubsystemBase {
+public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
@@ -23,12 +23,12 @@ public class LimbSubsystem extends SubsystemBase {
   private boolean clawOpen = false;
 
   /** Creates a new ArmSubsystem. */
-  public LimbSubsystem() {
+  public ArmSubsystem() {
 
     // Initialize Solenoids
     armSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
-            LimbConstants.ArmConstants.armForward,
-            LimbConstants.ArmConstants.armBackward
+            ArmConstants.armForward,
+            ArmConstants.armBackward
     );
     clawSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
             ClawConstants.solenoidForward,
