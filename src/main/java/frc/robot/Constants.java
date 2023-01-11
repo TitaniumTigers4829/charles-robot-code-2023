@@ -128,9 +128,29 @@ public final class Constants {
 
     // Ports:
     public static final int buttonBoardID = 0-9;
+    public static final int controllerID = 0-9;
 
-    // Button Bindings:
+    // Buttonboard Button IDs:
     public static final int clawButtonID = 0-9;
+
+    // Button IDs:
+    public static final int xButtonID = 1;
+    public static final int aButtonID = 2;
+    public static final int bButtonID = 3;
+    public static final int yButtonID = 4;
+    public static final int leftBumperID = 5;
+    public static final int rightBumperID = 6;
+    public static final int leftTriggerID = 7;
+    public static final int rightTriggerID = 8;
+    public static final int backButtonID = 9;
+    public static final int startButtonID = 10;
+    public static final int leftStickPressID = 11;
+    public static final int rightStickPressID = 12;
+
+    public static final int leftDPadID = 270;
+    public static final int upDPadID = 0;
+    public static final int rightDPadID = 90;
+    public static final int downDPadID = 180;
   }
 
 }
