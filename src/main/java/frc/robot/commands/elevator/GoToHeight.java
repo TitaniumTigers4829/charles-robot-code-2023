@@ -2,7 +2,6 @@ package frc.robot.commands.elevator;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.LimbSubsystem;
 
 import java.util.function.DoubleSupplier;
 
