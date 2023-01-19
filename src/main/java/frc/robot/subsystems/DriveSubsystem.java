@@ -14,9 +14,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -60,17 +57,10 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.rearRightTurningEncoderReversed,
       DriveConstants.rearRightDriveEncoderReversed
     );
-  
-  SwerveModulePosition[] positions = {
-    frontLeft.getPosition(),
-    rearLeft.getPosition(),
-    frontRight.getPosition(),
-    rearRight.getPosition()
-  };
 
   // Odometry class for tracking robot pose
   public SwerveDriveOdometry odometry = new SwerveDriveOdometry(DriveConstants.driveKinematics,
-      gyro.getRotation2d(), positions);
+      gyro.getRotation2d(), getModulePositions());
 
   /**
    * Creates a new DriveSubsystem.
@@ -81,18 +71,18 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    positions[0] = frontLeft.getPosition();
-    positions[1] = rearLeft.getPosition();
-    positions[2] = frontRight.getPosition();
-    positions[3] = rearRight.getPosition();
     odometry.update(
         gyro.getRotation2d(),
-        positions
+        getModulePositions()
     );
   }
 
   public double heading() {
     return (gyro.getAngle() + this.gyroOffset) % 360;
+  }
+
+  public Rotation2d geRotation2d() {
+    return gyro.getRotation2d();
   }
 
   public void setGyroOffset(int gyroOffset) {
@@ -114,7 +104,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param pose The pose to which to set the odometry.
    */
   public void resetOdometry(Pose2d pose) {
-    odometry.resetPosition(gyro.getRotation2d(), positions, pose);
+    odometry.resetPosition(gyro.getRotation2d(), getModulePositions(), pose);
   }
 
   /**
@@ -161,13 +151,28 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
+   * Gets the current drivetrain position, as reported by the modules themselves.
+   * @return current drivetrain state. Array orders are frontLeft, frontRight, backLeft, backRight
+   */
+  public SwerveModulePosition[] getModulePositions() {
+    SwerveModulePosition[] swerveModulePositions = {
+      frontLeft.getPosition(),
+      rearLeft.getPosition(),
+      frontRight.getPosition(),
+      rearRight.getPosition()
+    };
+
+    return swerveModulePositions;
+  } 
+
+  /**
    * Zeroes the heading of the robot.
    */
   public void zeroHeading() {
     gyroOffset = 0;
     gyro.reset();
   }
-
+  
   /**
    * Returns the heading of the robot.
    *
