@@ -130,5 +130,64 @@ public final class Constants {
     public static final TrapezoidProfile.Constraints thetaControllerConstraints =
       new TrapezoidProfile.Constraints(maxAngularSpeedRadiansPerSecond, maxAngularSpeedRadiansPerSecondSquared);
   }
-  
+
+  public static final class LEDConstants {
+
+    public static final int LEDPort = 0-9;
+
+    public static final class LEDPatterns {
+      // This subclass contains the constant values for the LED patterns.
+      public static final double RAINBOW = -0.99;
+
+      public static final double SHOT_RED = -0.85;
+      public static final double SHOT_BLUE = -0.83;
+      public static final double SHOT_WHITE = -0.81;
+
+      public static final double FIRE = -0.57;
+      public static final double RAINBOW_WAVE = -0.45;
+      public static final double OCEAN = -0.41;
+
+      public static final double BOUNCE_RED = -0.35;
+      public static final double BOUNCE_GRAY = -0.33;
+
+      public static final double HEARTBEAT_RED = -0.25;
+      public static final double HEARTBEAT_GRAY = -0.19;
+
+      public static final double STROBE_RED = -0.11;
+      public static final double STROBE_BLUE = -0.09;
+      public static final double STROBE_GOLD = -0.07;
+      public static final double STROBE_WHITE = -0.05;
+
+      public static final double MAGENTA = 0.57;
+      public static final double DARK_RED = 0.59;
+      public static final double RED = 0.61;
+      public static final double VERMILION = 0.63;
+      public static final double ORANGE = 0.65;
+      public static final double GOLD = 0.67;
+      public static final double YELLOW = 0.69;
+
+      public static final double LAWN_GREEN = 0.71;
+      public static final double LIME = 0.73;
+      public static final double DARK_GREEN = 0.75;
+      public static final double GREEN = 0.77;
+      public static final double CYAN = 0.79;
+
+      public static final double AQUA = 0.81;
+      public static final double SKY_BLUE = 0.83;
+      public static final double DARK_BLUE = 0.85;
+      public static final double BLUE = 0.87;
+
+      public static final double INDIGO = 0.89;
+      public static final double PURPLE = 0.91;
+
+      public static final double WHITE = 0.93;
+      public static final double GRAY = 0.95;
+      public static final double DARK_GRAY = 0.97;
+      public static final double BLACK = 0.99;    }
+  }
+
+  public static final class ArmConstants {
+    
+  }
+
 }
