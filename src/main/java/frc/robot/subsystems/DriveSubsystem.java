@@ -81,7 +81,7 @@ public class DriveSubsystem extends SubsystemBase {
     return (gyro.getAngle() + this.gyroOffset) % 360;
   }
 
-  public Rotation2d geRotation2d() {
+  public Rotation2d getRotation2d() {
     return gyro.getRotation2d();
   }
 
