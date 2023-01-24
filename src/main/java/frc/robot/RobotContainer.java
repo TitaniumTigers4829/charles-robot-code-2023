@@ -10,7 +10,9 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.drive.DriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -26,20 +28,28 @@ public class RobotContainer {
   private final Command driveCommand;
 
   private final Joystick driverJoystick;
-  private final JoystickButton isFieldRelativeButton;
+  private final JoystickButton rightBumper;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     driverJoystick = new Joystick(0);
-    isFieldRelativeButton = new JoystickButton(driverJoystick, 0);
+    rightBumper = new JoystickButton(driverJoystick, 0);
 
     driveSubsystem = new DriveSubsystem();
 
+    DoubleSupplier leftStickX = () -> driverJoystick.getRawAxis(0);
+    DoubleSupplier leftStickY = () -> driverJoystick.getRawAxis(1);
+    DoubleSupplier rightStickX = () -> driverJoystick.getRawAxis(2);
+
     driveCommand = new DriveCommand(driveSubsystem, 
-        ()->driverJoystick.getRawAxis(0), ()->driverJoystick.getRawAxis(1), ()->driverJoystick.getRawAxis(2), isFieldRelativeButton::getAsBoolean);
+      () -> modifyAxisCubed(leftStickY) * -1, 
+      () -> modifyAxisCubed(leftStickX) * -1, 
+      () -> modifyAxisCubed(rightStickX), 
+      () -> !rightBumper.getAsBoolean()
+    );
+
     driveSubsystem.setDefaultCommand(driveCommand);
 
-    // Configure the button bindings
     configureButtonBindings();
   }
 
@@ -74,6 +84,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    POVButton rightDirectionPad = new POVButton(driverJoystick, 90);
+    rightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
+
   }
 
   public Command getAutonomousCommand() {

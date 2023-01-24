@@ -36,7 +36,8 @@ public final class Constants {
         new Translation2d(wheelBase / 2, trackWidth / 2),
         new Translation2d(wheelBase / 2, -trackWidth / 2),
         new Translation2d(-wheelBase / 2, trackWidth / 2),
-        new Translation2d(-wheelBase / 2, -trackWidth / 2));
+        new Translation2d(-wheelBase / 2, -trackWidth / 2)
+      );
 
     public static final double voltsS = 0.73394;
     public static final double voltSecondsPerMeterV = 2.4068;
@@ -54,26 +55,26 @@ public final class Constants {
 
     
     // TODO: get IDs
-    public static final int frontLeftDriveMotorPort = 0-9;
-    public static final int rearLeftDriveMotorPort = 0-9;
-    public static final int frontRightDriveMotorPort = 0-9;
-    public static final int rearRightDriveMotorPort = 0-9;
+    public static final int frontLeftDriveMotorPort = 18;
+    public static final int rearLeftDriveMotorPort = 6;
+    public static final int frontRightDriveMotorPort = 4;
+    public static final int rearRightDriveMotorPort = 23;
 
-    public static final int frontLeftTurningMotorPort = 0-9;
-    public static final int rearLeftTurningMotorPort = 0-9;
-    public static final int frontRightTurningMotorPort = 0-9;
-    public static final int rearRightTurningMotorPort = 0-9;
+    public static final int frontLeftTurningMotorPort = 1;
+    public static final int rearLeftTurningMotorPort = 7;
+    public static final int frontRightTurningMotorPort = 3;
+    public static final int rearRightTurningMotorPort = 25;
 
-    public static final int frontLeftTurningEncoderPort = 0-9;
-    public static final int rearLeftTurningEncoderPort = 0-9;
-    public static final int frontRightTurningEncoderPort = 0-9;
-    public static final int rearRightTurningEncoderPort = 0-9;
+    public static final int frontLeftTurningEncoderPort = 22;
+    public static final int rearLeftTurningEncoderPort = 10;
+    public static final int frontRightTurningEncoderPort = 9;
+    public static final int rearRightTurningEncoderPort = 8;
 
 
-    public static final double frontLeftAngleZero = 0;
-    public static final double rearLeftAngleZero = 0;
-    public static final double frontRightAngleZero = 0;
-    public static final double rearRightAngleZero = 0;
+    public static final double frontLeftAngleZero = 79.45;
+    public static final double rearLeftAngleZero = 121.38;
+    public static final double frontRightAngleZero = -104.68;
+    public static final double rearRightAngleZero = 23.54;
 
 
     public static final boolean frontLeftTurningEncoderReversed = false;
@@ -83,9 +84,10 @@ public final class Constants {
 
     public static final boolean frontLeftDriveEncoderReversed = false;
     public static final boolean rearLeftDriveEncoderReversed = false;
-    public static final boolean frontRightDriveEncoderReversed = false;
-    public static final boolean rearRightDriveEncoderReversed = false;
+    public static final boolean frontRightDriveEncoderReversed = true;
+    public static final boolean rearRightDriveEncoderReversed = true;
   }
+  
   public static final class ModuleConstants {
     // TODO: get
     public static final double driveGearRatio = 7.36;

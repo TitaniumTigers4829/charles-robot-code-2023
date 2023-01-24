@@ -40,7 +40,7 @@ public class DriveCommand extends CommandBase {
       leftY.getAsDouble() * DriveConstants.maxSpeedMetersPerSecond,
       leftX.getAsDouble() * DriveConstants.maxSpeedMetersPerSecond,
       rightX.getAsDouble() * DriveConstants.maxAngularSpeedRadiansPerSecond,
-       isFieldRelative.getAsBoolean());
+      isFieldRelative.getAsBoolean());
   }
 
   // Called once the command ends or is interrupted.

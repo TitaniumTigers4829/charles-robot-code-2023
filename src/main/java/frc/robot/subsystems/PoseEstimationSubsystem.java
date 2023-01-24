@@ -18,18 +18,20 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
 public class PoseEstimationSubsystem extends SubsystemBase {
-
+  
   private final DriveSubsystem driveSubsystem;
   private final SwerveDrivePoseEstimator poseEstimator;
   private final NetworkTable networkTable; 
   private final NetworkTableEntry botPoseNetworkTableEntry;
   private final NetworkTableEntry jsonDumpNetworkTableEntry;
 
-   /**
+  /* EDIT VALUES BELOW HERE */
+  /**
    * Standard deviations of model states. Increase these numbers to trust your model's state estimates less. This
    * matrix is in the form [x, y, theta]ᵀ, with units in meters and radians, then meters.
    */
@@ -40,6 +42,7 @@ public class PoseEstimationSubsystem extends SubsystemBase {
    * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
    */
   private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
+  /* EDIT VALUES ABOVE HERE */
 
   private double lastTimeStampSeconds = 0;
 
@@ -47,12 +50,13 @@ public class PoseEstimationSubsystem extends SubsystemBase {
     this.driveSubsystem = driveSubsystem;
 
     poseEstimator = new SwerveDrivePoseEstimator(
-        DriveConstants.driveKinematics,
-        driveSubsystem.getRotation2d(),
-        driveSubsystem.getModulePositions(),
-        new Pose2d(),  // FIXME: This is the pose2d for where you start on the field, might need to change
-        stateStdDevs,
-        visionMeasurementStdDevs);
+      DriveConstants.driveKinematics,
+      driveSubsystem.getRotation2d(),
+      driveSubsystem.getModulePositions(),
+      new Pose2d(),  // FIXME: This is the pose2d for where you start on the field, might need to change
+      stateStdDevs,
+      visionMeasurementStdDevs
+    );
 
     networkTable = NetworkTableInstance.getDefault().getTable("limelight");
     botPoseNetworkTableEntry = networkTable.getEntry("botpose");
@@ -84,6 +88,7 @@ public class PoseEstimationSubsystem extends SubsystemBase {
       Rotation2d robotRotation = Rotation2d.fromDegrees(botPose[5]);
       Pose2d limelightVisionMeasurement = new Pose2d(robotX, robotY, robotRotation);
       poseEstimator.addVisionMeasurement(limelightVisionMeasurement, currentTimeStampSeconds);
+      SmartDashboard.putString("Limelight Pose", limelightVisionMeasurement.toString());
     }
 
     lastTimeStampSeconds = currentTimeStampSeconds;
@@ -93,6 +98,9 @@ public class PoseEstimationSubsystem extends SubsystemBase {
       driveSubsystem.getRotation2d(),
       driveSubsystem.getModulePositions()
     );
+
+    SmartDashboard.putString("Estimated Pose", getPose().toString());
+    SmartDashboard.putString("Odometry Pose", driveSubsystem.getPose().toString());
   }
 
   public Pose2d getPose() {
@@ -113,8 +121,8 @@ public class PoseEstimationSubsystem extends SubsystemBase {
   }
 
   /**
-   * Resets the position on the field to 0,0 0-degrees, with forward being downfield. This resets
-   * what "forward" is for field oriented driving.
+   * Resets the position on the field to 0,0 0-degrees, with forward being downfield. 
+   * This resets what "forward" is for field oriented driving.
    */
   public void resetFieldPosition() {
     setPose(new Pose2d());
