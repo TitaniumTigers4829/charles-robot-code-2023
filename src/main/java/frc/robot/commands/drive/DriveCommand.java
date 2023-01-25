@@ -4,12 +4,29 @@
 
 package frc.robot.commands.drive;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.subsystems.DriveSubsystem;
 
 public class DriveCommand extends CommandBase {
+
+  private final DriveSubsystem driveSubsystem;
+
+  private final DoubleSupplier leftY, leftX, rightX;
+  private final BooleanSupplier isFieldRelative;
+
   /** Creates a new DriveCommand. */
-  public DriveCommand() {
+  public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier leftY, DoubleSupplier leftX, DoubleSupplier rightX, BooleanSupplier isFieldRelative) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.driveSubsystem = driveSubsystem;
+    this.leftY = leftY;
+    this.leftX = leftX;
+    this.rightX = rightX;
+    this.isFieldRelative = isFieldRelative;
+    addRequirements(driveSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -18,11 +35,19 @@ public class DriveCommand extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    driveSubsystem.drive(
+      leftY.getAsDouble() * DriveConstants.maxSpeedMetersPerSecond,
+      leftX.getAsDouble() * DriveConstants.maxSpeedMetersPerSecond,
+      rightX.getAsDouble() * DriveConstants.maxAngularSpeedRadiansPerSecond,
+      isFieldRelative.getAsBoolean());
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    driveSubsystem.drive(0, 0, 0, false);
+  }
 
   // Returns true when the command should end.
   @Override
