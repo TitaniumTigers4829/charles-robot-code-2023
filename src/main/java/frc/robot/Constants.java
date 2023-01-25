@@ -191,8 +191,8 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
-    public static final int armForward  = 0-9;
-    public static final int armBackward = 0-9;
+    public static final int armForward  = 2;
+    public static final int armBackward = 3;
 
     public static final class ClawConstants {
   
