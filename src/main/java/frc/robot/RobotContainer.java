@@ -34,9 +34,12 @@ public class RobotContainer {
   private final Command driveCommand;
 
   private final Joystick driverJoystick;
-  public final Joystick buttonBoard;
+
   private final JoystickButton rightBumper;
 
+  public final Joystick buttonBoard;
+
+  private final JoystickButton clawButton;
   
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -50,6 +53,7 @@ public class RobotContainer {
     rightBumper = new JoystickButton(driverJoystick, JoystickConstants.rightBumperID);
 
     buttonBoard = new Joystick(JoystickConstants.buttonBoardID);
+    clawButton = new JoystickButton(buttonBoard, JoystickConstants.clawButtonID);
 
     driveSubsystem = new DriveSubsystem();
 
@@ -99,7 +103,6 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    JoystickButton clawButton = new JoystickButton(buttonBoard, JoystickConstants.clawButtonID);
     clawButton.whileTrue(new ToggleClaw(armSubsystem));
     POVButton rightDirectionPad = new POVButton(driverJoystick, JoystickConstants.rightDPadID);
     rightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
