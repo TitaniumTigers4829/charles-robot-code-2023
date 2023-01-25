@@ -12,6 +12,10 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.JoystickConstants;
+import frc.robot.commands.limb.claw.ToggleClaw;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.drive.DriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
@@ -24,14 +28,24 @@ import frc.robot.subsystems.DriveSubsystem;
  */
 public class RobotContainer {
 
+  public ArmSubsystem armSubsystem;
+  public ElevatorSubsystem elevatorSubsystem;
   private final DriveSubsystem driveSubsystem;
   private final Command driveCommand;
 
   private final Joystick driverJoystick;
+  public final Joystick buttonBoard;
   private final JoystickButton rightBumper;
+
+  
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    armSubsystem = new ArmSubsystem();
+    // elevatorSubsystem = new ElevatorSubsystem();
+
+    // Configure the button bindings
+  
     driverJoystick = new Joystick(0);
     rightBumper = new JoystickButton(driverJoystick, 0);
 
@@ -49,7 +63,6 @@ public class RobotContainer {
     );
 
     driveSubsystem.setDefaultCommand(driveCommand);
-
     configureButtonBindings();
   }
 
@@ -84,9 +97,11 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    buttonBoard = new Joystick(JoystickConstants.buttonBoardID);
+    JoystickButton clawButton = new JoystickButton(buttonBoard, JoystickConstants.clawButtonID);
+    clawButton.whileTrue(new ToggleClaw(armSubsystem));
     POVButton rightDirectionPad = new POVButton(driverJoystick, 90);
     rightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
-
   }
 
   public Command getAutonomousCommand() {

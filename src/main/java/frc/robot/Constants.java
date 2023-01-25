@@ -119,6 +119,9 @@ public final class Constants {
       );
   }
 
+  public static final int driveFXEncoderCPR = 2048;
+  public static final int turningCANcoderCPR = 4096;
+
   public static final class PathPlannerConstants {
 
     // Autonomous Period Constants TODO: Tune all of these values
@@ -191,7 +194,56 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
-    
+    public static final int armForward  = 0-9;
+    public static final int armBackward = 0-9;
+
+    public static final class ClawConstants {
+  
+      public static final int solenoidForward = 1; // ID for opening claw
+      public static final int solenoidBackward = 0; // ID for closing claw
+    }
+  }
+
+  
+
+  public static final class ElevatorConstants {
+
+    public static final int elevatorMotorPort = 0-9;
+    public static final int elevatorEncoderPort = 0-9;
+    public static final boolean elevatorInverted = false;
+
+    public static final int bottomLimitSwitchPort = 0-9;
+    public static final int topLimitSwitchPort = 0-9;
+
+  }
+
+  public static final class JoystickConstants {
+
+    // Ports:
+    public static final int buttonBoardID = 0;
+    public static final int controllerID = 0-9;
+
+    // Buttonboard Button IDs:
+    public static final int clawButtonID = 1;
+
+    // Button IDs:
+    public static final int xButtonID = 1;
+    public static final int aButtonID = 2;
+    public static final int bButtonID = 3;
+    public static final int yButtonID = 4;
+    public static final int leftBumperID = 5;
+    public static final int rightBumperID = 6;
+    public static final int leftTriggerID = 7;
+    public static final int rightTriggerID = 8;
+    public static final int backButtonID = 9;
+    public static final int startButtonID = 10;
+    public static final int leftStickPressID = 11;
+    public static final int rightStickPressID = 12;
+
+    public static final int leftDPadID = 270;
+    public static final int upDPadID = 0;
+    public static final int rightDPadID = 90;
+    public static final int downDPadID = 180;
   }
 
 }
