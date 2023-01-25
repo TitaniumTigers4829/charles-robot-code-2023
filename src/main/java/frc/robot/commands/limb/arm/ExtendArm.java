@@ -14,7 +14,7 @@ public class ExtendArm extends CommandBase {
 
     @Override
     public void execute() {
-        armSubsystem.ExtendArm();
+        // armSubsystem.ExtendArm();
     }
 
 

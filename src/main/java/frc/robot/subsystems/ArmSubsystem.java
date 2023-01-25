@@ -18,50 +18,41 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private final DoubleSolenoid clawSolenoid;
-  private final DoubleSolenoid armSolenoid;
+  // private final DoubleSolenoid armSolenoid;
 
-  private boolean clawOpen = false;
+  public boolean clawOpen = false;
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
 
     // Initialize Solenoids
-    armSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
-            ArmConstants.armForward,
-            ArmConstants.armBackward
-    );
+    // armSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
+    //         ArmConstants.armForward,
+    //         ArmConstants.armBackward
+    // );
     clawSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
             ClawConstants.solenoidForward,
             ClawConstants.solenoidBackward
     );
     CloseClaw();
-    CloseArm();
+    // CloseArm();
   }
 
-  private void CloseClaw() {
+  public void CloseClaw() {
     clawSolenoid.set(DoubleSolenoid.Value.kForward);
   }
 
-  private void OpenClaw() {
+  public void OpenClaw() {
     clawSolenoid.set(DoubleSolenoid.Value.kReverse);
   }
 
-  public void ToggleClaw() {
-    clawOpen = !clawOpen;
-    if (clawOpen) {
-      OpenClaw();
-    } else {
-      CloseClaw();
-    }
-  }
+  // public void ExtendArm() {
+  //   armSolenoid.set(DoubleSolenoid.Value.kForward);
+  // }
 
-  public void ExtendArm() {
-    armSolenoid.set(DoubleSolenoid.Value.kForward);
-  }
-
-  public void CloseArm() {
-    armSolenoid.set(DoubleSolenoid.Value.kReverse);
-  }
+  // public void CloseArm() {
+  //   armSolenoid.set(DoubleSolenoid.Value.kReverse);
+  // }
 
   /** Sets the desired rotation for the wrist.
    * @param rotation The desired rotation (in radians.)

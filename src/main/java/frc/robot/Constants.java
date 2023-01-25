@@ -100,10 +100,9 @@ public final class Constants {
     public static final int armBackward = 0-9;
 
     public static final class ClawConstants {
-      //TODO: Find out how the Claw works
   
-      public static final int solenoidForward = 0-9; // ID for opening claw
-      public static final int solenoidBackward = 0-9; // ID for closing claw
+      public static final int solenoidForward = 1; // ID for opening claw
+      public static final int solenoidBackward = 0; // ID for closing claw
     }
   }
 
@@ -123,11 +122,11 @@ public final class Constants {
   public static final class JoystickConstants {
 
     // Ports:
-    public static final int buttonBoardID = 0-9;
+    public static final int buttonBoardID = 0;
     public static final int controllerID = 0-9;
 
     // Buttonboard Button IDs:
-    public static final int clawButtonID = 0-9;
+    public static final int clawButtonID = 1;
 
     // Button IDs:
     public static final int xButtonID = 1;

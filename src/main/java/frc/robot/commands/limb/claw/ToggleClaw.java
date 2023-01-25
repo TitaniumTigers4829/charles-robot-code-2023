@@ -19,7 +19,12 @@ public class ToggleClaw extends CommandBase {
 
   @Override
   public void initialize() {
-    armSubsystem.ToggleClaw();
+    armSubsystem.clawOpen = !armSubsystem.clawOpen;
+    if (armSubsystem.clawOpen) {
+      armSubsystem.OpenClaw();
+    } else {
+      armSubsystem.CloseClaw();
+    }
   }
 
   @Override
