@@ -119,9 +119,6 @@ public final class Constants {
       );
   }
 
-  public static final int driveFXEncoderCPR = 2048;
-  public static final int turningCANcoderCPR = 4096;
-
   public static final class PathPlannerConstants {
 
     // Autonomous Period Constants TODO: Tune all of these values
@@ -220,8 +217,8 @@ public final class Constants {
   public static final class JoystickConstants {
 
     // Ports:
-    public static final int buttonBoardID = 0;
-    public static final int controllerID = 0-9;
+    public static final int driverJoystickID = 0;
+    public static final int buttonBoardID = 1;
 
     // Buttonboard Button IDs:
     public static final int clawButtonID = 1;

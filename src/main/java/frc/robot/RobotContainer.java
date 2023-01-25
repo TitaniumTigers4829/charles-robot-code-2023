@@ -46,8 +46,10 @@ public class RobotContainer {
 
     // Configure the button bindings
   
-    driverJoystick = new Joystick(0);
-    rightBumper = new JoystickButton(driverJoystick, 0);
+    driverJoystick = new Joystick(JoystickConstants.driverJoystickID);
+    rightBumper = new JoystickButton(driverJoystick, JoystickConstants.rightBumperID);
+
+    buttonBoard = new Joystick(JoystickConstants.buttonBoardID);
 
     driveSubsystem = new DriveSubsystem();
 
@@ -97,10 +99,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    buttonBoard = new Joystick(JoystickConstants.buttonBoardID);
     JoystickButton clawButton = new JoystickButton(buttonBoard, JoystickConstants.clawButtonID);
     clawButton.whileTrue(new ToggleClaw(armSubsystem));
-    POVButton rightDirectionPad = new POVButton(driverJoystick, 90);
+    POVButton rightDirectionPad = new POVButton(driverJoystick, JoystickConstants.rightDPadID);
     rightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
   }
 
