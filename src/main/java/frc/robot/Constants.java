@@ -90,10 +90,11 @@ public final class Constants {
   
   public static final class ModuleConstants {
     // TODO: get
-    public static final double driveGearRatio = 7.36;
+    // public static final double driveGearRatio = 7.36;
+    public static final double driveGearRatio = 7.13;
 
     // TODO: tune this
-    public static final double moduleTurnControllerP = 1;
+    public static final double moduleTurnControllerP = 8.1;
     public static final double moduleTurnControllerI = 0;
     public static final double moduleTurnControllerD = 0;
 
@@ -114,7 +115,8 @@ public final class Constants {
     public static final TrapezoidProfile.Constraints moduleTurnConstraints =
       new TrapezoidProfile.Constraints(
         maxModuleAngularSpeedRadiansPerSecond,
-        maxModuleAngularAccelerationRadiansPerSecondSquared);
+        maxModuleAngularAccelerationRadiansPerSecondSquared
+      );
   }
 
   public static final class PathPlannerConstants {
