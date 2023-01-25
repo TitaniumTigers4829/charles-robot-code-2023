@@ -72,8 +72,10 @@ public class PoseEstimationSubsystem extends SubsystemBase {
     double currentTimeStampSeconds = lastTimeStampSeconds;
     // Attempts to get the time stamp for when the robot pose was calculated
     try {
-      JsonNode parent = new ObjectMapper().readTree(jsonDump);
-      double tsValue = parent.path("ts").asDouble();
+      ObjectMapper mapper = new ObjectMapper();
+      JsonNode jsonNodeData = mapper.readTree(jsonDump);
+      double tsValue = jsonNodeData.path("Results").path("ts").asDouble();
+      SmartDashboard.putNumber("tsValue", tsValue);
       if (tsValue != 0) {
         // Converts from milleseconds to seconds
         currentTimeStampSeconds = tsValue / 1000;
@@ -98,6 +100,9 @@ public class PoseEstimationSubsystem extends SubsystemBase {
       driveSubsystem.getRotation2d(),
       driveSubsystem.getModulePositions()
     );
+
+    // TODO: Check if we should do this or not.
+    driveSubsystem.resetOdometry(getPose());
 
     SmartDashboard.putString("Estimated Pose", getPose().toString());
     SmartDashboard.putString("Odometry Pose", driveSubsystem.getPose().toString());

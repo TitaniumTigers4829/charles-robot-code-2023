@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.drive.DriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.PoseEstimationSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -25,7 +26,7 @@ import frc.robot.subsystems.DriveSubsystem;
 public class RobotContainer {
 
   private final DriveSubsystem driveSubsystem;
-  private final Command driveCommand;
+  private final PoseEstimationSubsystem poseEstimationSubsystem;
 
   private final Joystick driverJoystick;
   private final JoystickButton rightBumper;
@@ -33,15 +34,16 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     driverJoystick = new Joystick(0);
-    rightBumper = new JoystickButton(driverJoystick, 0);
+    rightBumper = new JoystickButton(driverJoystick, 6);
 
     driveSubsystem = new DriveSubsystem();
+    poseEstimationSubsystem = new PoseEstimationSubsystem(driveSubsystem);
 
     DoubleSupplier leftStickX = () -> driverJoystick.getRawAxis(0);
     DoubleSupplier leftStickY = () -> driverJoystick.getRawAxis(1);
     DoubleSupplier rightStickX = () -> driverJoystick.getRawAxis(2);
 
-    driveCommand = new DriveCommand(driveSubsystem, 
+    DriveCommand driveCommand = new DriveCommand(driveSubsystem, 
       () -> modifyAxisCubed(leftStickY) * -1, 
       () -> modifyAxisCubed(leftStickX) * -1, 
       () -> modifyAxisCubed(rightStickX), 
