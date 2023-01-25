@@ -14,7 +14,7 @@ public class RetractArm extends CommandBase {
 
     @Override
     public void execute() {
-        // armSubsystem.CloseArm();
+        armSubsystem.CloseArm();
     }
 
 
