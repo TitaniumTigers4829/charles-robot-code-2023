@@ -102,7 +102,7 @@ public class PoseEstimationSubsystem extends SubsystemBase {
     );
 
     // TODO: Check if we should do this or not.
-    driveSubsystem.resetOdometry(getPose());
+    driveSubsystem.resetOdometryPoseAndRotation(getPose());
 
     SmartDashboard.putString("Estimated Pose", getPose().toString());
     SmartDashboard.putString("Odometry Pose", driveSubsystem.getPose().toString());
