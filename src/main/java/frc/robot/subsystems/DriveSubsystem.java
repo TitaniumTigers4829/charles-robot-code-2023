@@ -111,11 +111,10 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * Resets the odometry to the specified pose and rotation.
    *
-   * @param pose The Pose2d to which to set the odometry.
-   * @param rotation The Rotation2d to which to set the odometry.
+   * @param pose The Pose2d to which to set the odometry's position and rotation.
    */
-  public void resetOdometryPoseAndRotation(Pose2d pose, Rotation2d rotation) {
-    odometry.resetPosition(rotation, getModulePositions(), pose);
+  public void resetOdometryPoseAndRotation(Pose2d pose) {
+    odometry.resetPosition(pose.getRotation(), getModulePositions(), pose);
   }  
   
   /**
