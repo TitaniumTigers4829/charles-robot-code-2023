@@ -107,15 +107,6 @@ public class DriveSubsystem extends SubsystemBase {
   public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(gyro.getRotation2d(), getModulePositions(), pose);
   }
-
-  /**
-   * Resets the odometry to the specified pose and rotation.
-   *
-   * @param pose The Pose2d to which to set the odometry's position and rotation.
-   */
-  public void resetOdometryPoseAndRotation(Pose2d pose) {
-    odometry.resetPosition(pose.getRotation(), getModulePositions(), pose);
-  }  
   
   /**
    * Method to drive the robot using joystick info.
