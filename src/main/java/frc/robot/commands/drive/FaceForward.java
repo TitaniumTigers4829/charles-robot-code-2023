@@ -21,7 +21,7 @@ public class FaceForward extends CommandBase {
   private final DoubleSupplier leftY, leftX;
   private final BooleanSupplier isFieldRelative;
   
-  private final ProfiledPIDController thetaController = new ProfiledPIDController(0.0017, 0, 0, PathPlannerConstants.thetaControllerConstraints);
+  private final ProfiledPIDController thetaController = new ProfiledPIDController(0.01, 0, 0, PathPlannerConstants.thetaControllerConstraints);
 
   /** Creates a new FaceForward. */
   public FaceForward(DriveSubsystem driveSubsystem, DoubleSupplier leftY, DoubleSupplier leftX, BooleanSupplier isFieldRelative) {
