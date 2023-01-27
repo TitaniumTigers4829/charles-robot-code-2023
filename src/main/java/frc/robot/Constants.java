@@ -193,13 +193,13 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
-    public static final int armForward  = 2;
-    public static final int armBackward = 3;
+    public static final int armForward  = 0-9;
+    public static final int armBackward = 0-9;
 
     public static final class ClawConstants {
   
-      public static final int solenoidForward = 1; // ID for opening claw
-      public static final int solenoidBackward = 0; // ID for closing claw
+      public static final int solenoidForward = 0-9; // ID for opening claw
+      public static final int solenoidBackward = 0-9; // ID for closing claw
     }
   }
 
