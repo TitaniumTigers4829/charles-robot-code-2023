@@ -78,10 +78,16 @@ public class DriveSubsystem extends SubsystemBase {
     );
   }
 
+  /**
+   * @return Heading in degrees.
+   */
   public double heading() {
     return (gyro.getAngle() + this.gyroOffset) % 360;
   }
 
+  /**
+   * @return Heading as a Rotation2d in radians.
+   */
   public Rotation2d getRotation2d() {
     return gyro.getRotation2d();
   }
@@ -113,7 +119,7 @@ public class DriveSubsystem extends SubsystemBase {
    *
    * @param xSpeed        Speed of the robot in the x direction (forward).
    * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param rot           Angular rate of the robot.
+   * @param rot           Angular rate of the robot in radians per second.
    * @param fieldRelative Whether the provided x and y speeds are relative to the
    *                      field.
    */
@@ -122,7 +128,7 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Field Relative:", fieldRelative);
     SwerveModuleState[] swerveModuleStates = DriveConstants.driveKinematics.toSwerveModuleStates(
         fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, Rotation2d.fromDegrees(getHeading()))
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getRotation2d())
             : new ChassisSpeeds(xSpeed, ySpeed, rot));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.maxSpeedMetersPerSecond);

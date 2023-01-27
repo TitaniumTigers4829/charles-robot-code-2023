@@ -18,6 +18,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.drive.DriveCommand;
+import frc.robot.commands.drive.FaceForward;
 import frc.robot.subsystems.DriveSubsystem;
 
 /**
@@ -35,7 +36,7 @@ public class RobotContainer {
 
   private final Joystick driverJoystick;
 
-  private final JoystickButton rightBumper;
+  private final JoystickButton rightBumper, aButton;
 
   public final Joystick buttonBoard;
 
@@ -51,6 +52,7 @@ public class RobotContainer {
   
     driverJoystick = new Joystick(JoystickConstants.driverJoystickID);
     rightBumper = new JoystickButton(driverJoystick, JoystickConstants.rightBumperID);
+    aButton = new JoystickButton(driverJoystick, JoystickConstants.aButtonID);
 
     buttonBoard = new Joystick(JoystickConstants.buttonBoardID);
     clawButton = new JoystickButton(buttonBoard, JoystickConstants.clawButtonID);
@@ -68,7 +70,16 @@ public class RobotContainer {
       () -> !rightBumper.getAsBoolean()
     );
 
+    
+
     driveSubsystem.setDefaultCommand(driveCommand);
+
+    aButton.whileTrue(new FaceForward(driveSubsystem, 
+    () -> modifyAxisCubed(leftStickY) * -1, 
+    () -> modifyAxisCubed(leftStickX) * -1, 
+    () -> !rightBumper.getAsBoolean()
+  ));
+
     configureButtonBindings();
   }
 
