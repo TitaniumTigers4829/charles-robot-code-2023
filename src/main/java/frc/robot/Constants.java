@@ -47,6 +47,7 @@ public final class Constants {
     public static final double turningV = 0.75; //0.75 // 3.0052
     public static final double turningA = 0; // Default to zero
 
+    
 
     public static final double maxAngularSpeedRadiansPerSecond = Math.PI * 2;
 
@@ -129,6 +130,11 @@ public final class Constants {
     public static final double thetaControllerP = 3;
     public static final double maxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double maxAngularSpeedRadiansPerSecondSquared = Math.PI;
+    public static final TrapezoidProfile.Constraints thetaControllerConstraints =
+      new TrapezoidProfile.Constraints(
+        maxAngularSpeedRadiansPerSecond,
+        maxAngularSpeedRadiansPerSecondSquared
+      );
   }
   
   public static final class LEDConstants {

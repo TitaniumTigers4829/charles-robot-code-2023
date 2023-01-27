@@ -7,6 +7,8 @@ package frc.robot.commands.drive;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import com.pathplanner.lib.PathPlanner;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
