@@ -41,5 +41,15 @@
       <option name="name" value="WPIab676553-b602-441f-a38d-f1296eff6537_0Release" />
       <option name="url" value="https://maven.ctr-electronics.com/release/" />
     </remote-repository>
+    <remote-repository>
+      <option name="id" value="WPI1b42324f-17c6-4875-8e77-1c312bc8c786_0Release" />
+      <option name="name" value="WPI1b42324f-17c6-4875-8e77-1c312bc8c786_0Release" />
+      <option name="url" value="https://3015rangerrobotics.github.io/pathplannerlib/repo" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="WPIcb311d09-36e9-4143-a032-55bb2b94443b_0Release" />
+      <option name="name" value="WPIcb311d09-36e9-4143-a032-55bb2b94443b_0Release" />
+      <option name="url" value="https://dev.studica.com/maven/release/2023/" />
+    </remote-repository>
   </component>
 </project>
