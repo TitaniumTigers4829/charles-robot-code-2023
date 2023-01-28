@@ -14,8 +14,13 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.JoystickConstants;
+import frc.robot.commands.limb.claw.ToggleClaw;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.drive.DriveCommand;
+import frc.robot.commands.drive.FaceForward;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.PoseEstimationSubsystem;
 
@@ -27,16 +32,35 @@ import frc.robot.subsystems.PoseEstimationSubsystem;
  */
 public class RobotContainer {
 
+  public ArmSubsystem armSubsystem;
+  public ElevatorSubsystem elevatorSubsystem;
   private final DriveSubsystem driveSubsystem;
   private final PoseEstimationSubsystem poseEstimationSubsystem;
 
   private final Joystick driverJoystick;
-  private final JoystickButton rightBumper;
+
+  private final JoystickButton rightBumper, aButton;
+
+  public final Joystick buttonBoard;
+
+  private final JoystickButton clawButton;
+  
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     driverJoystick = new Joystick(0);
     rightBumper = new JoystickButton(driverJoystick, 6);
+    armSubsystem = new ArmSubsystem();
+    // elevatorSubsystem = new ElevatorSubsystem();
+
+    // Configure the button bindings
+  
+    driverJoystick = new Joystick(JoystickConstants.driverJoystickID);
+    rightBumper = new JoystickButton(driverJoystick, JoystickConstants.rightBumperID);
+    aButton = new JoystickButton(driverJoystick, JoystickConstants.aButtonID);
+
+    buttonBoard = new Joystick(JoystickConstants.buttonBoardID);
+    clawButton = new JoystickButton(buttonBoard, JoystickConstants.clawButtonID);
 
     driveSubsystem = new DriveSubsystem();
     poseEstimationSubsystem = new PoseEstimationSubsystem(driveSubsystem);
@@ -52,9 +76,16 @@ public class RobotContainer {
       () -> !rightBumper.getAsBoolean()
     );
 
+    
+
     driveSubsystem.setDefaultCommand(driveCommand);
 
     driveSubsystem.resetOdometry(new Pose2d(14.176, 1.0716, new Rotation2d()));
+    aButton.whileTrue(new FaceForward(driveSubsystem, 
+    () -> modifyAxisCubed(leftStickY) * -1, 
+    () -> modifyAxisCubed(leftStickX) * -1, 
+    () -> !rightBumper.getAsBoolean()
+  ));
 
     configureButtonBindings();
   }
@@ -90,9 +121,9 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    POVButton rightDirectionPad = new POVButton(driverJoystick, 90);
+    clawButton.whileTrue(new ToggleClaw(armSubsystem));
+    POVButton rightDirectionPad = new POVButton(driverJoystick, JoystickConstants.rightDPadID);
     rightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
-
   }
 
   public Command getAutonomousCommand() {
