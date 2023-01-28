@@ -6,6 +6,8 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -43,7 +45,7 @@ public class RobotContainer {
     DoubleSupplier leftStickY = () -> driverJoystick.getRawAxis(1);
     DoubleSupplier rightStickX = () -> driverJoystick.getRawAxis(2);
 
-    DriveCommand driveCommand = new DriveCommand(driveSubsystem, 
+    Command driveCommand = new DriveCommand(driveSubsystem, 
       () -> modifyAxisCubed(leftStickY) * -1, 
       () -> modifyAxisCubed(leftStickX) * -1, 
       () -> modifyAxisCubed(rightStickX), 
@@ -51,6 +53,8 @@ public class RobotContainer {
     );
 
     driveSubsystem.setDefaultCommand(driveCommand);
+
+    driveSubsystem.resetOdometry(new Pose2d(14.176, 1.0716, new Rotation2d()));
 
     configureButtonBindings();
   }

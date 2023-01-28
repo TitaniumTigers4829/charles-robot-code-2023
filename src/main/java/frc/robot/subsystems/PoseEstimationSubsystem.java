@@ -58,7 +58,7 @@ public class PoseEstimationSubsystem extends SubsystemBase {
       visionMeasurementStdDevs
     );
 
-    networkTable = NetworkTableInstance.getDefault().getTable("limelight");
+    networkTable = NetworkTableInstance.getDefault().getTable("limelight-tigers");
     botPoseNetworkTableEntry = networkTable.getEntry("botpose");
     jsonDumpNetworkTableEntry = networkTable.getEntry("json");
   }
@@ -85,8 +85,8 @@ public class PoseEstimationSubsystem extends SubsystemBase {
     }
 
     if (botPose.length != 0 && currentTimeStampSeconds > lastTimeStampSeconds) {
-      double robotX = botPose[0];
-      double robotY = botPose[1];  // TODO: Check if this is the right value
+      double robotX = botPose[0] + 8.28;
+      double robotY = botPose[1] + 4;  // TODO: Check if this is the right value
       Rotation2d robotRotation = Rotation2d.fromDegrees(botPose[5]);
       Pose2d limelightVisionMeasurement = new Pose2d(robotX, robotY, robotRotation);
       poseEstimator.addVisionMeasurement(limelightVisionMeasurement, currentTimeStampSeconds);

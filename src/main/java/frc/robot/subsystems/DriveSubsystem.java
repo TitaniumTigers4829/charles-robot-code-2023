@@ -14,7 +14,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -22,7 +21,7 @@ import frc.robot.Constants.DriveConstants;
 public class DriveSubsystem extends SubsystemBase {
 
   // The gyro sensor
-  public final Gyro gyro = new AHRS(SPI.Port.kMXP);
+  public final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
   private int gyroOffset = 0;
 
@@ -78,7 +77,7 @@ public class DriveSubsystem extends SubsystemBase {
     );
   }
 
-  public double heading() {
+  public double getHeading() {
     return (gyro.getAngle() + this.gyroOffset) % 360;
   }
 
@@ -122,7 +121,7 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Field Relative:", fieldRelative);
     SwerveModuleState[] swerveModuleStates = DriveConstants.driveKinematics.toSwerveModuleStates(
         fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, Rotation2d.fromDegrees(getHeading()))
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getRotation2d())
             : new ChassisSpeeds(xSpeed, ySpeed, rot));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.maxSpeedMetersPerSecond);
@@ -169,18 +168,4 @@ public class DriveSubsystem extends SubsystemBase {
     gyro.reset();
   }
   
-  /**
-   * Returns the heading of the robot.
-   *
-   * @return the robot's heading in degrees, from -180 to 180
-   */
-  public double getHeading() {
-    double currentHeading = gyro.getRotation2d().getDegrees() + gyroOffset;
-    if (currentHeading > 180) {
-      currentHeading -= 360;
-    } else if (currentHeading < -180) {
-      currentHeading += 360;
-    }
-    return currentHeading;
-  }
 }
