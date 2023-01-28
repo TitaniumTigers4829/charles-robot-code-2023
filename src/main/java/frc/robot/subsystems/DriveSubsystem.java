@@ -14,7 +14,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -22,7 +21,7 @@ import frc.robot.Constants.DriveConstants;
 public class DriveSubsystem extends SubsystemBase {
 
   // The gyro sensor
-  public final Gyro gyro = new AHRS(SPI.Port.kMXP);
+  public final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
   private int gyroOffset = 0;
 
@@ -81,7 +80,7 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * @return Heading in degrees.
    */
-  public double heading() {
+  public double getHeading() {
     return (gyro.getAngle() + this.gyroOffset) % 360;
   }
 
@@ -106,14 +105,14 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Resets the odometry to the specified pose.
+   * Resets the odometry to the specified pose, keeps the current rotation.
    *
-   * @param pose The pose to which to set the odometry.
+   * @param pose The Pose2d to which to set the odometry.
    */
   public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(gyro.getRotation2d(), getModulePositions(), pose);
   }
-
+  
   /**
    * Method to drive the robot using joystick info.
    *
@@ -175,18 +174,4 @@ public class DriveSubsystem extends SubsystemBase {
     gyro.reset();
   }
   
-  /**
-   * Returns the heading of the robot.
-   *
-   * @return the robot's heading in degrees, from -180 to 180
-   */
-  public double getHeading() {
-    double currentHeading = gyro.getRotation2d().getDegrees() + gyroOffset;
-    if (currentHeading > 180) {
-      currentHeading -= 360;
-    } else if (currentHeading < -180) {
-      currentHeading += 360;
-    }
-    return currentHeading;
-  }
 }

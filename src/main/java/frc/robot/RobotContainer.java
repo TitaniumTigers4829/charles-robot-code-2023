@@ -6,6 +6,8 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -20,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.drive.DriveCommand;
 import frc.robot.commands.drive.FaceForward;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.PoseEstimationSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -32,7 +35,7 @@ public class RobotContainer {
   public ArmSubsystem armSubsystem;
   public ElevatorSubsystem elevatorSubsystem;
   private final DriveSubsystem driveSubsystem;
-  private final Command driveCommand;
+  private final PoseEstimationSubsystem poseEstimationSubsystem;
 
   private final Joystick driverJoystick;
 
@@ -45,6 +48,8 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    driverJoystick = new Joystick(0);
+    rightBumper = new JoystickButton(driverJoystick, 6);
     armSubsystem = new ArmSubsystem();
     // elevatorSubsystem = new ElevatorSubsystem();
 
@@ -58,12 +63,13 @@ public class RobotContainer {
     clawButton = new JoystickButton(buttonBoard, JoystickConstants.clawButtonID);
 
     driveSubsystem = new DriveSubsystem();
+    poseEstimationSubsystem = new PoseEstimationSubsystem(driveSubsystem);
 
     DoubleSupplier leftStickX = () -> driverJoystick.getRawAxis(0);
     DoubleSupplier leftStickY = () -> driverJoystick.getRawAxis(1);
     DoubleSupplier rightStickX = () -> driverJoystick.getRawAxis(2);
 
-    driveCommand = new DriveCommand(driveSubsystem, 
+    Command driveCommand = new DriveCommand(driveSubsystem, 
       () -> modifyAxisCubed(leftStickY) * -1, 
       () -> modifyAxisCubed(leftStickX) * -1, 
       () -> modifyAxisCubed(rightStickX), 
@@ -74,6 +80,7 @@ public class RobotContainer {
 
     driveSubsystem.setDefaultCommand(driveCommand);
 
+    driveSubsystem.resetOdometry(new Pose2d(14.176, 1.0716, new Rotation2d()));
     aButton.whileTrue(new FaceForward(driveSubsystem, 
     () -> modifyAxisCubed(leftStickY) * -1, 
     () -> modifyAxisCubed(leftStickX) * -1, 
