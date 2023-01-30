@@ -48,7 +48,7 @@ public class RobotContainer {
     Command driveCommand = new DriveCommand(driveSubsystem, 
       () -> modifyAxisCubed(leftStickY) * -1, 
       () -> modifyAxisCubed(leftStickX) * -1, 
-      () -> modifyAxisCubed(rightStickX), 
+      () -> modifyAxisCubed(rightStickX) * -1, 
       () -> !rightBumper.getAsBoolean()
     );
 
