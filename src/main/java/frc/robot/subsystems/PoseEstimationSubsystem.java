@@ -30,7 +30,6 @@ public class PoseEstimationSubsystem extends SubsystemBase {
   private final NetworkTableEntry botPoseNetworkTableEntry;
   private final NetworkTableEntry jsonDumpNetworkTableEntry;
 
-  /* EDIT VALUES BELOW HERE */
   /**
    * Standard deviations of model states. Increase these numbers to trust your model's state estimates less. This
    * matrix is in the form [x, y, theta]ᵀ, with units in meters and radians, then meters.
@@ -42,7 +41,6 @@ public class PoseEstimationSubsystem extends SubsystemBase {
    * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
    */
   private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
-  /* EDIT VALUES ABOVE HERE */
 
   private double lastTimeStampSeconds = 0;
 
@@ -75,18 +73,19 @@ public class PoseEstimationSubsystem extends SubsystemBase {
       ObjectMapper mapper = new ObjectMapper();
       JsonNode jsonNodeData = mapper.readTree(jsonDump);
       double tsValue = jsonNodeData.path("Results").path("ts").asDouble();
-      SmartDashboard.putNumber("tsValue", tsValue);
-      if (tsValue != 0) {
+      SmartDashboard.putNumber("tsValue", timeStampValue);
+      if (timeStampValue != 0) {
         // Converts from milleseconds to seconds
-        currentTimeStampSeconds = tsValue / 1000;
+        currentTimeStampSeconds = timeStampValue / 1000;
       }
     } catch (JsonProcessingException e) {
-      e.printStackTrace();
+      SmartDashboard.putString("Json Parsing Error", e.getStackTrace());
     }
 
+    // Updates the pose estimator's position if limelight position data was recieved with a new time stamp
     if (botPose.length != 0 && currentTimeStampSeconds > lastTimeStampSeconds) {
-      double robotX = botPose[0] + 8.28;
-      double robotY = botPose[1] + 4;  // TODO: Check if this is the right value
+      double robotX = botPose[0] + 8.28; // TODO: Get precise field measurements
+      double robotY = botPose[1] + 4;
       Rotation2d robotRotation = Rotation2d.fromDegrees(botPose[5]);
       Pose2d limelightVisionMeasurement = new Pose2d(robotX, robotY, robotRotation);
       poseEstimator.addVisionMeasurement(limelightVisionMeasurement, currentTimeStampSeconds);
@@ -101,7 +100,7 @@ public class PoseEstimationSubsystem extends SubsystemBase {
       driveSubsystem.getModulePositions()
     );
 
-    // TODO: Check if we should do this or not.
+    // Updates the odometry to the pose estimator's pose
     driveSubsystem.resetOdometry(getPose());
 
     SmartDashboard.putString("Estimated Pose", getPose().toString());
