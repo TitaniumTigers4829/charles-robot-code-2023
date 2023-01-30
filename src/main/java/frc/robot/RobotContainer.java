@@ -48,8 +48,6 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    driverJoystick = new Joystick(0);
-    rightBumper = new JoystickButton(driverJoystick, 6);
     armSubsystem = new ArmSubsystem();
     // elevatorSubsystem = new ElevatorSubsystem();
 
@@ -72,20 +70,19 @@ public class RobotContainer {
     Command driveCommand = new DriveCommand(driveSubsystem, 
       () -> modifyAxisCubed(leftStickY) * -1, 
       () -> modifyAxisCubed(leftStickX) * -1, 
-      () -> modifyAxisCubed(rightStickX), 
+      () -> modifyAxisCubed(rightStickX) * -1, 
       () -> !rightBumper.getAsBoolean()
     );
-
-    
 
     driveSubsystem.setDefaultCommand(driveCommand);
 
     driveSubsystem.resetOdometry(new Pose2d(14.176, 1.0716, new Rotation2d()));
-    aButton.whileTrue(new FaceForward(driveSubsystem, 
-    () -> modifyAxisCubed(leftStickY) * -1, 
-    () -> modifyAxisCubed(leftStickX) * -1, 
-    () -> !rightBumper.getAsBoolean()
-  ));
+    aButton.whileTrue(new FaceForward(
+      driveSubsystem, 
+      () -> modifyAxisCubed(leftStickY) * -1, 
+      () -> modifyAxisCubed(leftStickX) * -1, 
+      () -> !rightBumper.getAsBoolean()
+    ));
 
     configureButtonBindings();
   }

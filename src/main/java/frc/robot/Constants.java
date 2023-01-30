@@ -51,7 +51,7 @@ public final class Constants {
     public static final double maxAngularSpeedRadiansPerSecond = Math.PI * 2;
 
     // TODO: find
-    public static final double maxSpeedMetersPerSecond = 0-9;
+    public static final double maxSpeedMetersPerSecond = 4.5;
 
     
     // TODO: get IDs
