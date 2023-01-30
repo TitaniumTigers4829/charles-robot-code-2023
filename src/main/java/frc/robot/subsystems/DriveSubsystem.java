@@ -77,10 +77,16 @@ public class DriveSubsystem extends SubsystemBase {
     );
   }
 
+  /**
+   * @return Heading in degrees.
+   */
   public double getHeading() {
     return (gyro.getAngle() + this.gyroOffset) % 360;
   }
 
+  /**
+   * @return Heading as a Rotation2d in radians.
+   */
   public Rotation2d getRotation2d() {
     return gyro.getRotation2d();
   }
@@ -112,7 +118,7 @@ public class DriveSubsystem extends SubsystemBase {
    *
    * @param xSpeed        Speed of the robot in the x direction (forward).
    * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param rot           Angular rate of the robot.
+   * @param rot           Angular rate of the robot in radians per second.
    * @param fieldRelative Whether the provided x and y speeds are relative to the
    *                      field.
    */

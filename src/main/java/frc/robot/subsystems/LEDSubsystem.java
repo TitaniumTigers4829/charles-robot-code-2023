@@ -34,20 +34,12 @@ public class LEDSubsystem extends SubsystemBase {
     ledSpark.set(value);
   }
 
-  public void setLEDBlue() {
-    ledSpark.set(LEDPatterns.BLUE);
-  }
-
-  public void setLEDRed() {
-    ledSpark.set(LEDPatterns.RED);
-  }
-
   /** Set the LED color to the current alliance color. */
   public void setLEDAllianceColor() {
     if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-        setLEDRed();
+        ledSpark.set(LEDPatterns.FIRE);
     } else {
-        setLEDBlue();
+        ledSpark.set(LEDPatterns.OCEAN);
     }
   }
 
@@ -55,18 +47,37 @@ public class LEDSubsystem extends SubsystemBase {
    * This can be changed if needed.
    */
   public void setLEDDefault() {
-    setLEDAllianceColor();
+    if (DriverStation.isAutonomous()) {
+      setLEDAuto();
+    } else {
+      setLEDAllianceColor();
+    }
   }
 
-  public void setLEDWarning() {
+  public void setLEDScoring() {
     ledSpark.set(LEDPatterns.YELLOW);
   }
-
-  public void setLEDError() {
-    ledSpark.set(LEDPatterns.HEARTBEAT_RED);
+  
+  public void setLEDLiningUp() {
+    ledSpark.set(LEDPatterns.WHITE);
   }
 
-  //TODO: Create more methods for different situations.
+  public void setLEDBalancing() {
+    ledSpark.set(LEDPatterns.CYAN);
+  }
 
+  public void setLEDIntake() {
+    ledSpark.set(LEDPatterns.MAGENTA);
+  }
+
+  public void setLEDAuto() {
+    ledSpark.set(LEDPatterns.RAINBOW);
+  }
+  
+  public void setLEDTest() {
+    ledSpark.set(LEDPatterns.RAINBOW_WAVE);
+  }
+
+  //TODO: Create an
 
 }
