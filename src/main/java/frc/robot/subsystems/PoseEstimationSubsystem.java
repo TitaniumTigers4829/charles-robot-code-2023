@@ -72,14 +72,14 @@ public class PoseEstimationSubsystem extends SubsystemBase {
     try {
       ObjectMapper mapper = new ObjectMapper();
       JsonNode jsonNodeData = mapper.readTree(jsonDump);
-      double tsValue = jsonNodeData.path("Results").path("ts").asDouble();
+      double timeStampValue = jsonNodeData.path("Results").path("ts").asDouble();
       SmartDashboard.putNumber("tsValue", timeStampValue);
       if (timeStampValue != 0) {
         // Converts from milleseconds to seconds
         currentTimeStampSeconds = timeStampValue / 1000;
       }
     } catch (JsonProcessingException e) {
-      SmartDashboard.putString("Json Parsing Error", e.getStackTrace());
+      SmartDashboard.putString("Json Parsing Error", e.getStackTrace().toString());
     }
 
     // Updates the pose estimator's position if limelight position data was recieved with a new time stamp
