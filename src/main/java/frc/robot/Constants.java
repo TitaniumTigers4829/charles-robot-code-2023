@@ -51,9 +51,8 @@ public final class Constants {
     public static final double maxAngularSpeedRadiansPerSecond = Math.PI * 2;
 
     // TODO: find
-    public static final double maxSpeedMetersPerSecond = 4.5;
+    public static final double maxSpeedMetersPerSecond = 0.5;
 
-    
     
     public static final int frontLeftDriveMotorPort = 11;
     public static final int rearLeftDriveMotorPort = 12;
@@ -70,22 +69,22 @@ public final class Constants {
     public static final int frontRightTurningEncoderPort = 2;
     public static final int rearRightTurningEncoderPort = 3;
 
-    // TODO: get zeroes
-    public static final double frontLeftAngleZero = 0;
-    public static final double rearLeftAngleZero = 0;
-    public static final double frontRightAngleZero = 0;
-    public static final double rearRightAngleZero = 0;
+    // In degrees.
+    public static final double frontLeftAngleZero = -114.697265625;
+    public static final double rearLeftAngleZero = 172.96875;
+    public static final double frontRightAngleZero = -69.609375;
+    public static final double rearRightAngleZero = 88.154296875;
 
-
+    // TODO: find
     public static final boolean frontLeftTurningEncoderReversed = false;
     public static final boolean rearLeftTurningEncoderReversed = false;
     public static final boolean frontRightTurningEncoderReversed = false;
     public static final boolean rearRightTurningEncoderReversed = false;
-
-    public static final boolean frontLeftDriveEncoderReversed = false;
+    // TODO: find
+    public static final boolean frontLeftDriveEncoderReversed = true;
     public static final boolean rearLeftDriveEncoderReversed = false;
     public static final boolean frontRightDriveEncoderReversed = true;
-    public static final boolean rearRightDriveEncoderReversed = true;
+    public static final boolean rearRightDriveEncoderReversed = false;
   }
   
   public static final class ModuleConstants {
