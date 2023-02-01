@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.JoystickConstants;
 import frc.robot.commands.limb.claw.ToggleClaw;
+import frc.robot.commands.testing.GetSwerveModuleAngle;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -74,7 +75,11 @@ public class RobotContainer {
       () -> !rightBumper.getAsBoolean()
     );
 
-    driveSubsystem.setDefaultCommand(driveCommand);
+  
+    // driveSubsystem.setDefaultCommand(driveCommand);
+    // TESTING:
+    driveSubsystem.setDefaultCommand(new GetSwerveModuleAngle(driveSubsystem));
+
 
     driveSubsystem.resetOdometry(new Pose2d(14.176, 1.0716, new Rotation2d()));
     aButton.whileTrue(new FaceForward(

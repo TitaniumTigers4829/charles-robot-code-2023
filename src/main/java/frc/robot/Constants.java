@@ -54,27 +54,27 @@ public final class Constants {
     public static final double maxSpeedMetersPerSecond = 4.5;
 
     
-    // TODO: get IDs
-    public static final int frontLeftDriveMotorPort = 18;
-    public static final int rearLeftDriveMotorPort = 6;
-    public static final int frontRightDriveMotorPort = 4;
-    public static final int rearRightDriveMotorPort = 23;
+    
+    public static final int frontLeftDriveMotorPort = 11;
+    public static final int rearLeftDriveMotorPort = 12;
+    public static final int frontRightDriveMotorPort = 16;
+    public static final int rearRightDriveMotorPort = 9;
 
-    public static final int frontLeftTurningMotorPort = 1;
+    public static final int frontLeftTurningMotorPort = 13;
     public static final int rearLeftTurningMotorPort = 7;
-    public static final int frontRightTurningMotorPort = 3;
-    public static final int rearRightTurningMotorPort = 25;
+    public static final int frontRightTurningMotorPort = 10;
+    public static final int rearRightTurningMotorPort = 8;
 
-    public static final int frontLeftTurningEncoderPort = 22;
-    public static final int rearLeftTurningEncoderPort = 10;
-    public static final int frontRightTurningEncoderPort = 9;
-    public static final int rearRightTurningEncoderPort = 8;
+    public static final int frontLeftTurningEncoderPort = 1;
+    public static final int rearLeftTurningEncoderPort = 0;
+    public static final int frontRightTurningEncoderPort = 2;
+    public static final int rearRightTurningEncoderPort = 3;
 
-
-    public static final double frontLeftAngleZero = 79.45;
-    public static final double rearLeftAngleZero = 121.38;
-    public static final double frontRightAngleZero = -104.68;
-    public static final double rearRightAngleZero = 23.54;
+    // TODO: get zeroes
+    public static final double frontLeftAngleZero = 0;
+    public static final double rearLeftAngleZero = 0;
+    public static final double frontRightAngleZero = 0;
+    public static final double rearRightAngleZero = 0;
 
 
     public static final boolean frontLeftTurningEncoderReversed = false;
