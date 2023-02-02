@@ -33,7 +33,7 @@ import frc.robot.subsystems.PoseEstimationSubsystem;
 public class RobotContainer {
 
   public ArmSubsystem armSubsystem;
-  public ElevatorSubsystem elevatorSubsystem;
+  //public ElevatorSubsystem elevatorSubsystem;
   private final DriveSubsystem driveSubsystem;
   private final PoseEstimationSubsystem poseEstimationSubsystem;
 
@@ -49,7 +49,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     armSubsystem = new ArmSubsystem();
-    elevatorSubsystem = new ElevatorSubsystem();
+    //elevatorSubsystem = new ElevatorSubsystem();
 
     // Configure the button bindings
   

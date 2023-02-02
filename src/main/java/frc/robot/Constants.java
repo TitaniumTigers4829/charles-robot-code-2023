@@ -70,10 +70,10 @@ public final class Constants {
     public static final int rearRightTurningEncoderPort = 3;
 
     // In degrees.
-    public static final double frontLeftAngleZero = -114.697265625;
-    public static final double rearLeftAngleZero = 145.1953125;
-    public static final double frontRightAngleZero = -69.609375;
-    public static final double rearRightAngleZero = 88.154296875;
+    public static final double frontLeftAngleZero = 65.654296875;
+    public static final double rearLeftAngleZero = -42.099609375;
+    public static final double frontRightAngleZero = -71.630859375;
+    public static final double rearRightAngleZero = -88.681640625;
 
     // TODO: find
     public static final boolean frontLeftTurningEncoderReversed = false;
