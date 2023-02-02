@@ -53,6 +53,11 @@ public final class Constants {
     // TODO: find
     public static final double maxSpeedMetersPerSecond = 4.;
 
+    public static final int frontLeftDriveMotorPort = 11;
+    public static final int rearLeftDriveMotorPort = 12;
+    public static final int frontRightDriveMotorPort = 16;
+    public static final int rearRightDriveMotorPort = 9;
+
     public static final int frontLeftTurningMotorPort = 13;
     public static final int rearLeftTurningMotorPort = 7;
     public static final int frontRightTurningMotorPort = 10;
