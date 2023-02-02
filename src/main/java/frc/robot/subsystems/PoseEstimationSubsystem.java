@@ -21,14 +21,18 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.LimelightConstants;
+import frc.robot.extras.LinearInterpolator;
 
 public class PoseEstimationSubsystem extends SubsystemBase {
   
   private final DriveSubsystem driveSubsystem;
   private final SwerveDrivePoseEstimator poseEstimator;
+  private final LinearInterpolator cameraCropLookupTable;
   private final NetworkTable networkTable; 
   private final NetworkTableEntry botPoseNetworkTableEntry;
   private final NetworkTableEntry jsonDumpNetworkTableEntry;
+  private final NetworkTableEntry cameraCropNetworkTableEntry;
 
   /**
    * Standard deviations of model states. Increase these numbers to trust your model's state estimates less. This
@@ -56,9 +60,11 @@ public class PoseEstimationSubsystem extends SubsystemBase {
       visionMeasurementStdDevs
     );
 
+    cameraCropLookupTable = new LinearInterpolator(LimelightConstants.cameraCropLookupTable);
     networkTable = NetworkTableInstance.getDefault().getTable("limelight-tigers");
     botPoseNetworkTableEntry = networkTable.getEntry("botpose");
     jsonDumpNetworkTableEntry = networkTable.getEntry("json");
+    cameraCropNetworkTableEntry = networkTable.getEntry("crop");
   }
 
   @Override
@@ -84,7 +90,7 @@ public class PoseEstimationSubsystem extends SubsystemBase {
 
     // Updates the pose estimator's position if limelight position data was recieved with a new time stamp
     if (botPose.length != 0 && currentTimeStampSeconds > lastTimeStampSeconds) {
-      double robotX = botPose[0] + 8.28; // TODO: Get precise field measurements
+      double robotX = botPose[0] + 8.28; // TODO: Get precise field measurements as constants
       double robotY = botPose[1] + 4;
       Rotation2d robotRotation = Rotation2d.fromDegrees(botPose[5]);
       Pose2d limelightVisionMeasurement = new Pose2d(robotX, robotY, robotRotation);
@@ -105,6 +111,12 @@ public class PoseEstimationSubsystem extends SubsystemBase {
 
     SmartDashboard.putString("Estimated Pose", getPose().toString());
     SmartDashboard.putString("Odometry Pose", driveSubsystem.getPose().toString());
+
+    // Updates the cropping of the limelight camera based on its distance from april tags
+    double[] cropValues = {-1, 1, -1, 1};
+    double robotXPositionMeters = getPose().getX();
+    cropValues[2] = cameraCropLookupTable.getLookupValue(robotXPositionMeters);
+    cameraCropNetworkTableEntry.setDoubleArray(cropValues);
   }
 
   public Pose2d getPose() {

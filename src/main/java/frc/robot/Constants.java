@@ -53,7 +53,6 @@ public final class Constants {
     // TODO: find
     public static final double maxSpeedMetersPerSecond = 4.;
 
-    
     public static final int frontLeftDriveMotorPort = 11;
     public static final int rearLeftDriveMotorPort = 12;
     public static final int frontRightDriveMotorPort = 16;
@@ -203,8 +202,6 @@ public final class Constants {
     }
   }
 
-  
-
   public static final class ElevatorConstants {
 
     public static final int elevatorMotorPort = 0-9;
@@ -243,6 +240,18 @@ public final class Constants {
     public static final int upDPadID = 0;
     public static final int rightDPadID = 90;
     public static final int downDPadID = 180;
+  }
+
+  public static final class LimelightConstants {
+    public static final double[][] cameraCropLookupTable = {
+      // TODO: All of these are placeholder values
+      // {x position in meters, limelight lower y crop}
+      {0, -1},
+      {1, -.5},
+      {2, -.25},
+      {3, 0},
+      {4, .25}
+    };
   }
 
 }
