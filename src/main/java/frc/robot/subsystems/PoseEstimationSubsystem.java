@@ -21,11 +21,14 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.LimelightConstants;
+import frc.robot.extras.LinearInterpolator;
 
 public class PoseEstimationSubsystem extends SubsystemBase {
   
   private final DriveSubsystem driveSubsystem;
   private final SwerveDrivePoseEstimator poseEstimator;
+  private final LinearInterpolator cameraCropLookupTable;
   private final NetworkTable networkTable; 
   private final NetworkTableEntry botPoseNetworkTableEntry;
   private final NetworkTableEntry jsonDumpNetworkTableEntry;
@@ -57,6 +60,7 @@ public class PoseEstimationSubsystem extends SubsystemBase {
       visionMeasurementStdDevs
     );
 
+    cameraCropLookupTable = new LinearInterpolator(LimelightConstants.cameraCropLookupTable);
     networkTable = NetworkTableInstance.getDefault().getTable("limelight-tigers");
     botPoseNetworkTableEntry = networkTable.getEntry("botpose");
     jsonDumpNetworkTableEntry = networkTable.getEntry("json");
@@ -111,7 +115,7 @@ public class PoseEstimationSubsystem extends SubsystemBase {
     // Updates the cropping of the limelight camera based on its distance from april tags
     double[] cropValues = {-1, 1, -1, 1};
     double robotXPositionMeters = getPose().getX();
-    
+    cropValues[2] = cameraCropLookupTable.getLookupValue(robotXPositionMeters);
     cameraCropNetworkTableEntry.setDoubleArray(cropValues);
   }
 
