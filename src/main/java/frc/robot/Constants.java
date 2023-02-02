@@ -51,47 +51,41 @@ public final class Constants {
     public static final double maxAngularSpeedRadiansPerSecond = Math.PI * 2;
 
     // TODO: find
-    public static final double maxSpeedMetersPerSecond = 4.5;
+    public static final double maxSpeedMetersPerSecond = 4.;
 
-
-    // TODO: get IDs
-    public static final int frontLeftDriveMotorPort = 18;
-    public static final int rearLeftDriveMotorPort = 6;
-    public static final int frontRightDriveMotorPort = 4;
-    public static final int rearRightDriveMotorPort = 23;
-
-    public static final int frontLeftTurningMotorPort = 1;
+    public static final int frontLeftTurningMotorPort = 13;
     public static final int rearLeftTurningMotorPort = 7;
-    public static final int frontRightTurningMotorPort = 3;
-    public static final int rearRightTurningMotorPort = 25;
+    public static final int frontRightTurningMotorPort = 10;
+    public static final int rearRightTurningMotorPort = 8;
 
-    public static final int frontLeftTurningEncoderPort = 22;
-    public static final int rearLeftTurningEncoderPort = 10;
-    public static final int frontRightTurningEncoderPort = 9;
-    public static final int rearRightTurningEncoderPort = 8;
+    public static final int frontLeftTurningEncoderPort = 1;
+    public static final int rearLeftTurningEncoderPort = 0;
+    public static final int frontRightTurningEncoderPort = 2;
+    public static final int rearRightTurningEncoderPort = 3;
 
+    // In degrees.
+    public static final double frontLeftAngleZero = -114.697265625;
+    public static final double rearLeftAngleZero = 145.1953125;
+    public static final double frontRightAngleZero = -69.609375;
+    public static final double rearRightAngleZero = 88.154296875;
 
-    public static final double frontLeftAngleZero = 79.45;
-    public static final double rearLeftAngleZero = 121.38;
-    public static final double frontRightAngleZero = -104.68;
-    public static final double rearRightAngleZero = 23.54;
-
-
+    // TODO: find
     public static final boolean frontLeftTurningEncoderReversed = false;
     public static final boolean rearLeftTurningEncoderReversed = false;
     public static final boolean frontRightTurningEncoderReversed = false;
     public static final boolean rearRightTurningEncoderReversed = false;
-
-    public static final boolean frontLeftDriveEncoderReversed = false;
-    public static final boolean rearLeftDriveEncoderReversed = false;
+    // TODO: find
+    public static final boolean frontLeftDriveEncoderReversed = true;
+    public static final boolean rearLeftDriveEncoderReversed = true;
     public static final boolean frontRightDriveEncoderReversed = true;
-    public static final boolean rearRightDriveEncoderReversed = true;
+    public static final boolean rearRightDriveEncoderReversed = false;
   }
   
   public static final class ModuleConstants {
+
     // TODO: get
-    // public static final double driveGearRatio = 7.36;
-    public static final double driveGearRatio = 7.13;
+    public static final double driveGearRatio = 7.36;
+    // public static final double driveGearRatio = 7.13;
 
     // TODO: tune this
     public static final double moduleTurnControllerP = 8.1;
@@ -117,6 +111,8 @@ public final class Constants {
         maxModuleAngularSpeedRadiansPerSecond,
         maxModuleAngularAccelerationRadiansPerSecondSquared
       );
+
+    public static final String canivoreCanBusString = "Canivore 1";
   }
 
   public static final class PathPlannerConstants {
@@ -200,8 +196,6 @@ public final class Constants {
       public static final int solenoidBackward = 0; // ID for closing claw
     }
   }
-
-  
 
   public static final class ElevatorConstants {
 
