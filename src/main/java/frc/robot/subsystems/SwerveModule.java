@@ -67,8 +67,8 @@ public class SwerveModule {
       boolean driveReversed
       ) {
     // Initialize the motors
-    m_driveMotor = new WPI_TalonFX(driveMotorChannel);
-    m_turningMotor = new WPI_TalonFX(turningMotorChannel);
+    m_driveMotor = new WPI_TalonFX(driveMotorChannel, ModuleConstants.canivoreCanBusString);
+    m_turningMotor = new WPI_TalonFX(turningMotorChannel, ModuleConstants.canivoreCanBusString);
 
     // Set motors to brake mode
     m_driveMotor.setNeutralMode(NeutralMode.Brake);
@@ -83,7 +83,7 @@ public class SwerveModule {
     m_driveMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
     
     // CANCoder config
-    m_turnEncoder = new CANCoder(turningEncoderChannel);
+    m_turnEncoder = new CANCoder(turningEncoderChannel, ModuleConstants.canivoreCanBusString);
     m_turnEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
     m_turnEncoder.configMagnetOffset(angleZero);
     m_turnEncoder.configSensorDirection(encoderReversed);
@@ -108,7 +108,6 @@ public class SwerveModule {
     m_turningMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 65, 0.1));
     m_turningMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.1));
   }
-
 
   /**
    * Gets the heading of the module

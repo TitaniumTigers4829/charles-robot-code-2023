@@ -51,7 +51,7 @@ public final class Constants {
     public static final double maxAngularSpeedRadiansPerSecond = Math.PI * 2;
 
     // TODO: find
-    public static final double maxSpeedMetersPerSecond = 0.5;
+    public static final double maxSpeedMetersPerSecond = 4.;
 
     
     public static final int frontLeftDriveMotorPort = 11;
@@ -71,7 +71,7 @@ public final class Constants {
 
     // In degrees.
     public static final double frontLeftAngleZero = -114.697265625;
-    public static final double rearLeftAngleZero = 172.96875;
+    public static final double rearLeftAngleZero = 145.1953125;
     public static final double frontRightAngleZero = -69.609375;
     public static final double rearRightAngleZero = 88.154296875;
 
@@ -82,15 +82,16 @@ public final class Constants {
     public static final boolean rearRightTurningEncoderReversed = false;
     // TODO: find
     public static final boolean frontLeftDriveEncoderReversed = true;
-    public static final boolean rearLeftDriveEncoderReversed = false;
+    public static final boolean rearLeftDriveEncoderReversed = true;
     public static final boolean frontRightDriveEncoderReversed = true;
     public static final boolean rearRightDriveEncoderReversed = false;
   }
   
   public static final class ModuleConstants {
+
     // TODO: get
-    // public static final double driveGearRatio = 7.36;
-    public static final double driveGearRatio = 7.13;
+    public static final double driveGearRatio = 7.36;
+    // public static final double driveGearRatio = 7.13;
 
     // TODO: tune this
     public static final double moduleTurnControllerP = 8.1;
@@ -116,6 +117,8 @@ public final class Constants {
         maxModuleAngularSpeedRadiansPerSecond,
         maxModuleAngularAccelerationRadiansPerSecondSquared
       );
+
+    public static final String canivoreCanBusString = "Canivore 1";
   }
 
   public static final class PathPlannerConstants {
