@@ -50,8 +50,7 @@ public final class Constants {
 
     public static final double maxAngularSpeedRadiansPerSecond = Math.PI * 2;
 
-    // TODO: find
-    public static final double maxSpeedMetersPerSecond = 4.;
+    public static final double maxSpeedMetersPerSecond = 4;
 
     public static final int frontLeftDriveMotorPort = 11;
     public static final int rearLeftDriveMotorPort = 12;
@@ -80,17 +79,15 @@ public final class Constants {
     public static final boolean frontRightTurningEncoderReversed = false;
     public static final boolean rearRightTurningEncoderReversed = false;
     // TODO: find
-    public static final boolean frontLeftDriveEncoderReversed = true;
-    public static final boolean rearLeftDriveEncoderReversed = true;
+    public static final boolean frontLeftDriveEncoderReversed = false;
+    public static final boolean rearLeftDriveEncoderReversed = false;
     public static final boolean frontRightDriveEncoderReversed = true;
-    public static final boolean rearRightDriveEncoderReversed = false;
+    public static final boolean rearRightDriveEncoderReversed = true;
   }
   
   public static final class ModuleConstants {
 
-    // TODO: get
     public static final double driveGearRatio = 7.36;
-    // public static final double driveGearRatio = 7.13;
 
     // TODO: tune this
     public static final double moduleTurnControllerP = 8.1;
@@ -100,9 +97,9 @@ public final class Constants {
     public static final double maxModuleAngularSpeedRadiansPerSecond = 3 * Math.PI;
     public static final double maxModuleAngularAccelerationRadiansPerSecondSquared = 6 * Math.PI;
 
-    // TODO: tune
-    public static final double moduleDriveControllerP = 1; // TUNE
-    public static final double moduleDriveControllerI = 0; // DO NOT USE
+    public static final double moduleDriveControllerF = 0.052;
+    public static final double moduleDriveControllerP = 0;
+    public static final double moduleDriveControllerI = 0;
     public static final double moduleDriveControllerD = 0;
 
     public static final double wheelDiameterMeters = Units.inchesToMeters(4); // 4 inches
@@ -118,6 +115,7 @@ public final class Constants {
       );
 
     public static final String canivoreCanBusString = "Canivore 1";
+
   }
 
   public static final class PathPlannerConstants {

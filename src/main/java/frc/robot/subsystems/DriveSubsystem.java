@@ -78,12 +78,7 @@ public class DriveSubsystem extends SubsystemBase {
         getModulePositions()
     );
     
-    
     SwerveModulePosition[] swerveModulePositions = getModulePositions(); 
-    SmartDashboard.putNumber("Front Left Angle:", swerveModulePositions[0].angle.getDegrees());
-    SmartDashboard.putNumber("Rear Left Angle:", swerveModulePositions[1].angle.getDegrees());
-    SmartDashboard.putNumber("Front Right Angle:", swerveModulePositions[2].angle.getDegrees());
-    SmartDashboard.putNumber("Rear Right Angle:", swerveModulePositions[3].angle.getDegrees());
   }
 
   /**

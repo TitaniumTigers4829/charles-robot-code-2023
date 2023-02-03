@@ -32,10 +32,10 @@ import frc.robot.subsystems.PoseEstimationSubsystem;
  */
 public class RobotContainer {
 
-  public ArmSubsystem armSubsystem;
+  // public ArmSubsystem armSubsystem;
   //public ElevatorSubsystem elevatorSubsystem;
   private final DriveSubsystem driveSubsystem;
-  private final PoseEstimationSubsystem poseEstimationSubsystem;
+  // private final PoseEstimationSubsystem poseEstimationSubsystem;
 
   private final Joystick driverJoystick;
 
@@ -48,7 +48,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    armSubsystem = new ArmSubsystem();
+    // armSubsystem = new ArmSubsystem();
     //elevatorSubsystem = new ElevatorSubsystem();
 
     // Configure the button bindings
@@ -61,16 +61,16 @@ public class RobotContainer {
     clawButton = new JoystickButton(buttonBoard, JoystickConstants.clawButtonID);
 
     driveSubsystem = new DriveSubsystem();
-    poseEstimationSubsystem = new PoseEstimationSubsystem(driveSubsystem);
+    // poseEstimationSubsystem = new PoseEstimationSubsystem(driveSubsystem);
 
     DoubleSupplier leftStickX = () -> driverJoystick.getRawAxis(0);
     DoubleSupplier leftStickY = () -> driverJoystick.getRawAxis(1);
     DoubleSupplier rightStickX = () -> driverJoystick.getRawAxis(2);
 
     Command driveCommand = new DriveCommand(driveSubsystem, 
-      () -> modifyAxisCubed(leftStickY) * -1, 
-      () -> modifyAxisCubed(leftStickX) * -1, 
-      () -> modifyAxisCubed(rightStickX) * -1, 
+      () -> modifyAxisSquared(leftStickY) * -1, 
+      () -> modifyAxisSquared(leftStickX) * -1, 
+      () -> modifyAxisSquared(rightStickX) * -1, 
       () -> !rightBumper.getAsBoolean()
     );
 
@@ -81,8 +81,8 @@ public class RobotContainer {
     driveSubsystem.resetOdometry(new Pose2d(14.176, 1.0716, new Rotation2d()));
     aButton.whileTrue(new FaceForward(
       driveSubsystem, 
-      () -> modifyAxisCubed(leftStickY) * -1, 
-      () -> modifyAxisCubed(leftStickX) * -1, 
+      () -> modifyAxisSquared(leftStickY) * -1, 
+      () -> modifyAxisSquared(leftStickX) * -1, 
       () -> !rightBumper.getAsBoolean()
     ));
 
@@ -101,14 +101,14 @@ public class RobotContainer {
     }
   }
 
-  private static double modifyAxisCubed(DoubleSupplier supplierValue) {
+  private static double modifyAxisSquared(DoubleSupplier supplierValue) {
     double value = supplierValue.getAsDouble();
 
     // Deadband
     value = deadband(value, 0.1);
 
     // Cube the axis
-    value = Math.copySign(value * value * value, value);
+    value = Math.copySign(value * value, value);
 
     return value;
   }
@@ -120,7 +120,7 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    clawButton.whileTrue(new ToggleClaw(armSubsystem));
+    // clawButton.whileTrue(new ToggleClaw(armSubsystem));
     POVButton rightDirectionPad = new POVButton(driverJoystick, JoystickConstants.rightDPadID);
     rightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
   }
