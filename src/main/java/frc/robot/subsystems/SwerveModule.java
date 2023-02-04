@@ -15,7 +15,6 @@ import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 
 import com.ctre.phoenix.sensors.CANCoderStatusFrame;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -33,11 +32,12 @@ public class SwerveModule {
   private final CANCoder turnEncoder;
 
   private final ProfiledPIDController turnPIDController =
-      new ProfiledPIDController(
-          ModuleConstants.moduleTurnControllerP,
-          ModuleConstants.moduleTurnControllerI, // 0
-          ModuleConstants.moduleTurnControllerD,
-          ModuleConstants.moduleTurnConstraints);
+    new ProfiledPIDController(
+      ModuleConstants.moduleTurnControllerP,
+      ModuleConstants.moduleTurnControllerI,
+      ModuleConstants.moduleTurnControllerD,
+      ModuleConstants.moduleTurnConstraints
+    );
 
   private final SimpleMotorFeedforward turnFeedForward = new SimpleMotorFeedforward(
       DriveConstants.turningS, DriveConstants.turningV, DriveConstants.turningA);
@@ -59,6 +59,7 @@ public class SwerveModule {
       boolean encoderReversed,
       boolean driveReversed
       ) {
+    
     // Initialize the motors
     driveMotor = new WPI_TalonFX(driveMotorChannel, ModuleConstants.canivoreCanBusString);
     turningMotor = new WPI_TalonFX(turningMotorChannel, ModuleConstants.canivoreCanBusString);
@@ -141,29 +142,29 @@ public class SwerveModule {
    */
   public void setDesiredState(SwerveModuleState desiredState) {
 
-    double m_turnRadians = ((2 * Math.PI) / 360) * turnEncoder.getAbsolutePosition();
+    double turnRadians = ((2 * Math.PI) / 360) * turnEncoder.getAbsolutePosition();
 
     // Optimize the reference state to avoid spinning further than 90 degrees
-    SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(m_turnRadians));
+    SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(turnRadians));
 
     // Converts meters per second to rpm
     double desiredDriveRPM = optimizedDesiredState.speedMetersPerSecond * 60 
       * ModuleConstants.driveGearRatio / ModuleConstants.wheelCircumferenceMeters;
-    // Converts rpm to encoder units
-    double desiredDriveEncoderUnits = desiredDriveRPM / (600.0) * 2048;
+    // Converts rpm to encoder units per 100 milliseconds
+    double desiredDriveEncoderUnitsPer100MS = desiredDriveRPM / (600.0) * 2048;
 
     // Sets the drive motor's speed using the built in pid controller
-    driveMotor.set(ControlMode.Velocity, desiredDriveEncoderUnits);
+    driveMotor.set(ControlMode.Velocity, desiredDriveEncoderUnitsPer100MS);
+
+    // Calculate the turning motor output from the turning PID controller.
+    double turnOutput =
+      turnPIDController.calculate(turnRadians, optimizedDesiredState.angle.getRadians())
+        + turnFeedForward.calculate(turnPIDController.getSetpoint().velocity);
+    turningMotor.set(turnOutput / 12);
 
     SmartDashboard.putNumber("Current Velocity", getState().speedMetersPerSecond);
     SmartDashboard.putNumber("Desired Speed", optimizedDesiredState.speedMetersPerSecond);
     SmartDashboard.putNumber("Error", optimizedDesiredState.speedMetersPerSecond - getState().speedMetersPerSecond);
-
-    // Calculate the turning motor output from the turning PID controller.
-    final double turnOutput =
-        turnPIDController.calculate(m_turnRadians, optimizedDesiredState.angle.getRadians())
-            + turnFeedForward.calculate(turnPIDController.getSetpoint().velocity);
-    turningMotor.set(turnOutput/12);
   }
 
   /**

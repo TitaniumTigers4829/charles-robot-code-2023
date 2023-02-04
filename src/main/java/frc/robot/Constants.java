@@ -50,7 +50,7 @@ public final class Constants {
 
     public static final double maxAngularSpeedRadiansPerSecond = Math.PI * 2;
 
-    public static final double maxSpeedMetersPerSecond = 4;
+    public static final double joystickMaxSpeedMetersPerSecondLimit = 4;
 
     public static final int frontLeftDriveMotorPort = 11;
     public static final int rearLeftDriveMotorPort = 12;
@@ -97,8 +97,8 @@ public final class Constants {
     public static final double maxModuleAngularSpeedRadiansPerSecond = 3 * Math.PI;
     public static final double maxModuleAngularAccelerationRadiansPerSecondSquared = 6 * Math.PI;
 
-    public static final double moduleDriveControllerF = 0.052;
-    public static final double moduleDriveControllerP = 0;
+    public static final double moduleDriveControllerF = 0.055;
+    public static final double moduleDriveControllerP = 0; // .1
     public static final double moduleDriveControllerI = 0;
     public static final double moduleDriveControllerD = 0;
 
