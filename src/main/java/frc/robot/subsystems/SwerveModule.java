@@ -151,7 +151,7 @@ public class SwerveModule {
     double desiredDriveRPM = optimizedDesiredState.speedMetersPerSecond * 60 
       * ModuleConstants.driveGearRatio / ModuleConstants.wheelCircumferenceMeters;
     // Converts rpm to encoder units per 100 milliseconds
-    double desiredDriveEncoderUnitsPer100MS = desiredDriveRPM / (600.0) * 2048;
+    double desiredDriveEncoderUnitsPer100MS = desiredDriveRPM / 600.0 * 2048;
 
     // Sets the drive motor's speed using the built in pid controller
     driveMotor.set(ControlMode.Velocity, desiredDriveEncoderUnitsPer100MS);
