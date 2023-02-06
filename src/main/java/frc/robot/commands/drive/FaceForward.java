@@ -42,8 +42,8 @@ public class FaceForward extends CommandBase {
   @Override
   public void execute() {
     driveSubsystem.drive(
-      leftY.getAsDouble() * DriveConstants.maxSpeedMetersPerSecond,
-      leftX.getAsDouble() * DriveConstants.maxSpeedMetersPerSecond,
+      leftY.getAsDouble() * DriveConstants.joystickMaxSpeedMetersPerSecondLimit,
+      leftX.getAsDouble() * DriveConstants.joystickMaxSpeedMetersPerSecondLimit,
       thetaController.calculate(driveSubsystem.getHeading(), 0), 
       isFieldRelative.getAsBoolean()
     );

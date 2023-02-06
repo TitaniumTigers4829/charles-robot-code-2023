@@ -38,8 +38,8 @@ public class DriveCommand extends CommandBase {
   @Override
   public void execute() {
     driveSubsystem.drive(
-      leftY.getAsDouble() * DriveConstants.maxSpeedMetersPerSecond,
-      leftX.getAsDouble() * DriveConstants.maxSpeedMetersPerSecond,
+      leftY.getAsDouble() * DriveConstants.joystickMaxSpeedMetersPerSecondLimit,
+      leftX.getAsDouble() * DriveConstants.joystickMaxSpeedMetersPerSecondLimit,
       rightX.getAsDouble() * DriveConstants.maxAngularSpeedRadiansPerSecond,
       isFieldRelative.getAsBoolean()
     );

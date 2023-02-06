@@ -78,12 +78,7 @@ public class DriveSubsystem extends SubsystemBase {
         getModulePositions()
     );
     
-    
     SwerveModulePosition[] swerveModulePositions = getModulePositions(); 
-    SmartDashboard.putNumber("Front Left Angle:", swerveModulePositions[0].angle.getDegrees());
-    SmartDashboard.putNumber("Rear Left Angle:", swerveModulePositions[1].angle.getDegrees());
-    SmartDashboard.putNumber("Front Right Angle:", swerveModulePositions[2].angle.getDegrees());
-    SmartDashboard.putNumber("Rear Right Angle:", swerveModulePositions[3].angle.getDegrees());
   }
 
   /**
@@ -139,7 +134,7 @@ public class DriveSubsystem extends SubsystemBase {
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getRotation2d())
             : new ChassisSpeeds(xSpeed, ySpeed, rot));
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        swerveModuleStates, DriveConstants.maxSpeedMetersPerSecond);
+        swerveModuleStates, DriveConstants.joystickMaxSpeedMetersPerSecondLimit);
     frontLeft.setDesiredState(swerveModuleStates[0]);
     frontRight.setDesiredState(swerveModuleStates[1]);
     rearLeft.setDesiredState(swerveModuleStates[2]);
@@ -153,7 +148,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, DriveConstants.maxSpeedMetersPerSecond);
+        desiredStates, DriveConstants.joystickMaxSpeedMetersPerSecondLimit);
     frontLeft.setDesiredState(desiredStates[0]);
     frontRight.setDesiredState(desiredStates[1]);
     rearLeft.setDesiredState(desiredStates[2]);
