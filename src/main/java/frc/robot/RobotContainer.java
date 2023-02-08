@@ -19,6 +19,7 @@ import frc.robot.commands.limb.claw.ToggleClaw;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.autonomous.FollowPathPlannerTrajectory;
 import frc.robot.commands.drive.DriveCommand;
 import frc.robot.commands.drive.FaceForward;
 import frc.robot.subsystems.DriveSubsystem;
@@ -65,7 +66,7 @@ public class RobotContainer {
 
     DoubleSupplier leftStickX = () -> driverJoystick.getRawAxis(0);
     DoubleSupplier leftStickY = () -> driverJoystick.getRawAxis(1);
-    DoubleSupplier rightStickX = () -> driverJoystick.getRawAxis(2);
+    DoubleSupplier rightStickX = () -> driverJoystick.getRawAxis(4);
 
     Command driveCommand = new DriveCommand(driveSubsystem, 
       () -> modifyAxisSquared(leftStickY) * -1, 
@@ -76,7 +77,6 @@ public class RobotContainer {
 
   
     driveSubsystem.setDefaultCommand(driveCommand);
-    
 
     driveSubsystem.resetOdometry(new Pose2d(14.176, 1.0716, new Rotation2d()));
     aButton.whileTrue(new FaceForward(
@@ -120,9 +120,12 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // clawButton.whileTrue(new ToggleClaw(armSubsystem));
     POVButton rightDirectionPad = new POVButton(driverJoystick, JoystickConstants.rightDPadID);
     rightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
+
+
+    JoystickButton bButton = new JoystickButton(driverJoystick, JoystickConstants.bButtonID);
+    bButton.onTrue(new FollowPathPlannerTrajectory(driveSubsystem, "PID Tuning", true));
   }
 
   public Command getAutonomousCommand() {

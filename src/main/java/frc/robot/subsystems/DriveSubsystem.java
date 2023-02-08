@@ -23,7 +23,7 @@ public class DriveSubsystem extends SubsystemBase {
   // The gyro sensor
   public final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
-  private int gyroOffset = 0;
+  private int gyroOffset = 45;
 
   private final SwerveModule frontLeft = new SwerveModule(
       DriveConstants.frontLeftDriveMotorPort,
@@ -60,9 +60,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   // Odometry class for tracking robot pose
   public SwerveDriveOdometry odometry = new SwerveDriveOdometry(DriveConstants.driveKinematics,
-      gyro.getRotation2d(), getModulePositions());
-
-  private DriveSubsystem driveSubsystem;
+      getRotation2d(), getModulePositions());
 
   /**
    * Creates a new DriveSubsystem.
@@ -174,7 +172,7 @@ public class DriveSubsystem extends SubsystemBase {
    * Zeroes the heading of the robot.
    */
   public void zeroHeading() {
-    gyroOffset = 0;
+    gyroOffset = 90;
     gyro.reset();
   }
   
