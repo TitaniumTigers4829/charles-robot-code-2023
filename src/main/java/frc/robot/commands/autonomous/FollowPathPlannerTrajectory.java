@@ -19,7 +19,7 @@ public class FollowPathPlannerTrajectory extends CommandBase {
   private final DriveSubsystem driveSubsystem;
   private final String trajectoryName;
   private final boolean resetOdometryToTrajectoryStart;
-  private PPSwerveControllerCommand followPathPlannerTrajectoryCommand;
+  private TestPPController followPathPlannerTrajectoryCommand;
   private boolean done = false;
   
   // EDIT CODE BELOW HERE
@@ -66,7 +66,7 @@ public class FollowPathPlannerTrajectory extends CommandBase {
     }
 
     // Create a PPSwerveControllerCommand. This is almost identical to WPILib's SwerveControllerCommand, but it uses the holonomic rotation from the PathPlannerTrajectory to control the robot's rotation.
-    followPathPlannerTrajectoryCommand = new PPSwerveControllerCommand(
+    followPathPlannerTrajectoryCommand = new TestPPController(
       trajectoryToFollow,
       driveSubsystem::getPose, // Functional interface to feed supplier
       driveKinematics,

@@ -35,7 +35,7 @@ public class RobotContainer {
 
   // public ArmSubsystem armSubsystem;
   //public ElevatorSubsystem elevatorSubsystem;
-  private final DriveSubsystem driveSubsystem;
+  public final DriveSubsystem driveSubsystem;
   // private final PoseEstimationSubsystem poseEstimationSubsystem;
 
   private final Joystick driverJoystick;
@@ -78,7 +78,6 @@ public class RobotContainer {
   
     driveSubsystem.setDefaultCommand(driveCommand);
 
-    driveSubsystem.resetOdometry(new Pose2d(14.176, 1.0716, new Rotation2d()));
     aButton.whileTrue(new FaceForward(
       driveSubsystem, 
       () -> modifyAxisSquared(leftStickY) * -1, 
@@ -122,7 +121,6 @@ public class RobotContainer {
   private void configureButtonBindings() {
     POVButton rightDirectionPad = new POVButton(driverJoystick, JoystickConstants.rightDPadID);
     rightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
-
 
     JoystickButton bButton = new JoystickButton(driverJoystick, JoystickConstants.bButtonID);
     bButton.onTrue(new FollowPathPlannerTrajectory(driveSubsystem, "PID Tuning", true));
