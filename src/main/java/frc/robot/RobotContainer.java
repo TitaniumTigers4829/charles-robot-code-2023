@@ -20,6 +20,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.autonomous.FollowPathPlannerTrajectory;
+import frc.robot.commands.autonomous.FollowRealTimeTrajectory;
 import frc.robot.commands.drive.DriveCommand;
 import frc.robot.commands.drive.FaceForward;
 import frc.robot.subsystems.DriveSubsystem;
@@ -123,7 +124,8 @@ public class RobotContainer {
     rightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
 
     JoystickButton bButton = new JoystickButton(driverJoystick, JoystickConstants.bButtonID);
-    bButton.onTrue(new FollowPathPlannerTrajectory(driveSubsystem, "MyPath", true));
+    // bButton.onTrue(new FollowPathPlannerTrajectory(driveSubsystem, "MyPath", true));
+    bButton.whileTrue(new FollowRealTimeTrajectory(driveSubsystem, bButton));
   }
 
   public Command getAutonomousCommand() {

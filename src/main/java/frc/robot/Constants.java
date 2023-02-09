@@ -118,14 +118,15 @@ public final class Constants {
 
   }
 
-  public static final class PathPlannerConstants {
+  public static final class TrajectoryConstants {
 
     // Autonomous Period Constants TODO: Tune all of these values
     public static final double autoMaxVelocity = 1; // meters/second
     public static final double autoMaxAcceleration = 1; // meters/second/second
-    public static final double xControllerP = 0;
-    public static final double yControllerP = 0;
+    public static final double xControllerP = .5;
+    public static final double yControllerP = .5;
     public static final double thetaControllerP = 0.2;
+    public static final double thetaProfiledControllerP = 8.1;
     public static final double maxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double maxAngularSpeedRadiansPerSecondSquared = Math.PI;
   

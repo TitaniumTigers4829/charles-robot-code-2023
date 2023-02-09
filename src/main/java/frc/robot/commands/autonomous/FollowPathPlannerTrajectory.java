@@ -12,7 +12,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.PathPlannerConstants;
+import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class FollowPathPlannerTrajectory extends CommandBase {
@@ -28,13 +28,13 @@ public class FollowPathPlannerTrajectory extends CommandBase {
 
   private final SwerveDriveKinematics driveKinematics = DriveConstants.driveKinematics;
   
-  private final double autoMaxVelocity = PathPlannerConstants.autoMaxVelocity;
-  private final double autoMaxAcceleration = PathPlannerConstants.autoMaxAcceleration;
+  private final double autoMaxVelocity = TrajectoryConstants.autoMaxVelocity;
+  private final double autoMaxAcceleration = TrajectoryConstants.autoMaxAcceleration;
 
   // Your probably only want to edit the P values
-  private final PIDController xController = new PIDController(PathPlannerConstants.xControllerP, 0, 0);
-  private final PIDController yController = new PIDController(PathPlannerConstants.yControllerP, 0, 0);
-  private final PIDController thetaController = new PIDController(PathPlannerConstants.thetaControllerP, 0, 0);
+  private final PIDController xController = new PIDController(TrajectoryConstants.xControllerP, 0, 0);
+  private final PIDController yController = new PIDController(TrajectoryConstants.yControllerP, 0, 0);
+  private final PIDController thetaController = new PIDController(TrajectoryConstants.thetaControllerP, 0, 0);
   
   // IMPORTANT: Make sure your driveSubsystem has the methods resetOdometry, getPose, and setModuleStates
   
