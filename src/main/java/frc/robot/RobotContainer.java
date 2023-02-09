@@ -123,7 +123,7 @@ public class RobotContainer {
     rightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
 
     JoystickButton bButton = new JoystickButton(driverJoystick, JoystickConstants.bButtonID);
-    bButton.onTrue(new FollowPathPlannerTrajectory(driveSubsystem, "PID Tuning", true));
+    bButton.onTrue(new FollowPathPlannerTrajectory(driveSubsystem, "MyPath", true));
   }
 
   public Command getAutonomousCommand() {
