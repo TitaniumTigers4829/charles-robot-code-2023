@@ -1,3 +1,4 @@
+// JackLib 2023
 // For this code to work, PathPlannerLib needs to be installed through Gradle
 // https://3015rangerrobotics.github.io/pathplannerlib/PathplannerLib.json
 
@@ -8,6 +9,7 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
@@ -19,13 +21,16 @@ public class FollowPathPlannerTrajectory extends CommandBase {
   private final DriveSubsystem driveSubsystem;
   private final String trajectoryName;
   private final boolean resetOdometryToTrajectoryStart;
-  private TestPPController followPathPlannerTrajectoryCommand;
+  private PPSwerveControllerCommand followPathPlannerTrajectoryCommand;
   private boolean done = false;
   
-  // EDIT CODE BELOW HERE
+  /* EDIT CODE BELOW HERE */
   // You should have constants for everything in here
 
   private final SwerveDriveKinematics driveKinematics = DriveConstants.driveKinematics;
+  
+  private final double autoMaxVelocity = PathPlannerConstants.autoMaxVelocity;
+  private final double autoMaxAcceleration = PathPlannerConstants.autoMaxAcceleration;
 
   // Your probably only want to edit the P values
   private final PIDController xController = new PIDController(PathPlannerConstants.xControllerP, 0, 0);
@@ -33,8 +38,8 @@ public class FollowPathPlannerTrajectory extends CommandBase {
   private final PIDController thetaController = new PIDController(PathPlannerConstants.thetaControllerP, 0, 0);
   
   // IMPORTANT: Make sure your driveSubsystem has the methods resetOdometry, getPose, and setModuleStates
-
-  // EDIT CODE ABOVE HERE
+  
+  /* EDIT CODE ABOVE HERE (ONLY TOUCH THE REST OF THE CODE IF YOU KNOW WHAT YOU'RE DOING) */
 
   /**
    * Follows the specified PathPlanner trajectory.
@@ -56,17 +61,17 @@ public class FollowPathPlannerTrajectory extends CommandBase {
   @Override
   public void initialize() {
     // Makes a trajectory                                                     
-    PathPlannerTrajectory trajectoryToFollow = PathPlanner.loadPath(trajectoryName, PathPlannerConstants.autoMaxVelocity, PathPlannerConstants.autoMaxAcceleration);
+    PathPlannerTrajectory trajectoryToFollow = PathPlanner.loadPath(trajectoryName, autoMaxVelocity, autoMaxAcceleration);
 
     // Makes it so wheels don't have to turn more than 90 degrees
-    thetaController.enableContinuousInput(-Math.PI, Math.PI); 
-
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    
     if (resetOdometryToTrajectoryStart) {
       driveSubsystem.resetOdometry(trajectoryToFollow.getInitialPose());
     }
 
     // Create a PPSwerveControllerCommand. This is almost identical to WPILib's SwerveControllerCommand, but it uses the holonomic rotation from the PathPlannerTrajectory to control the robot's rotation.
-    followPathPlannerTrajectoryCommand = new TestPPController(
+    followPathPlannerTrajectoryCommand = new PPSwerveControllerCommand(
       trajectoryToFollow,
       driveSubsystem::getPose, // Functional interface to feed supplier
       driveKinematics,
