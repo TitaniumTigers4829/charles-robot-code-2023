@@ -77,9 +77,6 @@ public class DriveSubsystem extends SubsystemBase {
     );
 
     SmartDashboard.putString("Odometry", odometry.getPoseMeters().toString());
-    SmartDashboard.putString("Rotation2d", getRotation2d().toString());
-    SmartDashboard.putString("Gyro Rotation2d", getRotation2d().toString());
-    SmartDashboard.putNumber("Gyro Angle", gyro.getAngle());
   }
 
   /**

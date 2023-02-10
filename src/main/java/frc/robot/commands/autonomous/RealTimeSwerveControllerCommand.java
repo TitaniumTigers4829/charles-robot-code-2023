@@ -1,7 +1,6 @@
-// JackLib 2023
-// This command is almost identical to the WPILib SwerveControllerCommand
-// The key difference is that this command can be canceled mid-trajectory
-// Do not touch this unless you know what you're doing.
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands.autonomous;
 
@@ -36,7 +35,6 @@ import java.util.function.Supplier;
  *
  * <p>This class is provided by the NewCommands VendorDep
  */
-@SuppressWarnings("MemberName")
 public class RealTimeSwerveControllerCommand extends CommandBase {
   private final Timer m_timer = new Timer();
   private final Trajectory m_trajectory;
@@ -52,8 +50,9 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
    * trajectory. This command will not return output voltages but rather raw module states from the
    * position controllers which need to be put into a velocity PID.
    *
-   * <p>Note: The controllers will *not* set the outputVolts to zero upon completion of the path-
-   * this is left to the user, since it is not appropriate for paths with nonstationary endstates.
+   * <p>Note: The controllers will *not* set the outputVolts to zero upon completion of the path.
+   * This is left to the user to do since it is not appropriate for paths with nonstationary
+   * endstates.
    *
    * @param trajectory The trajectory to follow.
    * @param pose A function that supplies the robot pose - use one of the odometry classes to
@@ -65,10 +64,9 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
    * @param desiredRotation The angle that the drivetrain should be facing. This is sampled at each
    *     time step.
    * @param outputModuleStates The raw output module states from the position controllers.
-   * @param isFinished The boolean supplier for if the parent command is finished.
+   * @param isFinished The Boolean Supplier for if the trajectory should end.
    * @param requirements The subsystems to require.
    */
-  @SuppressWarnings("ParameterName")
   public RealTimeSwerveControllerCommand(
       Trajectory trajectory,
       Supplier<Pose2d> pose,
@@ -80,26 +78,18 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
       Consumer<SwerveModuleState[]> outputModuleStates,
       BooleanSupplier isFinished,
       Subsystem... requirements) {
-    m_trajectory = requireNonNullParam(trajectory, "trajectory", "RealTimeSwerveControllerCommand");
-    m_pose = requireNonNullParam(pose, "pose", "RealTimeSwerveControllerCommand");
-    m_kinematics = requireNonNullParam(kinematics, "kinematics", "RealTimeSwerveControllerCommand");
-
-    m_controller =
+    this(
+        trajectory,
+        pose,
+        kinematics,
         new HolonomicDriveController(
             requireNonNullParam(xController, "xController", "RealTimeSwerveControllerCommand"),
             requireNonNullParam(yController, "yController", "RealTimeSwerveControllerCommand"),
-            requireNonNullParam(thetaController, "thetaController", "RealTimeSwerveControllerCommand"));
-
-    m_outputModuleStates =
-        requireNonNullParam(outputModuleStates, "outputModuleStates", "RealTimeSwerveControllerCommand");
-
-    m_desiredRotation =
-        requireNonNullParam(desiredRotation, "desiredRotation", "RealTimeSwerveControllerCommand");
-
-    m_isFinished =
-        requireNonNullParam(isFinished, "isFinished", "RealTimeSwerveControllerCommand");
-
-    addRequirements(requirements);
+            requireNonNullParam(thetaController, "thetaController", "RealTimeSwerveControllerCommand")),
+        desiredRotation,
+        outputModuleStates,
+        isFinished,
+        requirements);
   }
 
   /**
@@ -107,8 +97,8 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
    * trajectory. This command will not return output voltages but rather raw module states from the
    * position controllers which need to be put into a velocity PID.
    *
-   * <p>Note: The controllers will *not* set the outputVolts to zero upon completion of the path-
-   * this is left to the user, since it is not appropriate for paths with nonstationary endstates.
+   * <p>Note: The controllers will *not* set the outputVolts to zero upon completion of the path.
+   * This is left to the user since it is not appropriate for paths with nonstationary endstates.
    *
    * <p>Note 2: The final rotation of the robot will be set to the rotation of the final pose in the
    * trajectory. The robot will not follow the rotations from the poses at each timestep. If
@@ -123,10 +113,9 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
    * @param yController The Trajectory Tracker PID controller for the robot's y position.
    * @param thetaController The Trajectory Tracker PID controller for angle for the robot.
    * @param outputModuleStates The raw output module states from the position controllers.
-   * @param isFinished The boolean supplier for if the parent command is finished.
+   * @param isFinished The Boolean Supplier for if the trajectory should end.
    * @param requirements The subsystems to require.
    */
-  @SuppressWarnings("ParameterName")
   public RealTimeSwerveControllerCommand(
       Trajectory trajectory,
       Supplier<Pose2d> pose,
@@ -151,6 +140,92 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
         requirements);
   }
 
+  /**
+   * Constructs a new RealTimeSwerveControllerCommand that when executed will follow the provided
+   * trajectory. This command will not return output voltages but rather raw module states from the
+   * position controllers which need to be put into a velocity PID.
+   *
+   * <p>Note: The controllers will *not* set the outputVolts to zero upon completion of the path-
+   * this is left to the user, since it is not appropriate for paths with nonstationary endstates.
+   *
+   * <p>Note 2: The final rotation of the robot will be set to the rotation of the final pose in the
+   * trajectory. The robot will not follow the rotations from the poses at each timestep. If
+   * alternate rotation behavior is desired, the other constructor with a supplier for rotation
+   * should be used.
+   *
+   * @param trajectory The trajectory to follow.
+   * @param pose A function that supplies the robot pose - use one of the odometry classes to
+   *     provide this.
+   * @param kinematics The kinematics for the robot drivetrain.
+   * @param controller The HolonomicDriveController for the drivetrain.
+   * @param outputModuleStates The raw output module states from the position controllers.
+   * @param isFinished The Boolean Supplier for if the trajectory should end.
+   * @param requirements The subsystems to require.
+   */
+  public RealTimeSwerveControllerCommand(
+      Trajectory trajectory,
+      Supplier<Pose2d> pose,
+      SwerveDriveKinematics kinematics,
+      HolonomicDriveController controller,
+      Consumer<SwerveModuleState[]> outputModuleStates,
+      BooleanSupplier isFinished,
+      Subsystem... requirements) {
+    this(
+        trajectory,
+        pose,
+        kinematics,
+        controller,
+        () ->
+            trajectory.getStates().get(trajectory.getStates().size() - 1).poseMeters.getRotation(),
+        outputModuleStates,
+        isFinished,
+        requirements);
+  }
+
+  /**
+   * Constructs a new RealTimeSwerveControllerCommand that when executed will follow the provided
+   * trajectory. This command will not return output voltages but rather raw module states from the
+   * position controllers which need to be put into a velocity PID.
+   *
+   * <p>Note: The controllers will *not* set the outputVolts to zero upon completion of the path-
+   * this is left to the user, since it is not appropriate for paths with nonstationary endstates.
+   *
+   * @param trajectory The trajectory to follow.
+   * @param pose A function that supplies the robot pose - use one of the odometry classes to
+   *     provide this.
+   * @param kinematics The kinematics for the robot drivetrain.
+   * @param controller The HolonomicDriveController for the drivetrain.
+   * @param desiredRotation The angle that the drivetrain should be facing. This is sampled at each
+   *     time step.
+   * @param outputModuleStates The raw output module states from the position controllers.
+   * @param isFinished The Boolean Supplier for if the trajectory should end.
+   * @param requirements The subsystems to require.
+   */
+  public RealTimeSwerveControllerCommand(
+      Trajectory trajectory,
+      Supplier<Pose2d> pose,
+      SwerveDriveKinematics kinematics,
+      HolonomicDriveController controller,
+      Supplier<Rotation2d> desiredRotation,
+      Consumer<SwerveModuleState[]> outputModuleStates,
+      BooleanSupplier isFinished,
+      Subsystem... requirements) {
+    m_trajectory = requireNonNullParam(trajectory, "trajectory", "RealTimeSwerveControllerCommand");
+    m_pose = requireNonNullParam(pose, "pose", "RealTimeSwerveControllerCommand");
+    m_kinematics = requireNonNullParam(kinematics, "kinematics", "RealTimeSwerveControllerCommand");
+    m_controller = requireNonNullParam(controller, "controller", "RealTimeSwerveControllerCommand");
+
+    m_desiredRotation =
+        requireNonNullParam(desiredRotation, "desiredRotation", "RealTimeSwerveControllerCommand");
+
+    m_outputModuleStates =
+        requireNonNullParam(outputModuleStates, "outputModuleStates", "RealTimeSwerveControllerCommand");
+
+    m_isFinished = requireNonNullParam(isFinished, "isFinished", "RealTimeSwerveControllerCommand");
+
+    addRequirements(requirements);
+  }
+
   @Override
   public void initialize() {
     m_timer.reset();
@@ -158,7 +233,6 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
   }
 
   @Override
-  @SuppressWarnings("LocalVariableName")
   public void execute() {
     double curTime = m_timer.get();
     var desiredState = m_trajectory.sample(curTime);
@@ -180,12 +254,10 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
       new SwerveModuleState()
     };
     m_outputModuleStates.accept(stoppedModuleStates);
-
   }
 
   @Override
   public boolean isFinished() {
-    // This allows the trajectory to be stopped before it ends
-    return m_isFinished.getAsBoolean();
+    return m_isFinished.getAsBoolean() || m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds());
   }
 }

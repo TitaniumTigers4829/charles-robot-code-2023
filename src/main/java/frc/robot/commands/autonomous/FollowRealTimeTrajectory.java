@@ -39,16 +39,16 @@ public class FollowRealTimeTrajectory extends CommandBase {
     // X and Y should be in meters
     // You might have to switch the x and y values and make them negative or positive
     // To get these 3 values, you should use the odometry or poseEstimator
-    double startX = driveSubsystem.getPose().getX();
-    double startY = driveSubsystem.getPose().getY();
+    double startX = 0;
+    double startY = 0;
     Rotation2d startRotation = driveSubsystem.odometry.getPoseMeters().getRotation();
-    Pose2d start = new Pose2d(startY, startX, startRotation);
+    Pose2d start = new Pose2d(startX, startY, startRotation);
 
     // These values should be field relative, if they are robot relative add them to the start values
-    double endX = driveSubsystem.getPose().getX();
-    double endY = driveSubsystem.getPose().getY() + .5;
+    double endX = 1;
+    double endY = 0;
     Rotation2d endRotation = driveSubsystem.odometry.getPoseMeters().getRotation();
-    Pose2d end = new Pose2d(endY, endX, endRotation);
+    Pose2d end = new Pose2d(endX, endY, endRotation);
 
     // If you want any middle waypoints in the trajectory, add them here
     List<Translation2d> middleWaypoints = List.of();
@@ -76,10 +76,9 @@ public class FollowRealTimeTrajectory extends CommandBase {
     TrajectoryConfig config = new TrajectoryConfig(
       driveMaxSpeedMetersPerSecond,
       driveMaxAccelerationMetersPerSecond)
-        // Add kinematics to ensure max speed is actually obeyed
-        // .setKinematics(SwerveDriveConstants.kDriveKinematic)
-        .setStartVelocity(0)
-        .setEndVelocity(0);
+      .setKinematics(DriveConstants.driveKinematics)
+      .setStartVelocity(0)
+      .setEndVelocity(0);
 
     Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
       start,
@@ -89,6 +88,8 @@ public class FollowRealTimeTrajectory extends CommandBase {
     );
 
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    driveSubsystem.resetOdometry(trajectory.getInitialPose());
 
     new RealTimeSwerveControllerCommand(
       trajectory,

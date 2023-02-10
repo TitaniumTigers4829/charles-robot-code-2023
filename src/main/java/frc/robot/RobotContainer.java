@@ -6,8 +6,6 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -15,16 +13,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.JoystickConstants;
-import frc.robot.commands.limb.claw.ToggleClaw;
-import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.commands.autonomous.FollowPathPlannerTrajectory;
 import frc.robot.commands.autonomous.FollowRealTimeTrajectory;
 import frc.robot.commands.drive.DriveCommand;
 import frc.robot.commands.drive.FaceForward;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.PoseEstimationSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -75,7 +68,6 @@ public class RobotContainer {
       () -> modifyAxisSquared(rightStickX) * -1, 
       () -> !rightBumper.getAsBoolean()
     );
-
   
     driveSubsystem.setDefaultCommand(driveCommand);
 
@@ -124,8 +116,7 @@ public class RobotContainer {
     rightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
 
     JoystickButton bButton = new JoystickButton(driverJoystick, JoystickConstants.bButtonID);
-    // bButton.onTrue(new FollowPathPlannerTrajectory(driveSubsystem, "MyPath", true));
-    bButton.whileTrue(new FollowRealTimeTrajectory(driveSubsystem, bButton));
+    bButton.whileTrue(new FollowRealTimeTrajectory(driveSubsystem, () -> !bButton.getAsBoolean()));
   }
 
   public Command getAutonomousCommand() {

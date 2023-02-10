@@ -126,7 +126,7 @@ public final class Constants {
     public static final double xControllerP = .5;
     public static final double yControllerP = .5;
     public static final double thetaControllerP = 0.2;
-    public static final double thetaProfiledControllerP = 8.1;
+    public static final double thetaProfiledControllerP = 1;
     public static final double maxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double maxAngularSpeedRadiansPerSecondSquared = Math.PI;
   
