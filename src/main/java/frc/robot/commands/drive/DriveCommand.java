@@ -7,7 +7,6 @@ package frc.robot.commands.drive;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -43,7 +42,6 @@ public class DriveCommand extends CommandBase {
       rightX.getAsDouble() * DriveConstants.maxAngularSpeedRadiansPerSecond,
       isFieldRelative.getAsBoolean()
     );
-    
   }
 
   // Called once the command ends or is interrupted.

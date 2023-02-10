@@ -27,9 +27,9 @@ public final class Constants {
   public static final int turningCANcoderCPR = 4096;
 
   public static final class DriveConstants {
-    public static final double trackWidth = Units.inchesToMeters(29.5);
+    public static final double trackWidth = Units.inchesToMeters(24.5);
     // Distance between centers of right and left wheels on robot
-    public static final double wheelBase = Units.inchesToMeters(29.5);
+    public static final double wheelBase = Units.inchesToMeters(24.5);
     // Distance between front and back wheels on robot
     public static final SwerveDriveKinematics driveKinematics =
       new SwerveDriveKinematics(
@@ -118,14 +118,15 @@ public final class Constants {
 
   }
 
-  public static final class PathPlannerConstants {
+  public static final class TrajectoryConstants {
 
     // Autonomous Period Constants TODO: Tune all of these values
-    public static final double autoMaxVelocity = 4.5; // meters/second
-    public static final double autoMaxAcceleration = 3.25; // meters/second/second
-    public static final double xControllerP = 1.25;
-    public static final double yControllerP = 1.25;
-    public static final double thetaControllerP = 3;
+    public static final double autoMaxVelocity = 1; // meters/second
+    public static final double autoMaxAcceleration = 1; // meters/second/second
+    public static final double xControllerP = .5;
+    public static final double yControllerP = .5;
+    public static final double thetaControllerP = 0.2;
+    public static final double thetaProfiledControllerP = 1;
     public static final double maxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double maxAngularSpeedRadiansPerSecondSquared = Math.PI;
   
@@ -221,18 +222,19 @@ public final class Constants {
     public static final int clawButtonID = 1;
 
     // Button IDs:
-    public static final int xButtonID = 1;
-    public static final int aButtonID = 2;
-    public static final int bButtonID = 3;
+    public static final int xButtonID = 3;
+    // TODO: stuff
+    public static final int aButtonID = 1;
+    public static final int bButtonID = 2;
     public static final int yButtonID = 4;
     public static final int leftBumperID = 5;
     public static final int rightBumperID = 6;
     public static final int leftTriggerID = 7;
     public static final int rightTriggerID = 8;
-    public static final int backButtonID = 9;
-    public static final int startButtonID = 10;
-    public static final int leftStickPressID = 11;
-    public static final int rightStickPressID = 12;
+    public static final int backButtonID = 7;
+    public static final int startButtonID = 8;
+    public static final int leftStickPressID = 9;
+    public static final int rightStickPressID = 10;
 
     public static final int leftDPadID = 270;
     public static final int upDPadID = 0;

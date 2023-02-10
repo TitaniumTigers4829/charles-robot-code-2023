@@ -109,6 +109,28 @@ public class SwerveModule {
   }
 
   /**
+   * @param currentAngle what the controller currently reads (radians)
+   * @param targetAngleSetpoint the desired angle (radians)
+   * @return the target angle in controller's scope (radians)
+   */
+  public static double calculateContinuousInputSetpoint(double currentAngle, double targetAngleSetpoint) {
+    targetAngleSetpoint = Math.IEEEremainder(targetAngleSetpoint, Math.PI * 2);
+
+    double remainder = currentAngle % (Math.PI * 2);
+    double adjustedAngleSetpoint = targetAngleSetpoint + (currentAngle - remainder);
+
+    // We don't want to rotate over 180 degrees, so just rotate the other way (add a
+    // full rotation)
+    if (adjustedAngleSetpoint - currentAngle > Math.PI) {
+        adjustedAngleSetpoint -= Math.PI * 2;
+    } else if (adjustedAngleSetpoint - currentAngle < -Math.PI) {
+        adjustedAngleSetpoint += Math.PI * 2;
+    }
+
+    return adjustedAngleSetpoint;
+  }
+
+  /**
    * Gets the heading of the module
    * @return the absolute position of the CANCoder
    */
@@ -133,7 +155,8 @@ public class SwerveModule {
   public SwerveModulePosition getPosition() {
     return new SwerveModulePosition(
       ModuleConstants.drivetoMetersPerSecond * driveMotor.getSelectedSensorVelocity(), 
-      Rotation2d.fromDegrees(getCANCoderABS()));
+      Rotation2d.fromDegrees(getCANCoderABS())
+    );
   }
 
   /**
@@ -150,6 +173,7 @@ public class SwerveModule {
     // Converts meters per second to rpm
     double desiredDriveRPM = optimizedDesiredState.speedMetersPerSecond * 60 
       * ModuleConstants.driveGearRatio / ModuleConstants.wheelCircumferenceMeters;
+      
     // Converts rpm to encoder units per 100 milliseconds
     double desiredDriveEncoderUnitsPer100MS = desiredDriveRPM / 600.0 * 2048;
 
@@ -162,9 +186,9 @@ public class SwerveModule {
         + turnFeedForward.calculate(turnPIDController.getSetpoint().velocity);
     turningMotor.set(turnOutput / 12);
 
-    SmartDashboard.putNumber("Current Velocity", getState().speedMetersPerSecond);
-    SmartDashboard.putNumber("Desired Speed", optimizedDesiredState.speedMetersPerSecond);
-    SmartDashboard.putNumber("Error", optimizedDesiredState.speedMetersPerSecond - getState().speedMetersPerSecond);
+    SmartDashboard.putNumber("Current Angle", turnRadians);
+    SmartDashboard.putNumber("Desired Angle", optimizedDesiredState.angle.getRadians());
+    SmartDashboard.putNumber("Error", optimizedDesiredState.angle.getRadians() - turnRadians);
   }
 
   /**

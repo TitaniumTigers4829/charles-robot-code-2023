@@ -60,9 +60,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   // Odometry class for tracking robot pose
   public SwerveDriveOdometry odometry = new SwerveDriveOdometry(DriveConstants.driveKinematics,
-      gyro.getRotation2d(), getModulePositions());
-
-  private DriveSubsystem driveSubsystem;
+      getRotation2d(), getModulePositions());
 
   /**
    * Creates a new DriveSubsystem.
@@ -74,25 +72,25 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     // Update the odometry in the periodic block
     odometry.update(
-        gyro.getRotation2d(),
+        getRotation2d(),
         getModulePositions()
     );
-    
-    SwerveModulePosition[] swerveModulePositions = getModulePositions(); 
+
+    SmartDashboard.putString("Odometry", odometry.getPoseMeters().toString());
   }
 
   /**
    * @return Heading in degrees.
    */
   public double getHeading() {
-    return (gyro.getAngle() + this.gyroOffset) % 360;
+    return (-gyro.getAngle() + this.gyroOffset) % 360;
   }
 
   /**
    * @return Heading as a Rotation2d in radians.
    */
   public Rotation2d getRotation2d() {
-    return gyro.getRotation2d();
+    return Rotation2d.fromDegrees(getHeading());
   }
 
   public void setGyroOffset(int gyroOffset) {
@@ -114,7 +112,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param pose The Pose2d to which to set the odometry.
    */
   public void resetOdometry(Pose2d pose) {
-    odometry.resetPosition(gyro.getRotation2d(), getModulePositions(), pose);
+    odometry.resetPosition(getRotation2d(), getModulePositions(), pose);
   }
   
   /**
