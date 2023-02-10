@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.JoystickConstants;
 import frc.robot.commands.limb.claw.ToggleClaw;
+import frc.robot.commands.limelight.SwitchLimelightPipeline;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -40,11 +41,11 @@ public class RobotContainer {
   private final Joystick driverJoystick;
 
   private final JoystickButton rightBumper, aButton;
+  private final POVButton rightDirectionPad;
 
   public final Joystick buttonBoard;
 
   private final JoystickButton clawButton;
-  
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -56,6 +57,9 @@ public class RobotContainer {
     driverJoystick = new Joystick(JoystickConstants.driverJoystickID);
     rightBumper = new JoystickButton(driverJoystick, JoystickConstants.rightBumperID);
     aButton = new JoystickButton(driverJoystick, JoystickConstants.aButtonID);
+
+    rightDirectionPad = new POVButton(driverJoystick, JoystickConstants.rightDPadID);
+
 
     buttonBoard = new Joystick(JoystickConstants.buttonBoardID);
     clawButton = new JoystickButton(buttonBoard, JoystickConstants.clawButtonID);
@@ -121,7 +125,6 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // clawButton.whileTrue(new ToggleClaw(armSubsystem));
-    POVButton rightDirectionPad = new POVButton(driverJoystick, JoystickConstants.rightDPadID);
     rightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
   }
 
