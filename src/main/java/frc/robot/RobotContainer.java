@@ -37,8 +37,6 @@ public class RobotContainer {
   private final JoystickButton rightBumper, aButton;
 
   public final Joystick buttonBoard;
-
-  private final JoystickButton clawButton;
   
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -53,7 +51,6 @@ public class RobotContainer {
     aButton = new JoystickButton(driverJoystick, JoystickConstants.aButtonID);
 
     buttonBoard = new Joystick(JoystickConstants.buttonBoardID);
-    clawButton = new JoystickButton(buttonBoard, JoystickConstants.clawButtonID);
 
     driveSubsystem = new DriveSubsystem();
     // poseEstimationSubsystem = new PoseEstimationSubsystem(driveSubsystem);
@@ -70,13 +67,6 @@ public class RobotContainer {
     );
   
     driveSubsystem.setDefaultCommand(driveCommand);
-
-    aButton.whileTrue(new FaceForward(
-      driveSubsystem, 
-      () -> modifyAxisSquared(leftStickY) * -1, 
-      () -> modifyAxisSquared(leftStickX) * -1, 
-      () -> !rightBumper.getAsBoolean()
-    ));
 
     configureButtonBindings();
   }
