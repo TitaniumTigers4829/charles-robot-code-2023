@@ -26,29 +26,29 @@ public class DriveSubsystem extends SubsystemBase {
   private int gyroOffset = 0;
 
   private final SwerveModule frontLeft = new SwerveModule(
-      DriveConstants.frontLeftDriveMotorPort,
-      DriveConstants.frontLeftTurningMotorPort,
-      DriveConstants.frontLeftTurningEncoderPort,
-      DriveConstants.frontLeftAngleZero,
-      DriveConstants.frontLeftTurningEncoderReversed,
-      DriveConstants.frontLeftDriveEncoderReversed
-    );
-  private final SwerveModule rearLeft = new SwerveModule(
-      DriveConstants.rearLeftDriveMotorPort,
-      DriveConstants.rearLeftTurningMotorPort,
-      DriveConstants.rearLeftTurningEncoderPort,
-      DriveConstants.rearLeftAngleZero,
-      DriveConstants.rearLeftTurningEncoderReversed,
-      DriveConstants.rearLeftDriveEncoderReversed
-    );
+    DriveConstants.frontLeftDriveMotorPort,
+    DriveConstants.frontLeftTurningMotorPort,
+    DriveConstants.frontLeftTurningEncoderPort,
+    DriveConstants.frontLeftAngleZero,
+    DriveConstants.frontLeftTurningEncoderReversed,
+    DriveConstants.frontLeftDriveEncoderReversed
+  );
   private final SwerveModule frontRight = new SwerveModule(
-      DriveConstants.frontRightDriveMotorPort,
-      DriveConstants.frontRightTurningMotorPort,
-      DriveConstants.frontRightTurningEncoderPort,
-      DriveConstants.frontRightAngleZero,
-      DriveConstants.frontRightTurningEncoderReversed,
-      DriveConstants.frontRightDriveEncoderReversed
-    );
+    DriveConstants.frontRightDriveMotorPort,
+    DriveConstants.frontRightTurningMotorPort,
+    DriveConstants.frontRightTurningEncoderPort,
+    DriveConstants.frontRightAngleZero,
+    DriveConstants.frontRightTurningEncoderReversed,
+    DriveConstants.frontRightDriveEncoderReversed
+  );
+  private final SwerveModule rearLeft = new SwerveModule(
+    DriveConstants.rearLeftDriveMotorPort,
+    DriveConstants.rearLeftTurningMotorPort,
+    DriveConstants.rearLeftTurningEncoderPort,
+    DriveConstants.rearLeftAngleZero,
+    DriveConstants.rearLeftTurningEncoderReversed,
+    DriveConstants.rearLeftDriveEncoderReversed
+  );
   private final SwerveModule rearRight = new SwerveModule(
       DriveConstants.rearRightDriveMotorPort,
       DriveConstants.rearRightTurningMotorPort,
@@ -57,6 +57,13 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.rearRightTurningEncoderReversed,
       DriveConstants.rearRightDriveEncoderReversed
     );
+
+public final SwerveModule[] swerveModules = {
+  frontLeft,
+  frontRight,
+  rearLeft,
+  rearRight
+};
 
   // Odometry class for tracking robot pose
   public SwerveDriveOdometry odometry = new SwerveDriveOdometry(DriveConstants.driveKinematics,
@@ -133,10 +140,9 @@ public class DriveSubsystem extends SubsystemBase {
             : new ChassisSpeeds(xSpeed, ySpeed, rot));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.joystickMaxSpeedMetersPerSecondLimit);
-    frontLeft.setDesiredState(swerveModuleStates[0]);
-    frontRight.setDesiredState(swerveModuleStates[1]);
-    rearLeft.setDesiredState(swerveModuleStates[2]);
-    rearRight.setDesiredState(swerveModuleStates[3]);
+    for (int i = 0; i < swerveModules.length; i++) {
+      swerveModules[i].setDesiredState(swerveModuleStates[i]);
+    }
   }
 
   /**
@@ -147,11 +153,26 @@ public class DriveSubsystem extends SubsystemBase {
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
         desiredStates, DriveConstants.joystickMaxSpeedMetersPerSecondLimit);
-    frontLeft.setDesiredState(desiredStates[0]);
-    frontRight.setDesiredState(desiredStates[1]);
-    rearLeft.setDesiredState(desiredStates[2]);
-    rearRight.setDesiredState(desiredStates[3]);
+    for (int i = 0; i < swerveModules.length; i++) {
+      swerveModules[i].setDesiredState(desiredStates[i]);
+    }
   }
+
+  // FIXME: It might need to be in this order for the pose estimator
+  // /**
+  //  * Gets the current drivetrain position, as reported by the modules themselves.
+  //  * @return current drivetrain state. Array orders are frontLeft, frontRight, backLeft, backRight
+  //  */
+  // public SwerveModulePosition[] getModulePositions() {
+  //   SwerveModulePosition[] swerveModulePositions = {
+  //     frontLeft.getPosition(),
+  //     rearLeft.getPosition(),
+  //     frontRight.getPosition(),
+  //     rearRight.getPosition()
+  //   };
+
+  //   return swerveModulePositions;
+  // } 
 
   /**
    * Gets the current drivetrain position, as reported by the modules themselves.
@@ -160,8 +181,8 @@ public class DriveSubsystem extends SubsystemBase {
   public SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] swerveModulePositions = {
       frontLeft.getPosition(),
-      rearLeft.getPosition(),
       frontRight.getPosition(),
+      rearLeft.getPosition(),
       rearRight.getPosition()
     };
 

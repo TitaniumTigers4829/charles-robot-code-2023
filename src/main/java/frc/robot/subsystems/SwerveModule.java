@@ -165,7 +165,7 @@ public class SwerveModule {
    */
   public void setDesiredState(SwerveModuleState desiredState) {
 
-    double turnRadians = ((2 * Math.PI) / 360) * turnEncoder.getAbsolutePosition();
+    double turnRadians = getTurnRadians();
 
     // Optimize the reference state to avoid spinning further than 90 degrees
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(turnRadians));
@@ -189,6 +189,10 @@ public class SwerveModule {
     SmartDashboard.putNumber("Current Angle", turnRadians);
     SmartDashboard.putNumber("Desired Angle", optimizedDesiredState.angle.getRadians());
     SmartDashboard.putNumber("Error", optimizedDesiredState.angle.getRadians() - turnRadians);
+  }
+
+  public double getTurnRadians() {
+    return ((2 * Math.PI) / 360) * turnEncoder.getAbsolutePosition();
   }
 
   /**

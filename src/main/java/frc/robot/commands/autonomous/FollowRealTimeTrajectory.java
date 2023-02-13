@@ -12,6 +12,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
@@ -39,14 +40,14 @@ public class FollowRealTimeTrajectory extends CommandBase {
     // X and Y should be in meters
     // You might have to switch the x and y values and make them negative or positive
     // To get these 3 values, you should use the odometry or poseEstimator
-    double startX = 0;
-    double startY = 0;
-    Rotation2d startRotation = driveSubsystem.odometry.getPoseMeters().getRotation();
+    double startX = driveSubsystem.getPose().getX();
+    double startY = driveSubsystem.getPose().getY();
+    Rotation2d startRotation = Rotation2d.fromDegrees(0);
     Pose2d start = new Pose2d(startX, startY, startRotation);
 
     // These values should be field relative, if they are robot relative add them to the start values
-    double endX = 1;
-    double endY = 0;
+    double endX = driveSubsystem.getPose().getX() + 2;
+    double endY = driveSubsystem.getPose().getY();
     Rotation2d endRotation = driveSubsystem.odometry.getPoseMeters().getRotation();
     Pose2d end = new Pose2d(endX, endY, endRotation);
 
@@ -62,6 +63,7 @@ public class FollowRealTimeTrajectory extends CommandBase {
     // Your probably only want to edit the P values
     PIDController xController = new PIDController(TrajectoryConstants.xControllerP, 0, 0);
     PIDController yController = new PIDController(TrajectoryConstants.yControllerP, 0, 0);
+    // TODO: Tune P value
     ProfiledPIDController thetaController = new ProfiledPIDController(
       TrajectoryConstants.thetaProfiledControllerP, 0, 0,
       new TrapezoidProfile.Constraints(turnMaxAngularSpeedRadiansPerSecond, turnMaxAngularSpeedRadiansPerSecondSquared)
@@ -89,7 +91,7 @@ public class FollowRealTimeTrajectory extends CommandBase {
 
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    driveSubsystem.resetOdometry(trajectory.getInitialPose());
+    // driveSubsystem.resetOdometry(trajectory.getInitialPose());
 
     new RealTimeSwerveControllerCommand(
       trajectory,
