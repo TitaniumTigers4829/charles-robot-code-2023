@@ -84,7 +84,6 @@ private final SwerveModule[] swerveModules = {
     );
 
     SmartDashboard.putString("Odometry", odometry.getPoseMeters().toString());
-    SmartDashboard.putString("Module Pos", getModulePositions()[0].toString());
   }
 
   /**

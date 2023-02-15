@@ -28,10 +28,9 @@ public final class Constants {
 
   public static final class DriveConstants {
     // Distance between centers of right and left wheels on robot
-    public static final double trackWidth = Units.inchesToMeters(24.5);
+    public static final double trackWidth = Units.inchesToMeters(22.25);
     // Distance between front and back wheels on robot
-    public static final double wheelBase = Units.inchesToMeters(24.5);
-    // TODO: This may be wrong
+    public static final double wheelBase = Units.inchesToMeters(28.5);
     public static final SwerveDriveKinematics driveKinematics =
       new SwerveDriveKinematics(
         new Translation2d(wheelBase / 2, trackWidth / 2), // Front Left
@@ -53,36 +52,35 @@ public final class Constants {
 
     public static final double joystickMaxSpeedMetersPerSecondLimit = 4;
 
-    public static final int frontLeftDriveMotorPort = 11;
-    public static final int rearLeftDriveMotorPort = 12;
+    public static final int frontLeftDriveMotorPort = 12;
     public static final int frontRightDriveMotorPort = 16;
+    public static final int rearLeftDriveMotorPort = 11;
     public static final int rearRightDriveMotorPort = 9;
 
-    public static final int frontLeftTurningMotorPort = 13;
-    public static final int rearLeftTurningMotorPort = 7;
+    public static final int frontLeftTurningMotorPort = 7;
     public static final int frontRightTurningMotorPort = 10;
+    public static final int rearLeftTurningMotorPort = 13;
     public static final int rearRightTurningMotorPort = 8;
 
-    public static final int frontLeftTurningEncoderPort = 1;
-    public static final int rearLeftTurningEncoderPort = 0;
+    public static final int frontLeftTurningEncoderPort = 0;
     public static final int frontRightTurningEncoderPort = 2;
+    public static final int rearLeftTurningEncoderPort = 1;
     public static final int rearRightTurningEncoderPort = 3;
 
     // In degrees.
-    public static final double frontLeftAngleZero = 65.654296875;
-    public static final double rearLeftAngleZero = -42.099609375;
+    public static final double frontLeftAngleZero = 47.900390625; //-42.099609375
     public static final double frontRightAngleZero = -71.630859375;
+    public static final double rearLeftAngleZero = -24.345703125; //65.654296875
     public static final double rearRightAngleZero = -88.681640625;
 
-    // TODO: find
     public static final boolean frontLeftTurningEncoderReversed = false;
-    public static final boolean rearLeftTurningEncoderReversed = false;
     public static final boolean frontRightTurningEncoderReversed = false;
+    public static final boolean rearLeftTurningEncoderReversed = false;
     public static final boolean rearRightTurningEncoderReversed = false;
-    // TODO: find
-    public static final boolean frontLeftDriveEncoderReversed = false;
-    public static final boolean rearLeftDriveEncoderReversed = false;
+    
+    public static final boolean frontLeftDriveEncoderReversed = true;
     public static final boolean frontRightDriveEncoderReversed = true;
+    public static final boolean rearLeftDriveEncoderReversed = true;
     public static final boolean rearRightDriveEncoderReversed = true;
   }
   
