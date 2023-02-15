@@ -153,10 +153,10 @@ public class SwerveModule {
   }
 
   public SwerveModulePosition getPosition() {
-    return new SwerveModulePosition(
-      ModuleConstants.drivetoMetersPerSecond * driveMotor.getSelectedSensorVelocity(), 
-      Rotation2d.fromDegrees(getCANCoderABS())
-    );
+    double position = ModuleConstants.falconToMeters * driveMotor.getSelectedSensorPosition();
+    Rotation2d rotation = Rotation2d.fromDegrees(getCANCoderABS());
+
+    return new SwerveModulePosition(position, rotation);
   }
 
   /**

@@ -27,16 +27,17 @@ public final class Constants {
   public static final int turningCANcoderCPR = 4096;
 
   public static final class DriveConstants {
-    public static final double trackWidth = Units.inchesToMeters(24.5);
     // Distance between centers of right and left wheels on robot
-    public static final double wheelBase = Units.inchesToMeters(24.5);
+    public static final double trackWidth = Units.inchesToMeters(24.5);
     // Distance between front and back wheels on robot
+    public static final double wheelBase = Units.inchesToMeters(24.5);
+    // TODO: This may be wrong
     public static final SwerveDriveKinematics driveKinematics =
       new SwerveDriveKinematics(
-        new Translation2d(wheelBase / 2, trackWidth / 2),
-        new Translation2d(wheelBase / 2, -trackWidth / 2),
-        new Translation2d(-wheelBase / 2, trackWidth / 2),
-        new Translation2d(-wheelBase / 2, -trackWidth / 2)
+        new Translation2d(wheelBase / 2, trackWidth / 2), // Front Left
+        new Translation2d(wheelBase / 2, -trackWidth / 2), // Front Right
+        new Translation2d(-wheelBase / 2, trackWidth / 2), // Rear Left
+        new Translation2d(-wheelBase / 2, -trackWidth / 2) // Rear Right
       );
 
     public static final double voltsS = 0.73394;
@@ -107,6 +108,7 @@ public final class Constants {
         wheelDiameterMeters * Math.PI; // C = D * pi
     public static final double drivetoMetersPerSecond =
         (10 * wheelCircumferenceMeters) / (driveGearRatio * driveFXEncoderCPR);
+    public static final double falconToMeters = wheelCircumferenceMeters / (driveGearRatio * 2048);
 
     public static final TrapezoidProfile.Constraints moduleTurnConstraints =
       new TrapezoidProfile.Constraints(

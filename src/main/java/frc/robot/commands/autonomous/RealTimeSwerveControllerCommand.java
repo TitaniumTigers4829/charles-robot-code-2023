@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.SwerveModule;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -46,6 +45,7 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
   private final Consumer<SwerveModuleState[]> m_outputModuleStates;
   private final Supplier<Rotation2d> m_desiredRotation;
   private final BooleanSupplier m_isFinished;
+  private final Pose2d m_endPose;
   private final DriveSubsystem m_driveSubsystem;
 
   /**
@@ -68,6 +68,7 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
    *     time step.
    * @param outputModuleStates The raw output module states from the position controllers.
    * @param isFinished The Boolean Supplier for if the trajectory should end.
+   * @param endPose The Pose2d for the trajectory's ending position.
    * @param driveSubsystem The swerve drive subsystem.
    */
   public RealTimeSwerveControllerCommand(
@@ -80,6 +81,7 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
       Supplier<Rotation2d> desiredRotation,
       Consumer<SwerveModuleState[]> outputModuleStates,
       BooleanSupplier isFinished,
+      Pose2d endPose,
       DriveSubsystem driveSubsystem) {
     this(
         trajectory,
@@ -92,6 +94,7 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
         desiredRotation,
         outputModuleStates,
         isFinished,
+        endPose,
         driveSubsystem);
   }
 
@@ -117,6 +120,7 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
    * @param thetaController The Trajectory Tracker PID controller for angle for the robot.
    * @param outputModuleStates The raw output module states from the position controllers.
    * @param isFinished The Boolean Supplier for if the trajectory should end.
+   * @param endPose The Pose2d for the trajectory's ending position.
    * @param driveSubsystem The swerve drive subsystem.
    */
   public RealTimeSwerveControllerCommand(
@@ -128,6 +132,7 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
       ProfiledPIDController thetaController,
       Consumer<SwerveModuleState[]> outputModuleStates,
       BooleanSupplier isFinished,
+      Pose2d endPose,
       DriveSubsystem driveSubsystem) {
     this(
         trajectory,
@@ -140,6 +145,7 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
             trajectory.getStates().get(trajectory.getStates().size() - 1).poseMeters.getRotation(),
         outputModuleStates,
         isFinished,
+        endPose,
         driveSubsystem);
   }
 
@@ -163,6 +169,7 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
    * @param controller The HolonomicDriveController for the drivetrain.
    * @param outputModuleStates The raw output module states from the position controllers.
    * @param isFinished The Boolean Supplier for if the trajectory should end.
+   * @param endPose The Pose2d for the trajectory's ending position.
    * @param driveSubsystem The swerve drive subsystem.
    */
   public RealTimeSwerveControllerCommand(
@@ -172,6 +179,7 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
       HolonomicDriveController controller,
       Consumer<SwerveModuleState[]> outputModuleStates,
       BooleanSupplier isFinished,
+      Pose2d endPose,
       DriveSubsystem driveSubsystem) {
     this(
         trajectory,
@@ -182,6 +190,7 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
             trajectory.getStates().get(trajectory.getStates().size() - 1).poseMeters.getRotation(),
         outputModuleStates,
         isFinished,
+        endPose,
         driveSubsystem);
   }
 
@@ -202,6 +211,7 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
    *     time step.
    * @param outputModuleStates The raw output module states from the position controllers.
    * @param isFinished The Boolean Supplier for if the trajectory should end.
+   * @param endPose The Pose2d for the trajectory's ending position.
    * @param driveSubsystem The swerve drive subsystem.
    */
   public RealTimeSwerveControllerCommand(
@@ -212,6 +222,7 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
       Supplier<Rotation2d> desiredRotation,
       Consumer<SwerveModuleState[]> outputModuleStates,
       BooleanSupplier isFinished,
+      Pose2d endPose,
       DriveSubsystem driveSubsystem) {
     m_trajectory = requireNonNullParam(trajectory, "trajectory", "RealTimeSwerveControllerCommand");
     m_pose = requireNonNullParam(pose, "pose", "RealTimeSwerveControllerCommand");
@@ -226,6 +237,8 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
 
     m_isFinished = requireNonNullParam(isFinished, "isFinished", "RealTimeSwerveControllerCommand");
 
+    m_endPose = requireNonNullParam(endPose, "endPose", "RealTimeSwerveControllerCommand");
+
     m_driveSubsystem = requireNonNullParam(driveSubsystem, "driveSubsystem", "RealTimeSwerveControllerCommand");
 
     addRequirements(driveSubsystem);
@@ -233,6 +246,9 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
 
   @Override
   public void initialize() {
+    SmartDashboard.putNumber("Trajectory time", m_trajectory.getTotalTimeSeconds());
+    SmartDashboard.putString("End Pose", m_endPose.toString());
+
     m_timer.reset();
     m_timer.start();
   }
@@ -246,30 +262,21 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
         m_controller.calculate(m_pose.get(), desiredState, m_desiredRotation.get());
     var targetModuleStates = m_kinematics.toSwerveModuleStates(targetChassisSpeeds);
 
-    SwerveModuleState[] optimizedDesiredStates = {
-      SwerveModuleState.optimize(targetModuleStates[0], new Rotation2d(m_driveSubsystem.swerveModules[0].getTurnRadians())),
-      SwerveModuleState.optimize(targetModuleStates[1], new Rotation2d(m_driveSubsystem.swerveModules[1].getTurnRadians())),
-      SwerveModuleState.optimize(targetModuleStates[2], new Rotation2d(m_driveSubsystem.swerveModules[2].getTurnRadians())),
-      SwerveModuleState.optimize(targetModuleStates[3], new Rotation2d(m_driveSubsystem.swerveModules[3].getTurnRadians()))
-    };
-
-    m_outputModuleStates.accept(optimizedDesiredStates);
+    m_outputModuleStates.accept(targetModuleStates);
   }
 
   @Override
   public void end(boolean interrupted) {
     m_timer.stop();
-    SwerveModuleState[] stoppedModuleStates = {
-      new SwerveModuleState(),
-      new SwerveModuleState(),
-      new SwerveModuleState(),
-      new SwerveModuleState()
-    };
-    m_outputModuleStates.accept(stoppedModuleStates);
+    // Stops the swerve drive
+    m_driveSubsystem.drive(0, 0, 0, false);
   }
 
   @Override
   public boolean isFinished() {
-    return m_isFinished.getAsBoolean() || m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds());
+    boolean isTrajectoryCompleted = (Math.abs(m_endPose.getX() - m_driveSubsystem.getPose().getX()) < .05 &&
+      Math.abs(m_endPose.getY() - m_driveSubsystem.getPose().getY()) < .05);
+    SmartDashboard.putNumber("x pose error", (m_endPose.getX() - m_driveSubsystem.getPose().getX()));
+    return m_isFinished.getAsBoolean() || m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds()) || isTrajectoryCompleted;
   }
 }
