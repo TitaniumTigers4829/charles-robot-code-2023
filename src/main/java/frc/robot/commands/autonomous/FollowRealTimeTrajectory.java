@@ -42,7 +42,7 @@ public class FollowRealTimeTrajectory extends CommandBase {
     // To get these 3 values, you should use the odometry or poseEstimator
     double startX = driveSubsystem.getPose().getX();
     double startY = driveSubsystem.getPose().getY();
-    Rotation2d startRotation = Rotation2d.fromDegrees(0);
+    Rotation2d startRotation = Rotation2d.fromDegrees(0); // I don't know why this works
     Pose2d start = new Pose2d(startX, startY, startRotation);
 
     // These values should be field relative, if they are robot relative add them to the start values
@@ -103,6 +103,7 @@ public class FollowRealTimeTrajectory extends CommandBase {
       thetaController,
       driveSubsystem::setModuleStates,
       whileHeldButtonBooleanSupplier,
+      end,
       driveSubsystem
     ).schedule();
 

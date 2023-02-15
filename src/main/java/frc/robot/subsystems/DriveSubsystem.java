@@ -58,7 +58,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.rearRightDriveEncoderReversed
     );
 
-public final SwerveModule[] swerveModules = {
+private final SwerveModule[] swerveModules = {
   frontLeft,
   frontRight,
   rearLeft,

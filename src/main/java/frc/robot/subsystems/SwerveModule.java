@@ -153,10 +153,10 @@ public class SwerveModule {
   }
 
   public SwerveModulePosition getPosition() {
-    return new SwerveModulePosition(
-      ModuleConstants.drivetoMetersPerSecond * driveMotor.getSelectedSensorVelocity(), 
-      Rotation2d.fromDegrees(getCANCoderABS())
-    );
+    double position = ModuleConstants.falconToMeters * driveMotor.getSelectedSensorPosition();
+    Rotation2d rotation = Rotation2d.fromDegrees(getCANCoderABS());
+
+    return new SwerveModulePosition(position, rotation);
   }
 
   /**
@@ -186,13 +186,15 @@ public class SwerveModule {
         + turnFeedForward.calculate(turnPIDController.getSetpoint().velocity);
     turningMotor.set(turnOutput / 12);
 
-    SmartDashboard.putNumber("Current Angle", turnRadians);
-    SmartDashboard.putNumber("Desired Angle", optimizedDesiredState.angle.getRadians());
-    SmartDashboard.putNumber("Error", optimizedDesiredState.angle.getRadians() - turnRadians);
+    SmartDashboard.putString("Desired State" + driveMotor.getBaseID(), optimizedDesiredState.toString());
   }
 
   public double getTurnRadians() {
     return ((2 * Math.PI) / 360) * turnEncoder.getAbsolutePosition();
+  }
+
+  public double getAbsolutePosition() {
+    return turnEncoder.getAbsolutePosition();
   }
 
   /**
