@@ -42,17 +42,22 @@ public class FollowRealTimeTrajectory extends CommandBase {
     // To get these 3 values, you should use the odometry or poseEstimator
     double startX = driveSubsystem.getPose().getX();
     double startY = driveSubsystem.getPose().getY();
-    Rotation2d startRotation = Rotation2d.fromDegrees(0); // I don't know why this works
+    // The trajectory will not optimize the swerve modules without this being 0
+    Rotation2d startRotation = new Rotation2d();
     Pose2d start = new Pose2d(startX, startY, startRotation);
-
     // These values should be field relative, if they are robot relative add them to the start values
     double endX = driveSubsystem.getPose().getX() + 2;
     double endY = driveSubsystem.getPose().getY();
-    Rotation2d endRotation = driveSubsystem.odometry.getPoseMeters().getRotation();
+    // Do not make this value based on the robot's current odometry, it might crash.
+    Rotation2d endRotation = Rotation2d.fromDegrees(45);
     Pose2d end = new Pose2d(endX, endY, endRotation);
 
     // If you want any middle waypoints in the trajectory, add them here
-    List<Translation2d> middleWaypoints = List.of();
+    List<Translation2d> middleWaypoints = List.of(
+
+      // Swerve is weird and messes up the spline sometimes if you don't have this
+      new Translation2d(startX + ((endX - startX) * 0.95), startY + ((endY - startY) * 0.95))
+    );
 
     // You should have constans or everything below here
     double driveMaxSpeedMetersPerSecond = TrajectoryConstants.autoMaxVelocity;
@@ -82,31 +87,33 @@ public class FollowRealTimeTrajectory extends CommandBase {
       .setStartVelocity(0)
       .setEndVelocity(0);
 
-    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-      start,
-      middleWaypoints,
-      end,
-      config
-    );
+    // This is here just to ensure a bad trajectory doesn't crash the robot
+    try {
+      Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+          start,
+          middleWaypoints,
+          end,
+          config
+        );
 
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+      thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    // driveSubsystem.resetOdometry(trajectory.getInitialPose());
-
-    new RealTimeSwerveControllerCommand(
-      trajectory,
-      driveSubsystem::getPose, // Functional interface to feed supplier
-      kinematics,
-      // Position controllers
-      xController,
-      yController,
-      thetaController,
-      driveSubsystem::setModuleStates,
-      whileHeldButtonBooleanSupplier,
-      end,
-      driveSubsystem
-    ).schedule();
-
+      new RealTimeSwerveControllerCommand(
+        trajectory,
+        driveSubsystem::getPose, // Functional interface to feed supplier
+        kinematics,
+        // Position controllers
+        xController,
+        yController,
+        thetaController,
+        driveSubsystem::setModuleStates,
+        whileHeldButtonBooleanSupplier,
+        end,
+        driveSubsystem
+      ).schedule();
+    } catch(Exception e) {
+      SmartDashboard.putString("Trajectory Error Message", e.getLocalizedMessage());
+    }
   }
 
   @Override

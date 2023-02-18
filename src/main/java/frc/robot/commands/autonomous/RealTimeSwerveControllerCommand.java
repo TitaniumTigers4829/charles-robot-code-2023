@@ -15,7 +15,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -246,9 +245,6 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
 
   @Override
   public void initialize() {
-    SmartDashboard.putNumber("Trajectory time", m_trajectory.getTotalTimeSeconds());
-    SmartDashboard.putString("End Pose", m_endPose.toString());
-
     m_timer.reset();
     m_timer.start();
   }
@@ -276,7 +272,6 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
   public boolean isFinished() {
     boolean isTrajectoryCompleted = (Math.abs(m_endPose.getX() - m_driveSubsystem.getPose().getX()) < .05 &&
       Math.abs(m_endPose.getY() - m_driveSubsystem.getPose().getY()) < .05);
-    SmartDashboard.putNumber("x pose error", (m_endPose.getX() - m_driveSubsystem.getPose().getX()));
     return m_isFinished.getAsBoolean() || m_timer.hasElapsed(m_trajectory.getTotalTimeSeconds()) || isTrajectoryCompleted;
   }
 }

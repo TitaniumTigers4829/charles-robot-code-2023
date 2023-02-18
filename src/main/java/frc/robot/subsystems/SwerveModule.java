@@ -185,8 +185,6 @@ public class SwerveModule {
       turnPIDController.calculate(turnRadians, optimizedDesiredState.angle.getRadians())
         + turnFeedForward.calculate(turnPIDController.getSetpoint().velocity);
     turningMotor.set(turnOutput / 12);
-
-    SmartDashboard.putString("Desired State" + driveMotor.getBaseID(), optimizedDesiredState.toString());
   }
 
   public double getTurnRadians() {

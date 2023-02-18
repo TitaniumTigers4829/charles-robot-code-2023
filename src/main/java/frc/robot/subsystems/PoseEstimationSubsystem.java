@@ -103,7 +103,7 @@ public class PoseEstimationSubsystem extends SubsystemBase {
         currentTimeStampSeconds = timeStampValue / 1000;
       }
     } catch (JsonProcessingException e) {
-      SmartDashboard.putString("Json Parsing Error", e.getStackTrace().toString());
+      SmartDashboard.putString("Json Parsing Error", e.getLocalizedMessage());
     }
 
     // Updates the pose estimator's position if limelight position data was recieved with a new time stamp

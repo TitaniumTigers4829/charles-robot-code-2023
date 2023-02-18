@@ -87,11 +87,18 @@ private final SwerveModule[] swerveModules = {
   }
 
   /**
-   * @return Heading in degrees.
+   * @return Heading in degrees from 0 to 360.
    */
   public double getHeading() {
     return (-gyro.getAngle() + this.gyroOffset) % 360;
   }
+
+  // /**
+  //  * @return Heading in degrees from -180 to 180.
+  //  */
+  // public double getHeading() {
+  //   return ((gyro.getAngle() + 180 + this.gyroOffset) % 360) - 180;
+  // }
 
   /**
    * @return Heading as a Rotation2d in radians.
