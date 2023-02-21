@@ -18,11 +18,11 @@ public interface VisionSubsystem {
   public Pose2d getPoseFromAprilTags();
 
   /**
-   * Returns the timestamp in seconds of when the limelight calculated 
+   * Returns the timestamp in milleseconds of when the limelight calculated 
    * the robot's pose. If there are multiple limelights that can see april 
    * tags, it uses the limelight that is closest to an april tag. 
    */
-  public double getTimeStampInSeconds();
+  public long getTimeStampInMilleseconds();
 
   /**
    * Returns true if the limelight(s) can see one or more cubes.

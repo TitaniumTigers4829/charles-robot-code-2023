@@ -41,7 +41,7 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
   }
 
   @Override
-  public double getTimeStampInSeconds() {
+  public long getTimeStampInMilleseconds() {
     // TODO Auto-generated method stub
     return 0;
   }
