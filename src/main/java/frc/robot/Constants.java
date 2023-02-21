@@ -243,6 +243,8 @@ public final class Constants {
   }
 
   public static final class LimelightConstants {
+    public static final String frontLimelightName = "limelight-tigers";
+
     public static final double[][] cameraCropLookupTable = {
       // TODO: All of these are placeholder values
       // {x position in meters, limelight lower y crop}

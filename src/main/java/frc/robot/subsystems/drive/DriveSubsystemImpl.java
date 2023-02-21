@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.drive;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -18,12 +18,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
-public class DriveSubsystem extends SubsystemBase {
+public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem {
 
-  // The gyro sensor
-  public final AHRS gyro = new AHRS(SPI.Port.kMXP);
-
-  private int gyroOffset = 0;
+  private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
   private final SwerveModule frontLeft = new SwerveModule(
     DriveConstants.frontLeftDriveMotorPort,
@@ -58,22 +55,23 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.rearRightDriveEncoderReversed
     );
 
-private final SwerveModule[] swerveModules = {
-  frontLeft,
-  frontRight,
-  rearLeft,
-  rearRight
-};
+  private final SwerveModule[] swerveModules = {
+    frontLeft,
+    frontRight,
+    rearLeft,
+    rearRight
+  };
+
+  private int gyroOffset = 0;
 
   // Odometry class for tracking robot pose
-  public SwerveDriveOdometry odometry = new SwerveDriveOdometry(DriveConstants.driveKinematics,
+  private SwerveDriveOdometry odometry = new SwerveDriveOdometry(DriveConstants.driveKinematics,
       getRotation2d(), getModulePositions());
 
   /**
    * Creates a new DriveSubsystem.
    */
-  public DriveSubsystem() {
-  }
+  public DriveSubsystemImpl() {}
 
   @Override
   public void periodic() {
@@ -86,9 +84,20 @@ private final SwerveModule[] swerveModules = {
     SmartDashboard.putString("Odometry", odometry.getPoseMeters().toString());
   }
 
-  /**
-   * @return Heading in degrees from 0 to 360.
-   */
+  @Override
+  public void drive(double xSpeed, double ySpeed, double rotationSpeed, boolean fieldRelative) {
+    SwerveModuleState[] swerveModuleStates = DriveConstants.driveKinematics.toSwerveModuleStates(
+      fieldRelative
+      ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, getRotation2d())
+      : new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed));
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.joystickMaxSpeedMetersPerSecondLimit);
+    
+    for (int i = 0; i < swerveModules.length; i++) {
+      swerveModules[i].setDesiredState(swerveModuleStates[i]);
+    }
+  }
+
+  @Override
   public double getHeading() {
     return (-gyro.getAngle() + this.gyroOffset) % 360;
   }
@@ -100,91 +109,33 @@ private final SwerveModule[] swerveModules = {
   //   return ((gyro.getAngle() + 180 + this.gyroOffset) % 360) - 180;
   // }
 
-  /**
-   * @return Heading as a Rotation2d in radians.
-   */
+  @Override
   public Rotation2d getRotation2d() {
     return Rotation2d.fromDegrees(getHeading());
   }
 
+  @Override
   public void setGyroOffset(int gyroOffset) {
-    this.gyroOffset = gyroOffset;
+    this.gyroOffset = gyroOffset;    
   }
 
-  /**
-   * Returns the currently-estimated pose of the robot.
-   *
-   * @return The pose.
-   */
+  @Override
+  public void zeroHeading() {
+    gyroOffset = 0;
+    gyro.reset();
+  }
+
+  @Override
   public Pose2d getPose() {
     return odometry.getPoseMeters();
   }
 
-  /**
-   * Resets the odometry to the specified pose, keeps the current rotation.
-   *
-   * @param pose The Pose2d to which to set the odometry.
-   */
+  @Override
   public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(getRotation2d(), getModulePositions(), pose);
   }
-  
-  /**
-   * Method to drive the robot using joystick info.
-   *
-   * @param xSpeed        Speed of the robot in the x direction (forward).
-   * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param rot           Angular rate of the robot in radians per second.
-   * @param fieldRelative Whether the provided x and y speeds are relative to the
-   *                      field.
-   */
-  @SuppressWarnings("ParameterName")
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    SmartDashboard.putBoolean("Field Relative:", fieldRelative);
-    SwerveModuleState[] swerveModuleStates = DriveConstants.driveKinematics.toSwerveModuleStates(
-        fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, getRotation2d())
-            : new ChassisSpeeds(xSpeed, ySpeed, rot));
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        swerveModuleStates, DriveConstants.joystickMaxSpeedMetersPerSecondLimit);
-    for (int i = 0; i < swerveModules.length; i++) {
-      swerveModules[i].setDesiredState(swerveModuleStates[i]);
-    }
-  }
 
-  /**
-   * Sets the swerve ModuleStates.
-   *
-   * @param desiredStates The desired SwerveModule states.
-   */
-  public void setModuleStates(SwerveModuleState[] desiredStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, DriveConstants.joystickMaxSpeedMetersPerSecondLimit);
-    for (int i = 0; i < swerveModules.length; i++) {
-      swerveModules[i].setDesiredState(desiredStates[i]);
-    }
-  }
-
-  // FIXME: It might need to be in this order for the pose estimator
-  // /**
-  //  * Gets the current drivetrain position, as reported by the modules themselves.
-  //  * @return current drivetrain state. Array orders are frontLeft, frontRight, backLeft, backRight
-  //  */
-  // public SwerveModulePosition[] getModulePositions() {
-  //   SwerveModulePosition[] swerveModulePositions = {
-  //     frontLeft.getPosition(),
-  //     rearLeft.getPosition(),
-  //     frontRight.getPosition(),
-  //     rearRight.getPosition()
-  //   };
-
-  //   return swerveModulePositions;
-  // } 
-
-  /**
-   * Gets the current drivetrain position, as reported by the modules themselves.
-   * @return current drivetrain state. Array orders are frontLeft, frontRight, backLeft, backRight
-   */
+  @Override
   public SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] swerveModulePositions = {
       frontLeft.getPosition(),
@@ -194,14 +145,15 @@ private final SwerveModule[] swerveModules = {
     };
 
     return swerveModulePositions;
-  } 
-
-  /**
-   * Zeroes the heading of the robot.
-   */
-  public void zeroHeading() {
-    gyroOffset = 0;
-    gyro.reset();
   }
-  
+
+  @Override
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        desiredStates, DriveConstants.joystickMaxSpeedMetersPerSecondLimit);
+    for (int i = 0; i < swerveModules.length; i++) {
+      swerveModules[i].setDesiredState(desiredStates[i]);
+    }
+  }
+
 }

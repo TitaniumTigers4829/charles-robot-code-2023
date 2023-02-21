@@ -23,11 +23,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.extras.LinearInterpolator;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.drive.DriveSubsystemImpl;
 
 public class VisionSubsystemOld extends SubsystemBase {
   
-  private final DriveSubsystem driveSubsystem;
+  private final DriveSubsystemImpl driveSubsystem;
   private final SwerveDrivePoseEstimator poseEstimator;
   private final LinearInterpolator cameraCropLookupTable;
   private final NetworkTable networkTable; 
@@ -65,7 +65,7 @@ public class VisionSubsystemOld extends SubsystemBase {
 
   private double lastTimeStampSeconds = 0;
 
-  public VisionSubsystemOld(DriveSubsystem driveSubsystem) {
+  public VisionSubsystemOld(DriveSubsystemImpl driveSubsystem) {
     this.driveSubsystem = driveSubsystem;
 
     poseEstimator = new SwerveDrivePoseEstimator(

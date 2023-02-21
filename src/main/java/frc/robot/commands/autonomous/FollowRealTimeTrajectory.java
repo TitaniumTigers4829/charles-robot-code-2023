@@ -16,17 +16,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.drive.DriveSubsystemImpl;
+
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
 public class FollowRealTimeTrajectory extends CommandBase {
 
   // To get the x and y positions of where you want to go, you might have to use a subsystem
-  private final DriveSubsystem driveSubsystem;
+  private final DriveSubsystemImpl driveSubsystem;
   private final BooleanSupplier whileHeldButtonBooleanSupplier;
 
-  public FollowRealTimeTrajectory(DriveSubsystem driveSubsystem, BooleanSupplier whileHeldButtonBooleanSupplier) {
+  public FollowRealTimeTrajectory(DriveSubsystemImpl driveSubsystem, BooleanSupplier whileHeldButtonBooleanSupplier) {
     this.driveSubsystem = driveSubsystem;
     this.whileHeldButtonBooleanSupplier = whileHeldButtonBooleanSupplier;
     addRequirements(this.driveSubsystem);

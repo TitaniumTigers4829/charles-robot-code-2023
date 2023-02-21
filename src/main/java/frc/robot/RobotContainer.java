@@ -17,8 +17,8 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.autonomous.FollowRealTimeTrajectory;
 import frc.robot.commands.drive.DriveCommand;
 import frc.robot.commands.drive.FaceForward;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.subsystems.drive.DriveSubsystemImpl;
+import frc.robot.subsystems.vision.VisionSubsystemImpl;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -28,7 +28,7 @@ import frc.robot.subsystems.vision.VisionSubsystem;
  */
 public class RobotContainer {
 
-  public final DriveSubsystem driveSubsystem;
+  public final DriveSubsystemImpl driveSubsystem;
   // private final VisionSubsystem visionSubsystem;
 
   private final Joystick driverJoystick;
@@ -48,7 +48,7 @@ public class RobotContainer {
 
     buttonBoard = new Joystick(JoystickConstants.buttonBoardID);
 
-    driveSubsystem = new DriveSubsystem();
+    driveSubsystem = new DriveSubsystemImpl();
     // visionSubsystem = new VisionSubsystem();
 
     DoubleSupplier leftStickX = () -> driverJoystick.getRawAxis(0);

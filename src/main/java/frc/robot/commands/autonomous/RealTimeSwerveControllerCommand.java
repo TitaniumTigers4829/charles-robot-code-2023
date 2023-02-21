@@ -16,7 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.drive.DriveSubsystemImpl;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -45,7 +45,7 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
   private final Supplier<Rotation2d> m_desiredRotation;
   private final BooleanSupplier m_isFinished;
   private final Pose2d m_endPose;
-  private final DriveSubsystem m_driveSubsystem;
+  private final DriveSubsystemImpl m_driveSubsystem;
 
   /**
    * Constructs a new RealTimeSwerveControllerCommand that when executed will follow the provided
@@ -81,7 +81,7 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
       Consumer<SwerveModuleState[]> outputModuleStates,
       BooleanSupplier isFinished,
       Pose2d endPose,
-      DriveSubsystem driveSubsystem) {
+      DriveSubsystemImpl driveSubsystem) {
     this(
         trajectory,
         pose,
@@ -132,7 +132,7 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
       Consumer<SwerveModuleState[]> outputModuleStates,
       BooleanSupplier isFinished,
       Pose2d endPose,
-      DriveSubsystem driveSubsystem) {
+      DriveSubsystemImpl driveSubsystem) {
     this(
         trajectory,
         pose,
@@ -179,7 +179,7 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
       Consumer<SwerveModuleState[]> outputModuleStates,
       BooleanSupplier isFinished,
       Pose2d endPose,
-      DriveSubsystem driveSubsystem) {
+      DriveSubsystemImpl driveSubsystem) {
     this(
         trajectory,
         pose,
@@ -222,7 +222,7 @@ public class RealTimeSwerveControllerCommand extends CommandBase {
       Consumer<SwerveModuleState[]> outputModuleStates,
       BooleanSupplier isFinished,
       Pose2d endPose,
-      DriveSubsystem driveSubsystem) {
+      DriveSubsystemImpl driveSubsystem) {
     m_trajectory = requireNonNullParam(trajectory, "trajectory", "RealTimeSwerveControllerCommand");
     m_pose = requireNonNullParam(pose, "pose", "RealTimeSwerveControllerCommand");
     m_kinematics = requireNonNullParam(kinematics, "kinematics", "RealTimeSwerveControllerCommand");
