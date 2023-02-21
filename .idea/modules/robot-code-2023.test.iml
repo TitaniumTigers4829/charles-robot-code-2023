@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id="robot-code-2023:test" external.linked.project.path="$MODULE_DIR$/../.." external.root.project.path="$MODULE_DIR$/../.." external.system.id="GRADLE" external.system.module.group="" external.system.module.type="sourceSet" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <output-test url="file://$MODULE_DIR$/../../build/classes/java/test" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../src/test" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="robot-code-2023.main" />
+    <orderEntry type="library" name="Gradle: edu.wpi.first.wpilibj:wpilibj-java:2023.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: edu.wpi.first.wpimath:wpimath-java:2023.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: edu.wpi.first.ntcore:ntcore-java:2023.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: edu.wpi.first.cscore:cscore-java:2023.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: edu.wpi.first.cameraserver:cameraserver-java:2023.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: edu.wpi.first.hal:hal-java:2023.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: edu.wpi.first.wpinet:wpinet-java:2023.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: edu.wpi.first.wpiutil:wpiutil-java:2023.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: edu.wpi.first.apriltag:apriltag-java:2023.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: edu.wpi.first.thirdparty.frc2023.opencv:opencv-java:4.6.0-4" level="project" />
+    <orderEntry type="library" name="Gradle: org.ejml:ejml-simple:0.41" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.12.4" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.12.4" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.12.4" level="project" />
+    <orderEntry type="library" name="Gradle: edu.wpi.first.wpilibNewCommands:wpilibNewCommands-java:2023.1.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.pathplanner.lib:PathplannerLib-java:2023.4.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.ctre.phoenix:api-java:5.30.3" level="project" />
+    <orderEntry type="library" name="Gradle: com.ctre.phoenix:wpiapi-java:5.30.3" level="project" />
+    <orderEntry type="library" name="Gradle: com.kauailabs.navx.frc:navx-frc-java:2023.0.3" level="project" />
+    <orderEntry type="library" name="Gradle: org.junit.jupiter:junit-jupiter-params:5.8.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.junit.jupiter:junit-jupiter-api:5.8.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.ejml:ejml-fsparse:0.41" level="project" />
+    <orderEntry type="library" name="Gradle: org.ejml:ejml-fdense:0.41" level="project" />
+    <orderEntry type="library" name="Gradle: org.ejml:ejml-dsparse:0.41" level="project" />
+    <orderEntry type="library" name="Gradle: org.ejml:ejml-ddense:0.41" level="project" />
+    <orderEntry type="library" name="Gradle: org.ejml:ejml-cdense:0.41" level="project" />
+    <orderEntry type="library" name="Gradle: org.ejml:ejml-zdense:0.41" level="project" />
+    <orderEntry type="library" name="Gradle: org.ejml:ejml-core:0.41" level="project" />
+    <orderEntry type="library" name="Gradle: org.apiguardian:apiguardian-api:1.1.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.opentest4j:opentest4j:1.2.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.junit.platform:junit-platform-commons:1.8.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.junit.jupiter:junit-jupiter-engine:5.8.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.junit.platform:junit-platform-engine:1.8.2" level="project" />
+  </component>
+  <component name="TestModuleProperties" production-module="robot-code-2023.main" />
+</module>

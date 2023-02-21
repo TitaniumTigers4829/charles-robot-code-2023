@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.apiguardian:apiguardian-api:1.1.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../Public/wpilib/2023/maven/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../../Public/wpilib/2023/maven/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

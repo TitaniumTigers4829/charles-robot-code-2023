@@ -82,6 +82,12 @@ public final class Constants {
     public static final boolean frontRightDriveEncoderReversed = true;
     public static final boolean rearLeftDriveEncoderReversed = true;
     public static final boolean rearRightDriveEncoderReversed = true;
+
+    public static final class BalanceConstants {
+      public static final double minPitchRadians = (3/180f) * Math.PI;
+      public static final double maxPitchRadiansPerSecond = (15/180f) * Math.PI;
+      public static final double initialSpeed = 0.5;
+    }
   }
   
   public static final class ModuleConstants {

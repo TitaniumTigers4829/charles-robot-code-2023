@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.ejml:ejml-dsparse:0.41">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../Public/wpilib/2023/maven/org/ejml/ejml-dsparse/0.41/ejml-dsparse-0.41.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../../Public/wpilib/2023/maven/org/ejml/ejml-dsparse/0.41/ejml-dsparse-0.41-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
