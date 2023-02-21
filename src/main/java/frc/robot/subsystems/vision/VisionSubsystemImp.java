@@ -46,4 +46,11 @@ public interface VisionSubsystemImp {
    */
   public Translation2d getClosestConePosition();
 
+  /**
+   * Crops the limelights to the specified values.
+   * @param cropValues A 2D array that with each row containing the crop
+   * values for each limelight as {x1, x2, y1, y2}. Values should be from
+   * -1 to 1.
+   */
+  public void cropLimelights(double[][] cropValues);
 }
