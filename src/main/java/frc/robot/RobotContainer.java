@@ -18,6 +18,7 @@ import frc.robot.commands.autonomous.FollowRealTimeTrajectory;
 import frc.robot.commands.drive.DriveCommand;
 import frc.robot.commands.drive.FaceForward;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -27,22 +28,17 @@ import frc.robot.subsystems.DriveSubsystem;
  */
 public class RobotContainer {
 
-  // public ArmSubsystem armSubsystem;
-  //public ElevatorSubsystem elevatorSubsystem;
   public final DriveSubsystem driveSubsystem;
-  // private final PoseEstimationSubsystem poseEstimationSubsystem;
+  // private final VisionSubsystem visionSubsystem;
 
   private final Joystick driverJoystick;
 
   private final JoystickButton rightBumper, aButton;
 
   public final Joystick buttonBoard;
-  
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // armSubsystem = new ArmSubsystem();
-    //elevatorSubsystem = new ElevatorSubsystem();
 
     // Configure the button bindings
   
@@ -53,20 +49,20 @@ public class RobotContainer {
     buttonBoard = new Joystick(JoystickConstants.buttonBoardID);
 
     driveSubsystem = new DriveSubsystem();
-    // poseEstimationSubsystem = new PoseEstimationSubsystem(driveSubsystem);
+    // visionSubsystem = new VisionSubsystem();
 
     DoubleSupplier leftStickX = () -> driverJoystick.getRawAxis(0);
     DoubleSupplier leftStickY = () -> driverJoystick.getRawAxis(1);
     DoubleSupplier rightStickX = () -> driverJoystick.getRawAxis(4);
 
-    Command driveCommand = new DriveCommand(driveSubsystem, 
-      () -> modifyAxisSquared(leftStickY) * -1, 
-      () -> modifyAxisSquared(leftStickX) * -1, 
-      () -> modifyAxisSquared(rightStickX) * -1, 
-      () -> !rightBumper.getAsBoolean()
-    );
+    // Command driveCommand = new DriveCommand(driveSubsystem, visionSubsystem,
+    //   () -> modifyAxisSquared(leftStickY) * -1, 
+    //   () -> modifyAxisSquared(leftStickX) * -1, 
+    //   () -> modifyAxisSquared(rightStickX) * -1, 
+    //   () -> !rightBumper.getAsBoolean()
+    // );
   
-    driveSubsystem.setDefaultCommand(driveCommand);
+    // driveSubsystem.setDefaultCommand(driveCommand);
 
     configureButtonBindings();
   }

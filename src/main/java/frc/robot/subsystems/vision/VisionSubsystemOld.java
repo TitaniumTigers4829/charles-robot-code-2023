@@ -1,7 +1,7 @@
 // Some of this code was copied from Team 7028 - Binary Battalion's swerve-test repository
 // https://github.com/STMARobotics/swerve-test/blob/5916bb426b97f10e17d9dfd5ec6c3b6fda49a7ce/src/main/java/frc/robot/subsystems/PoseEstimatorSubsystem.java
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.vision;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -12,7 +12,6 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -24,8 +23,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.extras.LinearInterpolator;
+import frc.robot.subsystems.DriveSubsystem;
 
-public class PoseEstimationSubsystem extends SubsystemBase {
+public class VisionSubsystemOld extends SubsystemBase {
   
   private final DriveSubsystem driveSubsystem;
   private final SwerveDrivePoseEstimator poseEstimator;
@@ -65,7 +65,7 @@ public class PoseEstimationSubsystem extends SubsystemBase {
 
   private double lastTimeStampSeconds = 0;
 
-  public PoseEstimationSubsystem(DriveSubsystem driveSubsystem) {
+  public VisionSubsystemOld(DriveSubsystem driveSubsystem) {
     this.driveSubsystem = driveSubsystem;
 
     poseEstimator = new SwerveDrivePoseEstimator(
