@@ -9,19 +9,19 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.subsystems.drive.DriveSubsystemImpl;
-import frc.robot.subsystems.vision.VisionSubsystemImpl;
+import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class DriveCommand extends CommandBase {
 
-  private final DriveSubsystemImpl driveSubsystem;
-  private final VisionSubsystemImpl visionSubsystem;
+  private final DriveSubsystem driveSubsystem;
+  private final VisionSubsystem visionSubsystem;
 
   private final DoubleSupplier leftY, leftX, rightX;
   private final BooleanSupplier isFieldRelative;
 
   /** Creates a new DriveCommand. */
-  public DriveCommand(DriveSubsystemImpl driveSubsystem, VisionSubsystemImpl visionSubsystem, DoubleSupplier leftY, DoubleSupplier leftX, DoubleSupplier rightX, BooleanSupplier isFieldRelative) {
+  public DriveCommand(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftY, DoubleSupplier leftX, DoubleSupplier rightX, BooleanSupplier isFieldRelative) {
     this.driveSubsystem = driveSubsystem;
     this.visionSubsystem = visionSubsystem;
     this.leftY = leftY;

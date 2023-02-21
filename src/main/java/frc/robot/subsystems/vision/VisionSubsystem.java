@@ -2,9 +2,10 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
-public interface VisionSubsystem {
-  
+public interface VisionSubsystem extends Subsystem {
+
   /**
    * Returns true if the limelight(s) can see one or more April Tag.
    */
@@ -20,7 +21,8 @@ public interface VisionSubsystem {
   /**
    * Returns the timestamp in milleseconds of when the limelight calculated 
    * the robot's pose. If there are multiple limelights that can see april 
-   * tags, it uses the limelight that is closest to an april tag. 
+   * tags, it uses the limelight that is closest to an april tag. Returns
+   * 0 if no timestamp value is found.
    */
   public long getTimeStampInMilleseconds();
 
@@ -53,4 +55,5 @@ public interface VisionSubsystem {
    * -1 to 1.
    */
   public void cropLimelights(double[][] cropValues);
+
 }

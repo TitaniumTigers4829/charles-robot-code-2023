@@ -3,13 +3,20 @@
 
 package frc.robot.subsystems.vision;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LimelightConstants;
+import frc.robot.Constants.TrajectoryConstants;
 
 public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsystem {
   
@@ -17,6 +24,8 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
   private final NetworkTableEntry botPoseNetworkTableEntry;
   private final NetworkTableEntry jsonDumpNetworkTableEntry;
   private final NetworkTableEntry cameraCropNetworkTableEntry;
+  
+  private final ObjectMapper mapper = new ObjectMapper();
 
   public VisionSubsystemImpl() {    
     networkTable = NetworkTableInstance.getDefault().getTable(LimelightConstants.frontLimelightName);
@@ -30,20 +39,30 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
 
   @Override
   public boolean canSeeAprilTags() {
-    // TODO Auto-generated method stub
-    return false;
+    return botPoseNetworkTableEntry.getDoubleArray(new double[]{}) != new double[]{};
   }
 
   @Override
   public Pose2d getPoseFromAprilTags() {
-    // TODO Auto-generated method stub
-    return null;
+    double[] botPose = botPoseNetworkTableEntry.getDoubleArray(new double[]{});
+    double robotX = botPose[0] + TrajectoryConstants.fieldLengthMeters / 2;
+    double robotY = botPose[1] + TrajectoryConstants.fieldWidthMeters / 2;
+    Rotation2d robotRotation = Rotation2d.fromDegrees(botPose[5]);
+    return new Pose2d(robotX, robotY, robotRotation);
   }
 
   @Override
   public long getTimeStampInMilleseconds() {
-    // TODO Auto-generated method stub
-    return 0;
+    String jsonDump = jsonDumpNetworkTableEntry.getString("{}");  
+
+    try {
+      JsonNode jsonNodeData = mapper.readTree(jsonDump);
+      return jsonNodeData.path("Results").path("ts").asLong();
+    } catch (JsonProcessingException e) {
+      SmartDashboard.putString("Json Parsing Error", e.getLocalizedMessage());
+    }
+
+    return 0L;
   }
 
   @Override
@@ -72,10 +91,7 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
 
   @Override
   public void cropLimelights(double[][] cropValues) {
-    // TODO Auto-generated method stub
-  
+    cameraCropNetworkTableEntry.setDoubleArray(cropValues[0]);
   }
-
-
 
 }
