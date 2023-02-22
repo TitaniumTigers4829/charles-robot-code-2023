@@ -1,6 +1,6 @@
 package frc.robot.commands.limb.arm;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ArmSubsystemImpl;
+import frc.robot.subsystems.limb.ArmSubsystemImpl;
 
 
 public class RetractArm extends CommandBase {
@@ -14,7 +14,7 @@ public class RetractArm extends CommandBase {
 
     @Override
     public void execute() {
-        armSubsystem.closeArm();
+        armSubsystem.retractArm();;
     }
 
 

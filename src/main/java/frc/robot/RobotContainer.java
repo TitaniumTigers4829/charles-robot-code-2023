@@ -55,9 +55,9 @@ public class RobotContainer {
     driveSubsystem = new DriveSubsystem();
     // poseEstimationSubsystem = new PoseEstimationSubsystem(driveSubsystem);
 
-    DoubleSupplier leftStickX = () -> driverJoystick.getRawAxis(0);
-    DoubleSupplier leftStickY = () -> driverJoystick.getRawAxis(1);
-    DoubleSupplier rightStickX = () -> driverJoystick.getRawAxis(4);
+    DoubleSupplier leftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.leftStickX);
+    DoubleSupplier leftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.leftStickY);
+    DoubleSupplier rightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.rightStickX);
 
     Command driveCommand = new DriveCommand(driveSubsystem, 
       () -> modifyAxisSquared(leftStickY) * -1, 

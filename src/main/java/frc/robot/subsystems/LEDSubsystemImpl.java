@@ -8,21 +8,23 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDConstants;
-import frc.robot.Constants.LEDConstants.LEDPatterns;
+import frc.robot.Constants.LEDConstants.SparkMaxConstants;
+import frc.robot.Constants.LEDConstants.LEDProcess;
 
-public class LEDSubsystem extends SubsystemBase {
+
+public class LEDSubsystemImpl extends SubsystemBase implements LEDSubsystem {
 
   private Spark ledSpark;
 
-  /** Creates a new LEDSubsystem. 
+  /** Creates a new LEDSubsystemImpl.
    * @param port The SparkMax port for this LEDSubsystem.
   */
-  public LEDSubsystem(int port) {
+  public LEDSubsystemImpl(int port) {
     ledSpark = new Spark(port);
   }
 
-  /** Creates a new LEDSubsystem with the port in LEDConstants. */
-  public LEDSubsystem() {
+  /** Creates a new LEDSubsystemImpl with the port in LEDConstants. */
+  public LEDSubsystemImpl() {
     ledSpark = new Spark(LEDConstants.LEDPort);
   }
 
@@ -30,54 +32,47 @@ public class LEDSubsystem extends SubsystemBase {
    * @param value The pattern to set the LEDs to. 
    * See Constants.LEDConstants.LEDPatterns for these pattern values.
    */
-  public void setLEDColor(double value) {
+  public void setSparkMax(double value) {
     ledSpark.set(value);
   }
 
-  /** Set the LED color to the current alliance color. */
-  public void setLEDAllianceColor() {
+  @Override
+  public void setProcess(LEDProcess process) {
+    if (process == LEDProcess.DEFAULT) {
+      defaultColor();
+      return;
+    }
+    if (process == LEDProcess.ALLIANCE_COLOR) {
+      allianceColor();
+      return;
+    }
+    if (process == LEDProcess.OFF) {
+      off();
+      return;
+    }
+
+    ledSpark.set(process.getSparkMaxValue());
+  }
+
+  private void allianceColor() {
     if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-        ledSpark.set(LEDPatterns.FIRE);
+        ledSpark.set(LEDProcess.RED_ALLIANCE.getSparkMaxValue());
     } else {
-        ledSpark.set(LEDPatterns.OCEAN);
+        ledSpark.set(LEDProcess.BLUE_ALLIANCE.getSparkMaxValue());
     }
   }
 
-  /** Sets the LED to its default value.
-   * This can be changed if needed.
-   */
-  public void setLEDDefault() {
+  private void defaultColor() {
     if (DriverStation.isAutonomous()) {
-      setLEDAuto();
+      ledSpark.set(LEDProcess.AUTONOMOUS.getSparkMaxValue());
     } else {
-      setLEDAllianceColor();
+      allianceColor();
     }
   }
 
-  public void setLEDScoring() {
-    ledSpark.set(LEDPatterns.YELLOW);
+  @Override
+  public void off() {
+    ledSpark.set(SparkMaxConstants.BLACK);
   }
-  
-  public void setLEDLiningUp() {
-    ledSpark.set(LEDPatterns.WHITE);
-  }
-
-  public void setLEDBalancing() {
-    ledSpark.set(LEDPatterns.CYAN);
-  }
-
-  public void setLEDIntake() {
-    ledSpark.set(LEDPatterns.MAGENTA);
-  }
-
-  public void setLEDAuto() {
-    ledSpark.set(LEDPatterns.RAINBOW);
-  }
-  
-  public void setLEDTest() {
-    ledSpark.set(LEDPatterns.RAINBOW_WAVE);
-  }
-
-  //TODO: Create an
 
 }
