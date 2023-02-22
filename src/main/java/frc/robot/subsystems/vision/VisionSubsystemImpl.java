@@ -52,7 +52,7 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
   }
 
   @Override
-  public long getTimeStampInMilleseconds() {
+  public long getTimeStampInMilliseconds() {
     String jsonDump = jsonDumpNetworkTableEntry.getString("{}");  
 
     try {
