@@ -15,8 +15,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.JoystickConstants;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.autonomous.FollowRealTimeTrajectory;
-import frc.robot.commands.drive.Balance;
 import frc.robot.commands.drive.DriveCommand;
+import frc.robot.commands.drive.FaceForward;
 import frc.robot.subsystems.DriveSubsystem;
 
 /**
@@ -34,7 +34,7 @@ public class RobotContainer {
 
   private final Joystick driverJoystick;
 
-  private final JoystickButton rightBumper, aButton, balanceFromLeft, balanceFromRight;
+  private final JoystickButton rightBumper, aButton;
 
   public final Joystick buttonBoard;
   
@@ -49,11 +49,9 @@ public class RobotContainer {
     driverJoystick = new Joystick(JoystickConstants.driverJoystickID);
     rightBumper = new JoystickButton(driverJoystick, JoystickConstants.rightBumperID);
     aButton = new JoystickButton(driverJoystick, JoystickConstants.aButtonID);
-    balanceFromLeft = new JoystickButton(driverJoystick, JoystickConstants.yButtonID);
-    balanceFromRight = new JoystickButton(driverJoystick, JoystickConstants.xButtonID);
 
     buttonBoard = new Joystick(JoystickConstants.buttonBoardID);
-    
+
     driveSubsystem = new DriveSubsystem();
     // poseEstimationSubsystem = new PoseEstimationSubsystem(driveSubsystem);
 
@@ -67,12 +65,6 @@ public class RobotContainer {
       () -> modifyAxisSquared(rightStickX) * -1, 
       () -> !rightBumper.getAsBoolean()
     );
-
-    if (balanceFromLeft.getAsBoolean()) {
-      driveCommand = new Balance(driveSubsystem, () -> modifyAxisSquared(rightStickX) * -1, true);
-    } else if (balanceFromRight.getAsBoolean()) {
-      driveCommand = new Balance(driveSubsystem, () -> modifyAxisSquared(rightStickX) * -1, false);
-    }
   
     driveSubsystem.setDefaultCommand(driveCommand);
 
@@ -115,7 +107,6 @@ public class RobotContainer {
 
     JoystickButton bButton = new JoystickButton(driverJoystick, JoystickConstants.bButtonID);
     bButton.whileTrue(new FollowRealTimeTrajectory(driveSubsystem, () -> !bButton.getAsBoolean()));
-
   }
 
   public Command getAutonomousCommand() {
