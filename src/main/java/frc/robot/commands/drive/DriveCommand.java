@@ -9,24 +9,26 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class DriveCommand extends CommandBase {
 
   private final DriveSubsystem driveSubsystem;
+  private final VisionSubsystem visionSubsystem;
 
   private final DoubleSupplier leftY, leftX, rightX;
   private final BooleanSupplier isFieldRelative;
 
   /** Creates a new DriveCommand. */
-  public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier leftY, DoubleSupplier leftX, DoubleSupplier rightX, BooleanSupplier isFieldRelative) {
-    // Use addRequirements() here to declare subsystem dependencies.
+  public DriveCommand(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, DoubleSupplier leftY, DoubleSupplier leftX, DoubleSupplier rightX, BooleanSupplier isFieldRelative) {
     this.driveSubsystem = driveSubsystem;
+    this.visionSubsystem = visionSubsystem;
     this.leftY = leftY;
     this.leftX = leftX;
     this.rightX = rightX;
     this.isFieldRelative = isFieldRelative;
-    addRequirements(driveSubsystem);
+    addRequirements(driveSubsystem, visionSubsystem);
   }
 
   // Called when the command is initially scheduled.

@@ -26,6 +26,8 @@ public final class Constants {
   public static final int driveFXEncoderCPR = 2048;
   public static final int turningCANcoderCPR = 4096;
 
+  private Constants() {}
+
   public static final class DriveConstants {
     // Distance between centers of right and left wheels on robot
     public static final double trackWidth = Units.inchesToMeters(22.25);
@@ -129,6 +131,10 @@ public final class Constants {
     public static final double thetaProfiledControllerP = 1;
     public static final double maxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double maxAngularSpeedRadiansPerSecondSquared = Math.PI;
+    // The length of the field in the x direction (left to right)
+    public static final double fieldLengthMeters = 16.54175;
+    // The length of the field in the y direction (top to bottom)
+    public static final double fieldWidthMeters = 8.0137;
   
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints thetaControllerConstraints =
@@ -273,6 +279,8 @@ public final class Constants {
   }
 
   public static final class LimelightConstants {
+    public static final String frontLimelightName = "limelight-tigers";
+
     public static final double[][] cameraCropLookupTable = {
       // TODO: All of these are placeholder values
       // {x position in meters, limelight lower y crop}

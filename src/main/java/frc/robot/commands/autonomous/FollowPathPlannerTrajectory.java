@@ -13,11 +13,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.drive.DriveSubsystemImpl;
 
 public class FollowPathPlannerTrajectory extends CommandBase {
 
-  private final DriveSubsystem driveSubsystem;
+  private final DriveSubsystemImpl driveSubsystem;
   private final String trajectoryName;
   private final boolean resetOdometryToTrajectoryStart;
   private PPSwerveControllerCommand followPathPlannerTrajectoryCommand;
@@ -48,7 +48,7 @@ public class FollowPathPlannerTrajectory extends CommandBase {
    * @param resetOdometryToTrajectoryStart Set as true if you want the odometry of the robot to be set to the
    * start of the trajectory.
    */
-  public FollowPathPlannerTrajectory(DriveSubsystem driveSubsystem, String trajectoryName, boolean resetOdometryToTrajectoryStart) {
+  public FollowPathPlannerTrajectory(DriveSubsystemImpl driveSubsystem, String trajectoryName, boolean resetOdometryToTrajectoryStart) {
     this.driveSubsystem = driveSubsystem;
     addRequirements(driveSubsystem);
     
