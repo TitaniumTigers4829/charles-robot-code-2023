@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -109,6 +109,28 @@ public class SwerveModule {
   }
 
   /**
+   * @param currentAngle what the controller currently reads (radians)
+   * @param targetAngleSetpoint the desired angle (radians)
+   * @return the target angle in controller's scope (radians)
+   */
+  public static double calculateContinuousInputSetpoint(double currentAngle, double targetAngleSetpoint) {
+    targetAngleSetpoint = Math.IEEEremainder(targetAngleSetpoint, Math.PI * 2);
+
+    double remainder = currentAngle % (Math.PI * 2);
+    double adjustedAngleSetpoint = targetAngleSetpoint + (currentAngle - remainder);
+
+    // We don't want to rotate over 180 degrees, so just rotate the other way (add a
+    // full rotation)
+    if (adjustedAngleSetpoint - currentAngle > Math.PI) {
+        adjustedAngleSetpoint -= Math.PI * 2;
+    } else if (adjustedAngleSetpoint - currentAngle < -Math.PI) {
+        adjustedAngleSetpoint += Math.PI * 2;
+    }
+
+    return adjustedAngleSetpoint;
+  }
+
+  /**
    * Gets the heading of the module
    * @return the absolute position of the CANCoder
    */
@@ -131,9 +153,10 @@ public class SwerveModule {
   }
 
   public SwerveModulePosition getPosition() {
-    return new SwerveModulePosition(
-      ModuleConstants.drivetoMetersPerSecond * driveMotor.getSelectedSensorVelocity(), 
-      Rotation2d.fromDegrees(getCANCoderABS()));
+    double position = ModuleConstants.falconToMeters * driveMotor.getSelectedSensorPosition();
+    Rotation2d rotation = Rotation2d.fromDegrees(getCANCoderABS());
+
+    return new SwerveModulePosition(position, rotation);
   }
 
   /**
@@ -142,7 +165,7 @@ public class SwerveModule {
    */
   public void setDesiredState(SwerveModuleState desiredState) {
 
-    double turnRadians = ((2 * Math.PI) / 360) * turnEncoder.getAbsolutePosition();
+    double turnRadians = getTurnRadians();
 
     // Optimize the reference state to avoid spinning further than 90 degrees
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(turnRadians));
@@ -150,6 +173,7 @@ public class SwerveModule {
     // Converts meters per second to rpm
     double desiredDriveRPM = optimizedDesiredState.speedMetersPerSecond * 60 
       * ModuleConstants.driveGearRatio / ModuleConstants.wheelCircumferenceMeters;
+      
     // Converts rpm to encoder units per 100 milliseconds
     double desiredDriveEncoderUnitsPer100MS = desiredDriveRPM / 600.0 * 2048;
 
@@ -161,10 +185,14 @@ public class SwerveModule {
       turnPIDController.calculate(turnRadians, optimizedDesiredState.angle.getRadians())
         + turnFeedForward.calculate(turnPIDController.getSetpoint().velocity);
     turningMotor.set(turnOutput / 12);
+  }
 
-    SmartDashboard.putNumber("Current Velocity", getState().speedMetersPerSecond);
-    SmartDashboard.putNumber("Desired Speed", optimizedDesiredState.speedMetersPerSecond);
-    SmartDashboard.putNumber("Error", optimizedDesiredState.speedMetersPerSecond - getState().speedMetersPerSecond);
+  public double getTurnRadians() {
+    return ((2 * Math.PI) / 360) * turnEncoder.getAbsolutePosition();
+  }
+
+  public double getAbsolutePosition() {
+    return turnEncoder.getAbsolutePosition();
   }
 
   /**

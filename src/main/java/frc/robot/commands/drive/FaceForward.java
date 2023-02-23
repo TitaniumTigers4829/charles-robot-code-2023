@@ -11,20 +11,20 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.PathPlannerConstants;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.Constants.TrajectoryConstants;
+import frc.robot.subsystems.drive.DriveSubsystemImpl;
 
 public class FaceForward extends CommandBase {
 
-  private final DriveSubsystem driveSubsystem;
+  private final DriveSubsystemImpl driveSubsystem;
 
   private final DoubleSupplier leftY, leftX;
   private final BooleanSupplier isFieldRelative;
   
-  private final ProfiledPIDController thetaController = new ProfiledPIDController(0.01, 0, 0, PathPlannerConstants.thetaControllerConstraints);
+  private final ProfiledPIDController thetaController = new ProfiledPIDController(0.01, 0, 0, TrajectoryConstants.thetaControllerConstraints);
 
   /** Creates a new FaceForward. */
-  public FaceForward(DriveSubsystem driveSubsystem, DoubleSupplier leftY, DoubleSupplier leftX, BooleanSupplier isFieldRelative) {
+  public FaceForward(DriveSubsystemImpl driveSubsystem, DoubleSupplier leftY, DoubleSupplier leftX, BooleanSupplier isFieldRelative) {
     this.driveSubsystem = driveSubsystem;
     this.leftY = leftY;
     this.leftX = leftX;

@@ -6,8 +6,6 @@ package frc.robot;
 
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -15,15 +13,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.JoystickConstants;
-import frc.robot.commands.limb.claw.ToggleClaw;
 import frc.robot.commands.limelight.SwitchLimelightPipeline;
-import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.autonomous.FollowRealTimeTrajectory;
 import frc.robot.commands.drive.DriveCommand;
 import frc.robot.commands.drive.FaceForward;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.PoseEstimationSubsystem;
+import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.drive.DriveSubsystemImpl;
+import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystemImpl;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -33,10 +31,8 @@ import frc.robot.subsystems.PoseEstimationSubsystem;
  */
 public class RobotContainer {
 
-  // public ArmSubsystem armSubsystem;
-  //public ElevatorSubsystem elevatorSubsystem;
-  private final DriveSubsystem driveSubsystem;
-  // private final PoseEstimationSubsystem poseEstimationSubsystem;
+  public final DriveSubsystem driveSubsystem;
+  private final VisionSubsystem visionSubsystem;
 
   private final Joystick driverJoystick;
 
@@ -45,12 +41,8 @@ public class RobotContainer {
 
   public final Joystick buttonBoard;
 
-  private final JoystickButton clawButton;
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // armSubsystem = new ArmSubsystem();
-    //elevatorSubsystem = new ElevatorSubsystem();
 
     // Configure the button bindings
   
@@ -62,33 +54,22 @@ public class RobotContainer {
 
 
     buttonBoard = new Joystick(JoystickConstants.buttonBoardID);
-    clawButton = new JoystickButton(buttonBoard, JoystickConstants.clawButtonID);
 
-    driveSubsystem = new DriveSubsystem();
-    // poseEstimationSubsystem = new PoseEstimationSubsystem(driveSubsystem);
+    driveSubsystem = new DriveSubsystemImpl();
+    visionSubsystem = new VisionSubsystemImpl();
 
-    DoubleSupplier leftStickX = () -> driverJoystick.getRawAxis(0);
-    DoubleSupplier leftStickY = () -> driverJoystick.getRawAxis(1);
-    DoubleSupplier rightStickX = () -> driverJoystick.getRawAxis(2);
+    DoubleSupplier leftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.leftStickX);
+    DoubleSupplier leftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.leftStickY);
+    DoubleSupplier rightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.rightStickX);
 
-    Command driveCommand = new DriveCommand(driveSubsystem, 
+    Command driveCommand = new DriveCommand(driveSubsystem, visionSubsystem,
       () -> modifyAxisSquared(leftStickY) * -1, 
       () -> modifyAxisSquared(leftStickX) * -1, 
       () -> modifyAxisSquared(rightStickX) * -1, 
       () -> !rightBumper.getAsBoolean()
     );
-
   
     driveSubsystem.setDefaultCommand(driveCommand);
-    
-
-    driveSubsystem.resetOdometry(new Pose2d(14.176, 1.0716, new Rotation2d()));
-    aButton.whileTrue(new FaceForward(
-      driveSubsystem, 
-      () -> modifyAxisSquared(leftStickY) * -1, 
-      () -> modifyAxisSquared(leftStickX) * -1, 
-      () -> !rightBumper.getAsBoolean()
-    ));
 
     configureButtonBindings();
   }
@@ -124,8 +105,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    // clawButton.whileTrue(new ToggleClaw(armSubsystem));
     rightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
+
+    JoystickButton bButton = new JoystickButton(driverJoystick, JoystickConstants.bButtonID);
+    // bButton.whileTrue(new FollowRealTimeTrajectory(driveSubsystem, () -> !bButton.getAsBoolean()));
   }
 
   public Command getAutonomousCommand() {

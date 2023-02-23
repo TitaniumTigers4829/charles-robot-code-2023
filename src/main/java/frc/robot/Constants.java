@@ -26,17 +26,19 @@ public final class Constants {
   public static final int driveFXEncoderCPR = 2048;
   public static final int turningCANcoderCPR = 4096;
 
+  private Constants() {}
+
   public static final class DriveConstants {
-    public static final double trackWidth = Units.inchesToMeters(29.5);
     // Distance between centers of right and left wheels on robot
-    public static final double wheelBase = Units.inchesToMeters(29.5);
+    public static final double trackWidth = Units.inchesToMeters(22.25);
     // Distance between front and back wheels on robot
+    public static final double wheelBase = Units.inchesToMeters(28.5);
     public static final SwerveDriveKinematics driveKinematics =
       new SwerveDriveKinematics(
-        new Translation2d(wheelBase / 2, trackWidth / 2),
-        new Translation2d(wheelBase / 2, -trackWidth / 2),
-        new Translation2d(-wheelBase / 2, trackWidth / 2),
-        new Translation2d(-wheelBase / 2, -trackWidth / 2)
+        new Translation2d(wheelBase / 2, trackWidth / 2), // Front Left
+        new Translation2d(wheelBase / 2, -trackWidth / 2), // Front Right
+        new Translation2d(-wheelBase / 2, trackWidth / 2), // Rear Left
+        new Translation2d(-wheelBase / 2, -trackWidth / 2) // Rear Right
       );
 
     public static final double voltsS = 0.73394;
@@ -52,36 +54,35 @@ public final class Constants {
 
     public static final double joystickMaxSpeedMetersPerSecondLimit = 4;
 
-    public static final int frontLeftDriveMotorPort = 11;
-    public static final int rearLeftDriveMotorPort = 12;
+    public static final int frontLeftDriveMotorPort = 12;
     public static final int frontRightDriveMotorPort = 16;
+    public static final int rearLeftDriveMotorPort = 11;
     public static final int rearRightDriveMotorPort = 9;
 
-    public static final int frontLeftTurningMotorPort = 13;
-    public static final int rearLeftTurningMotorPort = 7;
+    public static final int frontLeftTurningMotorPort = 7;
     public static final int frontRightTurningMotorPort = 10;
+    public static final int rearLeftTurningMotorPort = 13;
     public static final int rearRightTurningMotorPort = 8;
 
-    public static final int frontLeftTurningEncoderPort = 1;
-    public static final int rearLeftTurningEncoderPort = 0;
+    public static final int frontLeftTurningEncoderPort = 0;
     public static final int frontRightTurningEncoderPort = 2;
+    public static final int rearLeftTurningEncoderPort = 1;
     public static final int rearRightTurningEncoderPort = 3;
 
     // In degrees.
-    public static final double frontLeftAngleZero = 65.654296875;
-    public static final double rearLeftAngleZero = -42.099609375;
+    public static final double frontLeftAngleZero = 47.900390625; //-42.099609375
     public static final double frontRightAngleZero = -71.630859375;
+    public static final double rearLeftAngleZero = -24.345703125; //65.654296875
     public static final double rearRightAngleZero = -88.681640625;
 
-    // TODO: find
     public static final boolean frontLeftTurningEncoderReversed = false;
-    public static final boolean rearLeftTurningEncoderReversed = false;
     public static final boolean frontRightTurningEncoderReversed = false;
+    public static final boolean rearLeftTurningEncoderReversed = false;
     public static final boolean rearRightTurningEncoderReversed = false;
-    // TODO: find
-    public static final boolean frontLeftDriveEncoderReversed = false;
-    public static final boolean rearLeftDriveEncoderReversed = false;
+    
+    public static final boolean frontLeftDriveEncoderReversed = true;
     public static final boolean frontRightDriveEncoderReversed = true;
+    public static final boolean rearLeftDriveEncoderReversed = true;
     public static final boolean rearRightDriveEncoderReversed = true;
   }
   
@@ -107,6 +108,7 @@ public final class Constants {
         wheelDiameterMeters * Math.PI; // C = D * pi
     public static final double drivetoMetersPerSecond =
         (10 * wheelCircumferenceMeters) / (driveGearRatio * driveFXEncoderCPR);
+    public static final double falconToMeters = wheelCircumferenceMeters / (driveGearRatio * 2048);
 
     public static final TrapezoidProfile.Constraints moduleTurnConstraints =
       new TrapezoidProfile.Constraints(
@@ -118,16 +120,21 @@ public final class Constants {
 
   }
 
-  public static final class PathPlannerConstants {
+  public static final class TrajectoryConstants {
 
     // Autonomous Period Constants TODO: Tune all of these values
-    public static final double autoMaxVelocity = 4.5; // meters/second
-    public static final double autoMaxAcceleration = 3.25; // meters/second/second
-    public static final double xControllerP = 1.25;
-    public static final double yControllerP = 1.25;
-    public static final double thetaControllerP = 3;
+    public static final double autoMaxVelocity = 1; // meters/second
+    public static final double autoMaxAcceleration = 1; // meters/second/second
+    public static final double xControllerP = .5;
+    public static final double yControllerP = .5;
+    public static final double thetaControllerP = 0.2;
+    public static final double thetaProfiledControllerP = 1;
     public static final double maxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double maxAngularSpeedRadiansPerSecondSquared = Math.PI;
+    // The length of the field in the x direction (left to right)
+    public static final double fieldLengthMeters = 16.54175;
+    // The length of the field in the y direction (top to bottom)
+    public static final double fieldWidthMeters = 8.0137;
   
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints thetaControllerConstraints =
@@ -138,7 +145,7 @@ public final class Constants {
 
     public static final int LEDPort = 0-9;
 
-    public static final class LEDPatterns {
+    public static final class SparkMaxConstants {
       // This subclass contains the constant values for the LED patterns.
       public static final double RAINBOW = -0.99;
 
@@ -187,17 +194,42 @@ public final class Constants {
       public static final double GRAY = 0.95;
       public static final double DARK_GRAY = 0.97;
       public static final double BLACK = 0.99;    }
+    public enum LEDProcess {
+      ALLIANCE_COLOR (0), // Values are null on purpose.
+      DEFAULT (0),
+      RAINBOW (SparkMaxConstants.RAINBOW),
+      RED_ALLIANCE (SparkMaxConstants.FIRE),
+      BLUE_ALLIANCE (SparkMaxConstants.OCEAN),
+      INTAKE (SparkMaxConstants.MAGENTA),
+      SCORING (SparkMaxConstants.YELLOW),
+      BALANCE (SparkMaxConstants.CYAN),
+      OFF (SparkMaxConstants.BLACK),
+      AUTONOMOUS (SparkMaxConstants.RAINBOW_WAVE),
+      LINE_UP (SparkMaxConstants.WHITE);
+
+      private final double sparkMaxValue;
+      LEDProcess(double sparkMaxValue) {
+        this.sparkMaxValue = sparkMaxValue;
+      }
+      public double getSparkMaxValue() { return sparkMaxValue; }
+
+    }
   }
 
   public static final class ArmConstants {
-    public static final int armForward  = 2;
-    public static final int armBackward = 3;
+    public static final int swingingMotorID = 0-9;
+    public static final int extensionMotorID = 0-9;
 
-    public static final class ClawConstants {
-  
-      public static final int solenoidForward = 1; // ID for opening claw
-      public static final int solenoidBackward = 0; // ID for closing claw
-    }
+  }
+
+  public static final class ClawConstants {
+
+    public static final int solenoidForward = 1; // ID for opening claw
+    public static final int solenoidBackward = 0; // ID for closing claw
+    public static final int wristMotorID = 0-9; // ID for the wrist motor
+    public static final int leftClawMotorID = 0-9; //ID for left claw motor that controls the rollers
+    public static final int rightClawMotorID = 0-9; //ID for right claw motor that controls the rollers
+
   }
 
   public static final class ElevatorConstants {
@@ -220,6 +252,12 @@ public final class Constants {
     // Buttonboard Button IDs:
     public static final int clawButtonID = 1;
 
+    // Axes IDs:
+    public static final int leftStickX = 0;
+    public static final int leftStickY = 1;
+    public static final int rightStickX = 2;
+    public static final int rightStickY = 3;
+
     // Button IDs:
     public static final int xButtonID = 1;
     public static final int aButtonID = 2;
@@ -241,6 +279,8 @@ public final class Constants {
   }
 
   public static final class LimelightConstants {
+    public static final String frontLimelightName = "limelight-tigers";
+
     public static final double[][] cameraCropLookupTable = {
       // TODO: All of these are placeholder values
       // {x position in meters, limelight lower y crop}

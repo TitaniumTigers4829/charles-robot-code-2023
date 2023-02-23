@@ -1,8 +1,7 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+// Some of this code was copied from Team 7028 - Binary Battalion's swerve-test repository
+// https://github.com/STMARobotics/swerve-test/blob/5916bb426b97f10e17d9dfd5ec6c3b6fda49a7ce/src/main/java/frc/robot/subsystems/PoseEstimatorSubsystem.java
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.vision;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -13,6 +12,7 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
@@ -23,10 +23,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.extras.LinearInterpolator;
+import frc.robot.subsystems.drive.DriveSubsystemImpl;
 
-public class PoseEstimationSubsystem extends SubsystemBase {
+public class VisionSubsystemOld extends SubsystemBase {
   
-  private final DriveSubsystem driveSubsystem;
+  private final DriveSubsystemImpl driveSubsystem;
   private final SwerveDrivePoseEstimator poseEstimator;
   private final LinearInterpolator cameraCropLookupTable;
   private final NetworkTable networkTable; 
@@ -34,6 +35,18 @@ public class PoseEstimationSubsystem extends SubsystemBase {
   private final NetworkTableEntry jsonDumpNetworkTableEntry;
   private final NetworkTableEntry cameraCropNetworkTableEntry;
 
+  /* EDIT CODE BELOW HERE */
+  
+  // The length of the field in the x direction (left to right)
+  private static final double fieldLengthMeters = 16.54175;
+  // The length of the field in the y direction (top to bottom)
+  private static final double fieldWidthMeters = 8.0137;
+  
+  private static final String limelightNetworktableName = "limelight-tigers";
+  
+  // You should probably have a constant for this
+  private static final SwerveDriveKinematics driveKinematics = DriveConstants.driveKinematics;
+  
   /**
    * Standard deviations of model states. Increase these numbers to trust your model's state estimates less. This
    * matrix is in the form [x, y, theta]ᵀ, with units in meters and radians, then meters.
@@ -45,23 +58,28 @@ public class PoseEstimationSubsystem extends SubsystemBase {
    * less. This matrix is in the form [x, y, theta]ᵀ, with units in meters and radians.
    */
   private static final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
+  
+  // IMPORTANT: Make sure your driveSubsystem has the methods getPose, getRotation2d, getModulePositions, and resetOdometry
+  
+  /* EDIT CODE ABOVE HERE */
 
   private double lastTimeStampSeconds = 0;
 
-  public PoseEstimationSubsystem(DriveSubsystem driveSubsystem) {
+  public VisionSubsystemOld(DriveSubsystemImpl driveSubsystem) {
     this.driveSubsystem = driveSubsystem;
 
     poseEstimator = new SwerveDrivePoseEstimator(
-      DriveConstants.driveKinematics,
+      driveKinematics,
       driveSubsystem.getRotation2d(),
       driveSubsystem.getModulePositions(),
-      new Pose2d(),  // FIXME: This is the pose2d for where you start on the field, might need to change
+      new Pose2d(), // This is the position for where the robot starts the match, use setPose() to set it in autonomous init
       stateStdDevs,
       visionMeasurementStdDevs
     );
 
     cameraCropLookupTable = new LinearInterpolator(LimelightConstants.cameraCropLookupTable);
-    networkTable = NetworkTableInstance.getDefault().getTable("limelight-tigers");
+    
+    networkTable = NetworkTableInstance.getDefault().getTable(limelightNetworktableName);
     botPoseNetworkTableEntry = networkTable.getEntry("botpose");
     jsonDumpNetworkTableEntry = networkTable.getEntry("json");
     cameraCropNetworkTableEntry = networkTable.getEntry("crop");
@@ -85,13 +103,13 @@ public class PoseEstimationSubsystem extends SubsystemBase {
         currentTimeStampSeconds = timeStampValue / 1000;
       }
     } catch (JsonProcessingException e) {
-      SmartDashboard.putString("Json Parsing Error", e.getStackTrace().toString());
+      SmartDashboard.putString("Json Parsing Error", e.getLocalizedMessage());
     }
 
     // Updates the pose estimator's position if limelight position data was recieved with a new time stamp
     if (botPose.length != 0 && currentTimeStampSeconds > lastTimeStampSeconds) {
-      double robotX = botPose[0] + 8.28; // TODO: Get precise field measurements as constants
-      double robotY = botPose[1] + 4;
+      double robotX = botPose[0] + fieldLengthMeters / 2;
+      double robotY = botPose[1] + fieldWidthMeters / 2;
       Rotation2d robotRotation = Rotation2d.fromDegrees(botPose[5]);
       Pose2d limelightVisionMeasurement = new Pose2d(robotX, robotY, robotRotation);
       poseEstimator.addVisionMeasurement(limelightVisionMeasurement, currentTimeStampSeconds);
@@ -112,10 +130,10 @@ public class PoseEstimationSubsystem extends SubsystemBase {
     SmartDashboard.putString("Estimated Pose", getPose().toString());
     SmartDashboard.putString("Odometry Pose", driveSubsystem.getPose().toString());
 
-    // Updates the cropping of the limelight camera based on its distance from april tags
-    double[] cropValues = {-1, 1, -1, 1};
-    double robotXPositionMeters = getPose().getX();
-    cropValues[2] = cameraCropLookupTable.getLookupValue(robotXPositionMeters);
+    // Updates the cropping of the limelight camera based on its distance from april tags 
+    double[] cropValues = {-1, 1, -1, 1}; 
+    double robotXPositionMeters = getPose().getX(); 
+    cropValues[2] = cameraCropLookupTable.getLookupValue(robotXPositionMeters); 
     cameraCropNetworkTableEntry.setDoubleArray(cropValues);
   }
 
@@ -137,7 +155,7 @@ public class PoseEstimationSubsystem extends SubsystemBase {
   }
 
   /**
-   * Resets the position on the field to 0,0 0-degrees, with forward being downfield. 
+   * Resets the position on the field to 0,0, 0-degrees, with forward being downfield. 
    * This resets what "forward" is for field oriented driving.
    */
   public void resetFieldPosition() {
