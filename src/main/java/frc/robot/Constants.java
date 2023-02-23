@@ -145,7 +145,7 @@ public final class Constants {
 
     public static final int LEDPort = 0-9;
 
-    public static final class LEDPatterns {
+    public static final class SparkMaxConstants {
       // This subclass contains the constant values for the LED patterns.
       public static final double RAINBOW = -0.99;
 
@@ -194,17 +194,42 @@ public final class Constants {
       public static final double GRAY = 0.95;
       public static final double DARK_GRAY = 0.97;
       public static final double BLACK = 0.99;    }
+    public enum LEDProcess {
+      ALLIANCE_COLOR (0), // Values are null on purpose.
+      DEFAULT (0),
+      RAINBOW (SparkMaxConstants.RAINBOW),
+      RED_ALLIANCE (SparkMaxConstants.FIRE),
+      BLUE_ALLIANCE (SparkMaxConstants.OCEAN),
+      INTAKE (SparkMaxConstants.MAGENTA),
+      SCORING (SparkMaxConstants.YELLOW),
+      BALANCE (SparkMaxConstants.CYAN),
+      OFF (SparkMaxConstants.BLACK),
+      AUTONOMOUS (SparkMaxConstants.RAINBOW_WAVE),
+      LINE_UP (SparkMaxConstants.WHITE);
+
+      private final double sparkMaxValue;
+      LEDProcess(double sparkMaxValue) {
+        this.sparkMaxValue = sparkMaxValue;
+      }
+      public double getSparkMaxValue() { return sparkMaxValue; }
+
+    }
   }
 
   public static final class ArmConstants {
-    public static final int armForward  = 2;
-    public static final int armBackward = 3;
+    public static final int swingingMotorID = 0-9;
+    public static final int extensionMotorID = 0-9;
 
-    public static final class ClawConstants {
-  
-      public static final int solenoidForward = 1; // ID for opening claw
-      public static final int solenoidBackward = 0; // ID for closing claw
-    }
+  }
+
+  public static final class ClawConstants {
+
+    public static final int solenoidForward = 1; // ID for opening claw
+    public static final int solenoidBackward = 0; // ID for closing claw
+    public static final int wristMotorID = 0-9; // ID for the wrist motor
+    public static final int leftClawMotorID = 0-9; //ID for left claw motor that controls the rollers
+    public static final int rightClawMotorID = 0-9; //ID for right claw motor that controls the rollers
+
   }
 
   public static final class ElevatorConstants {
@@ -227,20 +252,25 @@ public final class Constants {
     // Buttonboard Button IDs:
     public static final int clawButtonID = 1;
 
+    // Axes IDs:
+    public static final int leftStickX = 0;
+    public static final int leftStickY = 1;
+    public static final int rightStickX = 2;
+    public static final int rightStickY = 3;
+
     // Button IDs:
-    public static final int xButtonID = 3;
-    // TODO: stuff
-    public static final int aButtonID = 1;
-    public static final int bButtonID = 2;
+    public static final int xButtonID = 1;
+    public static final int aButtonID = 2;
+    public static final int bButtonID = 3;
     public static final int yButtonID = 4;
     public static final int leftBumperID = 5;
     public static final int rightBumperID = 6;
     public static final int leftTriggerID = 7;
     public static final int rightTriggerID = 8;
-    public static final int backButtonID = 7;
-    public static final int startButtonID = 8;
-    public static final int leftStickPressID = 9;
-    public static final int rightStickPressID = 10;
+    public static final int backButtonID = 9;
+    public static final int startButtonID = 10;
+    public static final int leftStickPressID = 11;
+    public static final int rightStickPressID = 12;
 
     public static final int leftDPadID = 270;
     public static final int upDPadID = 0;

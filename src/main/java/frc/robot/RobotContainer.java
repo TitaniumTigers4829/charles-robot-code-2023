@@ -53,9 +53,9 @@ public class RobotContainer {
     driveSubsystem = new DriveSubsystemImpl();
     visionSubsystem = new VisionSubsystemImpl();
 
-    DoubleSupplier leftStickX = () -> driverJoystick.getRawAxis(0);
-    DoubleSupplier leftStickY = () -> driverJoystick.getRawAxis(1);
-    DoubleSupplier rightStickX = () -> driverJoystick.getRawAxis(4);
+    DoubleSupplier leftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.leftStickX);
+    DoubleSupplier leftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.leftStickY);
+    DoubleSupplier rightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.rightStickX);
 
     Command driveCommand = new DriveCommand(driveSubsystem, visionSubsystem,
       () -> modifyAxisSquared(leftStickY) * -1, 
