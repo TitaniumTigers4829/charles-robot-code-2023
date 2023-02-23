@@ -19,12 +19,12 @@ public interface VisionSubsystem extends Subsystem {
   public Pose2d getPoseFromAprilTags();
 
   /**
-   * Returns the timestamp in milleseconds of when the limelight calculated 
+   * Returns the timestamp in milliseconds of when the limelight calculated
    * the robot's pose. If there are multiple limelights that can see april 
    * tags, it uses the limelight that is closest to an april tag. Returns
    * 0 if no timestamp value is found.
    */
-  public long getTimeStampInMilleseconds();
+  public long getTimeStampInMilliseconds();
 
   /**
    * Returns true if the limelight(s) can see one or more cubes.
