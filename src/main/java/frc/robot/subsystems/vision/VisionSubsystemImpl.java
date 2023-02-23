@@ -39,7 +39,12 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
 
   @Override
   public boolean canSeeAprilTags() {
-    return botPoseNetworkTableEntry.getDoubleArray(new double[]{}) != new double[]{};
+    double[] botPose = botPoseNetworkTableEntry.getDoubleArray(new double[]{});
+    if (botPose.length == 0) {
+      return false;
+    } else {
+      return !(botPose[0] == 0 && botPose[1] == 0 && botPose[2] == 0);
+    }
   }
 
   @Override
@@ -52,7 +57,7 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
   }
 
   @Override
-  public long getTimeStampInMilliseconds() {
+  public long getTimeStampInMilleseconds() {
     String jsonDump = jsonDumpNetworkTableEntry.getString("{}");  
 
     try {

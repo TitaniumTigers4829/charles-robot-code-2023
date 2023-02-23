@@ -90,7 +90,7 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     m_robotContainer.driveSubsystem.zeroHeading();
-    m_robotContainer.driveSubsystem.resetOdometry(new Pose2d());
+    m_robotContainer.driveSubsystem.resetPoseEstimator(new Pose2d());
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
