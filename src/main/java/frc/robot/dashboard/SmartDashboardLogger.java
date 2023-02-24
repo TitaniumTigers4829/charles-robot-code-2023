@@ -9,7 +9,7 @@ public final class SmartDashboardLogger {
     // prevent instantiation
     private SmartDashboardLogger() {
     }
-    
+
     /*
      * TODO - maybe read from config
      */
@@ -24,6 +24,17 @@ public final class SmartDashboardLogger {
      */
     public static boolean putString(final String key, final String value) {
         return putString(null, key, value);
+    }
+
+    /**
+     * Put a string in the table at logLevel {@link SmartDashboardLogLevel#DEBUG}
+     *
+     * @param key   the key to be assigned to
+     * @param value the value that will be assigned
+     * @return False if the table key already exists with a different type
+     */
+    public static boolean debugString(final String key, final String value) {
+        return putString(SmartDashboardLogLevel.DEBUG, key, value);
     }
 
     /**
@@ -44,6 +55,17 @@ public final class SmartDashboardLogger {
 
     /**
      * Put a number in the table regardless of {@code systemLogLevel}.
+     *
+     * @param key   the key to be assigned to
+     * @param value the value that will be assigned
+     * @return False if the table key already exists with a different type
+     */
+    public static boolean debugNumber(final String key, final double value) {
+        return putNumber(SmartDashboardLogLevel.DEBUG, key, value);
+    }
+
+    /**
+     * Put a number in the table at logLevel {@link SmartDashboardLogLevel#DEBUG}
      *
      * @param key   the key to be assigned to
      * @param value the value that will be assigned
