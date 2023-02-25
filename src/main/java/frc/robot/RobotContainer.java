@@ -34,7 +34,7 @@ public class RobotContainer {
 
   private final Joystick driverJoystick;
 
-  private final JoystickButton rightBumper, aButton, balanceFromLeft, balanceFromRight;
+  private final JoystickButton rightBumper;
 
   public final Joystick buttonBoard;
   
@@ -48,9 +48,7 @@ public class RobotContainer {
   
     driverJoystick = new Joystick(JoystickConstants.driverJoystickID);
     rightBumper = new JoystickButton(driverJoystick, JoystickConstants.rightBumperID);
-    aButton = new JoystickButton(driverJoystick, JoystickConstants.aButtonID);
-    balanceFromLeft = new JoystickButton(driverJoystick, JoystickConstants.yButtonID);
-    balanceFromRight = new JoystickButton(driverJoystick, JoystickConstants.xButtonID);
+  
 
     buttonBoard = new Joystick(JoystickConstants.buttonBoardID);
     
@@ -68,11 +66,8 @@ public class RobotContainer {
       () -> !rightBumper.getAsBoolean()
     );
 
-    if (balanceFromLeft.getAsBoolean()) {
-      driveCommand = new Balance(driveSubsystem, () -> modifyAxisSquared(rightStickX) * -1, true);
-    } else if (balanceFromRight.getAsBoolean()) {
-      driveCommand = new Balance(driveSubsystem, () -> modifyAxisSquared(rightStickX) * -1, false);
-    }
+
+    
   
     driveSubsystem.setDefaultCommand(driveCommand);
 
@@ -116,6 +111,11 @@ public class RobotContainer {
     JoystickButton bButton = new JoystickButton(driverJoystick, JoystickConstants.bButtonID);
     bButton.whileTrue(new FollowRealTimeTrajectory(driveSubsystem, () -> !bButton.getAsBoolean()));
 
+    JoystickButton balanceFromLeft = new JoystickButton(driverJoystick, JoystickConstants.xButtonID);
+    JoystickButton balanceFromRight = new JoystickButton(driverJoystick, JoystickConstants.yButtonID);
+
+    DoubleSupplier rightStickX = () -> driverJoystick.getRawAxis(4);
+    balanceFromRight.whileTrue(new Balance(driveSubsystem, () -> modifyAxisSquared(rightStickX) * -1, false));
   }
 
   public Command getAutonomousCommand() {

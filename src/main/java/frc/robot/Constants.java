@@ -84,9 +84,22 @@ public final class Constants {
     public static final boolean rearRightDriveEncoderReversed = true;
 
     public static final class BalanceConstants {
-      public static final double minPitchRadians = (3/180f) * Math.PI;
-      public static final double maxPitchRadiansPerSecond = (15/180f) * Math.PI;
-      public static final double initialSpeed = 0.5;
+      // TODO: tune this
+      public static final double initializationPitch = 14;
+      public static final double minPitchDegrees = 3;
+      public static final double maxPitchDegreesPerSecond = 15;
+      public static final double initialSpeed = 2;
+
+      // TODO: tune these
+      // Balance PID
+      public static final double pBalance = 0.1;
+      public static final double iBalance = 0;
+      public static final double dBalance = 0;
+
+      //Balance Feedforward
+//      public static final double balanceS = 0-9;
+//      public static final double balanceV = 0-9;
+//      public static final double balanceA = 0-9;
     }
   }
   

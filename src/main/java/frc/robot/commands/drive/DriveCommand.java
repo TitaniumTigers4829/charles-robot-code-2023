@@ -7,6 +7,7 @@ package frc.robot.commands.drive;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -36,6 +37,10 @@ public class DriveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    SmartDashboard.putNumber("Pitch",  driveSubsystem.gyro.getPitch());
+    SmartDashboard.putNumber("Yaw",  driveSubsystem.gyro.getYaw());
+    SmartDashboard.putNumber("Roll",  driveSubsystem.gyro.getRoll());
+
     driveSubsystem.drive(
       leftY.getAsDouble() * DriveConstants.joystickMaxSpeedMetersPerSecondLimit,
       leftX.getAsDouble() * DriveConstants.joystickMaxSpeedMetersPerSecondLimit,
