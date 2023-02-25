@@ -72,7 +72,7 @@ public interface DriveSubsystem extends Subsystem {
    * Resets the odometry to the specified pose, but keeps the current 
    * rotation.
    */
-  public void resetPoseEstimator(Pose2d pose);
+  public void resetOdometry(Pose2d pose);
 
   /**
    * Sets the standard deviations of model states, or how much the april

@@ -126,13 +126,9 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
 
   @Override
   public Rotation2d getFieldRelativeRotation2d() {
-    double perspectiveOffset;
-    if (DriverStation.getAlliance() == Alliance.Blue) {
-      perspectiveOffset = 0;
-    } else {
-      perspectiveOffset = 180;
-    }
-    return Rotation2d.fromDegrees(getHeading() + perspectiveOffset);
+    // Because the field isn't vertically symmetrical, we have the pose
+    // coordinates always start from the bottom left
+    return Rotation2d.fromDegrees(DriverStation.getAlliance() == Alliance.Blue ? 0 : 180);
   }
 
   @Override
@@ -160,7 +156,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   }
 
   @Override
-  public void resetPoseEstimator(Pose2d pose) {
+  public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(getRotation2d(), getModulePositions(), pose);
   }
 

@@ -57,12 +57,13 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
   }
 
   @Override
-  public long getTimeStampInMilleseconds() {
+  public long getTimeStampSeconds() {
     String jsonDump = jsonDumpNetworkTableEntry.getString("{}");  
 
     try {
       JsonNode jsonNodeData = mapper.readTree(jsonDump);
-      return jsonNodeData.path("Results").path("ts").asLong();
+      // Converts milliseconds to seconds
+      return jsonNodeData.path("Results").path("ts").asLong() / 1000;
     } catch (JsonProcessingException e) {
       SmartDashboard.putString("Json Parsing Error", e.getLocalizedMessage());
     }

@@ -57,7 +57,7 @@ public class DriveCommand extends CommandBase {
     SmartDashboard.putBoolean("can see april tags", visionSubsystem.canSeeAprilTags());
 
     if (visionSubsystem.canSeeAprilTags()) {
-      currentTimeStampSeconds = visionSubsystem.getTimeStampInMilleseconds() / 1000; // Converts to seconds
+      currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
       consecutiveAprilTagFrames++;
       // Only updates the pose estimator if the limelight pose is new
       if (currentTimeStampSeconds > lastTimeStampSeconds && consecutiveAprilTagFrames > 1) {
