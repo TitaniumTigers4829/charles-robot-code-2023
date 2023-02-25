@@ -37,9 +37,11 @@ public class DriveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putNumber("Pitch",  driveSubsystem.gyro.getPitch());
-    SmartDashboard.putNumber("Yaw",  driveSubsystem.gyro.getYaw());
-    SmartDashboard.putNumber("Roll",  driveSubsystem.gyro.getRoll());
+    SmartDashboard.putNumber("Pitch",  driveSubsystem.getPitch());
+    SmartDashboard.putNumber("Balance Error",  driveSubsystem.getBalanceError());
+
+    SmartDashboard.putNumber("Speed",  leftY.getAsDouble() * DriveConstants.joystickMaxSpeedMetersPerSecondLimit);
+
 
     driveSubsystem.drive(
       leftY.getAsDouble() * DriveConstants.joystickMaxSpeedMetersPerSecondLimit,

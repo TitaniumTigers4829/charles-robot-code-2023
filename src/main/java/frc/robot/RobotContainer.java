@@ -107,6 +107,9 @@ public class RobotContainer {
   private void configureButtonBindings() {
     POVButton rightDirectionPad = new POVButton(driverJoystick, JoystickConstants.rightDPadID);
     rightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
+    POVButton leftDirectionPad = new POVButton(driverJoystick, JoystickConstants.leftDPadID);
+    leftDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroPitchAndRoll));
+
 
     JoystickButton bButton = new JoystickButton(driverJoystick, JoystickConstants.bButtonID);
     bButton.whileTrue(new FollowRealTimeTrajectory(driveSubsystem, () -> !bButton.getAsBoolean()));
@@ -114,8 +117,7 @@ public class RobotContainer {
     JoystickButton balanceFromLeft = new JoystickButton(driverJoystick, JoystickConstants.xButtonID);
     JoystickButton balanceFromRight = new JoystickButton(driverJoystick, JoystickConstants.yButtonID);
 
-    DoubleSupplier rightStickX = () -> driverJoystick.getRawAxis(4);
-    balanceFromRight.whileTrue(new Balance(driveSubsystem, () -> modifyAxisSquared(rightStickX) * -1, false));
+    balanceFromRight.whileTrue(new Balance(driveSubsystem, false));
   }
 
   public Command getAutonomousCommand() {

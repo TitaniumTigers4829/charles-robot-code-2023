@@ -24,6 +24,8 @@ public class DriveSubsystem extends SubsystemBase {
   public final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
   private int gyroOffset = 0;
+  private double rollOffset = 0;
+  private double pitchOffset = 0;
 
   private final SwerveModule frontLeft = new SwerveModule(
     DriveConstants.frontLeftDriveMotorPort,
@@ -202,6 +204,39 @@ private final SwerveModule[] swerveModules = {
   public void zeroHeading() {
     gyroOffset = 0;
     gyro.reset();
+  }
+
+  /**
+   * Zeroes the roll and pitch of the robot.
+   * (Makes the robot think it is perfectly level.)
+   */
+  public void zeroPitchAndRoll() {
+    rollOffset = gyro.getRoll();
+    pitchOffset = gyro.getPitch();
+  }
+
+  /** Returns the pitch of the robot. */
+  public double getPitch() {
+    return gyro.getPitch() - pitchOffset;
+  }
+
+  /** Returns the roll of the robot. */
+  public double getRoll() {
+    return gyro.getRoll() - rollOffset;
+  }
+
+  /** 
+   * Returns the "balance error" of the robot.
+   * "Balance Error" is the magnitude of the pitch and roll combined.
+   */
+  public double getBalanceError() {
+    double roll = getRoll();
+    double pitch = getPitch();
+    double sign = Math.signum(roll) * Math.signum(pitch);
+    if (sign == 0) {
+      sign = 1;
+    }
+    return Math.sqrt(roll * roll + pitch * pitch) * sign;
   }
   
 }
