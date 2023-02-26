@@ -33,6 +33,13 @@ public interface DriveSubsystem extends Subsystem {
   public Rotation2d getRotation2d();
 
   /**
+   * Returns a Rotation2d for the heading of the robot relative to the
+   * field from the driver's perspective. This method is needed so that the
+   * drive command and poseEstimator don't fight each other.
+   */
+  public Rotation2d getFieldRelativeRotation2d();
+
+  /**
    * Sets the offset of the gyro.
    * @param gyroOffset The number of degrees that will be added to the
    * gyro's angle in getHeading.
@@ -51,10 +58,32 @@ public interface DriveSubsystem extends Subsystem {
   public Pose2d getPose();
 
   /**
+   * Updates the pose estimator with the pose calculated from the april
+   * tags. How much it contributes to the pose estimation is set by
+   * setPoseEstimatorVisionConfidence.
+   * @param visionMeasurement The pose calculated from the april tags
+   * @param currentTimeStampSeconds The time stamp in seconds of when the
+   * pose from the april tags was calculated.
+   */
+  public void addPoseEstimatorVisionMeasurement(Pose2d visionMeasurement,
+    double currentTimeStampSeconds);
+
+  /**
    * Resets the odometry to the specified pose, but keeps the current 
    * rotation.
    */
   public void resetOdometry(Pose2d pose);
+
+  /**
+   * Sets the standard deviations of model states, or how much the april
+   * tags contribute to the pose estimation of the robot. Lower numbers
+   * equal higher confidence and vice versa.
+   * @param xStandardDeviation the x standard deviation in meters
+   * @param yStandardDeviation the y standard deviation in meters
+   * @param thetaStandardDeviation the theta standard deviation in radians
+   */
+  public void setPoseEstimatorVisionConfidence(double xStandardDeviation,
+   double yStandardDeviation, double thetaStandardDeviation);
 
   /**
    * Returns the current drivetrain position, as reported by the modules 

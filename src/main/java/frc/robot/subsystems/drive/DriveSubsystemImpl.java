@@ -6,19 +6,28 @@ package frc.robot.subsystems.drive;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
 public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem {
+
+  private final Vector<N3> stateStdDevs = VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5));
+  private final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
 
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
@@ -47,13 +56,13 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     DriveConstants.rearLeftDriveEncoderReversed
   );
   private final SwerveModule rearRight = new SwerveModule(
-      DriveConstants.rearRightDriveMotorPort,
-      DriveConstants.rearRightTurningMotorPort,
-      DriveConstants.rearRightTurningEncoderPort,
-      DriveConstants.rearRightAngleZero,
-      DriveConstants.rearRightTurningEncoderReversed,
-      DriveConstants.rearRightDriveEncoderReversed
-    );
+    DriveConstants.rearRightDriveMotorPort,
+    DriveConstants.rearRightTurningMotorPort,
+    DriveConstants.rearRightTurningEncoderPort,
+    DriveConstants.rearRightAngleZero,
+    DriveConstants.rearRightTurningEncoderReversed,
+    DriveConstants.rearRightDriveEncoderReversed
+  );
 
   private final SwerveModule[] swerveModules = {
     frontLeft,
@@ -62,33 +71,41 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     rearRight
   };
 
+  private final SwerveDrivePoseEstimator odometry;
+
   private int gyroOffset = 0;
-
-  // Odometry class for tracking robot pose
-  private SwerveDriveOdometry odometry = new SwerveDriveOdometry(DriveConstants.driveKinematics,
-      getRotation2d(), getModulePositions());
-
+  
   /**
    * Creates a new DriveSubsystem.
    */
-  public DriveSubsystemImpl() {}
+  public DriveSubsystemImpl() {
+    odometry = new SwerveDrivePoseEstimator(
+      DriveConstants.driveKinematics,
+      getRotation2d(),
+      getModulePositions(),
+      new Pose2d(), // This is the position for where the robot starts the match
+      stateStdDevs,
+      visionMeasurementStdDevs
+    );
+  }
 
   @Override
   public void periodic() {
-    // Update the odometry in the periodic block
+    // Uses the swerve's sensors to update the pose estimator
     odometry.update(
-        getRotation2d(),
-        getModulePositions()
+      getRotation2d(),
+      getModulePositions()
     );
-
-    SmartDashboard.putString("Odometry", odometry.getPoseMeters().toString());
+    
+    SmartDashboard.putString("Estimated Pose", odometry.getEstimatedPosition().toString());
   }
 
+  @SuppressWarnings("ParameterName")
   @Override
   public void drive(double xSpeed, double ySpeed, double rotationSpeed, boolean fieldRelative) {
     SwerveModuleState[] swerveModuleStates = DriveConstants.driveKinematics.toSwerveModuleStates(
       fieldRelative
-      ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, getRotation2d())
+      ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, getFieldRelativeRotation2d())
       : new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.joystickMaxSpeedMetersPerSecondLimit);
     
@@ -102,21 +119,21 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     return (-gyro.getAngle() + this.gyroOffset) % 360;
   }
 
-  // /**
-  //  * @return Heading in degrees from -180 to 180.
-  //  */
-  // public double getHeading() {
-  //   return ((gyro.getAngle() + 180 + this.gyroOffset) % 360) - 180;
-  // }
-
   @Override
   public Rotation2d getRotation2d() {
     return Rotation2d.fromDegrees(getHeading());
   }
 
   @Override
+  public Rotation2d getFieldRelativeRotation2d() {
+    // Because the field isn't vertically symmetrical, we have the pose
+    // coordinates always start from the bottom left
+    return Rotation2d.fromDegrees(DriverStation.getAlliance() == Alliance.Blue ? 0 : 180);
+  }
+
+  @Override
   public void setGyroOffset(int gyroOffset) {
-    this.gyroOffset = gyroOffset;    
+    this.gyroOffset = gyroOffset;
   }
 
   @Override
@@ -127,12 +144,35 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
 
   @Override
   public Pose2d getPose() {
-    return odometry.getPoseMeters();
+    return odometry.getEstimatedPosition();
+  }
+  
+  @Override
+  public void addPoseEstimatorVisionMeasurement(Pose2d visionMeasurement, double currentTimeStampSeconds) {
+    // The gyro barely drifts throughout the match, so we trust it absolutely
+    Pose2d visionMeasurementExcludingRotation = 
+      new Pose2d(visionMeasurement.getX(), visionMeasurement.getY(), getRotation2d());
+    odometry.addVisionMeasurement(visionMeasurementExcludingRotation, currentTimeStampSeconds);
   }
 
   @Override
   public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(getRotation2d(), getModulePositions(), pose);
+  }
+
+  @Override
+  public void setPoseEstimatorVisionConfidence(double xStandardDeviation, double yStandardDeviation,
+    double thetaStandardDeviation) {
+    odometry.setVisionMeasurementStdDevs(VecBuilder.fill(xStandardDeviation, yStandardDeviation, thetaStandardDeviation));
+  }
+  
+  @Override
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        desiredStates, DriveConstants.joystickMaxSpeedMetersPerSecondLimit); // TODO: Check if this has to be different
+    for (int i = 0; i < swerveModules.length; i++) {
+      swerveModules[i].setDesiredState(desiredStates[i]);
+    }
   }
 
   @Override
@@ -145,15 +185,6 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     };
 
     return swerveModulePositions;
-  }
-
-  @Override
-  public void setModuleStates(SwerveModuleState[] desiredStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, DriveConstants.joystickMaxSpeedMetersPerSecondLimit);
-    for (int i = 0; i < swerveModules.length; i++) {
-      swerveModules[i].setDesiredState(desiredStates[i]);
-    }
   }
 
 }
