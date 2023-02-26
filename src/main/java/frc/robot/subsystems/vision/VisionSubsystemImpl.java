@@ -24,6 +24,7 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
   private final NetworkTableEntry botPoseNetworkTableEntry;
   private final NetworkTableEntry jsonDumpNetworkTableEntry;
   private final NetworkTableEntry cameraCropNetworkTableEntry;
+  private final NetworkTableEntry pipelineNetworkTableEntry;
   
   private final ObjectMapper mapper = new ObjectMapper();
 
@@ -32,6 +33,7 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
     botPoseNetworkTableEntry = networkTable.getEntry("botpose");
     jsonDumpNetworkTableEntry = networkTable.getEntry("json");
     cameraCropNetworkTableEntry = networkTable.getEntry("crop");
+    pipelineNetworkTableEntry = networkTable.getEntry("pipeline");
   }
 
   @Override
@@ -98,6 +100,15 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
   @Override
   public void cropLimelights(double[][] cropValues) {
     cameraCropNetworkTableEntry.setDoubleArray(cropValues[0]);
+  }
+
+  @Override
+  public void setLimelightsPipeline(LimelightPipelines limelightPipeline) {
+    if (limelightPipeline == LimelightPipelines.APRIL_TAGS) {
+      pipelineNetworkTableEntry.setNumber(LimelightConstants.aprilTagsPipelineID);
+    } else if (limelightPipeline == LimelightPipelines.OBJECT_DETECTION) {
+      pipelineNetworkTableEntry.setNumber(LimelightConstants.objectDetectionPipelineID);
+    }
   }
 
 }

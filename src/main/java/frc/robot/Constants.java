@@ -290,6 +290,9 @@ public final class Constants {
   public static final class LimelightConstants {
     public static final String frontLimelightName = "limelight-tigers";
 
+    public static final int aprilTagsPipelineID = 0-9;
+    public static final int objectDetectionPipelineID = 0-9;
+
     public static final double[][] cameraCropLookupTable = {
       // TODO: All of these are placeholder values
       // {x position in meters, limelight lower y crop}
