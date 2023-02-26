@@ -1,115 +1,104 @@
 // JackLib 2023
+// For this code to work, PathPlannerLib needs to be installed through Gradle
+// https://3015rangerrobotics.github.io/pathplannerlib/PathplannerLib.json
 
 package frc.robot.commands.autonomous;
 
+import java.util.function.BooleanSupplier;
+
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
+
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.TrajectoryConstants;
-import frc.robot.subsystems.drive.DriveSubsystemImpl;
-
-import java.util.List;
-import java.util.function.BooleanSupplier;
+import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class FollowRealTimeTrajectory extends CommandBase {
 
-  // To get the x and y positions of where you want to go, you might have to use a subsystem
-  private final DriveSubsystemImpl driveSubsystem;
-  private final BooleanSupplier whileHeldButtonBooleanSupplier;
+  private final DriveSubsystem driveSubsystem;
+  private final VisionSubsystem visionSubsystem;
+  private final BooleanSupplier isFinished;
 
-  public FollowRealTimeTrajectory(DriveSubsystemImpl driveSubsystem, BooleanSupplier whileHeldButtonBooleanSupplier) {
+  private double consecutiveAprilTagFrames = 0;
+  private double lastTimeStampSeconds = 0;
+  
+  /**
+   * Follows the specified PathPlanner trajectory.
+   * @param driveSubsystem The subsystem for the swerve drive
+   * @param visionSubsystem The subsystem for vision measurements
+   * @param isFinished The boolean supplier that returns true if the trajectory should be finished
+   */
+  public FollowRealTimeTrajectory(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, BooleanSupplier isFinished) {
     this.driveSubsystem = driveSubsystem;
-    this.whileHeldButtonBooleanSupplier = whileHeldButtonBooleanSupplier;
-    addRequirements(this.driveSubsystem);
+    this.visionSubsystem = visionSubsystem;
+    // Doesn't require the drive subsystem because RealTimePPSwerveControllerCommand does
+    addRequirements(visionSubsystem);
+    this.isFinished = isFinished;
   }
 
   @Override
   public void initialize() {
-
     /* EDIT CODE BELOW HERE */
 
     // X and Y should be in meters
-    // You might have to switch the x and y values and make them negative or positive
     // To get these 3 values, you should use the odometry or poseEstimator
     double startX = driveSubsystem.getPose().getX();
     double startY = driveSubsystem.getPose().getY();
-    // The trajectory will not optimize the swerve modules without this being 0
-    Rotation2d startRotation = new Rotation2d();
-    Pose2d start = new Pose2d(startX, startY, startRotation);
+    Rotation2d startRotation = driveSubsystem.getPose().getRotation();
+    Translation2d start = new Translation2d(startX, startY);
     // These values should be field relative, if they are robot relative add them to the start values
     double endX = driveSubsystem.getPose().getX() + 2;
     double endY = driveSubsystem.getPose().getY();
-    // Do not make this value based on the robot's current odometry, it might crash.
     Rotation2d endRotation = Rotation2d.fromDegrees(45);
-    Pose2d end = new Pose2d(endX, endY, endRotation);
-
-    // If you want any middle waypoints in the trajectory, add them here
-    List<Translation2d> middleWaypoints = List.of(
-
-      // Swerve is weird and messes up the spline sometimes if you don't have this
-      new Translation2d(startX + ((endX - startX) * 0.95), startY + ((endY - startY) * 0.95))
-    );
-
-    // You should have constans or everything below here
-    double driveMaxSpeedMetersPerSecond = TrajectoryConstants.autoMaxVelocity;
-    double driveMaxAccelerationMetersPerSecond = TrajectoryConstants.autoMaxAcceleration;
-    double turnMaxAngularSpeedRadiansPerSecond = TrajectoryConstants.maxAngularSpeedRadiansPerSecond;
-    double turnMaxAngularSpeedRadiansPerSecondSquared = TrajectoryConstants.maxAngularSpeedRadiansPerSecondSquared;
+    Translation2d end = new Translation2d(endX, endY);
     
     // Your probably only want to edit the P values
     PIDController xController = new PIDController(TrajectoryConstants.xControllerP, 0, 0);
     PIDController yController = new PIDController(TrajectoryConstants.yControllerP, 0, 0);
-    // TODO: Tune P value
-    ProfiledPIDController thetaController = new ProfiledPIDController(
-      TrajectoryConstants.thetaProfiledControllerP, 0, 0,
-      new TrapezoidProfile.Constraints(turnMaxAngularSpeedRadiansPerSecond, turnMaxAngularSpeedRadiansPerSecondSquared)
-    );
+    PIDController thetaController = new PIDController(TrajectoryConstants.thetaControllerP, 0, 0);
 
     SwerveDriveKinematics kinematics = DriveConstants.driveKinematics;
+    
+    // This should be fine, but is here just in case so the robot doesn't crash during a match
+    try {
+      // Makes a trajectory that factors in holonomic rotation
+      PathPlannerTrajectory trajectoryToFollow = PathPlanner.generatePath(
+        new PathConstraints(TrajectoryConstants.autoMaxVelocity, TrajectoryConstants.autoMaxAcceleration),
+        // position, heading (direction of travel)
+        new PathPoint(start, startRotation, Rotation2d.fromDegrees(0)),
+        // If you want any middle waypoints, add more pathpoints here, or a list of pathpoints
+        new PathPoint(end, endRotation, Rotation2d.fromDegrees(0))
+      );                                               
 
     // IMPORTANT: Make sure your driveSubsystem has the methods getPose and setModuleStates
 
     /* EDIT CODE ABOVE HERE (ONLY TOUCH THE REST OF THE CODE IF YOU KNOW WHAT YOU'RE DOING) */
 
-    TrajectoryConfig config = new TrajectoryConfig(
-      driveMaxSpeedMetersPerSecond,
-      driveMaxAccelerationMetersPerSecond)
-      .setKinematics(DriveConstants.driveKinematics)
-      .setStartVelocity(0)
-      .setEndVelocity(0);
-
-    // This is here just to ensure a bad trajectory doesn't crash the robot
-    try {
-      Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-          start,
-          middleWaypoints,
-          end,
-          config
-        );
-
+      // Makes it so wheels don't have to turn more than 90 degrees
       thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-      new RealTimeSwerveControllerCommand(
-        trajectory,
+      new RealTimePPSwerveControllerCommand(
+        trajectoryToFollow,
         driveSubsystem::getPose, // Functional interface to feed supplier
         kinematics,
-        // Position controllers
         xController,
         yController,
         thetaController,
         driveSubsystem::setModuleStates,
-        whileHeldButtonBooleanSupplier,
-        end,
+        false,
+        isFinished,
+        new Pose2d(endX, endY, endRotation),
         driveSubsystem
       ).schedule();
     } catch(Exception e) {
@@ -118,7 +107,24 @@ public class FollowRealTimeTrajectory extends CommandBase {
   }
 
   @Override
-  public void execute() {}
+  public void execute() {
+    // Updates the robot's odometry with april tags
+    double currentTimeStampSeconds = lastTimeStampSeconds;
+
+    if (visionSubsystem.canSeeAprilTags()) {
+      currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
+      consecutiveAprilTagFrames++;
+      // Only updates the pose estimator if the limelight pose is new and reliable
+      if (currentTimeStampSeconds > lastTimeStampSeconds && consecutiveAprilTagFrames > LimelightConstants.detectedFramesForReliability) {
+        Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
+        driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, currentTimeStampSeconds);
+      }
+    } else {
+      consecutiveAprilTagFrames = 0;
+    }
+
+    lastTimeStampSeconds = currentTimeStampSeconds;
+  }
 
   @Override
   public void end(boolean interrupted) {}
@@ -127,5 +133,4 @@ public class FollowRealTimeTrajectory extends CommandBase {
   public boolean isFinished() {
     return false;
   }
-
 }

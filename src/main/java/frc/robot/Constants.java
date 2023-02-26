@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -139,6 +140,28 @@ public final class Constants {
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints thetaControllerConstraints =
       new TrapezoidProfile.Constraints(maxAngularSpeedRadiansPerSecond, maxAngularSpeedRadiansPerSecondSquared);
+  
+    public static final double blueBalanceXPosition = 3.885;
+    public static final double redBalanceXPosition = 12.635;
+    public static final double balanceXControllerP = .3;
+    public static final double balanceYControllerP = .3;
+  
+    // These are ordered from top left to bottom right from driver perspective
+    public static final double[] blueNodeYPositions = 
+      {4.9784, 4.4196, 3.8608, 3.302, 2.7432, 2.1844, 1.6256, 1.0668, 0.508};
+    public static final double[] redNodeYPositions = 
+      {0.508, 1.0668, 1.6256, 2.1844, 2.7432, 3.302, 3.8608, 4.4196, 4.9784};
+    // Factors in bumper width and wheelbase
+    public static final double blueNodeXPosition = 1.5;
+    public static final double redNodeXPosition = 15;
+    public static final double blueOuterWaypointX = 5.3;
+    public static final double redOuterWaypointX = 11.2;
+    public static final double blueInnerWaypointX = 2.5;
+    public static final double redInnerWaypointX = 14;
+    public static final double upperWaypointY = 4.75;
+    public static final double lowerWaypointY = 0.75;
+    public static final Rotation2d blueEndRotation = Rotation2d.fromDegrees(180);
+    public static final Rotation2d redEndRotation = Rotation2d.fromDegrees(0);
   }
   
   public static final class LEDConstants {
@@ -232,25 +255,11 @@ public final class Constants {
 
   }
 
-  public static final class ElevatorConstants {
-
-    public static final int elevatorMotorPort = 0-9;
-    public static final int elevatorEncoderPort = 0-9;
-    public static final boolean elevatorInverted = false;
-
-    public static final int bottomLimitSwitchPort = 0-9;
-    public static final int topLimitSwitchPort = 0-9;
-
-  }
-
   public static final class JoystickConstants {
 
     // Ports:
     public static final int driverJoystickID = 0;
     public static final int buttonBoardID = 1;
-
-    // Buttonboard Button IDs:
-    public static final int clawButtonID = 1;
 
     // Axes IDs:
     public static final int leftStickX = 0;
@@ -290,6 +299,8 @@ public final class Constants {
       {3, 0},
       {4, .25}
     };
+
+    public static final int detectedFramesForReliability = 2;
   }
 
 }
