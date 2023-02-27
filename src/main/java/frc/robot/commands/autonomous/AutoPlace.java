@@ -17,6 +17,7 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BooleanSupplier;
 
 import com.pathplanner.lib.PathConstraints;
@@ -53,7 +54,7 @@ public class AutoPlace extends CommandBase {
   @Override
   public void initialize() {
     // The start of the trajectory is the robot's current location
-    ArrayList<PathPoint> pathPoints = new ArrayList<PathPoint>();
+    List<PathPoint> pathPoints = new ArrayList<PathPoint>();
     Translation2d start = new Translation2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY());
     Rotation2d startRotation = driveSubsystem.getPose().getRotation();
     pathPoints.add(new PathPoint(start, startRotation, startRotation));
