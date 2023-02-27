@@ -9,19 +9,26 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.TrajectoryConstants;
-import frc.robot.subsystems.drive.DriveSubsystemImpl;
+import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class FollowPathPlannerTrajectory extends CommandBase {
 
-  private final DriveSubsystemImpl driveSubsystem;
+  private final DriveSubsystem driveSubsystem;
+  private final VisionSubsystem visionSubsystem;
   private final String trajectoryName;
   private final boolean resetOdometryToTrajectoryStart;
+  
   private PPSwerveControllerCommand followPathPlannerTrajectoryCommand;
   private boolean done = false;
+  private double consecutiveAprilTagFrames = 0;
+  private double lastTimeStampSeconds = 0;
   
   /* EDIT CODE BELOW HERE */
   // You should have constants for everything in here
@@ -43,20 +50,20 @@ public class FollowPathPlannerTrajectory extends CommandBase {
   /**
    * Follows the specified PathPlanner trajectory.
    * @param driveSubsystem The subsystem for the swerve drive.
+   * @param visionSubsystem The subsystem for vision measurements
    * @param trajectoryName The name of the PathPlanner path file. It should not include the filepath or 
    * .path extension.
    * @param resetOdometryToTrajectoryStart Set as true if you want the odometry of the robot to be set to the
    * start of the trajectory.
    */
-  public FollowPathPlannerTrajectory(DriveSubsystemImpl driveSubsystem, String trajectoryName, boolean resetOdometryToTrajectoryStart) {
-    this.driveSubsystem = driveSubsystem;
-    addRequirements(driveSubsystem);
-    
+  public FollowPathPlannerTrajectory(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, String trajectoryName, boolean resetOdometryToTrajectoryStart) {
+    this.driveSubsystem = driveSubsystem;    
+    this.visionSubsystem = visionSubsystem;
+    addRequirements(visionSubsystem);
     this.trajectoryName = trajectoryName;
     this.resetOdometryToTrajectoryStart = resetOdometryToTrajectoryStart;
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     // Makes a trajectory                                                     
@@ -83,20 +90,33 @@ public class FollowPathPlannerTrajectory extends CommandBase {
     );
     
     followPathPlannerTrajectoryCommand.schedule();
-
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     done = followPathPlannerTrajectoryCommand.isFinished();
+
+    // Updates the robot's odometry with april tags
+    double currentTimeStampSeconds = lastTimeStampSeconds;
+
+    if (visionSubsystem.canSeeAprilTags()) {
+      currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
+      consecutiveAprilTagFrames++;
+      // Only updates the pose estimator if the limelight pose is new and reliable
+      if (currentTimeStampSeconds > lastTimeStampSeconds && consecutiveAprilTagFrames > LimelightConstants.detectedFramesForReliability) {
+        Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
+        driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, currentTimeStampSeconds);
+      }
+    } else {
+      consecutiveAprilTagFrames = 0;
+    }
+
+    lastTimeStampSeconds = currentTimeStampSeconds;
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return done;

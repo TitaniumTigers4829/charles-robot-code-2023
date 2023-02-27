@@ -56,4 +56,15 @@ public interface VisionSubsystem extends Subsystem {
    */
   public void cropLimelights(double[][] cropValues);
 
+  /**
+   * Changes the limelights' pipeline. If set to object detection, only
+   * the limelight with the coral will be changed.
+   * @param limelightPipeline The pipeline to set the limelights to.
+   */
+  public void setLimelightsPipeline(LimelightPipelines limelightPipeline);
+
+  public enum LimelightPipelines {
+    APRIL_TAGS,
+    OBJECT_DETECTION
+  }
 }
