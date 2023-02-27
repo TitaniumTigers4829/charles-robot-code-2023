@@ -11,25 +11,64 @@ class SmartDashboardLoggerTest {
 
     private static final double TEST_NUMBER = 0.125;
 
+    private static int keyIndex = 0;
+
     @Test
-    void putNumber() {
-        assertTrue(SmartDashboardLogger.putNumber("key1", TEST_NUMBER));
+    void debugNumber() {
+        assertTrue(SmartDashboardLogger.debugNumber(nextKey(), TEST_NUMBER));
     }
 
     @Test
-    void putNumber_originally_string() {
-        assertTrue(SmartDashboardLogger.putString("key2", TEST_STRING));
-        assertFalse(SmartDashboardLogger.putNumber("key2", TEST_NUMBER));
+    void infoNumber() {
+        assertTrue(SmartDashboardLogger.infoNumber(nextKey(), TEST_NUMBER));
     }
 
     @Test
-    void putString() {
-        assertTrue(SmartDashboardLogger.putString("key3", TEST_STRING));
+    void warnNumber() {
+        assertTrue(SmartDashboardLogger.warnNumber(nextKey(), TEST_NUMBER));
     }
 
     @Test
-    void putString_originally_number() {
-        assertTrue(SmartDashboardLogger.putNumber("key4", 0.125));
-        assertFalse(SmartDashboardLogger.putString("key4", TEST_STRING));
+    void errorNumber() {
+        assertTrue(SmartDashboardLogger.errorNumber(nextKey(), TEST_NUMBER));
     }
+
+    @Test
+    void errorNumber_originally_string() {
+        final String key = nextKey();
+        assertTrue(SmartDashboardLogger.errorString(key, TEST_STRING));
+        assertFalse(SmartDashboardLogger.errorNumber(key, TEST_NUMBER));
+    }
+
+    @Test
+    void debugString() {
+        assertTrue(SmartDashboardLogger.debugString(nextKey(), TEST_STRING));
+    }
+
+    @Test
+    void infoString() {
+        assertTrue(SmartDashboardLogger.infoString(nextKey(), TEST_STRING));
+    }
+
+    @Test
+    void warnString() {
+        assertTrue(SmartDashboardLogger.warnString(nextKey(), TEST_STRING));
+    }
+
+    @Test
+    void errorString() {
+        assertTrue(SmartDashboardLogger.errorString(nextKey(), TEST_STRING));
+    }
+
+    @Test
+    void errorString_originally_number() {
+        final String key = nextKey();
+        assertTrue(SmartDashboardLogger.errorNumber(key, 0.125));
+        assertFalse(SmartDashboardLogger.errorString(key, TEST_STRING));
+    }
+
+    private static String nextKey() {
+        return "key" + (++keyIndex);
+    }
+
 }
