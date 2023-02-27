@@ -39,7 +39,12 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
 
   @Override
   public boolean canSeeAprilTags() {
-    return botPoseNetworkTableEntry.getDoubleArray(new double[]{}) != new double[]{};
+    double[] botPose = botPoseNetworkTableEntry.getDoubleArray(new double[]{});
+    if (botPose.length == 0) {
+      return false;
+    } else {
+      return !(botPose[0] == 0 && botPose[1] == 0 && botPose[2] == 0);
+    }
   }
 
   @Override
@@ -52,12 +57,13 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
   }
 
   @Override
-  public long getTimeStampInMilliseconds() {
+  public long getTimeStampSeconds() {
     String jsonDump = jsonDumpNetworkTableEntry.getString("{}");  
 
     try {
       JsonNode jsonNodeData = mapper.readTree(jsonDump);
-      return jsonNodeData.path("Results").path("ts").asLong();
+      // Converts milliseconds to seconds
+      return jsonNodeData.path("Results").path("ts").asLong() / 1000;
     } catch (JsonProcessingException e) {
       SmartDashboard.putString("Json Parsing Error", e.getLocalizedMessage());
     }

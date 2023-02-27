@@ -32,6 +32,8 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    m_robotContainer.driveSubsystem.zeroHeading();
+    m_robotContainer.driveSubsystem.resetOdometry(new Pose2d());
 //    uncomment the line below if there is a USB camera plugged into the RoboRIO
 //    CameraServer.startAutomaticCapture();
   }
@@ -57,6 +59,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    m_robotContainer.driveSubsystem.zeroHeading();
+    m_robotContainer.driveSubsystem.resetOdometry(new Pose2d());
   }
 
   @Override
@@ -89,8 +93,6 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    m_robotContainer.driveSubsystem.zeroHeading();
-    m_robotContainer.driveSubsystem.resetOdometry(new Pose2d());
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
