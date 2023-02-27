@@ -232,7 +232,7 @@ private final SwerveModule[] swerveModules = {
   public double getBalanceError() {
     double roll = getRoll();
     double pitch = getPitch();
-    double sign = Math.signum(roll) * Math.signum(pitch);
+    double sign = Math.signum(pitch);
     if (sign == 0) {
       sign = 1;
     }

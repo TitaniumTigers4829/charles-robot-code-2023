@@ -86,16 +86,18 @@ public final class Constants {
 
     public static final class BalanceConstants {
       public static final double balanceErrorInitiationDegrees = 14;
-      public static final double balanceErrorNearBalanceDegrees = 7.5;
+      public static final double balanceErrorNearBalanceDegrees = 10;
       public static final double initialSpeed = 1.4;
-      public static final double balanceMarginDegrees = 1;
-      public static final double orientMarginDegrees = 4;
+      public static final double balanceMarginDegrees = 2.4;
+      public static final double orientMarginDegrees = 2.5;
 
       // TODO: tune these
       // Balance PID
-      public static final double pBalance = 0.4;
+      // Note: These values are *really* sensitive. 
+      public static final double pBalance = 0.0472;
       public static final double iBalance = 0;
-      public static final double dBalance = 0;
+      public static final double dBalance = 0.003;
+      
     }
   }
   

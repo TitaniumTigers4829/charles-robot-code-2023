@@ -6,17 +6,12 @@ package frc.robot.commands.drive;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants.BalanceConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.subsystems.DriveSubsystem;
-
-import java.sql.Time;
-import java.util.function.DoubleSupplier;
 
 public class Balance extends CommandBase {
 
@@ -54,6 +49,8 @@ public class Balance extends CommandBase {
     SmartDashboard.putBoolean("Balancing", true);
     double error = driveSubsystem.getBalanceError();
     SmartDashboard.putNumber("Pitch",  driveSubsystem.getPitch());
+    SmartDashboard.putNumber("Roll",  driveSubsystem.getRoll());
+    SmartDashboard.putNumber("Yaw",  driveSubsystem.getHeading());
     SmartDashboard.putNumber("Balance Error",  driveSubsystem.getBalanceError());
 
 
