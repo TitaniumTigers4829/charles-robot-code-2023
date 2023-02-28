@@ -21,7 +21,7 @@ public final class LinearInterpolator {
     // Check if inputXValue is less than the table's first value, if it is, return the lowest y value
     if (inputXValue < lookupTable[0][0]) {
         return lookupTable[0][1];
-    } // Check if inputXValue is greater than the table's first value, if it is, return the greatest y value
+    } // Check if inputXValue is greater than the table's last value, if it is, return the greatest y value
     else if (inputXValue > lookupTable[lookupTable.length - 1][0]) {
         return lookupTable[lookupTable.length - 1][1];
     }
