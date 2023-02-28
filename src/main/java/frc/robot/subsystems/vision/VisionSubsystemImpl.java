@@ -1,76 +1,62 @@
-// Some of this code was copied from Team 7028 - Binary Battalion's swerve-test repository
-// https://github.com/STMARobotics/swerve-test/blob/5916bb426b97f10e17d9dfd5ec6c3b6fda49a7ce/src/main/java/frc/robot/subsystems/PoseEstimatorSubsystem.java
-
 package frc.robot.subsystems.vision;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.TrajectoryConstants;
+import frc.robot.extras.LimelightHelpers;
+import frc.robot.extras.LimelightHelpers.LimelightResults;
 
 public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsystem {
   
-  private final NetworkTable networkTable; 
-  private final NetworkTableEntry botPoseNetworkTableEntry;
-  private final NetworkTableEntry jsonDumpNetworkTableEntry;
-  private final NetworkTableEntry cameraCropNetworkTableEntry;
-  private final NetworkTableEntry pipelineNetworkTableEntry;
-  
-  private final ObjectMapper mapper = new ObjectMapper();
-
-  public VisionSubsystemImpl() {    
-    networkTable = NetworkTableInstance.getDefault().getTable(LimelightConstants.frontLimelightName);
-    botPoseNetworkTableEntry = networkTable.getEntry("botpose");
-    jsonDumpNetworkTableEntry = networkTable.getEntry("json");
-    cameraCropNetworkTableEntry = networkTable.getEntry("crop");
-    pipelineNetworkTableEntry = networkTable.getEntry("pipeline");
-  }
+  // TODO: This only works for one LL, will have to change methods for both
+  public VisionSubsystemImpl() {}
 
   @Override
   public void periodic() {}
 
   @Override
   public boolean canSeeAprilTags() {
-    double[] botPose = botPoseNetworkTableEntry.getDoubleArray(new double[]{});
-    if (botPose.length == 0) {
-      return false;
-    } else {
-      return !(botPose[0] == 0 && botPose[1] == 0 && botPose[2] == 0);
-    }
+    LimelightResults limelightResults = LimelightHelpers.getLatestResults(LimelightConstants.frontLimelightName);
+    return limelightResults.targetingResults.targets_Fiducials.length > 0;
   }
 
   @Override
   public Pose2d getPoseFromAprilTags() {
-    double[] botPose = botPoseNetworkTableEntry.getDoubleArray(new double[]{});
-    double robotX = botPose[0] + TrajectoryConstants.fieldLengthMeters / 2;
-    double robotY = botPose[1] + TrajectoryConstants.fieldWidthMeters / 2;
-    Rotation2d robotRotation = Rotation2d.fromDegrees(botPose[5]);
+    Pose2d botPose = LimelightHelpers.getBotPose2d(LimelightConstants.frontLimelightName);
+    double robotX = botPose.getX() + TrajectoryConstants.fieldLengthMeters / 2;
+    double robotY = botPose.getY() + TrajectoryConstants.fieldWidthMeters / 2;
+    Rotation2d robotRotation = botPose.getRotation();
     return new Pose2d(robotX, robotY, robotRotation);
   }
 
   @Override
-  public long getTimeStampSeconds() {
-    String jsonDump = jsonDumpNetworkTableEntry.getString("{}");  
-
-    try {
-      JsonNode jsonNodeData = mapper.readTree(jsonDump);
-      // Converts milliseconds to seconds
-      return jsonNodeData.path("Results").path("ts").asLong() / 1000;
-    } catch (JsonProcessingException e) {
-      SmartDashboard.putString("Json Parsing Error", e.getLocalizedMessage());
+  public double getDistanceFromClosestAprilTag() {
+    if (canSeeAprilTags()) {
+      int closestAprilTagID = (int) LimelightHelpers.getFiducialID(LimelightConstants.frontLimelightName);
+      double aprilTagX = LimelightConstants.aprilTagPositions[closestAprilTagID - 1][0]; // April tag id starts at 1
+      double aprilTagY = LimelightConstants.aprilTagPositions[closestAprilTagID - 1][1];
+      double robotX = getPoseFromAprilTags().getX();
+      double robotY = getPoseFromAprilTags().getY();
+      return Math.sqrt(Math.pow(aprilTagX - robotX, 2) + Math.pow(aprilTagY - robotY, 2));
     }
+    
+    // To be safe returns a big distance from the april tags
+    return 10;
+  }
 
-    return 0L;
+  @Override
+  public int getNumberOfAprilTags() {
+    LimelightResults limelightResults = LimelightHelpers.getLatestResults(LimelightConstants.frontLimelightName);
+    return limelightResults.targetingResults.targets_Fiducials.length;
+  }
+
+  @Override
+  public long getTimeStampSeconds() {
+    LimelightResults limelightResults = LimelightHelpers.getLatestResults(LimelightConstants.frontLimelightName);
+    return (long) (limelightResults.targetingResults.timestamp_LIMELIGHT_publish / 1000);
   }
 
   @Override
@@ -99,16 +85,18 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
 
   @Override
   public void cropLimelights(double[][] cropValues) {
-    cameraCropNetworkTableEntry.setDoubleArray(cropValues[0]);
+    LimelightHelpers.setCropWindow(
+      LimelightConstants.frontLimelightName, 
+      cropValues[0][0],
+      cropValues[0][1],
+      cropValues[0][2],
+      cropValues[0][3]
+    );
   }
 
   @Override
   public void setLimelightsPipeline(LimelightPipelines limelightPipeline) {
-    if (limelightPipeline == LimelightPipelines.APRIL_TAGS) {
-      pipelineNetworkTableEntry.setNumber(LimelightConstants.aprilTagsPipelineID);
-    } else if (limelightPipeline == LimelightPipelines.OBJECT_DETECTION) {
-      pipelineNetworkTableEntry.setNumber(LimelightConstants.objectDetectionPipelineID);
-    }
+    LimelightHelpers.setPipelineIndex(LimelightConstants.frontLimelightName, limelightPipeline.getID());
   }
 
 }

@@ -288,10 +288,23 @@ public final class Constants {
   }
 
   public static final class LimelightConstants {
+  
     public static final String frontLimelightName = "limelight-tigers";
 
-    public static final int aprilTagsPipelineID = 0-9;
-    public static final int objectDetectionPipelineID = 0-9;
+    public static final double limelightHeight = Units.inchesToMeters(40);
+    public static final double limelightPitchDegrees = -30;
+
+    public static final double[][] aprilTagPositions = {
+      // { x, y, z}
+      {Units.inchesToMeters(610.77), Units.inchesToMeters(42.19), Units.inchesToMeters(18.22)}, // 1
+      {Units.inchesToMeters(610.77), Units.inchesToMeters(108.19), Units.inchesToMeters(18.22)}, // 2
+      {Units.inchesToMeters(610.77), Units.inchesToMeters(174.19), Units.inchesToMeters(18.22)}, // 3
+      {Units.inchesToMeters(636.96), Units.inchesToMeters(265.74), Units.inchesToMeters(27.38)}, // 4
+      {Units.inchesToMeters(14.25), Units.inchesToMeters(265.74), Units.inchesToMeters(27.38)}, // 5
+      {Units.inchesToMeters(40.45), Units.inchesToMeters(174.19), Units.inchesToMeters(18.22)}, // 6
+      {Units.inchesToMeters(40.45), Units.inchesToMeters(108.19), Units.inchesToMeters(18.22)}, // 7
+      {Units.inchesToMeters(40.45), Units.inchesToMeters(42.19), Units.inchesToMeters(18.22)} // 8
+    };
 
     public static final double[][] cameraCropLookupTable = {
       // TODO: All of these are placeholder values
@@ -301,6 +314,23 @@ public final class Constants {
       {2, -.25},
       {3, 0},
       {4, .25}
+    };
+
+    public static final double[][] oneAprilTagLookupTable = {
+      // {x position in meters, x std deviation, y std deviation, r (in degrees) std deviation}
+      {0, 0.01, 0.01, 1},
+      {1.5, 0.01, 0.01, 1},
+      {3, 0.01, 0.10, 6},
+      {4.5, 0.2, 0.4, 12},
+      {6, 0.7, 1.2, 20}
+    };
+
+    public static final double[][] twoAprilTagLookupTable = {
+      // {x position in meters, x std deviation, y std deviation, r (in degrees) std deviation}
+      {1.5, 0.01, 0.01, 1},
+      {3, 0.01, 0.01, 1},
+      {4.5, 0.01, 0.03, 1},
+      {6, 0.02, 0.08, 2}
     };
 
     public static final int detectedFramesForReliability = 2;

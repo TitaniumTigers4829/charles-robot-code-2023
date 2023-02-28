@@ -19,6 +19,18 @@ public interface VisionSubsystem extends Subsystem {
   public Pose2d getPoseFromAprilTags();
 
   /**
+   * Returns the distance in meters from the limelight(s) to the closest 
+   * april tag that they can see.
+   */
+  public double getDistanceFromClosestAprilTag();
+
+  /**
+   * Returns how many april tags the limelight that is being used for pose
+   * estimation can see.
+   */
+  public int getNumberOfAprilTags();
+
+  /**
    * Returns the timestamp in seconds of when the limelight calculated the
    * robot's pose. If there are multiple limelights that can see april 
    * tags, it uses the limelight that is closest to an april tag. Returns
@@ -64,7 +76,17 @@ public interface VisionSubsystem extends Subsystem {
   public void setLimelightsPipeline(LimelightPipelines limelightPipeline);
 
   public enum LimelightPipelines {
-    APRIL_TAGS,
-    OBJECT_DETECTION
+    APRIL_TAGS(0-9),
+    OBJECT_DETECTION(0-9);
+
+    private int ID;
+
+    LimelightPipelines(int ID) {
+      this.ID = ID;
+    }
+
+    public int getID() {
+      return this.ID;
+    }
   }
 }

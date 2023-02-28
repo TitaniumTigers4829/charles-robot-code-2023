@@ -26,8 +26,10 @@ import frc.robot.Constants.DriveConstants;
 
 public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem {
 
-  private final Vector<N3> stateStdDevs = VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5));
-  private final Vector<N3> visionMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
+  // This will stay the same throughout the match. These values are harder to test for and tune, so assume this guess is right.
+  private final Vector<N3> stateStandardDeviations = VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5));
+  // This will be changed throughout the match depending on how confident we are that the limelight is right.
+  private final Vector<N3> visionMeasurementStandardDeviations = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
 
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
@@ -84,8 +86,8 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
       getRotation2d(),
       getModulePositions(),
       new Pose2d(), // This is the position for where the robot starts the match
-      stateStdDevs,
-      visionMeasurementStdDevs
+      stateStandardDeviations,
+      visionMeasurementStandardDeviations
     );
   }
 
