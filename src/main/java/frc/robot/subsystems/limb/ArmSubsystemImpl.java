@@ -26,32 +26,27 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   }
 
   @Override
-  public void extendArm() {
-//TODO: Stub
+  public boolean getExtension() {
+    // TODO Auto-generated method stub
+    return false;
   }
 
   @Override
-  public void retractArm() {
-//TODO: Stub
-  }
-
-  @Override
-  public void toggleArm() {
-//TODO: Stub
-  }
-
-  @Override
-  public boolean getArmExtended() {
-    return false; //TODO: Stub
+  public void setExtension(double armExtension) {
+    // TODO Auto-generated method stub
+    
   }
 
   @Override
   public double getAngle() {
-    return 0; //TODO: Stub
+    // TODO Auto-generated method stub
+    return 0;
   }
 
   @Override
-  public void goToAngle(double angle) {
-    //TODO: Stub
+  public double goToAngle(double armRotation) {
+    // TODO Auto-generated method stub
+    return 0;
   }
+
 }
