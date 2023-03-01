@@ -7,21 +7,25 @@ package frc.robot.subsystems.limb;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public interface ArmSubsystem extends Subsystem {
-  /** Extends the arm. */
-  void extendArm();
-  /** Retracts the arm. */
-  void retractArm();
-  /** Toggles the arm's extension state. */
-  void toggleArm();
-  /** Returns true if the arm is currently extended. */
-  boolean getArmExtended();
 
-
-  /** Returns the angle, in radians, of the swinging arm. */
-  double getAngle();
-
-  /** Sets the target angle of the swinging arm.
-   * @param angle (radians)
+  /** 
+   * Gets the arm's extension 0 to 1.
    */
-  void goToAngle(double angle);
+  public boolean getExtension();
+
+  /** 
+   * Sets the arm's extension from 0 to 1.
+   */
+  public void setExtension(double armExtension);
+
+  /** 
+   * Returns the angle, in radians, of the arm (0 being straight down).  
+   */
+  public double getAngle();
+
+  /** 
+   * Sets the arm angle in radians (0 being straight down).
+   */
+  public void goToAngle(double armRotation);
+
 }
