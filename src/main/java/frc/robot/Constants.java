@@ -242,6 +242,13 @@ public final class Constants {
   public static final class ArmConstants {
     public static final int swingingMotorID = 0-9;
     public static final int extensionMotorID = 0-9;
+    public static final int armEncoderID = 0-9;
+    public static final double feedForwardGain = 0-9;
+    public static final double accelerationGain = 0-9;
+    public static final double velocityGain = 0-9;
+    public static final double pValue = 0-9;
+    public static final double iValue = 0-9;
+    public static final double dValue = 0-9;
 
   }
 
