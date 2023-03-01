@@ -74,8 +74,13 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   }
 
   @Override
+<<<<<<< HEAD
   public boolean getExtension() {
     return false;
+=======
+  public void goToAngle(double armRotation) {
+    // TODO Auto-generated method stub
+>>>>>>> 00342b6cc51417ee334f008e726f6116c13f4423
   }
 
   /** 
