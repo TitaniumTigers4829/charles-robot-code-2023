@@ -9,11 +9,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.TrajectoryConstants;
-import frc.robot.extras.MultiLinearInterpolator;
+import frc.robot.commands.DriveCommandBase;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
@@ -26,20 +24,11 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
 
-public class AutoPlace extends CommandBase {
-
-  private final MultiLinearInterpolator oneAprilTagLookupTable = 
-    new MultiLinearInterpolator(LimelightConstants.oneAprilTagLookupTable);
-  private final MultiLinearInterpolator twoAprilTagLookupTable = 
-    new MultiLinearInterpolator(LimelightConstants.twoAprilTagLookupTable);
+public class AutoPlace extends DriveCommandBase {
 
   private final DriveSubsystem driveSubsystem;
-  private final VisionSubsystem visionSubsystem;
   private final BooleanSupplier isFinished;
   private final int nodeID;
-
-  private double consecutiveAprilTagFrames = 0;
-  private double lastTimeStampSeconds = 0;
 
   /**
    * Makes the robot drive to the specified node and place its cargo.
@@ -49,8 +38,8 @@ public class AutoPlace extends CommandBase {
    * @param nodeID The ID starting at index 1 for the node to place something at.
    */
   public AutoPlace(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, BooleanSupplier isFinished, int nodeID) {
+    super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
-    this.visionSubsystem = visionSubsystem;
     // Doesn't require the drive subsystem because RealTimePPSwerveControllerCommand does
     addRequirements(visionSubsystem);
     this.isFinished = isFinished;
@@ -153,37 +142,7 @@ public class AutoPlace extends CommandBase {
 
   @Override
   public void execute() {
-    // Updates the robot's odometry with april tags
-    double currentTimeStampSeconds = lastTimeStampSeconds;
-
-    if (visionSubsystem.canSeeAprilTags()) {
-      currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
-      consecutiveAprilTagFrames++;
-
-      double distanceFromClosestAprilTag = visionSubsystem.getDistanceFromClosestAprilTag();
-      // Sets the pose estimator confidence in vision based off of number of april tags and distance
-      if (visionSubsystem.getNumberOfAprilTags() == 1) {
-        double xStandardDeviation = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[0];
-        double yStandardDeviation = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[1];
-        double thetaStandardDeviation = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[2];
-        driveSubsystem.setPoseEstimatorVisionConfidence(xStandardDeviation, yStandardDeviation, thetaStandardDeviation);
-      } else if (visionSubsystem.getNumberOfAprilTags() > 1) {
-        double xStandardDeviation = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[0];
-        double yStandardDeviation = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[1];
-        double thetaStandardDeviation = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[2];
-        driveSubsystem.setPoseEstimatorVisionConfidence(xStandardDeviation, yStandardDeviation, thetaStandardDeviation);
-      }
-
-      // Only updates the pose estimator if the limelight pose is new and reliable
-      if (currentTimeStampSeconds > lastTimeStampSeconds && consecutiveAprilTagFrames > 2) {
-        Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
-        driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, currentTimeStampSeconds);
-      }
-    } else {
-      consecutiveAprilTagFrames = 0;
-    }
-
-    lastTimeStampSeconds = currentTimeStampSeconds;
+    super.execute();
   }
 
   @Override
