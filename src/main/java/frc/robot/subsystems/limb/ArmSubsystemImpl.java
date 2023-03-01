@@ -44,9 +44,8 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   }
 
   @Override
-  public double goToAngle(double armRotation) {
+  public void goToAngle(double armRotation) {
     // TODO Auto-generated method stub
-    return 0;
   }
 
 }
