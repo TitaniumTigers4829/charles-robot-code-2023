@@ -9,29 +9,43 @@ import java.util.concurrent.CancellationException;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 
 public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
   private final WPI_TalonFX armExtensionMotor;
-  private final WPI_TalonFX beltMotor;
-  private final ArmFeedforward armFeedForward;
-  private final CANCoder armEncoder;
-  private final PIDController armPIDController =
-  new PIDController(
-      ArmConstants.pValue,
-      ArmConstants.iValue, // 0
-      ArmConstants.dValue
+  private final SimpleMotorFeedforward armExtensionFeedForward;
+  private final CANCoder armExtensionEncoder;
+
+  private final WPI_TalonFX armRotationMotor;
+  private final ArmFeedforward armRotationFeedForward;
+  private final CANCoder armRotationEncoder;
+
+  private final PIDController armRotationPIDController = new PIDController(
+          ArmConstants.rotationPValue, 
+          ArmConstants.rotationIValue, 
+          ArmConstants.rotationDValue
+  );
+    
+  private final PIDController armExtensionPIDController = new PIDController(
+          ArmConstants.extensionPValue,
+          ArmConstants.extensionIValue,
+          ArmConstants.extensionDValue
   );
   
+  private final DigitalInput armExtensionLimitSwitch;
   
 
 
@@ -45,10 +59,24 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   */
   public ArmSubsystemImpl() {
     armExtensionMotor = new WPI_TalonFX(ArmConstants.extensionMotorID);
-    beltMotor = new WPI_TalonFX(ArmConstants.swingingMotorID);
-    armFeedForward = new ArmFeedforward(ArmConstants.feedForwardGain, 
-    ArmConstants.velocityGain, ArmConstants.accelerationGain);
-    armEncoder = new CANCoder(ArmConstants.armEncoderID);
+    armExtensionFeedForward = new SimpleMotorFeedforward(
+            ArmConstants.extensionFeedForwardGain, 
+            ArmConstants.extensionVelocityGain,
+            ArmConstants.extensionAccelerationGain
+    );
+    armExtensionEncoder = new CANCoder(ArmConstants.extensionEncoderID);
+
+    armRotationMotor = new WPI_TalonFX(ArmConstants.rotationMotorID);
+    armRotationFeedForward = new ArmFeedforward(
+            ArmConstants.rotationFeedForwardGain, 
+            ArmConstants.rotationVelocityGain, 
+            ArmConstants.rotationAccelerationGain
+    );
+    armRotationEncoder = new CANCoder(ArmConstants.rotationEncoderID);
+
+    armExtensionLimitSwitch = new DigitalInput(ArmConstants.extensionLimitSwitchID);
+
+    armExtensionMotor.setNeutralMode(NeutralMode.Brake);
   }
 
   @Override
@@ -56,35 +84,52 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
   @Override
   public void goToAngle(double desiredAngle, double currentAngle, double currentVelocity) {
-    double feedForwardOutput = armFeedForward.calculate(desiredAngle, currentVelocity);
-    double PIDOutput = armPIDController.calculate(currentAngle, desiredAngle);
+    double feedForwardOutput = armRotationFeedForward.calculate(desiredAngle, currentVelocity);
+    double PIDOutput = armRotationPIDController.calculate(currentAngle, desiredAngle);
     double motorOutput = (PIDOutput + feedForwardOutput);
-    beltMotor.set(ControlMode.PercentOutput, motorOutput);
+    armRotationMotor.set(ControlMode.PercentOutput, motorOutput);
   }
 
   @Override
   public double getAngle() {
-    double currentAngle = armEncoder.getAbsolutePosition();
-    return currentAngle;
+    return armRotationEncoder.getAbsolutePosition() * Math.PI / 180;
   }
 
-  public double getCurrentArmVelocity() {
-    double currentVelocity = armEncoder.getVelocity();
-    return currentVelocity;
+  public double getCurrentRotationVelocity() {
+    return armRotationEncoder.getVelocity();
   }
 
   @Override
-  public boolean getExtension() {
-    // TODO Auto-generated method stub
-    return false;
+  public double getExtension() {
+    return armExtensionEncoder.getPosition();
+  }
+
+  public double getExtensionVelocity() {
+    return armExtensionEncoder.getVelocity();
   }
   
+  public void resetExtensionEncoder() {
+    boolean extensionLimitSwitchPressed = armExtensionLimitSwitch.get();
+    if (extensionLimitSwitchPressed) {
+      armExtensionEncoder.setPosition(0);
+    }
+  }
   /** 
    * Sets the arm's extension from 0 to 1.
    */
   @Override
-  public void setExtension(double armExtension) {
+  public void setExtension(double desiredAngle, double extensionAngle, double extensionVelocity) {
     
+    double feedForwardOutput = armExtensionFeedForward.calculate(extensionVelocity);
+    double PIDOutput = armExtensionPIDController.calculate(extensionAngle, desiredAngle);
+    double motorOutput = (PIDOutput + feedForwardOutput);
+
+    if (motorOutput > 1) {
+      armExtensionMotor.set(ControlMode.PercentOutput, 1);  
+    }
+    else {
+      armExtensionMotor.set(ControlMode.PercentOutput, motorOutput);
+    }
   }
 
 
