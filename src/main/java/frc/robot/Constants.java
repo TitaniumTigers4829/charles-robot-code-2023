@@ -290,6 +290,7 @@ public final class Constants {
   public static final class LimelightConstants {
   
     public static final String frontLimelightName = "limelight-tigers";
+    public static final String backLimelightName = "limelight-jack";
 
     public static final double limelightHeight = Units.inchesToMeters(40);
     public static final double limelightPitchDegrees = -30;

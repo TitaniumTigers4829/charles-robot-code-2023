@@ -8,24 +8,40 @@ import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.extras.LimelightHelpers;
 import frc.robot.extras.LimelightHelpers.LimelightResults;
+import frc.robot.extras.LimelightHelpers.LimelightTarget_Fiducial;
 
 public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsystem {
+
+  private LimelightResults currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.frontLimelightName);
+  private String currentlyUsedLimelight = LimelightConstants.frontLimelightName;
   
-  // TODO: This only works for one LL, will have to change methods for both
   public VisionSubsystemImpl() {}
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    // Every periodic chooses the limelight to use based off of their distance from april tags
+    LimelightTarget_Fiducial[] frontLimelightAprilTags = LimelightHelpers.getLatestResults(LimelightConstants.frontLimelightName).targetingResults.targets_Fiducials;
+    LimelightTarget_Fiducial[] backLimelightAprilTags = LimelightHelpers.getLatestResults(LimelightConstants.backLimelightName).targetingResults.targets_Fiducials;
+
+    // Gets the distance from the closest april tag. If it can't see one, returns a really big number.
+    double frontLimelightDistance = frontLimelightAprilTags.length > 0
+      ? getLimelightAprilTagDistance((int) frontLimelightAprilTags[0].fiducialID) : Integer.MAX_VALUE;
+    double backLimelightDistance = backLimelightAprilTags.length > 0
+      ? getLimelightAprilTagDistance((int) backLimelightAprilTags[0].fiducialID) : Integer.MAX_VALUE;
+
+    currentlyUsedLimelight = frontLimelightDistance < backLimelightDistance 
+      ? LimelightConstants.frontLimelightName : LimelightConstants.backLimelightName;
+    currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(currentlyUsedLimelight);
+  }
 
   @Override
   public boolean canSeeAprilTags() {
-    LimelightResults limelightResults = LimelightHelpers.getLatestResults(LimelightConstants.frontLimelightName);
-    return limelightResults.targetingResults.targets_Fiducials.length > 0;
+    return LimelightHelpers.getFiducialID(currentlyUsedLimelight) != -1;
   }
 
   @Override
   public Pose2d getPoseFromAprilTags() {
-    Pose2d botPose = LimelightHelpers.getBotPose2d(LimelightConstants.frontLimelightName);
+    Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
     double robotX = botPose.getX() + TrajectoryConstants.fieldLengthMeters / 2;
     double robotY = botPose.getY() + TrajectoryConstants.fieldWidthMeters / 2;
     Rotation2d robotRotation = botPose.getRotation();
@@ -35,12 +51,8 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
   @Override
   public double getDistanceFromClosestAprilTag() {
     if (canSeeAprilTags()) {
-      int closestAprilTagID = (int) LimelightHelpers.getFiducialID(LimelightConstants.frontLimelightName);
-      double aprilTagX = LimelightConstants.aprilTagPositions[closestAprilTagID - 1][0]; // April tag id starts at 1
-      double aprilTagY = LimelightConstants.aprilTagPositions[closestAprilTagID - 1][1];
-      double robotX = getPoseFromAprilTags().getX();
-      double robotY = getPoseFromAprilTags().getY();
-      return Math.sqrt(Math.pow(aprilTagX - robotX, 2) + Math.pow(aprilTagY - robotY, 2));
+      int closestAprilTagID = (int) LimelightHelpers.getFiducialID(currentlyUsedLimelight);
+      return getLimelightAprilTagDistance(closestAprilTagID);
     }
     
     // To be safe returns a big distance from the april tags
@@ -49,14 +61,12 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
 
   @Override
   public int getNumberOfAprilTags() {
-    LimelightResults limelightResults = LimelightHelpers.getLatestResults(LimelightConstants.frontLimelightName);
-    return limelightResults.targetingResults.targets_Fiducials.length;
+    return currentlyUsedLimelightResults.targetingResults.targets_Fiducials.length;
   }
 
   @Override
   public long getTimeStampSeconds() {
-    LimelightResults limelightResults = LimelightHelpers.getLatestResults(LimelightConstants.frontLimelightName);
-    return (long) (limelightResults.targetingResults.timestamp_LIMELIGHT_publish / 1000);
+    return (long) (currentlyUsedLimelightResults.targetingResults.timestamp_LIMELIGHT_publish / 1000);
   }
 
   @Override
@@ -97,6 +107,24 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
   @Override
   public void setLimelightsPipeline(LimelightPipelines limelightPipeline) {
     LimelightHelpers.setPipelineIndex(LimelightConstants.frontLimelightName, limelightPipeline.getID());
+  }
+
+  /**
+   * Calculates the distance between the specified robot and april tag.
+   * This method should only be called once there has been a check for if
+   * the limelights can see april tags.
+   */
+  private double getLimelightAprilTagDistance(int aprilTagID) {
+    if (aprilTagID >= 1) {
+      double aprilTagX = LimelightConstants.aprilTagPositions[aprilTagID - 1][0]; // April tag id starts at 1
+      double aprilTagY = LimelightConstants.aprilTagPositions[aprilTagID - 1][1];
+      double robotX = getPoseFromAprilTags().getX();
+      double robotY = getPoseFromAprilTags().getY();
+      return Math.sqrt(Math.pow(aprilTagX - robotX, 2) + Math.pow(aprilTagY - robotY, 2));
+    }
+
+    // Just in case returns 
+    return Double.MAX_VALUE;
   }
 
 }
