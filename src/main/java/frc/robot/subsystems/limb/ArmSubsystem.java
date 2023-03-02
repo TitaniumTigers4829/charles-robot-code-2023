@@ -26,10 +26,6 @@ public interface ArmSubsystem extends Subsystem {
   /** 
    * Sets the arm angle in radians (0 being straight down).
    */
-<<<<<<< HEAD
-  public void goToAngle(double setpoint, double currentPosition, double currentVelocity);
-=======
-  public void goToAngle(double armRotation);
->>>>>>> 00342b6cc51417ee334f008e726f6116c13f4423
+  public void goToAngle(double setpoint, double currentAngle, double currentVelocity);
 
 }

@@ -55,10 +55,10 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   public void periodic() { }
 
   @Override
-  public void goToAngle(double setpoint, double currentPosition, double currentVelocity) {
-    double feedForwardOutput = armFeedForward.calculate(setpoint, currentVelocity);
-    double motorOutput = ((setpoint - currentPosition) * armPIDController.getP() 
-    + feedForwardOutput);
+  public void goToAngle(double desiredAngle, double currentAngle, double currentVelocity) {
+    double feedForwardOutput = armFeedForward.calculate(desiredAngle, currentVelocity);
+    double PIDOutput = armPIDController.calculate(currentAngle, desiredAngle);
+    double motorOutput = (PIDOutput + feedForwardOutput);
     beltMotor.set(ControlMode.PercentOutput, motorOutput);
   }
 
@@ -74,15 +74,11 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   }
 
   @Override
-<<<<<<< HEAD
   public boolean getExtension() {
-    return false;
-=======
-  public void goToAngle(double armRotation) {
     // TODO Auto-generated method stub
->>>>>>> 00342b6cc51417ee334f008e726f6116c13f4423
+    return false;
   }
-
+  
   /** 
    * Sets the arm's extension from 0 to 1.
    */
@@ -90,4 +86,6 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   public void setExtension(double armExtension) {
     
   }
-  }
+
+
+}
