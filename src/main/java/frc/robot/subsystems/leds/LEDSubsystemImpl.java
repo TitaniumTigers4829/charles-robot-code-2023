@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDConstants;
-import frc.robot.Constants.LEDConstants.SparkMaxConstants;
+import frc.robot.Constants.LEDConstants.SparkConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 
 
@@ -72,7 +72,7 @@ public class LEDSubsystemImpl extends SubsystemBase implements LEDSubsystem {
 
   @Override
   public void off() {
-    ledSpark.set(SparkMaxConstants.BLACK);
+    ledSpark.set(SparkConstants.BLACK);
   }
 
 }
