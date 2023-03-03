@@ -24,144 +24,142 @@ import edu.wpi.first.math.util.Units;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final int driveFXEncoderCPR = 2048;
-  public static final int turningCANcoderCPR = 4096;
 
   private Constants() {}
 
   public static final class DriveConstants {
+
     // Distance between centers of right and left wheels on robot
-    public static final double trackWidth = Units.inchesToMeters(22.25);
+    public static final double TRACK_WIDTH = Units.inchesToMeters(22.25);
     // Distance between front and back wheels on robot
-    public static final double wheelBase = Units.inchesToMeters(28.5);
-    public static final SwerveDriveKinematics driveKinematics =
-      new SwerveDriveKinematics(
-        new Translation2d(wheelBase / 2, trackWidth / 2), // Front Left
-        new Translation2d(wheelBase / 2, -trackWidth / 2), // Front Right
-        new Translation2d(-wheelBase / 2, trackWidth / 2), // Rear Left
-        new Translation2d(-wheelBase / 2, -trackWidth / 2) // Rear Right
-      );
+    public static final double WHEEL_BASE = Units.inchesToMeters(28.5);
+    public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
+      new Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2), // Front Left
+      new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2), // Front Right
+      new Translation2d(-WHEEL_BASE / 2, TRACK_WIDTH / 2), // Rear Left
+      new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2) // Rear Right
+    );
 
-    public static final double voltsS = 0.73394;
-    public static final double voltSecondsPerMeterV = 2.4068;
-    public static final double voltSecondsSquaredPerMeterA = 0.28749;
+    public static final double TURNING_S = 0.77;
+    public static final double TURNING_V = 0.75;
+    public static final double TURNING_A = 0; // Default to zero
 
-    public static final double turningS = 0.77; // LOCKED IN!  -----  old 0.66202
-    public static final double turningV = 0.75; //0.75 // 3.0052
-    public static final double turningA = 0; // Default to zero
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI * 2;
 
+    public static final double MAX_SPEED_METERS_PER_SECOND = 4;
 
-    public static final double maxAngularSpeedRadiansPerSecond = Math.PI * 2;
+    public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 12;
+    public static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 16;
+    public static final int REAR_LEFT_DRIVE_MOTOR_ID = 11;
+    public static final int REAR_RIGHT_DRIVE_MOTOR_ID = 9;
 
-    public static final double joystickMaxSpeedMetersPerSecondLimit = 4;
+    public static final int FRONT_LEFT_TURN_MOTOR_ID = 7;
+    public static final int FRONT_RIGHT_TURN_MOTOR_ID = 10;
+    public static final int REAR_LEFT_TURN_MOTOR_ID = 13;
+    public static final int REAR_RIGHT_TURN_MOTOR_ID = 8;
 
-    public static final int frontLeftDriveMotorPort = 12;
-    public static final int frontRightDriveMotorPort = 16;
-    public static final int rearLeftDriveMotorPort = 11;
-    public static final int rearRightDriveMotorPort = 9;
-
-    public static final int frontLeftTurningMotorPort = 7;
-    public static final int frontRightTurningMotorPort = 10;
-    public static final int rearLeftTurningMotorPort = 13;
-    public static final int rearRightTurningMotorPort = 8;
-
-    public static final int frontLeftTurningEncoderPort = 0;
-    public static final int frontRightTurningEncoderPort = 2;
-    public static final int rearLeftTurningEncoderPort = 1;
-    public static final int rearRightTurningEncoderPort = 3;
+    public static final int FRONT_LEFT_CANCODER_ID = 0;
+    public static final int FRONT_RIGHT_CANCODER_ID = 2;
+    public static final int REAR_LEFT_CANCODER_ID = 1;
+    public static final int REAR_RIGHT_CANCODER_ID = 3;
 
     // In degrees.
-    public static final double frontLeftAngleZero = 47.900390625; //-42.099609375
-    public static final double frontRightAngleZero = -71.630859375;
-    public static final double rearLeftAngleZero = -24.345703125; //65.654296875
-    public static final double rearRightAngleZero = -88.681640625;
+    public static final double FRONT_LEFT_ZERO_ANGLE = 47.900390625;
+    public static final double FRONT_RIGHT_ZERO_ANGLE = -71.630859375;
+    public static final double REAR_LEFT_ZERO_ANGLE = -24.345703125;
+    public static final double REAR_RIGHT_ZERO_ANGLE = -88.681640625;
 
-    public static final boolean frontLeftTurningEncoderReversed = false;
-    public static final boolean frontRightTurningEncoderReversed = false;
-    public static final boolean rearLeftTurningEncoderReversed = false;
-    public static final boolean rearRightTurningEncoderReversed = false;
+    public static final boolean FRONT_LEFT_CANCODER_REVERSED = false;
+    public static final boolean FRONT_RIGHT_CANCODER_REVERSED = false;
+    public static final boolean REAR_LEFT_CANCODER_REVERSED = false;
+    public static final boolean REAR_RIGHT_CANCODER_REVERSED = false;
     
-    public static final boolean frontLeftDriveEncoderReversed = true;
-    public static final boolean frontRightDriveEncoderReversed = true;
-    public static final boolean rearLeftDriveEncoderReversed = true;
-    public static final boolean rearRightDriveEncoderReversed = true;
+    public static final boolean FRONT_LEFT_DRIVE_ENCODER_REVERSED = true;
+    public static final boolean FRONT_RIGHT_DRIVE_ENCODER_REVERSED = true;
+    public static final boolean REAR_LEFT_DRIVE_ENCODER_REVERSED = true;
+    public static final boolean REAR_RIGHT_DRIVE_ENCODER_REVERSED = true;
   }
   
   public static final class ModuleConstants {
 
-    public static final double driveGearRatio = 7.36;
+    // These are the total encoder units for one revolution
+    public static final int FALCON_ENCODER_RESOLUTION = 2048;
+    public static final int CANCODER_RESOLUTION = 4096;  
+
+    public static final double DRIVE_GEAR_RATIO = 7.36;
 
     // TODO: tune this
-    public static final double moduleTurnControllerP = 8.1;
-    public static final double moduleTurnControllerI = 0;
-    public static final double moduleTurnControllerD = 0;
+    public static final double TURN_P = 8.1;
+    public static final double TURN_I = 0;
+    public static final double TURN_D = 0;
 
-    public static final double maxModuleAngularSpeedRadiansPerSecond = 3 * Math.PI;
-    public static final double maxModuleAngularAccelerationRadiansPerSecondSquared = 6 * Math.PI;
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 3 * Math.PI;
+    public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 6 * Math.PI;
 
-    public static final double moduleDriveControllerF = 0.055;
-    public static final double moduleDriveControllerP = 0; // .1
-    public static final double moduleDriveControllerI = 0;
-    public static final double moduleDriveControllerD = 0;
+    public static final double DRIVE_F = 0.055;
+    public static final double DRIVE_P = 0; // .1
+    public static final double DRIVE_I = 0;
+    public static final double DRIVE_D = 0;
 
-    public static final double wheelDiameterMeters = Units.inchesToMeters(4); // 4 inches
-    public static final double wheelCircumferenceMeters =
-        wheelDiameterMeters * Math.PI; // C = D * pi
-    public static final double drivetoMetersPerSecond =
-        (10 * wheelCircumferenceMeters) / (driveGearRatio * driveFXEncoderCPR);
-    public static final double falconToMeters = wheelCircumferenceMeters / (driveGearRatio * 2048);
+    public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
+    public static final double WHEEL_CIRCUMFERENCE_METERS =
+      WHEEL_DIAMETER_METERS * Math.PI;
+    public static final double DRIVE_TO_METERS_PER_SECOND =
+      (10 * WHEEL_CIRCUMFERENCE_METERS) / (DRIVE_GEAR_RATIO * FALCON_ENCODER_RESOLUTION);
+    public static final double 
+      FALCON_UNITS_TO_METERS = WHEEL_CIRCUMFERENCE_METERS / (DRIVE_GEAR_RATIO * FALCON_ENCODER_RESOLUTION);
 
-    public static final TrapezoidProfile.Constraints moduleTurnConstraints =
+    public static final TrapezoidProfile.Constraints TURN_CONSTRAINTS =
       new TrapezoidProfile.Constraints(
-        maxModuleAngularSpeedRadiansPerSecond,
-        maxModuleAngularAccelerationRadiansPerSecondSquared
+        MAX_ANGULAR_SPEED_RADIANS_PER_SECOND,
+        MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED
       );
 
-    public static final String canivoreCanBusString = "Canivore 1";
+    public static final String CANIVORE_CAN_BUS_STRING = "Canivore 1";
 
   }
 
   public static final class TrajectoryConstants {
 
     // Autonomous Period Constants TODO: Tune all of these values
-    public static final double autoMaxVelocity = 1; // meters/second
-    public static final double autoMaxAcceleration = 1; // meters/second/second
-    public static final double xControllerP = .5;
-    public static final double yControllerP = .5;
-    public static final double thetaControllerP = 0.2;
-    public static final double thetaProfiledControllerP = 1;
-    public static final double maxAngularSpeedRadiansPerSecond = Math.PI;
-    public static final double maxAngularSpeedRadiansPerSecondSquared = Math.PI;
+    public static final double MAX_SPEED = 1; // meters/second
+    public static final double MAX_ACCELERATION = 1; // meters/second/second
+    public static final double X_CONTROLLER_P = .5;
+    public static final double Y_CONTROLLER_P = .5;
+    public static final double THETA_CONTROLLER_P = 0.2;
+    public static final double THETA_PROFILED_CONTROLLER_P = 1;
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI;
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = Math.PI;
     // The length of the field in the x direction (left to right)
-    public static final double fieldLengthMeters = 16.54175;
+    public static final double FIELD_LENGTH_METERS = 16.54175;
     // The length of the field in the y direction (top to bottom)
-    public static final double fieldWidthMeters = 8.0137;
+    public static final double FIELD_WIDTH_METERS = 8.0137;
   
     // Constraint for the motion profiled robot angle controller
-    public static final TrapezoidProfile.Constraints thetaControllerConstraints =
-      new TrapezoidProfile.Constraints(maxAngularSpeedRadiansPerSecond, maxAngularSpeedRadiansPerSecondSquared);
+    public static final TrapezoidProfile.Constraints THETA_CONTROLLER_CONSTRAINTS =
+      new TrapezoidProfile.Constraints(MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED);
   
-    public static final double blueBalanceXPosition = 3.885;
-    public static final double redBalanceXPosition = 12.635;
-    public static final double balanceXControllerP = .3;
-    public static final double balanceYControllerP = .3;
+    public static final double BLUE_BALANCE_X_POSITION = 3.885;
+    public static final double RED_BALANCE_X_POSITION = 12.635;
+    public static final double BALANCE_X_CONTROLLER_P = .3;
+    public static final double BALANCE_Y_CONTROLLER_P = .3;
   
     // These are ordered from top left to bottom right from driver perspective
-    public static final double[] blueNodeYPositions = 
+    public static final double[] BLUE_NODE_Y_POSITIONS = 
       {4.9784, 4.4196, 3.8608, 3.302, 2.7432, 2.1844, 1.6256, 1.0668, 0.508};
-    public static final double[] redNodeYPositions = 
+    public static final double[] RED_NODE_Y_POSITIONS = 
       {0.508, 1.0668, 1.6256, 2.1844, 2.7432, 3.302, 3.8608, 4.4196, 4.9784};
     // Factors in bumper width and wheelbase
-    public static final double blueNodeXPosition = 1.5;
-    public static final double redNodeXPosition = 15;
-    public static final double blueOuterWaypointX = 5.3;
-    public static final double redOuterWaypointX = 11.2;
-    public static final double blueInnerWaypointX = 2.5;
-    public static final double redInnerWaypointX = 14;
-    public static final double upperWaypointY = 4.75;
-    public static final double lowerWaypointY = 0.75;
-    public static final Rotation2d blueEndRotation = Rotation2d.fromDegrees(180);
-    public static final Rotation2d redEndRotation = Rotation2d.fromDegrees(0);
+    public static final double BLUE_NODE_X_POSITION = 1.5;
+    public static final double RED_NODE_Y_POSITION = 15;
+    public static final double BLUE_OUTER_WAYPOINT_X = 5.3;
+    public static final double RED_OUTER_WAYPOINT_X = 11.2;
+    public static final double BLUE_INNER_WAYPOINT_X = 2.5;
+    public static final double RED_INNER_WAYPOINT_X = 14;
+    public static final double UPPER_WAYPOINT_Y = 4.75;
+    public static final double LOWER_WAYPOINT_Y = 0.75;
+    public static final Rotation2d BLUE_END_ROTATION = Rotation2d.fromDegrees(180);
+    public static final Rotation2d RED_END_ROTATION = Rotation2d.fromDegrees(0);
   }
   
   public static final class LEDConstants {
@@ -240,95 +238,92 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
-    public static final int rotationMotorID = 0-9;
-    public static final int extensionMotorID = 0-9;
+    public static final int ROTATION_MOTOR_ID = 0-9;
+    public static final int EXTENSION_MOTOR_ID = 0-9;
 
-    public static final int rotationEncoderID = 0-9;
-    public static final int extensionEncoderID = 0-9;
+    public static final int ROTATION_ENCODER_ID = 0-9;
+    public static final int EXTENSION_ENCODER_ID = 0-9;
 
-    public static final int extensionLimitSwitchID = 0-9;
+    public static final int EXTENSION_LIMIT_SWITCH_ID = 0-9;
 
-    public static final int extensionMotorMaxOutput = 1;
-    public static final int extensionMotorMinOutput = 0;
+    public static final int EXTENSION_MOTOR_MAX_OUTPUT = 1;
+    public static final int EXTENSION_MOTOR_MIN_OUTPUT = 0;
 
-    public static final double rotationFeedForwardGain = 0-9;
-    public static final double rotationAccelerationGain = 0-9;
-    public static final double rotationVelocityGain = 0-9;
+    public static final double ROTATION_FEED_FORWARD_GAIN = 0-9;
+    public static final double ROTATION_ACCELERATION_GAIN = 0-9;
+    public static final double ROTATION_VELOCITY_GAIN = 0-9;
 
-    public static final double extensionFeedForwardGain = 0-9;
-    public static final double extensionAccelerationGain = 0-9;
-    public static final double extensionVelocityGain = 0-9;
+    public static final double EXTENSION_FEED_FORWARD_GAIN = 0-9;
+    public static final double EXTENSION_ACCELERATION_GAIN = 0-9;
+    public static final double EXTENSION_VELOCITY_GAIN = 0-9;
     
-    public static final double rotationPValue = 0-9;
-    public static final double rotationIValue = 0-9;
-    public static final double rotationDValue = 0-9;
+    public static final double ROTATION_P = 0-9;
+    public static final double ROTATION_I = 0-9;
+    public static final double ROTATION_D = 0-9;
 
-    public static final double extensionPValue = 0-9;
-    public static final double extensionIValue = 0-9;
-    public static final double extensionDValue = 0-9;
+    public static final double EXTENSION_P = 0-9;
+    public static final double EXTENSION_I = 0-9;
+    public static final double EXTENSION_D = 0-9;
   }
 
   public static final class ClawConstants {
 
-    public static final int solenoidForward = 1; // ID for opening claw
-    public static final int solenoidBackward = 0; // ID for closing claw
-    public static final int wristMotorID = 0-9; // ID for the wrist motor
-    public static final int leftWheelID = 0-9; //ID for left claw motor that controls the rollers
-    public static final int rightWheelID = 0-9; //ID for right claw motor that controls the rollers
-    public static final boolean leftWheelInverted = false;
-    public static final boolean rightWheelInverted = false;
-    public static final double wheelsMaxRPM = 0-9;
+    public static final int SOLENOID_FORWARD = 1; // ID for opening claw
+    public static final int SOLENOID_BACKWARD = 0; // ID for closing claw
+    public static final int WRIST_MOTOR_ID = 0-9; // ID for the wrist motor
+    public static final int LEFT_WHEEL_MOTOR_ID = 0-9; //ID for left claw motor that controls the rollers
+    public static final int RIGHT_WHEEL_MOTOR_ID = 0-9; //ID for right claw motor that controls the rollers
+    public static final boolean LEFT_WHEEL_MOTOR_INVERTED = false;
+    public static final boolean RIGHT_WHEEL_MOTOR_INVERTED = false;
+    public static final double WHEELS_MAX_RPM = 0-9;
 
     // PID for the wheels
     // TODO: Tune these
-    public static final double wheelP = 0-9;
-    public static final double wheelI = 0-9;
-    public static final double wheelD = 0-9;
-    public static final double wheelFF = 0-9; // FeedForward Gain
+    public static final double WHEEL_FEED_FORWARD_GAIN = 0-9;
+    public static final double WHEEL_P = 0-9;
+    public static final double WHEEL_I = 0-9;
+    public static final double WHEEL_D = 0-9;
 
   }
 
   public static final class JoystickConstants {
 
     // Ports:
-    public static final int driverJoystickID = 0;
-    public static final int buttonBoardID = 1;
+    public static final int DRIVER_JOYSTICK_ID = 0;
+    public static final int BUTTON_BOARD_ID = 1;
 
     // Axes IDs:
-    public static final int leftStickX = 0;
-    public static final int leftStickY = 1;
-    public static final int rightStickX = 2;
-    public static final int rightStickY = 3;
+    public static final int LEFT_STICK_X = 0;
+    public static final int LEFT_STICK_Y = 1;
+    public static final int RIGHT_STICK_X = 2;
+    public static final int RIGHT_STICK_Y = 3;
 
     // Button IDs:
-    public static final int xButtonID = 1;
-    public static final int aButtonID = 2;
-    public static final int bButtonID = 3;
-    public static final int yButtonID = 4;
-    public static final int leftBumperID = 5;
-    public static final int rightBumperID = 6;
-    public static final int leftTriggerID = 7;
-    public static final int rightTriggerID = 8;
-    public static final int backButtonID = 9;
-    public static final int startButtonID = 10;
-    public static final int leftStickPressID = 11;
-    public static final int rightStickPressID = 12;
+    public static final int X_BUTTON_ID = 1;
+    public static final int A_BUTTON_ID = 2;
+    public static final int B_BUTTON_ID = 3;
+    public static final int Y_BUTTON_ID = 4;
+    public static final int LEFT_BUMPER_ID = 5;
+    public static final int RIGHT_BUMPER_ID = 6;
+    public static final int LEFT_TRIGGER_ID = 7;
+    public static final int RIGHT_TRIGGER_ID = 8;
+    public static final int BACK_BUTTON_ID = 9;
+    public static final int START_BUTTON_ID = 10;
+    public static final int LEFT_STICK_PRESS_ID = 11;
+    public static final int RIGHT_STICK_PRESS_ID = 12;
 
-    public static final int leftDPadID = 270;
-    public static final int upDPadID = 0;
-    public static final int rightDPadID = 90;
-    public static final int downDPadID = 180;
+    public static final int LEFT_DPAD_ID = 270;
+    public static final int UP_DPAD_ID = 0;
+    public static final int RIGHT_DPAD_ID = 90;
+    public static final int DOWN_DPAD_ID = 180;
   }
 
   public static final class LimelightConstants {
   
-    public static final String frontLimelightName = "limelight-tigers";
-    public static final String backLimelightName = "limelight-jack";
+    public static final String FRONT_LIMELIGHT_NAME = "limelight-tigers";
+    public static final String BACK_LIMELIGHT_NAME = "limelight-jack";
 
-    public static final double limelightHeight = Units.inchesToMeters(40);
-    public static final double limelightPitchDegrees = -30;
-
-    public static final double[][] aprilTagPositions = {
+    public static final double[][] APRIL_TAG_POSITIONS = {
       // { x, y, z}
       {Units.inchesToMeters(610.77), Units.inchesToMeters(42.19), Units.inchesToMeters(18.22)}, // 1
       {Units.inchesToMeters(610.77), Units.inchesToMeters(108.19), Units.inchesToMeters(18.22)}, // 2
@@ -340,7 +335,7 @@ public final class Constants {
       {Units.inchesToMeters(40.45), Units.inchesToMeters(42.19), Units.inchesToMeters(18.22)} // 8
     };
 
-    public static final double[][] cameraCropLookupTable = {
+    public static final double[][] CAMERA_CROP_LOOKUP_TABLE = {
       // TODO: All of these are placeholder values
       // {x position in meters, limelight lower y crop}
       {0, -1},
@@ -350,7 +345,7 @@ public final class Constants {
       {4, .25}
     };
 
-    public static final double[][] oneAprilTagLookupTable = {
+    public static final double[][] ONE_APRIL_TAG_LOOKUP_TABLE = {
       // {x position in meters, x std deviation, y std deviation, r (in degrees) std deviation}
       {0, 0.01, 0.01, 1},
       {1.5, 0.01, 0.01, 1},
@@ -359,7 +354,7 @@ public final class Constants {
       {6, 0.7, 1.2, 20}
     };
 
-    public static final double[][] twoAprilTagLookupTable = {
+    public static final double[][] TWO_APRIL_TAG_LOOKUP_TABLE = {
       // {x position in meters, x std deviation, y std deviation, r (in degrees) std deviation}
       {1.5, 0.01, 0.01, 1},
       {3, 0.01, 0.01, 1},
@@ -367,7 +362,7 @@ public final class Constants {
       {6, 0.02, 0.08, 2}
     };
 
-    public static final int detectedFramesForReliability = 2;
+    public static final int DETECTED_FRAMES_FOR_RELIABILITY = 2;
   }
 
 }

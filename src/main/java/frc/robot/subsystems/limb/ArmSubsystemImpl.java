@@ -34,15 +34,15 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   private final CANCoder armRotationEncoder;
 
   private final PIDController armRotationPIDController = new PIDController(
-          ArmConstants.rotationPValue, 
-          ArmConstants.rotationIValue, 
-          ArmConstants.rotationDValue
+          ArmConstants.ROTATION_P, 
+          ArmConstants.ROTATION_I, 
+          ArmConstants.ROTATION_D
   );
     
   private final PIDController armExtensionPIDController = new PIDController(
-          ArmConstants.extensionPValue,
-          ArmConstants.extensionIValue,
-          ArmConstants.extensionDValue
+          ArmConstants.EXTENSION_P,
+          ArmConstants.EXTENSION_I,
+          ArmConstants.EXTENSION_D
   );
   
   private final DigitalInput armExtensionLimitSwitch;
@@ -58,23 +58,23 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
    * Tune all parameters
   */
   public ArmSubsystemImpl() {
-    armExtensionMotor = new WPI_TalonFX(ArmConstants.extensionMotorID);
+    armExtensionMotor = new WPI_TalonFX(ArmConstants.EXTENSION_MOTOR_ID);
     armExtensionFeedForward = new SimpleMotorFeedforward(
-            ArmConstants.extensionFeedForwardGain, 
-            ArmConstants.extensionVelocityGain,
-            ArmConstants.extensionAccelerationGain
+            ArmConstants.EXTENSION_FEED_FORWARD_GAIN, 
+            ArmConstants.EXTENSION_VELOCITY_GAIN,
+            ArmConstants.EXTENSION_ACCELERATION_GAIN
     );
-    armExtensionEncoder = new CANCoder(ArmConstants.extensionEncoderID);
+    armExtensionEncoder = new CANCoder(ArmConstants.EXTENSION_ENCODER_ID);
 
-    armRotationMotor = new WPI_TalonFX(ArmConstants.rotationMotorID);
+    armRotationMotor = new WPI_TalonFX(ArmConstants.ROTATION_MOTOR_ID);
     armRotationFeedForward = new ArmFeedforward(
-            ArmConstants.rotationFeedForwardGain, 
-            ArmConstants.rotationVelocityGain, 
-            ArmConstants.rotationAccelerationGain
+            ArmConstants.ROTATION_FEED_FORWARD_GAIN, 
+            ArmConstants.ROTATION_VELOCITY_GAIN, 
+            ArmConstants.ROTATION_ACCELERATION_GAIN
     );
-    armRotationEncoder = new CANCoder(ArmConstants.rotationEncoderID);
+    armRotationEncoder = new CANCoder(ArmConstants.ROTATION_ENCODER_ID);
 
-    armExtensionLimitSwitch = new DigitalInput(ArmConstants.extensionLimitSwitchID);
+    armExtensionLimitSwitch = new DigitalInput(ArmConstants.EXTENSION_LIMIT_SWITCH_ID);
 
     armExtensionMotor.setNeutralMode(NeutralMode.Brake);
   }

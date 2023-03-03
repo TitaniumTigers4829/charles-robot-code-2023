@@ -14,9 +14,9 @@ import frc.robot.subsystems.vision.VisionSubsystem;
 public abstract class DriveCommandBase extends CommandBase {
 
   private final MultiLinearInterpolator oneAprilTagLookupTable = 
-    new MultiLinearInterpolator(LimelightConstants.oneAprilTagLookupTable);
+    new MultiLinearInterpolator(LimelightConstants.ONE_APRIL_TAG_LOOKUP_TABLE);
   private final MultiLinearInterpolator twoAprilTagLookupTable = 
-    new MultiLinearInterpolator(LimelightConstants.twoAprilTagLookupTable);
+    new MultiLinearInterpolator(LimelightConstants.TWO_APRIL_TAG_LOOKUP_TABLE);
 
   private final DriveSubsystem driveSubsystem;
   private final VisionSubsystem visionSubsystem;
@@ -58,7 +58,7 @@ public abstract class DriveCommandBase extends CommandBase {
       }
 
       // Only updates the pose estimator if the limelight pose is new and reliable
-      if (currentTimeStampSeconds > lastTimeStampSeconds && consecutiveAprilTagFrames > LimelightConstants.detectedFramesForReliability) {
+      if (currentTimeStampSeconds > lastTimeStampSeconds && consecutiveAprilTagFrames > LimelightConstants.DETECTED_FRAMES_FOR_RELIABILITY) {
         Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
         driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, currentTimeStampSeconds);
       }

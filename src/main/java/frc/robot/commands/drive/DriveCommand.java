@@ -47,9 +47,9 @@ public class DriveCommand extends DriveCommandBase {
   public void execute() {
     // Drives the robot
     driveSubsystem.drive(
-      leftY.getAsDouble() * DriveConstants.joystickMaxSpeedMetersPerSecondLimit,
-      leftX.getAsDouble() * DriveConstants.joystickMaxSpeedMetersPerSecondLimit,
-      rightX.getAsDouble() * DriveConstants.maxAngularSpeedRadiansPerSecond,
+      leftY.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
+      leftX.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
+      rightX.getAsDouble() * DriveConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND,
       isFieldRelative.getAsBoolean()
     );
 

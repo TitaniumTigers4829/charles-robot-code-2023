@@ -34,36 +34,36 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
   private final SwerveModule frontLeft = new SwerveModule(
-    DriveConstants.frontLeftDriveMotorPort,
-    DriveConstants.frontLeftTurningMotorPort,
-    DriveConstants.frontLeftTurningEncoderPort,
-    DriveConstants.frontLeftAngleZero,
-    DriveConstants.frontLeftTurningEncoderReversed,
-    DriveConstants.frontLeftDriveEncoderReversed
+    DriveConstants.FRONT_LEFT_DRIVE_MOTOR_ID,
+    DriveConstants.FRONT_LEFT_TURN_MOTOR_ID,
+    DriveConstants.FRONT_LEFT_CANCODER_ID,
+    DriveConstants.FRONT_LEFT_ZERO_ANGLE,
+    DriveConstants.FRONT_LEFT_CANCODER_REVERSED,
+    DriveConstants.FRONT_LEFT_DRIVE_ENCODER_REVERSED
   );
   private final SwerveModule frontRight = new SwerveModule(
-    DriveConstants.frontRightDriveMotorPort,
-    DriveConstants.frontRightTurningMotorPort,
-    DriveConstants.frontRightTurningEncoderPort,
-    DriveConstants.frontRightAngleZero,
-    DriveConstants.frontRightTurningEncoderReversed,
-    DriveConstants.frontRightDriveEncoderReversed
+    DriveConstants.FRONT_RIGHT_DRIVE_MOTOR_ID,
+    DriveConstants.FRONT_RIGHT_TURN_MOTOR_ID,
+    DriveConstants.FRONT_RIGHT_CANCODER_ID,
+    DriveConstants.FRONT_RIGHT_ZERO_ANGLE,
+    DriveConstants.FRONT_RIGHT_CANCODER_REVERSED,
+    DriveConstants.FRONT_RIGHT_DRIVE_ENCODER_REVERSED
   );
   private final SwerveModule rearLeft = new SwerveModule(
-    DriveConstants.rearLeftDriveMotorPort,
-    DriveConstants.rearLeftTurningMotorPort,
-    DriveConstants.rearLeftTurningEncoderPort,
-    DriveConstants.rearLeftAngleZero,
-    DriveConstants.rearLeftTurningEncoderReversed,
-    DriveConstants.rearLeftDriveEncoderReversed
+    DriveConstants.REAR_LEFT_DRIVE_MOTOR_ID,
+    DriveConstants.REAR_LEFT_TURN_MOTOR_ID,
+    DriveConstants.REAR_LEFT_CANCODER_ID,
+    DriveConstants.REAR_LEFT_ZERO_ANGLE,
+    DriveConstants.REAR_LEFT_CANCODER_REVERSED,
+    DriveConstants.REAR_LEFT_DRIVE_ENCODER_REVERSED
   );
   private final SwerveModule rearRight = new SwerveModule(
-    DriveConstants.rearRightDriveMotorPort,
-    DriveConstants.rearRightTurningMotorPort,
-    DriveConstants.rearRightTurningEncoderPort,
-    DriveConstants.rearRightAngleZero,
-    DriveConstants.rearRightTurningEncoderReversed,
-    DriveConstants.rearRightDriveEncoderReversed
+    DriveConstants.REAR_RIGHT_DRIVE_MOTOR_ID,
+    DriveConstants.REAR_RIGHT_TURN_MOTOR_ID,
+    DriveConstants.REAR_RIGHT_CANCODER_ID,
+    DriveConstants.REAR_RIGHT_ZERO_ANGLE,
+    DriveConstants.REAR_RIGHT_CANCODER_REVERSED,
+    DriveConstants.REAR_RIGHT_DRIVE_ENCODER_REVERSED
   );
 
   private final SwerveModule[] swerveModules = {
@@ -82,7 +82,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
    */
   public DriveSubsystemImpl() {
     odometry = new SwerveDrivePoseEstimator(
-      DriveConstants.driveKinematics,
+      DriveConstants.DRIVE_KINEMATICS,
       getRotation2d(),
       getModulePositions(),
       new Pose2d(), // This is the position for where the robot starts the match
@@ -105,11 +105,11 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   @SuppressWarnings("ParameterName")
   @Override
   public void drive(double xSpeed, double ySpeed, double rotationSpeed, boolean fieldRelative) {
-    SwerveModuleState[] swerveModuleStates = DriveConstants.driveKinematics.toSwerveModuleStates(
+    SwerveModuleState[] swerveModuleStates = DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
       fieldRelative
       ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, getFieldRelativeRotation2d())
       : new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed));
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.joystickMaxSpeedMetersPerSecondLimit);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
     
     for (int i = 0; i < swerveModules.length; i++) {
       swerveModules[i].setDesiredState(swerveModuleStates[i]);
@@ -171,7 +171,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   @Override
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, DriveConstants.joystickMaxSpeedMetersPerSecondLimit); // TODO: Check if this has to be different
+        desiredStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND); // TODO: Check if this has to be different
     for (int i = 0; i < swerveModules.length; i++) {
       swerveModules[i].setDesiredState(desiredStates[i]);
     }

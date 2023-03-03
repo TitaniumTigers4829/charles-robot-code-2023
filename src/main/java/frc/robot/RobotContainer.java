@@ -42,18 +42,18 @@ public class RobotContainer {
 
     // Configure the button bindings
   
-    driverJoystick = new Joystick(JoystickConstants.driverJoystickID);
-    rightBumper = new JoystickButton(driverJoystick, JoystickConstants.rightBumperID);
-    aButton = new JoystickButton(driverJoystick, JoystickConstants.aButtonID);
+    driverJoystick = new Joystick(JoystickConstants.DRIVER_JOYSTICK_ID);
+    rightBumper = new JoystickButton(driverJoystick, JoystickConstants.RIGHT_BUMPER_ID);
+    aButton = new JoystickButton(driverJoystick, JoystickConstants.A_BUTTON_ID);
 
-    buttonBoard = new Joystick(JoystickConstants.buttonBoardID);
+    buttonBoard = new Joystick(JoystickConstants.BUTTON_BOARD_ID);
 
     driveSubsystem = new DriveSubsystemImpl();
     visionSubsystem = new VisionSubsystemImpl();
 
-    DoubleSupplier leftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.leftStickX);
-    DoubleSupplier leftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.leftStickY);
-    DoubleSupplier rightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.rightStickX);
+    DoubleSupplier leftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.LEFT_STICK_X);
+    DoubleSupplier leftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.LEFT_STICK_Y);
+    DoubleSupplier rightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.RIGHT_STICK_X);
 
     Command driveCommand = new DriveCommand(driveSubsystem, visionSubsystem,
       () -> modifyAxisSquared(leftStickY) * -1, 
@@ -98,10 +98,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    POVButton rightDirectionPad = new POVButton(driverJoystick, JoystickConstants.rightDPadID);
+    POVButton rightDirectionPad = new POVButton(driverJoystick, JoystickConstants.RIGHT_DPAD_ID);
     rightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
 
-    JoystickButton bButton = new JoystickButton(driverJoystick, JoystickConstants.bButtonID);
+    JoystickButton bButton = new JoystickButton(driverJoystick, JoystickConstants.B_BUTTON_ID);
     // bButton.whileTrue(new FollowRealTimeTrajectory(driveSubsystem, () -> !bButton.getAsBoolean()));
   }
 

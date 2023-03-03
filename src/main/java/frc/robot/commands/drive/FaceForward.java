@@ -21,7 +21,7 @@ public class FaceForward extends CommandBase {
   private final DoubleSupplier leftY, leftX;
   private final BooleanSupplier isFieldRelative;
   
-  private final ProfiledPIDController thetaController = new ProfiledPIDController(0.01, 0, 0, TrajectoryConstants.thetaControllerConstraints);
+  private final ProfiledPIDController thetaController = new ProfiledPIDController(0.01, 0, 0, TrajectoryConstants.THETA_CONTROLLER_CONSTRAINTS);
 
   /** Creates a new FaceForward. */
   public FaceForward(DriveSubsystemImpl driveSubsystem, DoubleSupplier leftY, DoubleSupplier leftX, BooleanSupplier isFieldRelative) {
@@ -42,8 +42,8 @@ public class FaceForward extends CommandBase {
   @Override
   public void execute() {
     driveSubsystem.drive(
-      leftY.getAsDouble() * DriveConstants.joystickMaxSpeedMetersPerSecondLimit,
-      leftX.getAsDouble() * DriveConstants.joystickMaxSpeedMetersPerSecondLimit,
+      leftY.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
+      leftX.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,
       thetaController.calculate(driveSubsystem.getHeading(), 0), 
       isFieldRelative.getAsBoolean()
     );

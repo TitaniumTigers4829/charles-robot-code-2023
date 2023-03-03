@@ -38,32 +38,32 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   /** Creates a new ClawSubsystemImpl. */
   public ClawSubsystemImpl() {
     clawSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM,
-            ClawConstants.solenoidForward,
-            ClawConstants.solenoidBackward);
-    wristMotor = new WPI_TalonFX(ClawConstants.wristMotorID);
+            ClawConstants.SOLENOID_FORWARD,
+            ClawConstants.SOLENOID_BACKWARD);
+    wristMotor = new WPI_TalonFX(ClawConstants.WRIST_MOTOR_ID);
 
-    leftWheel = new CANSparkMax(ClawConstants.leftWheelID, MotorType.kBrushless);
-    rightWheel = new CANSparkMax(ClawConstants.rightWheelID, MotorType.kBrushless);
+    leftWheel = new CANSparkMax(ClawConstants.LEFT_WHEEL_MOTOR_ID, MotorType.kBrushless);
+    rightWheel = new CANSparkMax(ClawConstants.RIGHT_WHEEL_MOTOR_ID, MotorType.kBrushless);
 
     leftWheel.restoreFactoryDefaults();
     rightWheel.restoreFactoryDefaults();
 
-    leftWheel.setInverted(ClawConstants.leftWheelInverted);
-    rightWheel.setInverted(ClawConstants.rightWheelInverted);
+    leftWheel.setInverted(ClawConstants.LEFT_WHEEL_MOTOR_INVERTED);
+    rightWheel.setInverted(ClawConstants.RIGHT_WHEEL_MOTOR_INVERTED);
 
     leftPID = leftWheel.getPIDController();
     rightPID = rightWheel.getPIDController();
     leftEncoder = leftWheel.getEncoder();
     rightEncoder = rightWheel.getEncoder();
 
-    leftPID.setP(ClawConstants.wheelP);
-    rightPID.setP(ClawConstants.wheelP);
-    leftPID.setI(ClawConstants.wheelI);
-    rightPID.setI(ClawConstants.wheelI);
-    leftPID.setD(ClawConstants.wheelD);
-    rightPID.setD(ClawConstants.wheelD);
-    leftPID.setFF(ClawConstants.wheelFF);
-    rightPID.setFF(ClawConstants.wheelFF);
+    leftPID.setP(ClawConstants.WHEEL_P);
+    rightPID.setP(ClawConstants.WHEEL_P);
+    leftPID.setI(ClawConstants.WHEEL_I);
+    rightPID.setI(ClawConstants.WHEEL_I);
+    leftPID.setD(ClawConstants.WHEEL_D);
+    rightPID.setD(ClawConstants.WHEEL_D);
+    leftPID.setFF(ClawConstants.WHEEL_FEED_FORWARD_GAIN);
+    rightPID.setFF(ClawConstants.WHEEL_FEED_FORWARD_GAIN);
 
     leftPID.setFeedbackDevice(leftEncoder);
     rightPID.setFeedbackDevice(rightEncoder);
@@ -93,7 +93,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   @Override
   public void setMotorSpeed(double speed) {
-    double setpoint = speed * ClawConstants.wheelsMaxRPM;
+    double setpoint = speed * ClawConstants.WHEELS_MAX_RPM;
     leftPID.setReference(setpoint, ControlType.kVelocity);
     rightPID.setReference(setpoint, ControlType.kVelocity);
   }

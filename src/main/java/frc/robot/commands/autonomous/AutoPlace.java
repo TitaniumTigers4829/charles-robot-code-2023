@@ -59,40 +59,40 @@ public class AutoPlace extends DriveCommandBase {
 
     // The middle waypoints and end pos change depending on alliance
     if (DriverStation.getAlliance() == Alliance.Blue) {
-      endX = TrajectoryConstants.blueNodeXPosition;
-      endY = TrajectoryConstants.blueNodeYPositions[(nodeID % 9) - 1]; // NodeID starts at  1
-      endRotation = TrajectoryConstants.blueEndRotation;
+      endX = TrajectoryConstants.BLUE_NODE_X_POSITION;
+      endY = TrajectoryConstants.BLUE_NODE_Y_POSITIONS[(nodeID % 9) - 1]; // NodeID starts at  1
+      endRotation = TrajectoryConstants.BLUE_END_ROTATION;
       // Makes waypoints in the trajectory so the robot doesn't hit the charging station
-      if (driveSubsystem.getPose().getX() > TrajectoryConstants.blueOuterWaypointX) {
-        if (driveSubsystem.getPose().getY() - TrajectoryConstants.lowerWaypointY > (TrajectoryConstants.upperWaypointY - TrajectoryConstants.lowerWaypointY) / 2) {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.blueOuterWaypointX, TrajectoryConstants.upperWaypointY), endRotation, endRotation));
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.blueInnerWaypointX, TrajectoryConstants.upperWaypointY), endRotation, endRotation));
+      if (driveSubsystem.getPose().getX() > TrajectoryConstants.BLUE_OUTER_WAYPOINT_X) {
+        if (driveSubsystem.getPose().getY() - TrajectoryConstants.LOWER_WAYPOINT_Y > (TrajectoryConstants.UPPER_WAYPOINT_Y - TrajectoryConstants.LOWER_WAYPOINT_Y) / 2) {
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_OUTER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
         } else {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.blueOuterWaypointX, TrajectoryConstants.lowerWaypointY), endRotation, endRotation));
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.blueInnerWaypointX, TrajectoryConstants.lowerWaypointY), endRotation, endRotation));        }
-      } else if (driveSubsystem.getPose().getX() > TrajectoryConstants.blueInnerWaypointX) {
-        if (driveSubsystem.getPose().getY() - TrajectoryConstants.lowerWaypointY > (TrajectoryConstants.upperWaypointY - TrajectoryConstants.lowerWaypointY) / 2) {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.blueInnerWaypointX, TrajectoryConstants.upperWaypointY), endRotation, endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_OUTER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));        }
+      } else if (driveSubsystem.getPose().getX() > TrajectoryConstants.BLUE_INNER_WAYPOINT_X) {
+        if (driveSubsystem.getPose().getY() - TrajectoryConstants.LOWER_WAYPOINT_Y > (TrajectoryConstants.UPPER_WAYPOINT_Y - TrajectoryConstants.LOWER_WAYPOINT_Y) / 2) {
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
         } else {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.blueInnerWaypointX, TrajectoryConstants.lowerWaypointY), endRotation, endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));
         }
       }
     } else {
-      endX = TrajectoryConstants.redNodeXPosition;
-      endY = TrajectoryConstants.redNodeYPositions[(nodeID % 9) - 1];
-      endRotation = TrajectoryConstants.redEndRotation;
-      if (driveSubsystem.getPose().getX() < TrajectoryConstants.redOuterWaypointX) {
-        if (driveSubsystem.getPose().getY() - TrajectoryConstants.lowerWaypointY > (TrajectoryConstants.upperWaypointY - TrajectoryConstants.lowerWaypointY) / 2) {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.redOuterWaypointX, TrajectoryConstants.upperWaypointY), endRotation, endRotation));
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.redInnerWaypointX, TrajectoryConstants.upperWaypointY), endRotation, endRotation));
+      endX = TrajectoryConstants.RED_NODE_Y_POSITION;
+      endY = TrajectoryConstants.RED_NODE_Y_POSITIONS[(nodeID % 9) - 1];
+      endRotation = TrajectoryConstants.RED_END_ROTATION;
+      if (driveSubsystem.getPose().getX() < TrajectoryConstants.RED_OUTER_WAYPOINT_X) {
+        if (driveSubsystem.getPose().getY() - TrajectoryConstants.LOWER_WAYPOINT_Y > (TrajectoryConstants.UPPER_WAYPOINT_Y - TrajectoryConstants.LOWER_WAYPOINT_Y) / 2) {
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_OUTER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
         } else {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.redOuterWaypointX, TrajectoryConstants.lowerWaypointY), endRotation, endRotation));
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.redInnerWaypointX, TrajectoryConstants.lowerWaypointY), endRotation, endRotation));        }
-      } else if (driveSubsystem.getPose().getX() > TrajectoryConstants.redInnerWaypointX) {
-        if (driveSubsystem.getPose().getY() - TrajectoryConstants.lowerWaypointY < (TrajectoryConstants.upperWaypointY - TrajectoryConstants.lowerWaypointY) / 2) {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.redInnerWaypointX, TrajectoryConstants.upperWaypointY), endRotation, endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_OUTER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));        }
+      } else if (driveSubsystem.getPose().getX() > TrajectoryConstants.RED_INNER_WAYPOINT_X) {
+        if (driveSubsystem.getPose().getY() - TrajectoryConstants.LOWER_WAYPOINT_Y < (TrajectoryConstants.UPPER_WAYPOINT_Y - TrajectoryConstants.LOWER_WAYPOINT_Y) / 2) {
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
         } else {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.redInnerWaypointX, TrajectoryConstants.lowerWaypointY), endRotation, endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));
         }
       }
     }
@@ -102,15 +102,15 @@ public class AutoPlace extends DriveCommandBase {
     pathPoints.add(new PathPoint(end, endRotation, endRotation));
 
     // You probably only want to edit the P values
-    PIDController xController = new PIDController(TrajectoryConstants.xControllerP, 0, 0);
-    PIDController yController = new PIDController(TrajectoryConstants.yControllerP, 0, 0);
-    PIDController thetaController = new PIDController(TrajectoryConstants.thetaControllerP, 0, 0);
+    PIDController xController = new PIDController(TrajectoryConstants.X_CONTROLLER_P, 0, 0);
+    PIDController yController = new PIDController(TrajectoryConstants.Y_CONTROLLER_P, 0, 0);
+    PIDController thetaController = new PIDController(TrajectoryConstants.THETA_CONTROLLER_P, 0, 0);
 
     // This should be fine, but is here just in case so the robot doesn't crash during a match
     try {
       // Makes a trajectory that factors in holonomic rotation
       PathPlannerTrajectory trajectoryToFollow = PathPlanner.generatePath(
-        new PathConstraints(TrajectoryConstants.autoMaxVelocity, TrajectoryConstants.autoMaxAcceleration),
+        new PathConstraints(TrajectoryConstants.MAX_SPEED, TrajectoryConstants.MAX_ACCELERATION),
         // Pathpoints go in: position, heading (direction of travel)
         pathPoints
       );                                               
@@ -125,7 +125,7 @@ public class AutoPlace extends DriveCommandBase {
       new RealTimePPSwerveControllerCommand(
         trajectoryToFollow,
         driveSubsystem::getPose, // Functional interface to feed supplier
-        DriveConstants.driveKinematics,
+        DriveConstants.DRIVE_KINEMATICS,
         xController,
         yController,
         thetaController,

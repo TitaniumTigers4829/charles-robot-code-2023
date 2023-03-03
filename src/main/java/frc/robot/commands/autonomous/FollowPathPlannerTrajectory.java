@@ -32,15 +32,15 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
   /* EDIT CODE BELOW HERE */
   // You should have constants for everything in here
 
-  private final SwerveDriveKinematics driveKinematics = DriveConstants.driveKinematics;
+  private final SwerveDriveKinematics driveKinematics = DriveConstants.DRIVE_KINEMATICS;
   
-  private final double autoMaxVelocity = TrajectoryConstants.autoMaxVelocity;
-  private final double autoMaxAcceleration = TrajectoryConstants.autoMaxAcceleration;
+  private final double autoMaxVelocity = TrajectoryConstants.MAX_SPEED;
+  private final double autoMaxAcceleration = TrajectoryConstants.MAX_ACCELERATION;
 
   // Your probably only want to edit the P values
-  private final PIDController xController = new PIDController(TrajectoryConstants.xControllerP, 0, 0);
-  private final PIDController yController = new PIDController(TrajectoryConstants.yControllerP, 0, 0);
-  private final PIDController thetaController = new PIDController(TrajectoryConstants.thetaControllerP, 0, 0);
+  private final PIDController xController = new PIDController(TrajectoryConstants.X_CONTROLLER_P, 0, 0);
+  private final PIDController yController = new PIDController(TrajectoryConstants.Y_CONTROLLER_P, 0, 0);
+  private final PIDController thetaController = new PIDController(TrajectoryConstants.THETA_CONTROLLER_P, 0, 0);
   
   // IMPORTANT: Make sure your driveSubsystem has the methods resetOdometry, getPose, and setModuleStates
   
