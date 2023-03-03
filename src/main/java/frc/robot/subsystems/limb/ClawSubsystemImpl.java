@@ -4,8 +4,15 @@
 
 package frc.robot.subsystems.limb;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,8 +23,15 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   private final DoubleSolenoid clawSolenoid;
 
   private final WPI_TalonFX wristMotor;
-  private final WPI_TalonSRX leftClawMotor;
-  private final WPI_TalonSRX rightClawMotor;
+
+  private final CANSparkMax leftWheel;
+  private final CANSparkMax rightWheel;
+
+  private final SparkMaxPIDController leftPID;
+  private final SparkMaxPIDController rightPID;
+
+  private final RelativeEncoder leftEncoder;
+  private final RelativeEncoder rightEncoder;
 
   private boolean isClawClosed;
 
@@ -27,8 +41,33 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
             ClawConstants.solenoidForward,
             ClawConstants.solenoidBackward);
     wristMotor = new WPI_TalonFX(ClawConstants.wristMotorID);
-    leftClawMotor = new WPI_TalonSRX(ClawConstants.leftClawMotorID);
-    rightClawMotor = new WPI_TalonSRX(ClawConstants.rightClawMotorID);
+
+    leftWheel = new CANSparkMax(ClawConstants.leftWheelID, MotorType.kBrushless);
+    rightWheel = new CANSparkMax(ClawConstants.rightWheelID, MotorType.kBrushless);
+
+    leftWheel.restoreFactoryDefaults();
+    rightWheel.restoreFactoryDefaults();
+
+    leftWheel.setInverted(ClawConstants.leftWheelInverted);
+    rightWheel.setInverted(ClawConstants.rightWheelInverted);
+
+    leftPID = leftWheel.getPIDController();
+    rightPID = rightWheel.getPIDController();
+    leftEncoder = leftWheel.getEncoder();
+    rightEncoder = rightWheel.getEncoder();
+
+    leftPID.setP(ClawConstants.wheelP);
+    rightPID.setP(ClawConstants.wheelP);
+    leftPID.setI(ClawConstants.wheelI);
+    rightPID.setI(ClawConstants.wheelI);
+    leftPID.setD(ClawConstants.wheelD);
+    rightPID.setD(ClawConstants.wheelD);
+    leftPID.setFF(ClawConstants.wheelFF);
+    rightPID.setFF(ClawConstants.wheelFF);
+
+    leftPID.setFeedbackDevice(leftEncoder);
+    rightPID.setFeedbackDevice(rightEncoder);
+
   }
 
   @Override
@@ -54,8 +93,9 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   @Override
   public void setMotorSpeed(double speed) {
-    // TODO Auto-generated method stub
-    
+    double setpoint = speed * ClawConstants.wheelsMaxRPM;
+    leftPID.setReference(setpoint, ControlType.kVelocity);
+    rightPID.setReference(setpoint, ControlType.kVelocity);
   }
 
   @Override

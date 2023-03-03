@@ -273,8 +273,18 @@ public final class Constants {
     public static final int solenoidForward = 1; // ID for opening claw
     public static final int solenoidBackward = 0; // ID for closing claw
     public static final int wristMotorID = 0-9; // ID for the wrist motor
-    public static final int leftClawMotorID = 0-9; //ID for left claw motor that controls the rollers
-    public static final int rightClawMotorID = 0-9; //ID for right claw motor that controls the rollers
+    public static final int leftWheelID = 0-9; //ID for left claw motor that controls the rollers
+    public static final int rightWheelID = 0-9; //ID for right claw motor that controls the rollers
+    public static final boolean leftWheelInverted = false;
+    public static final boolean rightWheelInverted = false;
+    public static final double wheelsMaxRPM = 0-9;
+
+    // PID for the wheels
+    // TODO: Tune these
+    public static final double wheelP = 0-9;
+    public static final double wheelI = 0-9;
+    public static final double wheelD = 0-9;
+    public static final double wheelFF = 0-9; // FeedForward Gain
 
   }
 
