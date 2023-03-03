@@ -6,7 +6,6 @@ package frc.robot.subsystems.limb;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,64 +29,46 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     wristMotor = new WPI_TalonFX(ClawConstants.wristMotorID);
     leftClawMotor = new WPI_TalonSRX(ClawConstants.leftClawMotorID);
     rightClawMotor = new WPI_TalonSRX(ClawConstants.rightClawMotorID);
-
-    // The claw should be grabbing when the match starts.
-    grab();
   }
 
   @Override
   public void periodic() {}
 
   @Override
-  public void grab() {
-    clawSolenoid.set(DoubleSolenoid.Value.kForward);
-    isClawClosed = true;
+  public void close() {
+    // TODO Auto-generated method stub
+    
   }
 
   @Override
-  public void release() {
-    clawSolenoid.set(DoubleSolenoid.Value.kReverse);
-    isClawClosed = false;
+  public void open() {
+    // TODO Auto-generated method stub
+    
   }
 
   @Override
   public boolean getClawClosed() {
-    return isClawClosed;
+    // TODO Auto-generated method stub
+    return false;
   }
 
   @Override
-  public void stopMotors() {
-    spinMotors(0, 0);
-  }
-
-  @Override
-  public void setWristAngle(double angle) {
-//TODO: Stub
+  public void setMotorSpeed(double speed) {
+    // TODO Auto-generated method stub
+    
   }
 
   @Override
   public double getWristAngle() {
-    return -1;//TODO: Stub
+    // TODO Auto-generated method stub
+    return 0;
   }
 
   @Override
-  public void toggleClaw() {
-    if (isClawClosed) {
-      release();
-    } else {
-      grab();
-    }
+  public void setWristAngle(double angle) {
+    // TODO Auto-generated method stub
+    
   }
 
-  @Override
-  public void spinMotors(double leftSpeed, double rightSpeed) {
-  leftClawMotor.set(leftSpeed);
-  rightClawMotor.set(rightSpeed);
-  }
-
-  @Override
-  public void spinMotors(double speed) {
-    spinMotors(speed, speed);
-  }
 
 }
