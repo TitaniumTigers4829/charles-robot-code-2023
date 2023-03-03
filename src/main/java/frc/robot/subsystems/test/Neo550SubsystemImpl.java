@@ -27,7 +27,7 @@ public class Neo550SubsystemImpl implements Neo550Subsystem {
     pid = neo550.getPIDController();
     pid.setFeedbackDevice(encoder);
     pid.setOutputRange(-1, 1);
-    setFF(0);
+    setFeedForward(0);
   }
 
   /** Creates a new Neo550SubsystemImpl with the given PID values. */
@@ -38,7 +38,7 @@ public class Neo550SubsystemImpl implements Neo550Subsystem {
     pid = neo550.getPIDController();
     pid.setFeedbackDevice(encoder);
     setPID(p, i, d, -1, 1);
-    setFF(gain);
+    setFeedForward(gain);
   }
 
   @Override
@@ -75,7 +75,7 @@ public class Neo550SubsystemImpl implements Neo550Subsystem {
   }
 
   @Override
-  public void setFF(double gain) {
+  public void setFeedForward(double gain) {
     pid.setFF(gain);
   }
 

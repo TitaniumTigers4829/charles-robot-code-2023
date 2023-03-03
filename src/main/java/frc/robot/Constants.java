@@ -168,7 +168,7 @@ public final class Constants {
 
     public static final int LEDPort = 0-9;
 
-    public static final class SparkConstants {
+    public static final class SparkMaxConstants {
       // This subclass contains the constant values for the LED patterns.
       public static final double RAINBOW = -0.99;
 
@@ -220,15 +220,15 @@ public final class Constants {
     public enum LEDProcess {
       ALLIANCE_COLOR (0), // Values are null on purpose.
       DEFAULT (0),
-      RAINBOW (SparkConstants.RAINBOW),
-      RED_ALLIANCE (SparkConstants.FIRE),
-      BLUE_ALLIANCE (SparkConstants.OCEAN),
-      INTAKE (SparkConstants.MAGENTA),
-      SCORING (SparkConstants.YELLOW),
-      BALANCE (SparkConstants.CYAN),
-      OFF (SparkConstants.BLACK),
-      AUTONOMOUS (SparkConstants.RAINBOW_WAVE),
-      LINE_UP (SparkConstants.WHITE);
+      RAINBOW (SparkMaxConstants.RAINBOW),
+      RED_ALLIANCE (SparkMaxConstants.FIRE),
+      BLUE_ALLIANCE (SparkMaxConstants.OCEAN),
+      INTAKE (SparkMaxConstants.MAGENTA),
+      SCORING (SparkMaxConstants.YELLOW),
+      BALANCE (SparkMaxConstants.CYAN),
+      OFF (SparkMaxConstants.BLACK),
+      AUTONOMOUS (SparkMaxConstants.RAINBOW_WAVE),
+      LINE_UP (SparkMaxConstants.WHITE);
 
       private final double sparkMaxValue;
       LEDProcess(double sparkMaxValue) {
