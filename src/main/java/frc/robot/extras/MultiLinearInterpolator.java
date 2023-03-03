@@ -2,7 +2,7 @@ package frc.robot.extras;
 
 import java.util.Arrays;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.dashboard.SmartDashboardLogger;
 
 public final class MultiLinearInterpolator {
 
@@ -45,7 +45,7 @@ public final class MultiLinearInterpolator {
     }
       
     // This should never be reached, but returns the first value to be safe
-    SmartDashboard.putString("Interpolation Error", "There was a problem with the MultiLinearInterpolator");
+    SmartDashboardLogger.errorString("Interpolation Error", "There was a problem with the MultiLinearInterpolator");
     return Arrays.copyOfRange(lookupTable[0], 1, lookupTable[0].length);   
   }
 }
