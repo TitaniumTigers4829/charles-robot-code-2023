@@ -240,9 +240,32 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
-    public static final int swingingMotorID = 0-9;
+    public static final int rotationMotorID = 0-9;
     public static final int extensionMotorID = 0-9;
 
+    public static final int rotationEncoderID = 0-9;
+    public static final int extensionEncoderID = 0-9;
+
+    public static final int extensionLimitSwitchID = 0-9;
+
+    public static final int extensionMotorMaxOutput = 1;
+    public static final int extensionMotorMinOutput = 0;
+
+    public static final double rotationFeedForwardGain = 0-9;
+    public static final double rotationAccelerationGain = 0-9;
+    public static final double rotationVelocityGain = 0-9;
+
+    public static final double extensionFeedForwardGain = 0-9;
+    public static final double extensionAccelerationGain = 0-9;
+    public static final double extensionVelocityGain = 0-9;
+    
+    public static final double rotationPValue = 0-9;
+    public static final double rotationIValue = 0-9;
+    public static final double rotationDValue = 0-9;
+
+    public static final double extensionPValue = 0-9;
+    public static final double extensionIValue = 0-9;
+    public static final double extensionDValue = 0-9;
   }
 
   public static final class ClawConstants {
