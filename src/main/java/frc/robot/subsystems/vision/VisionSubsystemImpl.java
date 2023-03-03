@@ -1,76 +1,72 @@
-// Some of this code was copied from Team 7028 - Binary Battalion's swerve-test repository
-// https://github.com/STMARobotics/swerve-test/blob/5916bb426b97f10e17d9dfd5ec6c3b6fda49a7ce/src/main/java/frc/robot/subsystems/PoseEstimatorSubsystem.java
-
 package frc.robot.subsystems.vision;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.TrajectoryConstants;
+import frc.robot.extras.LimelightHelpers;
+import frc.robot.extras.LimelightHelpers.LimelightResults;
+import frc.robot.extras.LimelightHelpers.LimelightTarget_Fiducial;
 
 public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsystem {
-  
-  private final NetworkTable networkTable; 
-  private final NetworkTableEntry botPoseNetworkTableEntry;
-  private final NetworkTableEntry jsonDumpNetworkTableEntry;
-  private final NetworkTableEntry cameraCropNetworkTableEntry;
-  private final NetworkTableEntry pipelineNetworkTableEntry;
-  
-  private final ObjectMapper mapper = new ObjectMapper();
 
-  public VisionSubsystemImpl() {    
-    networkTable = NetworkTableInstance.getDefault().getTable(LimelightConstants.frontLimelightName);
-    botPoseNetworkTableEntry = networkTable.getEntry("botpose");
-    jsonDumpNetworkTableEntry = networkTable.getEntry("json");
-    cameraCropNetworkTableEntry = networkTable.getEntry("crop");
-    pipelineNetworkTableEntry = networkTable.getEntry("pipeline");
+  private LimelightResults currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.frontLimelightName);
+  private String currentlyUsedLimelight = LimelightConstants.frontLimelightName;
+  
+  public VisionSubsystemImpl() {}
+
+  @Override
+  public void periodic() {
+    // Every periodic chooses the limelight to use based off of their distance from april tags
+    LimelightTarget_Fiducial[] frontLimelightAprilTags = LimelightHelpers.getLatestResults(LimelightConstants.frontLimelightName).targetingResults.targets_Fiducials;
+    LimelightTarget_Fiducial[] backLimelightAprilTags = LimelightHelpers.getLatestResults(LimelightConstants.backLimelightName).targetingResults.targets_Fiducials;
+
+    // Gets the distance from the closest april tag. If it can't see one, returns a really big number.
+    double frontLimelightDistance = frontLimelightAprilTags.length > 0
+      ? getLimelightAprilTagDistance((int) frontLimelightAprilTags[0].fiducialID) : Integer.MAX_VALUE;
+    double backLimelightDistance = backLimelightAprilTags.length > 0
+      ? getLimelightAprilTagDistance((int) backLimelightAprilTags[0].fiducialID) : Integer.MAX_VALUE;
+
+    currentlyUsedLimelight = frontLimelightDistance < backLimelightDistance 
+      ? LimelightConstants.frontLimelightName : LimelightConstants.backLimelightName;
+    currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(currentlyUsedLimelight);
   }
 
   @Override
-  public void periodic() {}
-
-  @Override
   public boolean canSeeAprilTags() {
-    double[] botPose = botPoseNetworkTableEntry.getDoubleArray(new double[]{});
-    if (botPose.length == 0) {
-      return false;
-    } else {
-      return !(botPose[0] == 0 && botPose[1] == 0 && botPose[2] == 0);
-    }
+    return LimelightHelpers.getFiducialID(currentlyUsedLimelight) != -1;
   }
 
   @Override
   public Pose2d getPoseFromAprilTags() {
-    double[] botPose = botPoseNetworkTableEntry.getDoubleArray(new double[]{});
-    double robotX = botPose[0] + TrajectoryConstants.fieldLengthMeters / 2;
-    double robotY = botPose[1] + TrajectoryConstants.fieldWidthMeters / 2;
-    Rotation2d robotRotation = Rotation2d.fromDegrees(botPose[5]);
+    Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
+    double robotX = botPose.getX() + TrajectoryConstants.fieldLengthMeters / 2;
+    double robotY = botPose.getY() + TrajectoryConstants.fieldWidthMeters / 2;
+    Rotation2d robotRotation = botPose.getRotation();
     return new Pose2d(robotX, robotY, robotRotation);
   }
 
   @Override
-  public long getTimeStampSeconds() {
-    String jsonDump = jsonDumpNetworkTableEntry.getString("{}");  
-
-    try {
-      JsonNode jsonNodeData = mapper.readTree(jsonDump);
-      // Converts milliseconds to seconds
-      return jsonNodeData.path("Results").path("ts").asLong() / 1000;
-    } catch (JsonProcessingException e) {
-      SmartDashboard.putString("Json Parsing Error", e.getLocalizedMessage());
+  public double getDistanceFromClosestAprilTag() {
+    if (canSeeAprilTags()) {
+      int closestAprilTagID = (int) LimelightHelpers.getFiducialID(currentlyUsedLimelight);
+      return getLimelightAprilTagDistance(closestAprilTagID);
     }
+    
+    // To be safe returns a big distance from the april tags
+    return 10;
+  }
 
-    return 0L;
+  @Override
+  public int getNumberOfAprilTags() {
+    return currentlyUsedLimelightResults.targetingResults.targets_Fiducials.length;
+  }
+
+  @Override
+  public long getTimeStampSeconds() {
+    return (long) (currentlyUsedLimelightResults.targetingResults.timestamp_LIMELIGHT_publish / 1000);
   }
 
   @Override
@@ -99,16 +95,36 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
 
   @Override
   public void cropLimelights(double[][] cropValues) {
-    cameraCropNetworkTableEntry.setDoubleArray(cropValues[0]);
+    LimelightHelpers.setCropWindow(
+      LimelightConstants.frontLimelightName, 
+      cropValues[0][0],
+      cropValues[0][1],
+      cropValues[0][2],
+      cropValues[0][3]
+    );
   }
 
   @Override
   public void setLimelightsPipeline(LimelightPipelines limelightPipeline) {
-    if (limelightPipeline == LimelightPipelines.APRIL_TAGS) {
-      pipelineNetworkTableEntry.setNumber(LimelightConstants.aprilTagsPipelineID);
-    } else if (limelightPipeline == LimelightPipelines.OBJECT_DETECTION) {
-      pipelineNetworkTableEntry.setNumber(LimelightConstants.objectDetectionPipelineID);
+    LimelightHelpers.setPipelineIndex(LimelightConstants.frontLimelightName, limelightPipeline.getID());
+  }
+
+  /**
+   * Calculates the distance between the specified robot and april tag.
+   * This method should only be called once there has been a check for if
+   * the limelights can see april tags.
+   */
+  private double getLimelightAprilTagDistance(int aprilTagID) {
+    if (aprilTagID >= 1) {
+      double aprilTagX = LimelightConstants.aprilTagPositions[aprilTagID - 1][0]; // April tag id starts at 1
+      double aprilTagY = LimelightConstants.aprilTagPositions[aprilTagID - 1][1];
+      double robotX = getPoseFromAprilTags().getX();
+      double robotY = getPoseFromAprilTags().getY();
+      return Math.sqrt(Math.pow(aprilTagX - robotX, 2) + Math.pow(aprilTagY - robotY, 2));
     }
+
+    // Just in case returns 
+    return Double.MAX_VALUE;
   }
 
 }

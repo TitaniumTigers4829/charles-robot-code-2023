@@ -15,20 +15,19 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.TrajectoryConstants;
+import frc.robot.commands.DriveCommandBase;
+import frc.robot.extras.MultiLinearInterpolator;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
-public class FollowPathPlannerTrajectory extends CommandBase {
+public class FollowPathPlannerTrajectory extends DriveCommandBase {
 
   private final DriveSubsystem driveSubsystem;
-  private final VisionSubsystem visionSubsystem;
   private final String trajectoryName;
   private final boolean resetOdometryToTrajectoryStart;
   
   private PPSwerveControllerCommand followPathPlannerTrajectoryCommand;
   private boolean done = false;
-  private double consecutiveAprilTagFrames = 0;
-  private double lastTimeStampSeconds = 0;
   
   /* EDIT CODE BELOW HERE */
   // You should have constants for everything in here
@@ -57,8 +56,8 @@ public class FollowPathPlannerTrajectory extends CommandBase {
    * start of the trajectory.
    */
   public FollowPathPlannerTrajectory(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, String trajectoryName, boolean resetOdometryToTrajectoryStart) {
+    super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;    
-    this.visionSubsystem = visionSubsystem;
     addRequirements(visionSubsystem);
     this.trajectoryName = trajectoryName;
     this.resetOdometryToTrajectoryStart = resetOdometryToTrajectoryStart;
@@ -94,24 +93,7 @@ public class FollowPathPlannerTrajectory extends CommandBase {
 
   @Override
   public void execute() {
-    done = followPathPlannerTrajectoryCommand.isFinished();
-
-    // Updates the robot's odometry with april tags
-    double currentTimeStampSeconds = lastTimeStampSeconds;
-
-    if (visionSubsystem.canSeeAprilTags()) {
-      currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
-      consecutiveAprilTagFrames++;
-      // Only updates the pose estimator if the limelight pose is new and reliable
-      if (currentTimeStampSeconds > lastTimeStampSeconds && consecutiveAprilTagFrames > LimelightConstants.detectedFramesForReliability) {
-        Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
-        driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, currentTimeStampSeconds);
-      }
-    } else {
-      consecutiveAprilTagFrames = 0;
-    }
-
-    lastTimeStampSeconds = currentTimeStampSeconds;
+    super.execute();
   }
 
   @Override
