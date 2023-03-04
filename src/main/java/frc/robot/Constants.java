@@ -27,6 +27,10 @@ public final class Constants {
 
   private Constants() {}
 
+  // These are the total encoder units for one revolution
+  public static final int FALCON_ENCODER_RESOLUTION = 2048;
+  public static final int CANCODER_RESOLUTION = 4096; 
+
   public static final class DriveConstants {
 
     // Distance between centers of right and left wheels on robot
@@ -80,11 +84,7 @@ public final class Constants {
     public static final boolean REAR_RIGHT_DRIVE_ENCODER_REVERSED = true;
   }
   
-  public static final class ModuleConstants {
-
-    // These are the total encoder units for one revolution
-    public static final int FALCON_ENCODER_RESOLUTION = 2048;
-    public static final int CANCODER_RESOLUTION = 4096;  
+  public static final class ModuleConstants { 
 
     public static final double DRIVE_GEAR_RATIO = 7.36;
 
@@ -242,7 +242,6 @@ public final class Constants {
     public static final int EXTENSION_MOTOR_ID = 0-9;
 
     public static final int ROTATION_ENCODER_ID = 0-9;
-    public static final int EXTENSION_ENCODER_ID = 0-9;
 
     public static final int EXTENSION_LIMIT_SWITCH_ID = 0-9;
 
@@ -264,6 +263,12 @@ public final class Constants {
     public static final double EXTENSION_P = 0-9;
     public static final double EXTENSION_I = 0-9;
     public static final double EXTENSION_D = 0-9;
+    public static final double EXTENSION_S = 0-9;
+
+    public static final double EXTENSION_MOTOR_GEAR_RATIO = 0-9;
+    public static final double EXTENSION_SPOOL_DIAMETER = 0-9;
+    public static final double MAX_LENGTH = 0-9;
+    public static final double EXTENSION_ENCODER_OFFSET = 0-9;
   }
 
   public static final class ClawConstants {

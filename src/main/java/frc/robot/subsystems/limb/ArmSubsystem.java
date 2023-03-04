@@ -16,7 +16,7 @@ public interface ArmSubsystem extends Subsystem {
   /** 
    * Sets the arm's extension from 0 to 1.
    */
-  public void setExtension(double desiredAngle, double extensionAngle, double extensionVelocity);
+  public void setExtension(double desiredExtension);
 
   /** 
    * Returns the angle, in radians, of the arm (0 being straight down).  
@@ -26,6 +26,6 @@ public interface ArmSubsystem extends Subsystem {
   /** 
    * Sets the arm angle in radians (0 being straight down).
    */
-  public void goToAngle(double setpoint, double currentAngle, double currentVelocity);
+  public void goToAngle(double desiredAngle);
 
 }
