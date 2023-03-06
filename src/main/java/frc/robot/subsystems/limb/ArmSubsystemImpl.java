@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.limb;
 
-
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -15,28 +14,30 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 
 public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
+  private final WPI_TalonFX rotationMotor;
+  private final CANCoder rotationEncoder;
   private final WPI_TalonFX extensionMotor;
+
+  private final ArmFeedforward rotationFeedForward;
   private final SimpleMotorFeedforward extensionFeedForward;
 
-  private final WPI_TalonFX rotationMotor;
-  private final ArmFeedforward rotationFeedForward;
-  private final CANCoder rotationEncoder;
-
-  private final PIDController rotationPIDController = new PIDController(
-          ArmConstants.ROTATION_P, 
-          ArmConstants.ROTATION_I, 
-          ArmConstants.ROTATION_D
+  private final ProfiledPIDController rotationPIDController = new ProfiledPIDController(
+    ArmConstants.ROTATION_P, 
+    ArmConstants.ROTATION_I, 
+    ArmConstants.ROTATION_D, 
+    ArmConstants.ROTATION_CONSTRAINTS
   );
     
-  private final PIDController extensionPIDController = new PIDController(
-          ArmConstants.EXTENSION_P,
-          ArmConstants.EXTENSION_I,
-          ArmConstants.EXTENSION_D
+  private final ProfiledPIDController extensionPIDController = new ProfiledPIDController(
+    ArmConstants.EXTENSION_P,
+    ArmConstants.EXTENSION_I,
+    ArmConstants.EXTENSION_D,
+    ArmConstants.EXTENSION_CONSTRAINTS
   );
 
   /** Creates a new ArmSubsystemImpl. 
@@ -47,22 +48,23 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
    * Tune all parameters
   */
   public ArmSubsystemImpl() {
-    extensionMotor = new WPI_TalonFX(ArmConstants.EXTENSION_MOTOR_ID);
-    extensionFeedForward = new SimpleMotorFeedforward(
-            ArmConstants.EXTENSION_FEED_FORWARD_GAIN, 
-            ArmConstants.EXTENSION_VELOCITY_GAIN,
-            ArmConstants.EXTENSION_ACCELERATION_GAIN
-    );
-
     rotationMotor = new WPI_TalonFX(ArmConstants.ROTATION_MOTOR_ID);
     rotationFeedForward = new ArmFeedforward(
-            ArmConstants.ROTATION_FEED_FORWARD_GAIN, 
-            ArmConstants.ROTATION_VELOCITY_GAIN, 
-            ArmConstants.ROTATION_ACCELERATION_GAIN
+      ArmConstants.ROTATION_FEED_FORWARD_GAIN, 
+      ArmConstants.ROTATION_VELOCITY_GAIN, 
+      ArmConstants.ROTATION_ACCELERATION_GAIN
     );
+
     rotationEncoder = new CANCoder(ArmConstants.ROTATION_ENCODER_ID);
     rotationEncoder.configMagnetOffset(ArmConstants.EXTENSION_ENCODER_OFFSET);
     rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
+
+    extensionMotor = new WPI_TalonFX(ArmConstants.EXTENSION_MOTOR_ID);
+    extensionFeedForward = new SimpleMotorFeedforward(
+      ArmConstants.EXTENSION_FEED_FORWARD_GAIN, 
+      ArmConstants.EXTENSION_VELOCITY_GAIN,
+      ArmConstants.EXTENSION_ACCELERATION_GAIN
+    );
 
     extensionMotor.setNeutralMode(NeutralMode.Brake);
   }
@@ -72,10 +74,10 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
   @Override
   public void goToAngle(double desiredAngle) {
-    double feedForwardOutput = rotationFeedForward.calculate(desiredAngle, getCurrentRotationVelocity());
     double PIDOutput = rotationPIDController.calculate(getAngle(), desiredAngle);
-    double motorOutput = (PIDOutput + feedForwardOutput);
-    rotationMotor.set(ControlMode.PercentOutput, Math.max(-1, Math.min(1, motorOutput)));
+    double feedForwardOutput = rotationFeedForward.calculate(desiredAngle, rotationPIDController.getSetpoint().velocity);
+    // Makes sure it doesn't set the percent output to more than 100%
+    rotationMotor.set(ControlMode.PercentOutput, Math.max(-1, Math.min(1, PIDOutput + feedForwardOutput)));
   }
 
   @Override
@@ -83,31 +85,22 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     return rotationEncoder.getAbsolutePosition() * Math.PI / 180;
   }
 
-  public double getCurrentRotationVelocity() {
-    return rotationEncoder.getVelocity();
-  }
-
   @Override
   public double getExtension() {
-    // Convert motor rotation units (248 or 496 for 1 full rotation) to number of rotations
+    // Convert motor rotation units (2048 or 4096 for 1 full rotation) to number of rotations
     double motorRotation = extensionMotor.getSelectedSensorPosition() * 
-            (360 / Constants.FALCON_ENCODER_RESOLUTION) / ArmConstants.EXTENSION_MOTOR_GEAR_RATIO;
+      (360 / Constants.FALCON_ENCODER_RESOLUTION) / ArmConstants.EXTENSION_MOTOR_GEAR_RATIO;
     // Convert number of rotations to distance (multiply by diamter)
     double extension = motorRotation * ArmConstants.EXTENSION_SPOOL_DIAMETER * Math.PI; 
     // Converts to output from 0 to 1
-    return extension / ArmConstants.MAX_LENGTH;
+    return extension / ArmConstants.MAX_EXTENSION_LENGTH;
   }
-  /** 
-   * Sets the arm's extension from 0 to 1.
-   */
+
   @Override
   public void setExtension(double desiredExtension) {
-    
     double PIDOutput = extensionPIDController.calculate(getExtension(), desiredExtension);
-    double feedForwardOutput = extensionFeedForward.calculate(extensionPIDController.getVelocityError() + extensionMotor.getSelectedSensorVelocity());
-    double motorOutput = (PIDOutput + feedForwardOutput);
-
-    extensionMotor.set(ControlMode.PercentOutput, Math.max(-1, Math.min(1, motorOutput)));
+    double feedForwardOutput = extensionFeedForward.calculate(extensionPIDController.getSetpoint().velocity);
+    extensionMotor.set(ControlMode.PercentOutput, Math.max(-1, Math.min(1, PIDOutput + feedForwardOutput)));
   }
 
 }

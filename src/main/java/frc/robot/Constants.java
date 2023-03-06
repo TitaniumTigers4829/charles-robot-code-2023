@@ -238,15 +238,28 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
+
     public static final int ROTATION_MOTOR_ID = 0-9;
     public static final int EXTENSION_MOTOR_ID = 0-9;
 
     public static final int ROTATION_ENCODER_ID = 0-9;
 
-    public static final int EXTENSION_LIMIT_SWITCH_ID = 0-9;
+    public static final double ROTATION_MAX_VELOCITY = 0.0;
+    public static final double ROTATION_MAX_ACCELERATION = 0.0;
+    public static final double EXTENSION_MAX_VELOCITY = 0.0;
+    public static final double EXTENSION_MAX_ACCELERATION = 0.0;
+    
+    public static final double ROTATION_P = 0-9;
+    public static final double ROTATION_I = 0-9;
+    public static final double ROTATION_D = 0-9;
+    public static final TrapezoidProfile.Constraints ROTATION_CONSTRAINTS = new TrapezoidProfile.Constraints(
+      ROTATION_MAX_VELOCITY, ROTATION_MAX_ACCELERATION);
+    public static final TrapezoidProfile.Constraints EXTENSION_CONSTRAINTS = new TrapezoidProfile.Constraints(
+      EXTENSION_MAX_VELOCITY, EXTENSION_MAX_ACCELERATION);
 
-    public static final int EXTENSION_MOTOR_MAX_OUTPUT = 1;
-    public static final int EXTENSION_MOTOR_MIN_OUTPUT = 0;
+    public static final double EXTENSION_P = 0-9;
+    public static final double EXTENSION_I = 0-9;
+    public static final double EXTENSION_D = 0-9;
 
     public static final double ROTATION_FEED_FORWARD_GAIN = 0-9;
     public static final double ROTATION_ACCELERATION_GAIN = 0-9;
@@ -255,19 +268,10 @@ public final class Constants {
     public static final double EXTENSION_FEED_FORWARD_GAIN = 0-9;
     public static final double EXTENSION_ACCELERATION_GAIN = 0-9;
     public static final double EXTENSION_VELOCITY_GAIN = 0-9;
-    
-    public static final double ROTATION_P = 0-9;
-    public static final double ROTATION_I = 0-9;
-    public static final double ROTATION_D = 0-9;
 
-    public static final double EXTENSION_P = 0-9;
-    public static final double EXTENSION_I = 0-9;
-    public static final double EXTENSION_D = 0-9;
-    public static final double EXTENSION_S = 0-9;
-
-    public static final double EXTENSION_MOTOR_GEAR_RATIO = 0-9;
-    public static final double EXTENSION_SPOOL_DIAMETER = 0-9;
-    public static final double MAX_LENGTH = 0-9;
+    public static final double EXTENSION_MOTOR_GEAR_RATIO = 1 / 5;
+    public static final double EXTENSION_SPOOL_DIAMETER = Units.inchesToMeters(2.5);
+    public static final double MAX_EXTENSION_LENGTH = Units.inchesToMeters(63);
     public static final double EXTENSION_ENCODER_OFFSET = 0-9;
   }
 
