@@ -28,12 +28,4 @@ public interface ArmSubsystem extends Subsystem {
    */
   public void goToAngle(double desiredAngle);
 
-  /**
-   * 
-   * @param angle current angle
-   * @param currentLength current length
-   * @return
-   */
-  public double calculateFeedForward(double angle, double currentLength);
-
 }

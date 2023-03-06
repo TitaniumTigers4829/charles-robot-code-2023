@@ -7,6 +7,7 @@ package frc.robot.subsystems.limb;
 import java.util.ResourceBundle.Control;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
@@ -15,9 +16,13 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.ClawConstants;
 
 public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
@@ -29,13 +34,15 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   private final CANSparkMax leftWheel;
   private final CANSparkMax rightWheel;
 
-  private final SparkMaxPIDController leftPID;
-  private final SparkMaxPIDController rightPID;
-
-  private final RelativeEncoder leftEncoder;
-  private final RelativeEncoder rightEncoder;
+  // private final RelativeEncoder leftEncoder;
+  // private final RelativeEncoder rightEncoder;
 
   private boolean isClawClosed;
+
+  private final DigitalInput wristLimitSwitch;
+
+  // private final SimpleMotorFeedforward wristFeedForward;
+  // private final ProfiledPIDController wristPIDController;
 
   /** Creates a new ClawSubsystemImpl. */
   public ClawSubsystemImpl() {
@@ -53,23 +60,26 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     leftWheel.setInverted(ClawConstants.LEFT_WHEEL_MOTOR_INVERTED);
     rightWheel.setInverted(ClawConstants.RIGHT_WHEEL_MOTOR_INVERTED);
 
-    leftPID = leftWheel.getPIDController();
-    rightPID = rightWheel.getPIDController();
-    leftEncoder = leftWheel.getEncoder();
-    rightEncoder = rightWheel.getEncoder();
+    // leftEncoder = leftWheel.getEncoder();
+    // rightEncoder = rightWheel.getEncoder();
 
-    leftPID.setP(ClawConstants.WHEEL_P);
-    rightPID.setP(ClawConstants.WHEEL_P);
-    leftPID.setI(ClawConstants.WHEEL_I);
-    rightPID.setI(ClawConstants.WHEEL_I);
-    leftPID.setD(ClawConstants.WHEEL_D);
-    rightPID.setD(ClawConstants.WHEEL_D);
-    leftPID.setFF(ClawConstants.WHEEL_FEED_FORWARD_GAIN);
-    rightPID.setFF(ClawConstants.WHEEL_FEED_FORWARD_GAIN);
+    wristLimitSwitch = new DigitalInput(ClawConstants.wristLimitSwitchPort);
 
-    leftPID.setFeedbackDevice(leftEncoder);
-    rightPID.setFeedbackDevice(rightEncoder);
+    // wristFeedForward = new SimpleMotorFeedforward(
+    //     ClawConstants.WRIST_FEED_FORWARD_GAIN, 
+    //     ClawConstants.WRIST_VELOCITY_GAIN, 
+    //     ClawConstants.WRIST_ACCELERATION_GAIN
+    // );
 
+    // wristPIDController = new ProfiledPIDController
+    //         (ClawConstants.WRIST_P, ClawConstants.WRIST_I, ClawConstants.WRIST_D, ClawConstants.WRIST_CONSTRAINTS);
+
+    wristMotor.config_kF(0, ClawConstants.WRIST_FEED_FORWARD_GAIN, 0);
+    wristMotor.config_kP(0, ClawConstants.WRIST_P, 0);
+    wristMotor.config_kI(0, ClawConstants.WRIST_I, 0);
+    wristMotor.config_IntegralZone(0, 150.0 / (600.0) * 2048.0);
+
+    wristMotor.setNeutralMode(NeutralMode.Brake);
   }
 
   @Override
@@ -94,19 +104,36 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   @Override
   public void setMotorSpeed(double speed) {
-    double setpoint = speed * ClawConstants.WHEELS_MAX_RPM;
-    leftPID.setReference(setpoint, ControlType.kVelocity);
-    rightPID.setReference(setpoint, ControlType.kVelocity);
+    double motorOutput = speed * ClawConstants.WHEELS_MAX_RPM;
+    leftWheel.set(motorOutput);
+    rightWheel.set(motorOutput);
   }
 
   @Override
   public double getWristAngle() {
-    return wristMotor.getSelectedSensorPosition() * (360 / 2048.);
+    return wristMotor.getSelectedSensorPosition() * (360 / Constants.FALCON_ENCODER_RESOLUTION);
+  }
+
+  public boolean isLmitSwitchPressed() {
+    return wristLimitSwitch.get();
+  }
+
+  public double resetWristEncoder() {
+    if (isLmitSwitchPressed()) {
+      return ClawConstants.MIN_WRIST_ROTATION;
+    }
+    else {
+      return getWristAngle();
+    }
   }
 
   @Override
-  public void setWristAngle(double angle) {
-    double desiredPos = angle * (2048/360.);
+  public void setWristAngle(double desiredAngle) {
+    double desiredPos = desiredAngle * (Constants.FALCON_ENCODER_RESOLUTION/360);
+
+    // double PIDOutput = wristPIDController.calculate(getWristAngle(), desiredAngle);
+    // double feedForwardOutput = wristFeedForward.calculate(desiredAngle, wristPIDController.getSetpoint().velocity);
+
     wristMotor.set(ControlMode.MotionMagic, desiredPos);
   }
 
