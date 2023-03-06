@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.limb;
 
-import java.util.ResourceBundle.Control;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -77,19 +75,20 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   @Override
   public void close() {
-    clawSolenoid.set(DoubleSolenoid.Value.kForward);
-    isClawClosed = true;    
+    // TODO Auto-generated method stub
+    
   }
 
   @Override
   public void open() {
-    clawSolenoid.set(DoubleSolenoid.Value.kReverse); 
-    isClawClosed = false;   
+    // TODO Auto-generated method stub
+    
   }
 
   @Override
-  public boolean getClawClosed() { 
-    return isClawClosed;
+  public boolean getClawClosed() {
+    // TODO Auto-generated method stub
+    return false;
   }
 
   @Override
@@ -101,13 +100,15 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   @Override
   public double getWristAngle() {
-    return wristMotor.getSelectedSensorPosition() * (360 / 2048.);
+    // TODO Auto-generated method stub
+    return 0;
   }
 
   @Override
   public void setWristAngle(double angle) {
-    double desiredPos = angle * (2048/360.);
-    wristMotor.set(ControlMode.MotionMagic, desiredPos);
+    // TODO Auto-generated method stub
+    
   }
+
 
 }
