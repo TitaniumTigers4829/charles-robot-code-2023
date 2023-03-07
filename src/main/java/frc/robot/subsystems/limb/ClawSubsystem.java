@@ -17,7 +17,7 @@ public interface ClawSubsystem extends Subsystem {
   /** 
    * Returns true if the claw is closed. 
    */
-  public boolean getClawClosed();
+  public boolean isClawClosed();
 
   /** 
    * Sets the motor to the specified speed (from -1 to 1). 

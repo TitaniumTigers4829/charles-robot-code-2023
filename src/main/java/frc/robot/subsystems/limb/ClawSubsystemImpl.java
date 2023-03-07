@@ -77,7 +77,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   }
 
   @Override
-  public boolean getClawClosed() { 
+  public boolean isClawClosed() { 
     return isClawClosed;
   }
 
