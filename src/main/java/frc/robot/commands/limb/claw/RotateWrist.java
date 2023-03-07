@@ -29,7 +29,7 @@ public class RotateWrist extends CommandBase {
 
   @Override
   public void execute() {
-    clawSubsystemImpl.setWristAngle(180);
+    clawSubsystemImpl.goToWristAngle(180);
   }
 
   @Override

@@ -10,7 +10,7 @@ public interface ClawSubsystem extends Subsystem {
   public void close();
 
   /** 
-   * Releases the contents of the claw. 
+   * Opens the claw.
    */
   public void open();
 
@@ -20,7 +20,7 @@ public interface ClawSubsystem extends Subsystem {
   public boolean getClawClosed();
 
   /** 
-   * Sets the motor to the specified speed (from 0 to 1). 
+   * Sets the motor to the specified speed (from -1 to 1). 
    */
   public void setMotorSpeed(double speed);
 
@@ -32,5 +32,15 @@ public interface ClawSubsystem extends Subsystem {
   /** Sets the target angle of the wrist.
    * @param angle (radians)
    */
-  void setWristAngle(double angle);
+  public void goToWristAngle(double angle);
+
+  /**
+   * Returns true if the wrist limit switch is being pressed.
+   */
+  public boolean isWristLimitSwitchPressed();
+
+  /**
+   * Resets the wrist's encoder position to the minimum position.
+   */
+  public void zeroWristEncoder();
 }

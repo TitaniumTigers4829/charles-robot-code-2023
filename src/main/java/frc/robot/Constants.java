@@ -298,9 +298,10 @@ public final class Constants {
     public static final TrapezoidProfile.Constraints WRIST_CONSTRAINTS = new TrapezoidProfile.Constraints(
       WRIST_MAX_VELOCITY, WRIST_MAX_ACCELERATION);
 
-    public static final int wristLimitSwitchPort = 0-9;
+    public static final int WRIST_LIMIT_SWITCH_PORT = 0-9;
 
-    public static final double MIN_WRIST_ROTATION = 0;
+    public static final double MIN_WRIST_ROTATION_DEGREES = 0-9;
+    public static final double MIN_WRIST_ROTATION_ENCODER_UNITS = 0-9;
   }
 
   public static final class JoystickConstants {
