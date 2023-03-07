@@ -34,8 +34,6 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   private final CANSparkMax leftWheel;
   private final CANSparkMax rightWheel;
 
-  // private final RelativeEncoder leftEncoder;
-  // private final RelativeEncoder rightEncoder;
 
   private boolean isClawClosed;
 
@@ -59,9 +57,6 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
     leftWheel.setInverted(ClawConstants.LEFT_WHEEL_MOTOR_INVERTED);
     rightWheel.setInverted(ClawConstants.RIGHT_WHEEL_MOTOR_INVERTED);
-
-    // leftEncoder = leftWheel.getEncoder();
-    // rightEncoder = rightWheel.getEncoder();
 
     wristLimitSwitch = new DigitalInput(ClawConstants.wristLimitSwitchPort);
 
@@ -131,10 +126,10 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   public void setWristAngle(double desiredAngle) {
     double desiredPos = desiredAngle * (Constants.FALCON_ENCODER_RESOLUTION/360);
 
+    wristMotor.set(ControlMode.MotionMagic, desiredPos);
+
     // double PIDOutput = wristPIDController.calculate(getWristAngle(), desiredAngle);
     // double feedForwardOutput = wristFeedForward.calculate(desiredAngle, wristPIDController.getSetpoint().velocity);
-
-    wristMotor.set(ControlMode.MotionMagic, desiredPos);
   }
 
 }
