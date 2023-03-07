@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 
@@ -35,8 +36,18 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     ArmConstants.ROTATION_I, 
     ArmConstants.ROTATION_D, 
     ArmConstants.ROTATION_CONSTRAINTS
+  private final ProfiledPIDController rotationPIDController = new ProfiledPIDController(
+    ArmConstants.ROTATION_P, 
+    ArmConstants.ROTATION_I, 
+    ArmConstants.ROTATION_D, 
+    ArmConstants.ROTATION_CONSTRAINTS
   );
     
+  private final ProfiledPIDController extensionPIDController = new ProfiledPIDController(
+    ArmConstants.EXTENSION_P,
+    ArmConstants.EXTENSION_I,
+    ArmConstants.EXTENSION_D,
+    ArmConstants.EXTENSION_CONSTRAINTS
   private final ProfiledPIDController extensionPIDController = new ProfiledPIDController(
     ArmConstants.EXTENSION_P,
     ArmConstants.EXTENSION_I,
@@ -67,11 +78,22 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
       ArmConstants.ROTATION_FEED_FORWARD_GAIN, 
       ArmConstants.ROTATION_VELOCITY_GAIN, 
       ArmConstants.ROTATION_ACCELERATION_GAIN
+      ArmConstants.ROTATION_FEED_FORWARD_GAIN, 
+      ArmConstants.ROTATION_VELOCITY_GAIN, 
+      ArmConstants.ROTATION_ACCELERATION_GAIN
     );
+
 
     rotationEncoder = new CANCoder(ArmConstants.ROTATION_ENCODER_ID);
     rotationEncoder.configMagnetOffset(ArmConstants.EXTENSION_ENCODER_OFFSET);
     rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
+
+    extensionMotor = new WPI_TalonFX(ArmConstants.EXTENSION_MOTOR_ID);
+    extensionFeedForward = new SimpleMotorFeedforward(
+      ArmConstants.EXTENSION_FEED_FORWARD_GAIN, 
+      ArmConstants.EXTENSION_VELOCITY_GAIN,
+      ArmConstants.EXTENSION_ACCELERATION_GAIN
+    );
 
     extensionMotor = new WPI_TalonFX(ArmConstants.EXTENSION_MOTOR_ID);
     extensionFeedForward = new SimpleMotorFeedforward(
@@ -102,13 +124,17 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   @Override
   public double getExtension() {
     // Convert motor rotation units (2048 or 4096 for 1 full rotation) to number of rotations
+    // Convert motor rotation units (2048 or 4096 for 1 full rotation) to number of rotations
     double motorRotation = extensionMotor.getSelectedSensorPosition() * 
+      (360 / Constants.FALCON_ENCODER_RESOLUTION) / ArmConstants.EXTENSION_MOTOR_GEAR_RATIO;
       (360 / Constants.FALCON_ENCODER_RESOLUTION) / ArmConstants.EXTENSION_MOTOR_GEAR_RATIO;
     // Convert number of rotations to distance (multiply by diamter)
     double extension = motorRotation * ArmConstants.EXTENSION_SPOOL_DIAMETER * Math.PI; 
     // Converts to output from 0 to 1
     return extension / ArmConstants.MAX_EXTENSION_LENGTH;
+    return extension / ArmConstants.MAX_EXTENSION_LENGTH;
   }
+
 
   @Override
   public void setExtension(double desiredExtension) {

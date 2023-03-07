@@ -291,13 +291,23 @@ public final class Constants {
     public static final boolean RIGHT_WHEEL_MOTOR_INVERTED = false;
     public static final double WHEELS_MAX_RPM = 0-9;
 
-    // PID for the wheels
-    // TODO: Tune these
-    public static final double WHEEL_FEED_FORWARD_GAIN = 0-9;
-    public static final double WHEEL_P = 0-9;
-    public static final double WHEEL_I = 0-9;
-    public static final double WHEEL_D = 0-9;
+    public static final double WRIST_FEED_FORWARD_GAIN = 0-9;
+    public static final double WRIST_VELOCITY_GAIN = 0-9;
+    public static final double WRIST_ACCELERATION_GAIN = 0-9;
 
+    public static final double WRIST_MAX_VELOCITY = 0.0;
+    public static final double WRIST_MAX_ACCELERATION = 0.0;
+
+    public static final double WRIST_P = 0-9;
+    public static final double WRIST_I = 0-9;
+    public static final double WRIST_D = 0-9;
+    public static final TrapezoidProfile.Constraints WRIST_CONSTRAINTS = new TrapezoidProfile.Constraints(
+      WRIST_MAX_VELOCITY, WRIST_MAX_ACCELERATION);
+
+    public static final int WRIST_LIMIT_SWITCH_PORT = 0-9;
+
+    public static final double MIN_WRIST_ROTATION_DEGREES = 0-9;
+    public static final double MIN_WRIST_ROTATION_ENCODER_UNITS = 0-9;
   }
 
   public static final class JoystickConstants {
