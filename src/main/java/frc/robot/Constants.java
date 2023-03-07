@@ -239,7 +239,12 @@ public final class Constants {
 
   public static final class ArmConstants {
 
-    public static final int ROTATION_MOTOR_ID = 0-9;
+    public static final int LEADER_ROTATION_MOTOR_ID = 0-9;
+    public static final int FOLLOWER_ROTATION_MOTOR_ID = 0-9;
+
+    public static final boolean LEADER_ROTATION_MOTOR_INVERTED = false;
+    public static final boolean FOLLOWER_ROTATION_MOTOR_INVERTED = true;
+
     public static final int EXTENSION_MOTOR_ID = 0-9;
 
     public static final int ROTATION_ENCODER_ID = 0-9;
@@ -271,7 +276,7 @@ public final class Constants {
 
     public static final double EXTENSION_MOTOR_GEAR_RATIO = 1.0 / 5.0;
     public static final double EXTENSION_SPOOL_DIAMETER = Units.inchesToMeters(2.5);
-    public static final double MAX_EXTENSION_LENGTH = Units.inchesToMeters(63);
+    public static final double MAX_EXTENSION_LENGTH = Units.inchesToMeters(48.48);
     public static final double EXTENSION_ENCODER_OFFSET = 0-9;
   }
 

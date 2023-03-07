@@ -16,12 +16,16 @@ import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 
 public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
-  private final WPI_TalonFX rotationMotor;
+  private final WPI_TalonFX leaderRotationMotor;
+  private final WPI_TalonFX followerRotationMotor;
   private final CANCoder rotationEncoder;
   private final WPI_TalonFX extensionMotor;
+
+  private final MotorControllerGroup rotationMotorControllerGroup;
 
   private final ArmFeedforward rotationFeedForward;
   private final SimpleMotorFeedforward extensionFeedForward;
@@ -48,7 +52,17 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
    * Tune all parameters
   */
   public ArmSubsystemImpl() {
-    rotationMotor = new WPI_TalonFX(ArmConstants.ROTATION_MOTOR_ID);
+    leaderRotationMotor = new WPI_TalonFX(ArmConstants.LEADER_ROTATION_MOTOR_ID);
+    followerRotationMotor = new WPI_TalonFX(ArmConstants.FOLLOWER_ROTATION_MOTOR_ID);
+
+    leaderRotationMotor.setInverted(ArmConstants.LEADER_ROTATION_MOTOR_INVERTED);
+    followerRotationMotor.setInverted(ArmConstants.FOLLOWER_ROTATION_MOTOR_INVERTED);
+
+    leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
+    followerRotationMotor.setNeutralMode(NeutralMode.Brake);
+
+    rotationMotorControllerGroup = new MotorControllerGroup(leaderRotationMotor, followerRotationMotor);
+    
     rotationFeedForward = new ArmFeedforward(
       ArmConstants.ROTATION_FEED_FORWARD_GAIN, 
       ArmConstants.ROTATION_VELOCITY_GAIN, 
@@ -77,7 +91,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     double PIDOutput = rotationPIDController.calculate(getAngle(), desiredAngle);
     double feedForwardOutput = rotationFeedForward.calculate(desiredAngle, rotationPIDController.getSetpoint().velocity);
     // Makes sure it doesn't set the percent output to more than 100%
-    rotationMotor.set(ControlMode.PercentOutput, motorOutputClamp(PIDOutput + feedForwardOutput));
+    rotationMotorControllerGroup.setVoltage(motorOutputClamp(PIDOutput + feedForwardOutput));
   }
 
   @Override
