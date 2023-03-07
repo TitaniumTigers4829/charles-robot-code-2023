@@ -72,7 +72,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     wristMotor.config_kF(0, ClawConstants.WRIST_FEED_FORWARD_GAIN, 0);
     wristMotor.config_kP(0, ClawConstants.WRIST_P, 0);
     wristMotor.config_kI(0, ClawConstants.WRIST_I, 0);
-    wristMotor.config_IntegralZone(0, 150.0 / (600.0) * 2048.0);
+    wristMotor.config_IntegralZone(0, 150.0 / (600.0) * Constants.FALCON_ENCODER_RESOLUTION); //This ratio was taken from climb subsystem, I don't know if it needs changing
 
     wristMotor.setNeutralMode(NeutralMode.Brake);
   }
@@ -100,8 +100,15 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   @Override
   public void setMotorSpeed(double speed) {
     double motorOutput = speed * ClawConstants.WHEELS_MAX_RPM;
-    leftWheel.set(motorOutput);
-    rightWheel.set(motorOutput);
+    leftWheel.set(motorOutputClamp(motorOutput));
+    rightWheel.set(motorOutputClamp(motorOutput));
+  }
+
+  /*
+   * Returns the motor output with a min. of -1 and max. of 1
+   */
+  public double motorOutputClamp(double motorOutput) {
+    return Math.max(-1, Math.min(1, motorOutput));
   }
 
   @Override
@@ -128,7 +135,6 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
     wristMotor.set(ControlMode.MotionMagic, desiredPos);
 
-    
     // double PIDOutput = wristPIDController.calculate(getWristAngle(), desiredAngle);
     // double feedForwardOutput = wristFeedForward.calculate(desiredAngle, wristPIDController.getSetpoint().velocity);
     // wristMotor.set(ControlMode.PercentOutput, Math.max(-1, Math.min(1, PIDOutput + feedForwardOutput)));
