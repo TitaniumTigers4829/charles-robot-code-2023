@@ -128,6 +128,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
     wristMotor.set(ControlMode.MotionMagic, desiredPos);
 
+    
     // double PIDOutput = wristPIDController.calculate(getWristAngle(), desiredAngle);
     // double feedForwardOutput = wristFeedForward.calculate(desiredAngle, wristPIDController.getSetpoint().velocity);
     // wristMotor.set(ControlMode.PercentOutput, Math.max(-1, Math.min(1, PIDOutput + feedForwardOutput)));
