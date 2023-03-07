@@ -293,7 +293,7 @@ public final class Constants {
     public static final double WRIST_MAX_ACCELERATION = 0.0;
 
     public static final double WRIST_P = 0-9;
-    public static final double WRIST_I = 0.0001;
+    public static final double WRIST_I = 0-9;
     public static final double WRIST_D = 0-9;
     public static final TrapezoidProfile.Constraints WRIST_CONSTRAINTS = new TrapezoidProfile.Constraints(
       WRIST_MAX_VELOCITY, WRIST_MAX_ACCELERATION);

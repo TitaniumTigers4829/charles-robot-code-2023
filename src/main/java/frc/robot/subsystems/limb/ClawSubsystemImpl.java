@@ -52,7 +52,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     wristMotor.config_kF(0, ClawConstants.WRIST_FEED_FORWARD_GAIN);
     wristMotor.config_kP(0, ClawConstants.WRIST_P);
     wristMotor.config_kI(0, ClawConstants.WRIST_I);
-    // wristMotor.config_IntegralZone(0, 150.0 / (600.0) * Constants.FALCON_ENCODER_RESOLUTION); //This ratio was taken from climb subsystem, I don't know if it needs changing
+    wristMotor.config_kD(0, ClawConstants.WRIST_D);
 
     wristMotor.setNeutralMode(NeutralMode.Brake);
   }
@@ -79,8 +79,8 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   @Override
   public void setMotorSpeed(double speed) {
-    leftWheel.set(motorOutputClamp(speed));
-    rightWheel.set(motorOutputClamp(speed));
+    leftWheel.set(motorInputClamp(speed));
+    rightWheel.set(motorInputClamp(speed));
   }
 
   @Override
@@ -108,9 +108,9 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   }
 
   /*
-   * Returns the motor output with a min. of -1 and max. of 1
+   * Returns the motor input with a min. of -1 and max. of 1.
    */
-  private double motorOutputClamp(double motorOutput) {
+  private double motorInputClamp(double motorOutput) {
     return Math.max(-1, Math.min(1, motorOutput));
   }
 
