@@ -77,7 +77,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     double PIDOutput = rotationPIDController.calculate(getAngle(), desiredAngle);
     double feedForwardOutput = rotationFeedForward.calculate(desiredAngle, rotationPIDController.getSetpoint().velocity);
     // Makes sure it doesn't set the percent output to more than 100%
-    rotationMotor.set(ControlMode.PercentOutput, Math.max(-1, Math.min(1, PIDOutput + feedForwardOutput)));
+    rotationMotor.set(ControlMode.PercentOutput, motorOutputClamp(PIDOutput + feedForwardOutput));
   }
 
   @Override
@@ -100,7 +100,14 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   public void setExtension(double desiredExtension) {
     double PIDOutput = extensionPIDController.calculate(getExtension(), desiredExtension);
     double feedForwardOutput = extensionFeedForward.calculate(extensionPIDController.getSetpoint().velocity);
-    extensionMotor.set(ControlMode.PercentOutput, Math.max(-1, Math.min(1, PIDOutput + feedForwardOutput)));
+    extensionMotor.set(ControlMode.PercentOutput, motorOutputClamp(PIDOutput + feedForwardOutput));
+  }
+
+  /*
+   * Returns the motor output with a min. of -1 and max. of 1.
+   */
+  private double motorOutputClamp(double motorOutput) {
+    return Math.max(-1, Math.min(1, motorOutput));
   }
 
 }

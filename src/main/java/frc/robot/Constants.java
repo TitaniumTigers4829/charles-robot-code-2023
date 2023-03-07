@@ -269,7 +269,7 @@ public final class Constants {
     public static final double EXTENSION_ACCELERATION_GAIN = 0-9;
     public static final double EXTENSION_VELOCITY_GAIN = 0-9;
 
-    public static final double EXTENSION_MOTOR_GEAR_RATIO = 1 / 5;
+    public static final double EXTENSION_MOTOR_GEAR_RATIO = 1.0 / 5.0;
     public static final double EXTENSION_SPOOL_DIAMETER = Units.inchesToMeters(2.5);
     public static final double MAX_EXTENSION_LENGTH = Units.inchesToMeters(63);
     public static final double EXTENSION_ENCODER_OFFSET = 0-9;
