@@ -82,7 +82,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
   @Override
   public double getAngle() {
-    return rotationEncoder.getAbsolutePosition() * Math.PI / 180;
+    return rotationEncoder.getAbsolutePosition();
   }
 
   @Override
