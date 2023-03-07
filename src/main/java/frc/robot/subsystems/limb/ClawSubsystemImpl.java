@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -23,8 +24,8 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   private final WPI_TalonFX wristMotor;
   private final DigitalInput wristLimitSwitch;
 
-  private final CANSparkMax leftWheel;
-  private final CANSparkMax rightWheel;
+  private final CANSparkMax leftWheelMotor;
+  private final CANSparkMax rightWheelMotor;
 
   private boolean isClawClosed;
 
@@ -38,23 +39,26 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
     wristMotor = new WPI_TalonFX(ClawConstants.WRIST_MOTOR_ID);
 
-    leftWheel = new CANSparkMax(ClawConstants.LEFT_WHEEL_MOTOR_ID, MotorType.kBrushless);
-    rightWheel = new CANSparkMax(ClawConstants.RIGHT_WHEEL_MOTOR_ID, MotorType.kBrushless);
-
-    leftWheel.restoreFactoryDefaults();
-    rightWheel.restoreFactoryDefaults();
-
-    leftWheel.setInverted(ClawConstants.LEFT_WHEEL_MOTOR_INVERTED);
-    rightWheel.setInverted(ClawConstants.RIGHT_WHEEL_MOTOR_INVERTED);
-
-    wristLimitSwitch = new DigitalInput(ClawConstants.WRIST_LIMIT_SWITCH_PORT);
-
     wristMotor.config_kF(0, ClawConstants.WRIST_FEED_FORWARD_GAIN);
     wristMotor.config_kP(0, ClawConstants.WRIST_P);
     wristMotor.config_kI(0, ClawConstants.WRIST_I);
     wristMotor.config_kD(0, ClawConstants.WRIST_D);
 
     wristMotor.setNeutralMode(NeutralMode.Brake);
+
+    leftWheelMotor = new CANSparkMax(ClawConstants.LEFT_WHEEL_MOTOR_ID, MotorType.kBrushless);
+    rightWheelMotor = new CANSparkMax(ClawConstants.RIGHT_WHEEL_MOTOR_ID, MotorType.kBrushless);
+
+    leftWheelMotor.restoreFactoryDefaults();
+    rightWheelMotor.restoreFactoryDefaults();
+
+    leftWheelMotor.setInverted(ClawConstants.LEFT_WHEEL_MOTOR_INVERTED);
+    rightWheelMotor.setInverted(ClawConstants.RIGHT_WHEEL_MOTOR_INVERTED);
+
+    leftWheelMotor.setIdleMode(IdleMode.kBrake);
+    rightWheelMotor.setIdleMode(IdleMode.kBrake);
+
+    wristLimitSwitch = new DigitalInput(ClawConstants.WRIST_LIMIT_SWITCH_PORT);
   }
 
   @Override
@@ -79,8 +83,8 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   @Override
   public void setMotorSpeed(double speed) {
-    leftWheel.set(motorOutputClamp(speed));
-    rightWheel.set(motorOutputClamp(speed));
+    leftWheelMotor.set(motorOutputClamp(speed));
+    rightWheelMotor.set(motorOutputClamp(speed));
   }
 
   @Override
