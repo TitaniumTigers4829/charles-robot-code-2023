@@ -79,8 +79,8 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   @Override
   public void setMotorSpeed(double speed) {
-    leftWheel.set(motorInputClamp(speed));
-    rightWheel.set(motorInputClamp(speed));
+    leftWheel.set(motorOutputClamp(speed));
+    rightWheel.set(motorOutputClamp(speed));
   }
 
   @Override
@@ -108,9 +108,9 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   }
 
   /*
-   * Returns the motor input with a min. of -1 and max. of 1.
+   * Returns the motor output with a min. of -1 and max. of 1.
    */
-  private double motorInputClamp(double motorOutput) {
+  private double motorOutputClamp(double motorOutput) {
     return Math.max(-1, Math.min(1, motorOutput));
   }
 
