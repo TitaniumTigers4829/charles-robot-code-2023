@@ -25,9 +25,9 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
 
     // Gets the distance from the closest april tag. If it can't see one, returns a really big number.
     double frontLimelightDistance = frontLimelightAprilTags.length > 0
-      ? getLimelightAprilTagDistance((int) frontLimelightAprilTags[0].fiducialID) : Integer.MAX_VALUE;
+      ? getLimelightAprilTagDistance((int) frontLimelightAprilTags[0].fiducialID) : Double.MAX_VALUE;
     double backLimelightDistance = backLimelightAprilTags.length > 0
-      ? getLimelightAprilTagDistance((int) backLimelightAprilTags[0].fiducialID) : Integer.MAX_VALUE;
+      ? getLimelightAprilTagDistance((int) backLimelightAprilTags[0].fiducialID) : Double.MAX_VALUE;
 
     currentlyUsedLimelight = frontLimelightDistance <= backLimelightDistance 
       ? LimelightConstants.FRONT_LIMELIGHT_NAME : LimelightConstants.BACK_LIMELIGHT_NAME;
