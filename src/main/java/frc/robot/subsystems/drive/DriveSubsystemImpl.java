@@ -76,6 +76,8 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   private final SwerveDrivePoseEstimator odometry;
 
   private int gyroOffset = 0;
+  private float rollOffset = 0;
+  private float pitchOffset = 0;
   
   /**
    * Creates a new DriveSubsystem.
@@ -122,6 +124,24 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   }
 
   @Override
+  public double getRoll() {
+    return gyro.getRoll() - rollOffset;
+  }
+
+  @Override
+  public double getPitch() {
+    return gyro.getPitch() - pitchOffset;
+  }
+
+  @Override
+  public double getBalanceError() {
+    double roll = getRoll();
+    double pitch = getPitch();
+    double pitchSign = Math.signum(pitch);
+    return pitchSign * Math.sqrt(roll*roll + pitch*pitch);
+  }
+
+  @Override
   public Rotation2d getRotation2d() {
     return Rotation2d.fromDegrees(getHeading());
   }
@@ -142,6 +162,12 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   public void zeroHeading() {
     gyroOffset = 0;
     gyro.reset();
+  }
+
+  @Override
+  public void zeroPitchAndRoll() {
+    pitchOffset = gyro.getPitch();
+    rollOffset = gyro.getRoll();
   }
 
   @Override
@@ -188,5 +214,6 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
 
     return swerveModulePositions;
   }
+  
 
 }
