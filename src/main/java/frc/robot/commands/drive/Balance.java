@@ -75,18 +75,22 @@ public class Balance extends CommandBase {
 
     if (secondLatch) {
       if (Math.abs(error) < BalanceConstants.BALANCE_ERROR_CONSIDERED_BALANCED) {
-        initialDrive(0, true);
+        driveForward(0, true);
       } else {
-        initialDrive(-1 * balancePidController.calculate(error, 0), true);
+        driveForward(-1 * balancePidController.calculate(error, 0), true);
       }
     } else {
-      initialDrive(BalanceConstants.INITIAL_SPEED, false);
+      driveForward(BalanceConstants.INITIAL_SPEED, false);
     }
 
   
   }
 
-  private void initialDrive(double speed, boolean faceForward) {
+  /**
+   * Drives the robot forward at a given rate.
+   * @param faceForward whether or not to rotate the robot to orient itself forward.
+   */
+  private void driveForward(double speed, boolean faceForward) {
 
     double driveSpeed = speed;
     if (fromLeft) {
