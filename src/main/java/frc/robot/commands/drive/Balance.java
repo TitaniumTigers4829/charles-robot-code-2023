@@ -9,13 +9,16 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants.BalanceConstants;
+import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.leds.LEDSubsystem;
 
 public class Balance extends CommandBase {
 
   private final DriveSubsystem driveSubsystem;
+  private final LEDSubsystem leds;
   private final boolean fromLeft;
 
   private boolean firstLatch;
@@ -32,10 +35,11 @@ public class Balance extends CommandBase {
   /** Creates a new Balance.
    * @param fromLeft true if approaching from the left side, false if approaching from the right.
    */
-  public Balance(DriveSubsystem driveSubsystem, boolean fromLeft) {
+  public Balance(DriveSubsystem driveSubsystem, boolean fromLeft, LEDSubsystem leds) {
     this.fromLeft = fromLeft;
     this.driveSubsystem = driveSubsystem;
-    addRequirements(driveSubsystem);
+    this.leds = leds;
+    addRequirements(driveSubsystem, leds);
   }
 
   @Override
@@ -46,13 +50,10 @@ public class Balance extends CommandBase {
 
   @Override
   public void execute() {
-    SmartDashboard.putBoolean("Balancing", true);
-    double error = driveSubsystem.getBalanceError();
-    SmartDashboard.putNumber("Pitch",  driveSubsystem.getPitch());
-    SmartDashboard.putNumber("Roll",  driveSubsystem.getRoll());
-    SmartDashboard.putNumber("Yaw",  driveSubsystem.getHeading());
-    SmartDashboard.putNumber("Balance Error",  driveSubsystem.getBalanceError());
+  
+    leds.setProcess(LEDProcess.BALANCE);
 
+    double error = driveSubsystem.getBalanceError();
 
     if (Math.abs(error) > BalanceConstants.BALANCE_ERROR_INIT_DEGREES) {
       firstLatch = true;
@@ -62,16 +63,9 @@ public class Balance extends CommandBase {
       // Has surpassed the limits.
       if (firstLatch) {
         secondLatch = true;
-        SmartDashboard.putBoolean("Triggering", true);
-      } else {
-        SmartDashboard.putBoolean("Triggering", false);
-
       }
 
     }
-    SmartDashboard.putBoolean("Second Latch", secondLatch);
-
-    SmartDashboard.putBoolean("First Latch", firstLatch);
 
     if (secondLatch) {
       if (Math.abs(error) < BalanceConstants.BALANCE_ERROR_CONSIDERED_BALANCED) {
