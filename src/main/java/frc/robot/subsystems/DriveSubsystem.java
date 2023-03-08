@@ -28,11 +28,11 @@ public class DriveSubsystem extends SubsystemBase {
   private double pitchOffset = 0;
 
   private final SwerveModule frontLeft = new SwerveModule(
-    DriveConstants.frontLeftDriveMotorPort,
-    DriveConstants.frontLeftTurningMotorPort,
-    DriveConstants.frontLeftTurningEncoderPort,
-    DriveConstants.frontLeftAngleZero,
-    DriveConstants.frontLeftTurningEncoderReversed,
+    DriveConstants.FRONT_LEFT_DRIVE_MOTOR_ID,
+    DriveConstants.FRONT_LEFT_TURN_MOTOR_ID,
+    DriveConstants.FRONT_LEFT_CANCODER_ID,
+    DriveConstants.FRONT_LEFT_ZERO_ANGLE,
+    DriveConstants.FRONT_LFE,
     DriveConstants.frontLeftDriveEncoderReversed
   );
   private final SwerveModule frontRight = new SwerveModule(

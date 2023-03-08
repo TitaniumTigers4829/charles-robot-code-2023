@@ -33,14 +33,14 @@ public class SwerveModule {
 
   private final ProfiledPIDController turnPIDController =
     new ProfiledPIDController(
-      ModuleConstants.moduleTurnControllerP,
-      ModuleConstants.moduleTurnControllerI,
-      ModuleConstants.moduleTurnControllerD,
-      ModuleConstants.moduleTurnConstraints
+      ModuleConstants.TURN_P,
+      ModuleConstants.TURN_I,
+      ModuleConstants.TURN_D,
+      ModuleConstants.TURN_CONSTRAINTS
     );
 
   private final SimpleMotorFeedforward turnFeedForward = new SimpleMotorFeedforward(
-      DriveConstants.turningS, DriveConstants.turningV, DriveConstants.turningA);
+      DriveConstants.TURNING_S, DriveConstants.TURNING_V, DriveConstants.TURNING_A);
 
   /**
    * Constructs a swerve module
@@ -61,8 +61,8 @@ public class SwerveModule {
       ) {
     
     // Initialize the motors
-    driveMotor = new WPI_TalonFX(driveMotorChannel, ModuleConstants.canivoreCanBusString);
-    turningMotor = new WPI_TalonFX(turningMotorChannel, ModuleConstants.canivoreCanBusString);
+    driveMotor = new WPI_TalonFX(driveMotorChannel, ModuleConstants.CANIVORE_CAN_BUS_STRING);
+    turningMotor = new WPI_TalonFX(turningMotorChannel, ModuleConstants.CANIVORE_CAN_BUS_STRING);
 
     // Set motors to brake mode
     driveMotor.setNeutralMode(NeutralMode.Brake);
@@ -73,16 +73,16 @@ public class SwerveModule {
     turningMotor.setInverted(true);
 
     // Set the motor's built in pid and feed forward
-    driveMotor.config_kF(0, ModuleConstants.moduleDriveControllerF);
-    driveMotor.config_kP(0, ModuleConstants.moduleDriveControllerP);
-    driveMotor.config_kI(0, ModuleConstants.moduleDriveControllerI);
-    driveMotor.config_kD(0, ModuleConstants.moduleDriveControllerD);
+    driveMotor.config_kF(0, ModuleConstants.DRIVE_F);
+    driveMotor.config_kP(0, ModuleConstants.DRIVE_P);
+    driveMotor.config_kI(0, ModuleConstants.DRIVE_I);
+    driveMotor.config_kD(0, ModuleConstants.DRIVE_D);
         
     // Configure drive motor sensor
     driveMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
     
     // CANCoder config
-    turnEncoder = new CANCoder(turningEncoderChannel, ModuleConstants.canivoreCanBusString);
+    turnEncoder = new CANCoder(turningEncoderChannel, ModuleConstants.CANIVORE_CAN_BUS_STRING);
     turnEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
     turnEncoder.configMagnetOffset(angleZero);
     turnEncoder.configSensorDirection(encoderReversed);
@@ -144,7 +144,7 @@ public class SwerveModule {
    */
   public SwerveModuleState getState() {
     double m_speedMetersPerSecond =
-        ModuleConstants.drivetoMetersPerSecond * driveMotor.getSelectedSensorVelocity();
+        ModuleConstants.DRIVE_TO_METERS_PER_SECOND * driveMotor.getSelectedSensorVelocity();
 
     double m_turningRadians =
         (Math.PI / 180) * turnEncoder.getAbsolutePosition();
@@ -153,7 +153,7 @@ public class SwerveModule {
   }
 
   public SwerveModulePosition getPosition() {
-    double position = ModuleConstants.falconToMeters * driveMotor.getSelectedSensorPosition();
+    double position = ModuleConstants.FALCON_UNITS_TO_METERS * driveMotor.getSelectedSensorPosition();
     Rotation2d rotation = Rotation2d.fromDegrees(getCANCoderABS());
 
     return new SwerveModulePosition(position, rotation);
@@ -172,7 +172,7 @@ public class SwerveModule {
 
     // Converts meters per second to rpm
     double desiredDriveRPM = optimizedDesiredState.speedMetersPerSecond * 60 
-      * ModuleConstants.driveGearRatio / ModuleConstants.wheelCircumferenceMeters;
+      * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
       
     // Converts rpm to encoder units per 100 milliseconds
     double desiredDriveEncoderUnitsPer100MS = desiredDriveRPM / 600.0 * 2048;

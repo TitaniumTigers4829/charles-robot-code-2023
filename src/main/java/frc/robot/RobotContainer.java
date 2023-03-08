@@ -46,11 +46,11 @@ public class RobotContainer {
 
     // Configure the button bindings
   
-    driverJoystick = new Joystick(JoystickConstants.driverJoystickID);
-    rightBumper = new JoystickButton(driverJoystick, JoystickConstants.rightBumperID);
+    driverJoystick = new Joystick(JoystickConstants.DRIVER_JOYSTICK_ID);
+    rightBumper = new JoystickButton(driverJoystick, JoystickConstants.RIGHT_BUMPER_ID);
   
 
-    buttonBoard = new Joystick(JoystickConstants.buttonBoardID);
+    buttonBoard = new Joystick(JoystickConstants.BUTTON_BOARD_ID);
     
     driveSubsystem = new DriveSubsystem();
     // poseEstimationSubsystem = new PoseEstimationSubsystem(driveSubsystem);
@@ -105,17 +105,17 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    POVButton rightDirectionPad = new POVButton(driverJoystick, JoystickConstants.rightDPadID);
+    POVButton rightDirectionPad = new POVButton(driverJoystick, JoystickConstants.RIGHT_DPAD_ID);
     rightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
-    POVButton leftDirectionPad = new POVButton(driverJoystick, JoystickConstants.leftDPadID);
+    POVButton leftDirectionPad = new POVButton(driverJoystick, JoystickConstants.LEFT_DPAD_ID);
     leftDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroPitchAndRoll));
 
 
-    JoystickButton bButton = new JoystickButton(driverJoystick, JoystickConstants.bButtonID);
+    JoystickButton bButton = new JoystickButton(driverJoystick, JoystickConstants.B_BUTTON_ID);
     bButton.whileTrue(new FollowRealTimeTrajectory(driveSubsystem, () -> !bButton.getAsBoolean()));
 
-    JoystickButton balanceFromLeft = new JoystickButton(driverJoystick, JoystickConstants.xButtonID);
-    JoystickButton balanceFromRight = new JoystickButton(driverJoystick, JoystickConstants.yButtonID);
+    JoystickButton balanceFromLeft = new JoystickButton(driverJoystick, JoystickConstants.X_BUTTON_ID);
+    JoystickButton balanceFromRight = new JoystickButton(driverJoystick, JoystickConstants.Y_BUTTON_ID);
 
     balanceFromRight.whileTrue(new Balance(driveSubsystem, false));
   }

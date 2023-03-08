@@ -45,7 +45,7 @@ public class PoseEstimationSubsystem extends SubsystemBase {
   private static final String limelightNetworktableName = "limelight-tigers";
   
   // You should probably have a constant for this
-  private static final SwerveDriveKinematics driveKinematics = DriveConstants.driveKinematics;
+  private static final SwerveDriveKinematics driveKinematics = DriveConstants.DRIVE_KINEMATICS;
   
   /**
    * Standard deviations of model states. Increase these numbers to trust your model's state estimates less. This
@@ -77,7 +77,7 @@ public class PoseEstimationSubsystem extends SubsystemBase {
       visionMeasurementStdDevs
     );
 
-    cameraCropLookupTable = new LinearInterpolator(LimelightConstants.cameraCropLookupTable);
+    cameraCropLookupTable = new LinearInterpolator(LimelightConstants.CAMERA_CROP_LOOKUP_TABLE);
     
     networkTable = NetworkTableInstance.getDefault().getTable(limelightNetworktableName);
     botPoseNetworkTableEntry = networkTable.getEntry("botpose");

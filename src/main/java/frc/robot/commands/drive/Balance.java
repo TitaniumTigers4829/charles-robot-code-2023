@@ -22,11 +22,11 @@ public class Balance extends CommandBase {
   private boolean secondLatch;
 
   private final PIDController balancePidController = new PIDController(
-    BalanceConstants.pBalance,
-    BalanceConstants.iBalance,
-    BalanceConstants.dBalance
+    BalanceConstants.BALANCE_P,
+    BalanceConstants.BALANCE_I,
+    BalanceConstants.BALANCE_D
   );
-  private final ProfiledPIDController thetaController = new ProfiledPIDController(DriveConstants.faceForwardP, 0, 0, TrajectoryConstants.thetaControllerConstraints);
+  private final ProfiledPIDController thetaController = new ProfiledPIDController(DriveConstants.FACEFORWARD_P, 0, 0, TrajectoryConstants.THETA_CONTROLLER_CONSTRAINTS);
 
 
   /** Creates a new Balance.
@@ -54,11 +54,11 @@ public class Balance extends CommandBase {
     SmartDashboard.putNumber("Balance Error",  driveSubsystem.getBalanceError());
 
 
-    if (Math.abs(error) > BalanceConstants.balanceErrorInitiationDegrees) {
+    if (Math.abs(error) > BalanceConstants.BALANCE_ERROR_INIT_DEGREES) {
       firstLatch = true;
     }
 
-    if (Math.abs(error) < BalanceConstants.balanceErrorNearBalanceDegrees) {
+    if (Math.abs(error) < BalanceConstants.BALANCE_ERROR_NEAR_BALANCED) {
       // Has surpassed the limits.
       if (firstLatch) {
         secondLatch = true;
@@ -74,13 +74,13 @@ public class Balance extends CommandBase {
     SmartDashboard.putBoolean("First Latch", firstLatch);
 
     if (secondLatch) {
-      if (Math.abs(error) < BalanceConstants.balanceMarginDegrees) {
+      if (Math.abs(error) < BalanceConstants.BALANCE_ERROR_CONSIDERED_BALANCED) {
         initialDrive(0, true);
       } else {
         initialDrive(-1 * balancePidController.calculate(error, 0), true);
       }
     } else {
-      initialDrive(BalanceConstants.initialSpeed, false);
+      initialDrive(BalanceConstants.INITIAL_SPEED, false);
     }
 
   
@@ -94,7 +94,7 @@ public class Balance extends CommandBase {
     }
 
     double rot = 0;
-    if (faceForward && !(Math.abs(driveSubsystem.getHeading()) < BalanceConstants.orientMarginDegrees)) {
+    if (faceForward && !(Math.abs(driveSubsystem.getHeading()) < BalanceConstants.ORIENTATION_ERROR_CONSIDERED_ORIENTED)) {
       rot = thetaController.calculate(driveSubsystem.getHeading(), 0);
     }
 
