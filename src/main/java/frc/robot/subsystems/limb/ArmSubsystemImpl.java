@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 
@@ -68,21 +67,11 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
       ArmConstants.ROTATION_FEED_FORWARD_GAIN, 
       ArmConstants.ROTATION_VELOCITY_GAIN, 
       ArmConstants.ROTATION_ACCELERATION_GAIN
-      ArmConstants.ROTATION_FEED_FORWARD_GAIN, 
-      ArmConstants.ROTATION_VELOCITY_GAIN, 
-      ArmConstants.ROTATION_ACCELERATION_GAIN
     );
 
     rotationEncoder = new CANCoder(ArmConstants.ROTATION_ENCODER_ID);
     rotationEncoder.configMagnetOffset(ArmConstants.EXTENSION_ENCODER_OFFSET);
     rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
-
-    extensionMotor = new WPI_TalonFX(ArmConstants.EXTENSION_MOTOR_ID);
-    extensionFeedForward = new SimpleMotorFeedforward(
-      ArmConstants.EXTENSION_FEED_FORWARD_GAIN, 
-      ArmConstants.EXTENSION_VELOCITY_GAIN,
-      ArmConstants.EXTENSION_ACCELERATION_GAIN
-    );
 
     extensionMotor = new WPI_TalonFX(ArmConstants.EXTENSION_MOTOR_ID);
     extensionFeedForward = new SimpleMotorFeedforward(
