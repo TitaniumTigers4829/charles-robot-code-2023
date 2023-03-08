@@ -42,6 +42,7 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
   @Override
   public Pose2d getPoseFromAprilTags() {
     Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
+    // The origin of botpose is at the center of the field
     double robotX = botPose.getX() + TrajectoryConstants.FIELD_LENGTH_METERS / 2;
     double robotY = botPose.getY() + TrajectoryConstants.FIELD_WIDTH_METERS / 2;
     Rotation2d robotRotation = botPose.getRotation();
@@ -56,7 +57,7 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
     }
     
     // To be safe returns a big distance from the april tags
-    return 10;
+    return Double.MAX_VALUE;
   }
 
   @Override
@@ -123,7 +124,7 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
       return Math.sqrt(Math.pow(aprilTagX - robotX, 2) + Math.pow(aprilTagY - robotY, 2));
     }
 
-    // Just in case returns 
+    // To be safe returns a big distance from the april tags
     return Double.MAX_VALUE;
   }
 
