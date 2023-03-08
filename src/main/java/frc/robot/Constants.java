@@ -82,6 +82,24 @@ public final class Constants {
     public static final boolean FRONT_RIGHT_DRIVE_ENCODER_REVERSED = true;
     public static final boolean REAR_LEFT_DRIVE_ENCODER_REVERSED = true;
     public static final boolean REAR_RIGHT_DRIVE_ENCODER_REVERSED = true;
+
+    // TODO: Tune this
+    public static final double FACEFORWARD_P = 0-9;
+
+    public static final class BalanceConstants {
+      // TODO: Tune all these
+      public static final double BALANCE_P = 0-9;
+      public static final double BALANCE_I = 0-9;
+      public static final double BALANCE_D = 0-9;
+      
+      public static final double INITIAL_SPEED = 1.1;
+
+      public static final double BALANCE_ERROR_INIT_DEGREES = 0-9;
+      public static final double BALANCE_ERROR_NEAR_BALANCED = 0-9;
+      public static final double BALANCE_ERROR_CONSIDERED_BALANCED = 2.25; // +/- degrees
+      public static final double ORIENTATION_ERROR_CONSIDERED_ORIENTED = 5; // +/- degrees
+      
+    }
   }
   
   public static final class ModuleConstants { 
