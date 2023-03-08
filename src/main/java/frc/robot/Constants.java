@@ -88,7 +88,7 @@ public final class Constants {
     public static final class BalanceConstants {
       // TODO: Tune all these; They are ballpark esitmates
       public static final double BALANCE_P = 0.0472;
-      public static final double BALANCE_I = 0-9;
+      public static final double BALANCE_I = 0;
       public static final double BALANCE_D = 0.003;
       
       public static final double INITIAL_SPEED = 1.4;
