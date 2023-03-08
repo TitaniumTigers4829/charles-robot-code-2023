@@ -21,11 +21,13 @@ public class LEDSubsystemImpl extends SubsystemBase implements LEDSubsystem {
   */
   public LEDSubsystemImpl(int port) {
     ledSpark = new Spark(port);
+    setProcess(LEDProcess.DEFAULT);
   }
 
   /** Creates a new LEDSubsystemImpl with the port in LEDConstants. */
   public LEDSubsystemImpl() {
     ledSpark = new Spark(LEDConstants.LEDPort);
+    setProcess(LEDProcess.DEFAULT);
   }
 
   /** Sets the pattern to a double value.
