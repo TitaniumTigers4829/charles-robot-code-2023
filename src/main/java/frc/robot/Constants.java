@@ -52,26 +52,26 @@ public final class Constants {
 
     public static final double MAX_SPEED_METERS_PER_SECOND = 4;
 
-    public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 12;
-    public static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 16;
-    public static final int REAR_LEFT_DRIVE_MOTOR_ID = 11;
-    public static final int REAR_RIGHT_DRIVE_MOTOR_ID = 9;
+    public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 1;
+    public static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 4;
+    public static final int REAR_LEFT_DRIVE_MOTOR_ID = 3;
+    public static final int REAR_RIGHT_DRIVE_MOTOR_ID = 0;
 
     public static final int FRONT_LEFT_TURN_MOTOR_ID = 7;
-    public static final int FRONT_RIGHT_TURN_MOTOR_ID = 10;
-    public static final int REAR_LEFT_TURN_MOTOR_ID = 13;
-    public static final int REAR_RIGHT_TURN_MOTOR_ID = 8;
+    public static final int FRONT_RIGHT_TURN_MOTOR_ID = 8;
+    public static final int REAR_LEFT_TURN_MOTOR_ID = 10;
+    public static final int REAR_RIGHT_TURN_MOTOR_ID = 13;
 
     public static final int FRONT_LEFT_CANCODER_ID = 0;
-    public static final int FRONT_RIGHT_CANCODER_ID = 2;
-    public static final int REAR_LEFT_CANCODER_ID = 1;
-    public static final int REAR_RIGHT_CANCODER_ID = 3;
+    public static final int FRONT_RIGHT_CANCODER_ID = 3;
+    public static final int REAR_LEFT_CANCODER_ID = 2;
+    public static final int REAR_RIGHT_CANCODER_ID = 1;
 
     // In degrees.
-    public static final double FRONT_LEFT_ZERO_ANGLE = 47.900390625;
-    public static final double FRONT_RIGHT_ZERO_ANGLE = -71.630859375;
-    public static final double REAR_LEFT_ZERO_ANGLE = -24.345703125;
-    public static final double REAR_RIGHT_ZERO_ANGLE = -88.681640625;
+    public static final double FRONT_LEFT_ZERO_ANGLE = 169.716796875;
+    public static final double FRONT_RIGHT_ZERO_ANGLE = -76.46484375;
+    public static final double REAR_LEFT_ZERO_ANGLE = 46.58203125;
+    public static final double REAR_RIGHT_ZERO_ANGLE = -78.57421875;
 
     public static final boolean FRONT_LEFT_CANCODER_REVERSED = false;
     public static final boolean FRONT_RIGHT_CANCODER_REVERSED = false;
@@ -79,9 +79,9 @@ public final class Constants {
     public static final boolean REAR_RIGHT_CANCODER_REVERSED = false;
     
     public static final boolean FRONT_LEFT_DRIVE_ENCODER_REVERSED = true;
-    public static final boolean FRONT_RIGHT_DRIVE_ENCODER_REVERSED = true;
+    public static final boolean FRONT_RIGHT_DRIVE_ENCODER_REVERSED = false;
     public static final boolean REAR_LEFT_DRIVE_ENCODER_REVERSED = true;
-    public static final boolean REAR_RIGHT_DRIVE_ENCODER_REVERSED = true;
+    public static final boolean REAR_RIGHT_DRIVE_ENCODER_REVERSED = false;
   }
   
   public static final class ModuleConstants { 
@@ -239,15 +239,15 @@ public final class Constants {
 
   public static final class ArmConstants {
 
-    public static final int LEADER_ROTATION_MOTOR_ID = 0-9;
-    public static final int FOLLOWER_ROTATION_MOTOR_ID = 0-9;
+    public static final int LEADER_ROTATION_MOTOR_ID = 2;
+    public static final int FOLLOWER_ROTATION_MOTOR_ID = 19;
 
     public static final boolean LEADER_ROTATION_MOTOR_INVERTED = false;
     public static final boolean FOLLOWER_ROTATION_MOTOR_INVERTED = true;
 
-    public static final int EXTENSION_MOTOR_ID = 0-9;
+    public static final int EXTENSION_MOTOR_ID = 16;
 
-    public static final int ROTATION_ENCODER_ID = 0-9;
+    public static final int ROTATION_ENCODER_ID = 5;
 
     public static final double ROTATION_MAX_VELOCITY = 0.0;
     public static final double ROTATION_MAX_ACCELERATION = 0.0;
@@ -319,8 +319,8 @@ public final class Constants {
     // Axes IDs:
     public static final int LEFT_STICK_X = 0;
     public static final int LEFT_STICK_Y = 1;
-    public static final int RIGHT_STICK_X = 2;
-    public static final int RIGHT_STICK_Y = 3;
+    public static final int RIGHT_STICK_X = 4;
+    public static final int RIGHT_STICK_Y = 5;
 
     // Button IDs:
     public static final int X_BUTTON_ID = 1;

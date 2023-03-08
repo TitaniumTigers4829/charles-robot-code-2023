@@ -20,6 +20,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -33,7 +34,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
 
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
-  private final SwerveModule frontLeft = new SwerveModule(
+  private final SwerveModule frontLeftSwerveModule = new SwerveModule(
     DriveConstants.FRONT_LEFT_DRIVE_MOTOR_ID,
     DriveConstants.FRONT_LEFT_TURN_MOTOR_ID,
     DriveConstants.FRONT_LEFT_CANCODER_ID,
@@ -41,7 +42,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     DriveConstants.FRONT_LEFT_CANCODER_REVERSED,
     DriveConstants.FRONT_LEFT_DRIVE_ENCODER_REVERSED
   );
-  private final SwerveModule frontRight = new SwerveModule(
+  private final SwerveModule frontRightSwerveModule = new SwerveModule(
     DriveConstants.FRONT_RIGHT_DRIVE_MOTOR_ID,
     DriveConstants.FRONT_RIGHT_TURN_MOTOR_ID,
     DriveConstants.FRONT_RIGHT_CANCODER_ID,
@@ -49,7 +50,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     DriveConstants.FRONT_RIGHT_CANCODER_REVERSED,
     DriveConstants.FRONT_RIGHT_DRIVE_ENCODER_REVERSED
   );
-  private final SwerveModule rearLeft = new SwerveModule(
+  private final SwerveModule rearLeftSwerveModule = new SwerveModule(
     DriveConstants.REAR_LEFT_DRIVE_MOTOR_ID,
     DriveConstants.REAR_LEFT_TURN_MOTOR_ID,
     DriveConstants.REAR_LEFT_CANCODER_ID,
@@ -57,7 +58,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     DriveConstants.REAR_LEFT_CANCODER_REVERSED,
     DriveConstants.REAR_LEFT_DRIVE_ENCODER_REVERSED
   );
-  private final SwerveModule rearRight = new SwerveModule(
+  private final SwerveModule rearRightSwerveModule = new SwerveModule(
     DriveConstants.REAR_RIGHT_DRIVE_MOTOR_ID,
     DriveConstants.REAR_RIGHT_TURN_MOTOR_ID,
     DriveConstants.REAR_RIGHT_CANCODER_ID,
@@ -67,10 +68,10 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   );
 
   private final SwerveModule[] swerveModules = {
-    frontLeft,
-    frontRight,
-    rearLeft,
-    rearRight
+    frontLeftSwerveModule,
+    frontRightSwerveModule,
+    rearLeftSwerveModule,
+    rearRightSwerveModule
   };
 
   private final SwerveDrivePoseEstimator odometry;
@@ -180,10 +181,10 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   @Override
   public SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] swerveModulePositions = {
-      frontLeft.getPosition(),
-      frontRight.getPosition(),
-      rearLeft.getPosition(),
-      rearRight.getPosition()
+      frontLeftSwerveModule.getPosition(),
+      frontRightSwerveModule.getPosition(),
+      rearLeftSwerveModule.getPosition(),
+      rearRightSwerveModule.getPosition()
     };
 
     return swerveModulePositions;

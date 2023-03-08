@@ -20,7 +20,6 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
@@ -84,7 +83,7 @@ public class SwerveModule {
     // CANCoder config
     turnEncoder = new CANCoder(turningEncoderChannel, ModuleConstants.CANIVORE_CAN_BUS_STRING);
     turnEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
-    turnEncoder.configMagnetOffset(angleZero);
+    turnEncoder.configMagnetOffset(-angleZero);
     turnEncoder.configSensorDirection(encoderReversed);
 
     // CAN stuff
@@ -134,7 +133,7 @@ public class SwerveModule {
    * Gets the heading of the module
    * @return the absolute position of the CANCoder
    */
-  public double getModuleHeading(){
+  public double getModuleHeading() {
     return this.turnEncoder.getAbsolutePosition() % 360;
   }
 
