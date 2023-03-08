@@ -112,14 +112,11 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   @Override
   public double getExtension() {
     // Convert motor rotation units (2048 or 4096 for 1 full rotation) to number of rotations
-    // Convert motor rotation units (2048 or 4096 for 1 full rotation) to number of rotations
     double motorRotation = extensionMotor.getSelectedSensorPosition() * 
-      (360 / Constants.FALCON_ENCODER_RESOLUTION) / ArmConstants.EXTENSION_MOTOR_GEAR_RATIO;
       (360 / Constants.FALCON_ENCODER_RESOLUTION) / ArmConstants.EXTENSION_MOTOR_GEAR_RATIO;
     // Convert number of rotations to distance (multiply by diamter)
     double extension = motorRotation * ArmConstants.EXTENSION_SPOOL_DIAMETER * Math.PI; 
     // Converts to output from 0 to 1
-    return extension / ArmConstants.MAX_EXTENSION_LENGTH;
     return extension / ArmConstants.MAX_EXTENSION_LENGTH;
   }
 
