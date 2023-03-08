@@ -105,7 +105,9 @@ public class Balance extends CommandBase {
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    leds.setProcess(LEDProcess.DEFAULT);
+  }
 
   @Override
   public boolean isFinished() {
