@@ -36,18 +36,8 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     ArmConstants.ROTATION_I, 
     ArmConstants.ROTATION_D, 
     ArmConstants.ROTATION_CONSTRAINTS
-  private final ProfiledPIDController rotationPIDController = new ProfiledPIDController(
-    ArmConstants.ROTATION_P, 
-    ArmConstants.ROTATION_I, 
-    ArmConstants.ROTATION_D, 
-    ArmConstants.ROTATION_CONSTRAINTS
   );
-    
-  private final ProfiledPIDController extensionPIDController = new ProfiledPIDController(
-    ArmConstants.EXTENSION_P,
-    ArmConstants.EXTENSION_I,
-    ArmConstants.EXTENSION_D,
-    ArmConstants.EXTENSION_CONSTRAINTS
+  
   private final ProfiledPIDController extensionPIDController = new ProfiledPIDController(
     ArmConstants.EXTENSION_P,
     ArmConstants.EXTENSION_I,
@@ -83,7 +73,6 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
       ArmConstants.ROTATION_ACCELERATION_GAIN
     );
 
-
     rotationEncoder = new CANCoder(ArmConstants.ROTATION_ENCODER_ID);
     rotationEncoder.configMagnetOffset(ArmConstants.EXTENSION_ENCODER_OFFSET);
     rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
@@ -112,7 +101,6 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   public void goToAngle(double desiredAngle) {
     double PIDOutput = rotationPIDController.calculate(getAngle(), desiredAngle);
     double feedForwardOutput = rotationFeedForward.calculate(desiredAngle, rotationPIDController.getSetpoint().velocity);
-    // Makes sure it doesn't set the percent output to more than 100%
     rotationMotorControllerGroup.setVoltage(motorOutputClamp(PIDOutput + feedForwardOutput));
   }
 
