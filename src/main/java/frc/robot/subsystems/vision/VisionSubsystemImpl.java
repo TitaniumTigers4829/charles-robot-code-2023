@@ -29,7 +29,7 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
     double backLimelightDistance = backLimelightAprilTags.length > 0
       ? getLimelightAprilTagDistance((int) backLimelightAprilTags[0].fiducialID) : Integer.MAX_VALUE;
 
-    currentlyUsedLimelight = frontLimelightDistance < backLimelightDistance 
+    currentlyUsedLimelight = frontLimelightDistance <= backLimelightDistance 
       ? LimelightConstants.FRONT_LIMELIGHT_NAME : LimelightConstants.BACK_LIMELIGHT_NAME;
     currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(currentlyUsedLimelight);
   }
