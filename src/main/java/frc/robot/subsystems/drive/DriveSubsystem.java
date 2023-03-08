@@ -26,6 +26,22 @@ public interface DriveSubsystem extends Subsystem {
    * Counter-clockwise is positive. This factors in gyro offset.
    */
   public double getHeading();
+  
+  /**
+   * Returns the pitch of the robot in degrees, same as the heading.
+   */
+  public double getPitch();
+
+  /**
+   * Returns the roll of the robot in degrees, same as the heading and pitch.
+   */
+  public double getRoll();
+
+  /**
+   * Returns the magnitude of the robot's pitch and roll, the "balance error."
+   * sign(pitch) * sqrt(pitch^2 + roll^2)
+   */
+  public double getBalanceError();
 
   /**
    * Returns a Rotation2d for the heading of the robot.
@@ -50,6 +66,11 @@ public interface DriveSubsystem extends Subsystem {
    * Zeroes the heading of the robot.
    */
   public void zeroHeading();
+
+  /**
+   * Zeroes the pitch and roll of the robot.
+   */
+  public void zeroPitchAndRoll();
 
   /**
    * Returns the estimated field-relative pose of the robot. Positive x 

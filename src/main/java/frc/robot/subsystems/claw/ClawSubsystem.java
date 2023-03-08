@@ -1,4 +1,4 @@
-package frc.robot.subsystems.limb;
+package frc.robot.subsystems.claw;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
 

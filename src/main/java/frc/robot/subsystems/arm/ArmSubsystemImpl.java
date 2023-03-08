@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.limb;
+package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
@@ -103,7 +103,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     // Convert motor rotation units (2048 or 4096 for 1 full rotation) to number of rotations
     double motorRotation = extensionMotor.getSelectedSensorPosition() * 
       (360 / Constants.FALCON_ENCODER_RESOLUTION) / ArmConstants.EXTENSION_MOTOR_GEAR_RATIO;
-    // Convert number of rotations to distance (multiply by diamter)
+    // Convert number of rotations to distance (multiply by diameter)
     double extension = motorRotation * ArmConstants.EXTENSION_SPOOL_DIAMETER * Math.PI; 
     // Converts to output from 0 to 1
     return extension / ArmConstants.MAX_EXTENSION_LENGTH;
