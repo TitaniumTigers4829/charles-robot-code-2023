@@ -8,24 +8,24 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDConstants;
-import frc.robot.Constants.LEDConstants.SparkMaxConstants;
+import frc.robot.Constants.LEDConstants.SparkConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 
 
-public class LEDSubsystemImpl extends SubsystemBase implements LEDSubsystem {
+public class LEDSubsystemImplSpark extends SubsystemBase implements LEDSubsystem {
 
   private Spark ledSpark;
 
-  /** Creates a new LEDSubsystemImpl.
+  /** Creates a new LEDSubsystemImpl for use with LED strips made by Spark lighting (Loopy's LEDs).
    * @param port The SparkMax port for this LEDSubsystem.
   */
-  public LEDSubsystemImpl(int port) {
+  public LEDSubsystemImplSpark(int port) {
     ledSpark = new Spark(port);
     setProcess(LEDProcess.DEFAULT);
   }
 
   /** Creates a new LEDSubsystemImpl with the port in LEDConstants. */
-  public LEDSubsystemImpl() {
+  public LEDSubsystemImplSpark() {
     ledSpark = new Spark(LEDConstants.LEDPort);
     setProcess(LEDProcess.DEFAULT);
   }
@@ -53,20 +53,20 @@ public class LEDSubsystemImpl extends SubsystemBase implements LEDSubsystem {
       return;
     }
 
-    ledSpark.set(process.getSparkMaxValue());
+    ledSpark.set(process.getSparkValue());
   }
 
   private void allianceColor() {
     if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-        ledSpark.set(LEDProcess.RED_ALLIANCE.getSparkMaxValue());
+        ledSpark.set(LEDProcess.RED_ALLIANCE.getSparkValue());
     } else {
-        ledSpark.set(LEDProcess.BLUE_ALLIANCE.getSparkMaxValue());
+        ledSpark.set(LEDProcess.BLUE_ALLIANCE.getSparkValue());
     }
   }
 
   private void defaultColor() {
     if (DriverStation.isAutonomous()) {
-      ledSpark.set(LEDProcess.AUTONOMOUS.getSparkMaxValue());
+      ledSpark.set(LEDProcess.AUTONOMOUS.getSparkValue());
     } else {
       allianceColor();
     }
@@ -74,7 +74,7 @@ public class LEDSubsystemImpl extends SubsystemBase implements LEDSubsystem {
 
   @Override
   public void off() {
-    ledSpark.set(SparkMaxConstants.BLACK);
+    ledSpark.set(SparkConstants.BLACK);
   }
 
 }

@@ -20,7 +20,7 @@ import frc.robot.subsystems.drive.DriveSubsystemImpl;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystemImpl;
 import frc.robot.subsystems.leds.LEDSubsystem;
-import frc.robot.subsystems.leds.LEDSubsystemImpl;
+import frc.robot.subsystems.leds.LEDSubsystemImplSpark;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -53,7 +53,7 @@ public class RobotContainer {
 
     driveSubsystem = new DriveSubsystemImpl();
     visionSubsystem = new VisionSubsystemImpl();
-    leds = new LEDSubsystemImpl();
+    leds = new LEDSubsystemImplSpark();
 
     DoubleSupplier leftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.LEFT_STICK_X);
     DoubleSupplier leftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.LEFT_STICK_Y);
