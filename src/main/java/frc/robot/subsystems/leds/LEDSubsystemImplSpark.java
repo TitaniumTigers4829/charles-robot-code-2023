@@ -16,18 +16,25 @@ public class LEDSubsystemImplSpark extends SubsystemBase implements LEDSubsystem
 
   private Spark ledSpark;
 
+  private double currentSparkValue;
+
   /** Creates a new LEDSubsystemImpl for use with LED strips made by Spark lighting (Loopy's LEDs).
    * @param port The Spark port for this LEDSubsystem.
   */
   public LEDSubsystemImplSpark(int port) {
     ledSpark = new Spark(port);
-    setProcess(LEDProcess.DEFAULT);
+    setProcess(LEDProcess.OFF);
   }
 
   /** Creates a new LEDSubsystemImpl with the port in LEDConstants. */
   public LEDSubsystemImplSpark() {
     ledSpark = new Spark(LEDConstants.LEDPort);
-    setProcess(LEDProcess.DEFAULT);
+    setProcess(LEDProcess.OFF);
+  }
+
+  @Override
+  public void periodic() {
+    ledSpark.set(getCurrentPipelineIndex);
   }
 
   /** Sets the pattern to a double value.
@@ -35,46 +42,46 @@ public class LEDSubsystemImplSpark extends SubsystemBase implements LEDSubsystem
    * See Constants.LEDConstants.SparkConstants for these pattern values.
    */
   public void setSpark(double value) {
-    ledSpark.set(value);
+    // If the value is a valid Spark Value.
+    if (-1 < value && value < 1 && ((value*100)%2) == 1) {
+      currentSparkValue = value;
+    }
   }
 
   @Override
   public void setProcess(LEDProcess process) {
-    if (process == LEDProcess.DEFAULT) {
-      defaultColor();
-      return;
+    switch (process) {
+      case DEFAULT:
+        currentSparkValue = defaultColor();
+        return;
+      case ALLIANCE_COLOR:
+        currentSparkValue = allianceColor();
+        return;
+      default:
+        currentSparkValue = process.getSparkValue();
+        return;
     }
-    if (process == LEDProcess.ALLIANCE_COLOR) {
-      allianceColor();
-      return;
-    }
-    if (process == LEDProcess.OFF) {
-      off();
-      return;
-    }
-
-    ledSpark.set(process.getSparkValue());
   }
 
-  private void allianceColor() {
+  private double allianceColor() {
     if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-        ledSpark.set(LEDProcess.RED_ALLIANCE.getSparkValue());
+        return LEDProcess.RED_ALLIANCE.getSparkValue();
     } else {
-        ledSpark.set(LEDProcess.BLUE_ALLIANCE.getSparkValue());
+        return LEDProcess.BLUE_ALLIANCE.getSparkValue();
     }
   }
 
-  private void defaultColor() {
+  private double defaultColor() {
     if (DriverStation.isAutonomous()) {
-      ledSpark.set(LEDProcess.AUTONOMOUS.getSparkValue());
+      return LEDProcess.AUTONOMOUS.getSparkValue();
     } else {
-      allianceColor();
+      return allianceColor();
     }
   }
 
   @Override
   public void off() {
-    ledSpark.set(SparkConstants.BLACK);
+    currentSparkValue = SparkConstants.BLACK;
   }
 
 }
