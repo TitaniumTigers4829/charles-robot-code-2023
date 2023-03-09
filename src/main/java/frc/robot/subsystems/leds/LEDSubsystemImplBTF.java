@@ -50,7 +50,7 @@ public class LEDSubsystemImplBTF extends SubsystemBase implements LEDSubsystem {
   @Override
   public void setProcess(LEDProcess process) {
     currentProcess = process;
-    
+
     if (process == LEDProcess.AUTONOMOUS) {
       resetTotalOffset();
     }
@@ -179,7 +179,12 @@ public class LEDSubsystemImplBTF extends SubsystemBase implements LEDSubsystem {
     for (int i = 0; i < buffer.length; i++) {
       double coefficient = (2.0 * Math.PI / buffer.length);
       int relativeIndex = (i + totalOffsetInt) % buffer.length;
-      buffer.setRGB(i, (red + range * Math.sin(coefficient * relativeIndex)) % 255, (green + range * Math.sin((Math.PI * 1.0/3.0) + (coefficient * relativeIndex))) % 255, (blue + range * Math.sin((Math.PI * 2.0/3.0) + (coefficient * relativeIndex))) % 255);
+      buffer.setRGB(
+        i,
+        (red + range * Math.sin(coefficient * relativeIndex)) % 255,
+        (green + range * Math.sin((Math.PI * 2.0/3.0) + (coefficient * relativeIndex))) % 255,
+        (blue + range * Math.sin((Math.PI * 4.0/3.0) + (coefficient * relativeIndex))) % 255
+      );
     }
   }
 
