@@ -15,7 +15,8 @@ public class LEDSubsystemImplBTF extends SubsystemBase implements LEDSubsystem {
   private final AddressableLED led;
   private final AddressableLEDBuffer buffer;
 
-  private int rainbowWaveOffset = 0;
+  private int rainbowOffset = 0;
+  private int totalOffset = 0;
   private LEDProcess currentProcess = LEDProcess.OFF;
 
   /** Creates a new LEDSubsystemImpl for use with the WS2812b Adressable LED strips. 
@@ -32,9 +33,14 @@ public class LEDSubsystemImplBTF extends SubsystemBase implements LEDSubsystem {
 
   @Override
   public void periodic() {  
+    // Update LEDs
     setLEDColor();
-    rainbowWaveOffset += 3;
-    rainbowWaveOffset %= 180;
+
+    // Update all the looping offsets
+    rainbowOffset += 3;
+    rainbowOffset %= 180;
+
+    totalOffset++;
   }
 
   @Override
@@ -73,7 +79,7 @@ public class LEDSubsystemImplBTF extends SubsystemBase implements LEDSubsystem {
     }
   }
 
-  private void setAllLEDsHUE(int hue) {
+  private void setAllLEDsHue(int hue) {
     for (int i = 0; i < buffer.getLength(); i++) {
       buffer.setHSV(i, hue, 255, 128);
     }
@@ -97,12 +103,39 @@ public class LEDSubsystemImplBTF extends SubsystemBase implements LEDSubsystem {
 
   private void rainbowWave() {
     for (int i = 0; i < buffer.getLength(); i++) {
-      final int hue = (rainbowWaveOffset + (i * 180 / buffer.getLength())) % 180;
+      final int hue = (rainbowOffset + (i * 180 / buffer.getLength())) % 180;
       buffer.setHSV(i, hue, 255, 128);
     }
   }
 
   private void rainbow() {
-    setAllLEDsHUE(rainbowWaveOffset + (180 / buffer.getLength())  % 180);
+    setAllLEDsHue(rainbowOffset + (180 / buffer.getLength())  % 180);
+  }
+
+  /**
+   * Slides a message across the LED strip in the form of ASCII encoding.
+   * The non-static counter of totalOffset must be set to zero
+      if you want the first bit of the text to match the first LED.
+   */
+  private void slidingASCII(String text) {
+    byte[] bytes = textToBytes(text);
+    for (int k = 0; k < buffer.length; k++) {
+      for (int i = 0; i < bytes.length; i++) {
+        for (int j = 0; j < 8; j++) {
+          if ((bytes[((8*i + j) + totalOffset + k) % bytes.length] >> j) == 1) {
+            buffer.setRGB(k, 255, 255, 255);
+          } else {
+            buffer.setRGB(k, 0, 0, 0);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Returns the ASCII encoding of the input string.
+   */
+  private byte[] textToBytes(String text) {
+    return text.getBytes(StandardCharsets.US_ASCII);
   }
 }
