@@ -33,6 +33,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     m_robotContainer.driveSubsystem.zeroHeading();
+    m_robotContainer.driveSubsystem.zeroPitchAndRoll();
     m_robotContainer.driveSubsystem.resetOdometry(new Pose2d());
 //    uncomment the line below if there is a USB camera plugged into the RoboRIO
 //    CameraServer.startAutomaticCapture();
