@@ -183,7 +183,7 @@ public final class Constants {
 
     public static final int LEDPort = 0-9;
     public static final double ANIMATION_SPEED = 24; // "frames" per second
-    public static final String EASTER_EGG_MESSAGE = "CHARLES/4829 -AndrewAriIshanJackKevinLukeMatthewMaxRyanZevZubin";
+    public static final String EASTER_EGG_MESSAGE = "C:/HARLES/4829 -AndrewAriIshanJackKevinLukeMatthewMaxRyanZevZubin";
 
     public static final double ALLIANCE_ANIMATION_STRENGTH = 0.2; // 0-1
 
@@ -247,7 +247,7 @@ public final class Constants {
       BALANCE (SparkConstants.CYAN, 0, 255, 255),
       OFF (SparkConstants.BLACK, 0, 0, 0),
       AUTONOMOUS (SparkConstants.RAINBOW_WAVE, 0, 0, 0),
-      LINE_UP (SparkConstants.WHITE, 255, 255, 255);
+      LINE_UP (SparkConstants.GREEN, 0, 255, 0);
 
       private final double sparkValue;
       private final int red, green, blue;
