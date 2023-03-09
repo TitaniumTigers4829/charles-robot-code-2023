@@ -16,6 +16,7 @@ public class LEDSubsystemImplBTF extends SubsystemBase implements LEDSubsystem {
   private final AddressableLEDBuffer buffer;
 
   private int rainbowWaveOffset = 0;
+  private LEDProcess currentProcess = LEDProcess.OFF;
 
   /** Creates a new LEDSubsystemImpl for use with the WS2812b Adressable LED strips. 
    * @param port the PWM port of the LED strips
@@ -30,33 +31,38 @@ public class LEDSubsystemImplBTF extends SubsystemBase implements LEDSubsystem {
   }
 
   @Override
-  public void periodic() {  }
+  public void periodic() {  
+    setLEDColor();
+    rainbowWaveOffset += 3;
+    rainbowWaveOffset %= 180;
+  }
 
   @Override
   public void off() {
-    setAllLEDs(0, 0, 0);
+    currentProcess = LEDProcess.OFF;
   }
 
   @Override
   public void setProcess(LEDProcess process) {
-    switch (process) {
-      case OFF:
-        off();
-        return;
+    currentProcess = process;
+  }
+
+  private void setLEDColor() {
+    switch (currentProcess) {
       case DEFAULT:
         defaultColor();
         return;
       case RAINBOW:
-        rainbow(false);
+        rainbow();
         return;
       case AUTONOMOUS:
-        rainbow(true);
+        rainbowWave();
         return;
       case ALLIANCE_COLOR:
         allainceColor();
         return;
       default:
-        setAllLEDs(process.getRed(), process.getGreen(), process.getBlue());
+        setAllLEDs(currentProcess.getRed(), currentProcess.getGreen(), currentProcess.getBlue());
         return;
     }
   }
@@ -64,6 +70,12 @@ public class LEDSubsystemImplBTF extends SubsystemBase implements LEDSubsystem {
   private void setAllLEDs(int red, int green, int blue) {
     for (int i = 0; i < buffer.getLength(); i++) {
       buffer.setRGB(i, red, green, blue);
+    }
+  }
+
+  private void setAllLEDsHUE(int hue) {
+    for (int i = 0; i < buffer.getLength(); i++) {
+      buffer.setHSV(i, hue, 255, 128);
     }
   }
 
@@ -83,15 +95,14 @@ public class LEDSubsystemImplBTF extends SubsystemBase implements LEDSubsystem {
     }
   }
 
-  private void rainbow(boolean wave) {
+  private void rainbowWave() {
     for (int i = 0; i < buffer.getLength(); i++) {
       final int hue = (rainbowWaveOffset + (i * 180 / buffer.getLength())) % 180;
       buffer.setHSV(i, hue, 255, 128);
     }
-    
-    if (wave) {
-      rainbowWaveOffset += 3;
-      rainbowWaveOffset %= 180;
-    }
+  }
+
+  private void rainbow() {
+    setAllLEDsHUE(rainbowWaveOffset + (180 / buffer.getLength())  % 180);
   }
 }
