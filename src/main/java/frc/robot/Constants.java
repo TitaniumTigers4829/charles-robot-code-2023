@@ -182,6 +182,10 @@ public final class Constants {
   public static final class LEDConstants {
 
     public static final int LEDPort = 0-9;
+    public static final double ANIMATION_SPEED = 24; // "frames" per second
+    public static final String EASTER_EGG_MESSAGE = "CHARLES/4829 -AndrewAriIshanJackKevinLukeMatthewMaxRyanZevZubin";
+
+    public static final double ALLIANCE_ANIMATION_STRENGTH = 0.2; // 0-1
 
     public static final class SparkConstants {
       // This subclass contains the constant values for the LED patterns.
@@ -233,7 +237,7 @@ public final class Constants {
       public static final double DARK_GRAY = 0.97;
       public static final double BLACK = 0.99;    }
     public enum LEDProcess {
-      ALLIANCE_COLOR (0, 0, 0, 0), // Values are null on purpose.
+      ALLIANCE_COLOR (0, 0, 0, 0),
       DEFAULT (0, 0, 0, 0),
       RAINBOW (SparkConstants.RAINBOW, 0, 0, 0),
       RED_ALLIANCE (SparkConstants.FIRE, 255, 0, 0),

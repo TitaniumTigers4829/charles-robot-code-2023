@@ -17,7 +17,7 @@ public class LEDSubsystemImplSpark extends SubsystemBase implements LEDSubsystem
   private Spark ledSpark;
 
   /** Creates a new LEDSubsystemImpl for use with LED strips made by Spark lighting (Loopy's LEDs).
-   * @param port The SparkMax port for this LEDSubsystem.
+   * @param port The Spark port for this LEDSubsystem.
   */
   public LEDSubsystemImplSpark(int port) {
     ledSpark = new Spark(port);
@@ -32,9 +32,9 @@ public class LEDSubsystemImplSpark extends SubsystemBase implements LEDSubsystem
 
   /** Sets the pattern to a double value.
    * @param value The pattern to set the LEDs to. 
-   * See Constants.LEDConstants.LEDPatterns for these pattern values.
+   * See Constants.LEDConstants.SparkConstants for these pattern values.
    */
-  public void setSparkMax(double value) {
+  public void setSpark(double value) {
     ledSpark.set(value);
   }
 
