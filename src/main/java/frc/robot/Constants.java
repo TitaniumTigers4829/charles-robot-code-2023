@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -30,6 +31,7 @@ public final class Constants {
   // These are the total encoder units for one revolution
   public static final int FALCON_ENCODER_RESOLUTION = 2048;
   public static final int CANCODER_RESOLUTION = 4096; 
+  public static final String CANIVORE_CAN_BUS_STRING = "Canivore 1";
 
   public static final class DriveConstants {
 
@@ -132,8 +134,6 @@ public final class Constants {
         MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED
       );
 
-    public static final String CANIVORE_CAN_BUS_STRING = "Canivore 1";
-
   }
 
   public static final class TrajectoryConstants {
@@ -177,6 +177,12 @@ public final class Constants {
     public static final double LOWER_WAYPOINT_Y = 0.75;
     public static final Rotation2d BLUE_END_ROTATION = Rotation2d.fromDegrees(180);
     public static final Rotation2d RED_END_ROTATION = Rotation2d.fromDegrees(0);
+
+    // Auto Trajectory Names
+    public static final String TWO_CONE_BALANCE_AUTO_FIRST = "Two Cone Balance First";
+    public static final String TWO_CONE_BALANCE_AUTO_SECOND = "Two Cone Balance Second";
+    public static final String TWO_CONE_BALANCE_AUTO_THIRD = "Two Cone Balance Third";
+
   }
   
   public static final class LEDConstants {
@@ -295,6 +301,10 @@ public final class Constants {
     public static final double EXTENSION_SPOOL_DIAMETER = Units.inchesToMeters(2.5);
     public static final double MAX_EXTENSION_LENGTH = Units.inchesToMeters(48.48);
     public static final double EXTENSION_ENCODER_OFFSET = 0-9;
+
+    public static final PneumaticsModuleType EXTENSION_LOCK_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
+    public static final int EXTENSION_LOCK_ENGAGED_ID = 2;
+    public static final int EXTENSION_LOCK_DISENGAGED_ID = 3;
   }
 
   public static final class ClawConstants {
@@ -340,9 +350,9 @@ public final class Constants {
     public static final int RIGHT_STICK_Y = 5;
 
     // Button IDs:
-    public static final int X_BUTTON_ID = 1;
-    public static final int A_BUTTON_ID = 2;
-    public static final int B_BUTTON_ID = 3;
+    public static final int X_BUTTON_ID = 3;
+    public static final int A_BUTTON_ID = 1;
+    public static final int B_BUTTON_ID = 2;
     public static final int Y_BUTTON_ID = 4;
     public static final int LEFT_BUMPER_ID = 5;
     public static final int RIGHT_BUMPER_ID = 6;

@@ -7,6 +7,9 @@ package frc.robot.subsystems.arm;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
+
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
@@ -16,6 +19,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 
 public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
@@ -24,6 +28,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   private final WPI_TalonFX followerRotationMotor;
   private final CANCoder rotationEncoder;
   private final WPI_TalonFX extensionMotor;
+  private final DoubleSolenoid extensionLockSolenoid;
 
   private final MotorControllerGroup rotationMotorControllerGroup;
 
@@ -52,8 +57,8 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
    * Tune all parameters
   */
   public ArmSubsystemImpl() {
-    leaderRotationMotor = new WPI_TalonFX(ArmConstants.LEADER_ROTATION_MOTOR_ID);
-    followerRotationMotor = new WPI_TalonFX(ArmConstants.FOLLOWER_ROTATION_MOTOR_ID);
+    leaderRotationMotor = new WPI_TalonFX(ArmConstants.LEADER_ROTATION_MOTOR_ID, Constants.CANIVORE_CAN_BUS_STRING);
+    followerRotationMotor = new WPI_TalonFX(ArmConstants.FOLLOWER_ROTATION_MOTOR_ID, Constants.CANIVORE_CAN_BUS_STRING);
 
     leaderRotationMotor.setInverted(ArmConstants.LEADER_ROTATION_MOTOR_INVERTED);
     followerRotationMotor.setInverted(ArmConstants.FOLLOWER_ROTATION_MOTOR_INVERTED);
@@ -81,6 +86,12 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     );
 
     extensionMotor.setNeutralMode(NeutralMode.Brake);
+
+    extensionLockSolenoid = new DoubleSolenoid(
+      ArmConstants.EXTENSION_LOCK_MODULE_TYPE, 
+      ArmConstants.EXTENSION_LOCK_ENGAGED_ID,
+      ArmConstants.EXTENSION_LOCK_DISENGAGED_ID
+    );
   }
 
   @Override
@@ -90,7 +101,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   public void goToAngle(double desiredAngle) {
     double PIDOutput = rotationPIDController.calculate(getAngle(), desiredAngle);
     double feedForwardOutput = rotationFeedForward.calculate(desiredAngle, rotationPIDController.getSetpoint().velocity);
-    rotationMotorControllerGroup.setVoltage(motorOutputClamp(PIDOutput + feedForwardOutput));
+    rotationMotorControllerGroup.set(motorOutputClamp(PIDOutput + feedForwardOutput));
   }
 
   @Override
@@ -115,6 +126,20 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     double PIDOutput = extensionPIDController.calculate(getExtension(), desiredExtension);
     double feedForwardOutput = extensionFeedForward.calculate(extensionPIDController.getSetpoint().velocity);
     extensionMotor.set(ControlMode.PercentOutput, motorOutputClamp(PIDOutput + feedForwardOutput));
+  }
+
+  @Override
+  public void lockExtensionSolenoid() {
+    extensionLockSolenoid.set(DoubleSolenoid.Value.kForward);
+  }
+
+  @Override
+  public void unlockExtensionSolenoid() {
+    extensionLockSolenoid.set(DoubleSolenoid.Value.kReverse);
+  }
+
+  public void manuallyRotate(DoubleSupplier speed) {
+    rotationMotorControllerGroup.set(speed.getAsDouble() / 2);
   }
 
   /*

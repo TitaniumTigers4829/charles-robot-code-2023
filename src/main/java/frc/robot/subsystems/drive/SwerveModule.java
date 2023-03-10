@@ -20,6 +20,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
@@ -60,8 +61,8 @@ public class SwerveModule {
       ) {
     
     // Initialize the motors
-    driveMotor = new WPI_TalonFX(driveMotorChannel, ModuleConstants.CANIVORE_CAN_BUS_STRING);
-    turningMotor = new WPI_TalonFX(turningMotorChannel, ModuleConstants.CANIVORE_CAN_BUS_STRING);
+    driveMotor = new WPI_TalonFX(driveMotorChannel, Constants.CANIVORE_CAN_BUS_STRING);
+    turningMotor = new WPI_TalonFX(turningMotorChannel, Constants.CANIVORE_CAN_BUS_STRING);
 
     // Set motors to brake mode
     driveMotor.setNeutralMode(NeutralMode.Brake);
@@ -81,7 +82,7 @@ public class SwerveModule {
     driveMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
     
     // CANCoder config
-    turnEncoder = new CANCoder(turningEncoderChannel, ModuleConstants.CANIVORE_CAN_BUS_STRING);
+    turnEncoder = new CANCoder(turningEncoderChannel, Constants.CANIVORE_CAN_BUS_STRING);
     turnEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
     turnEncoder.configMagnetOffset(-angleZero);
     turnEncoder.configSensorDirection(encoderReversed);

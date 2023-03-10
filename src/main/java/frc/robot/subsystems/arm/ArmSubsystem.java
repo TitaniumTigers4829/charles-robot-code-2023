@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.arm;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public interface ArmSubsystem extends Subsystem {
@@ -28,4 +30,15 @@ public interface ArmSubsystem extends Subsystem {
    */
   public void goToAngle(double desiredAngle);
 
+  /**
+   * Locks the extension solenoid
+   */
+  public void lockExtensionSolenoid();
+  
+  /**
+   * Unlocks the extension solenoid
+   */
+  public void unlockExtensionSolenoid();
+
+  public void manuallyRotate(DoubleSupplier speed);
 }

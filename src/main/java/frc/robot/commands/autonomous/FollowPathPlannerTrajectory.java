@@ -63,6 +63,17 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
     this.resetOdometryToTrajectoryStart = resetOdometryToTrajectoryStart;
   }
 
+  /**
+   * Follows the specified PathPlanner trajectory.
+   * @param driveSubsystem The subsystem for the swerve drive.
+   * @param visionSubsystem The subsystem for vision measurements
+   * @param trajectoryName The name of the PathPlanner path file. It should not include the filepath or 
+   * .path extension.
+   */
+  public FollowPathPlannerTrajectory(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, String trajectoryName) {
+    this(driveSubsystem, visionSubsystem, trajectoryName, false);
+  }
+
   @Override
   public void initialize() {
     // Makes a trajectory                                                     

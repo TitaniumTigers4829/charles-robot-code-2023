@@ -11,16 +11,17 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.JoystickConstants;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.drive.DriveCommand;
+import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.arm.ArmSubsystemImpl;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystemImpl;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystemImpl;
-import frc.robot.subsystems.leds.LEDSubsystem;
-import frc.robot.subsystems.leds.LEDSubsystemImpl;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -32,13 +33,16 @@ public class RobotContainer {
 
   public final DriveSubsystem driveSubsystem;
   private final VisionSubsystem visionSubsystem;
-  private final LEDSubsystem leds;
+  private final ArmSubsystem armSubsystem;
 
   private final Joystick driverJoystick;
 
   private final JoystickButton rightBumper, aButton;
 
   public final Joystick buttonBoard;
+
+  private final InstantCommand enableLock;
+  private final InstantCommand disableLock;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -53,20 +57,32 @@ public class RobotContainer {
 
     driveSubsystem = new DriveSubsystemImpl();
     visionSubsystem = new VisionSubsystemImpl();
-    leds = new LEDSubsystemImpl();
+    armSubsystem = new ArmSubsystemImpl();
 
     DoubleSupplier leftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.LEFT_STICK_X);
     DoubleSupplier leftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.LEFT_STICK_Y);
     DoubleSupplier rightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.RIGHT_STICK_X);
 
-    Command driveCommand = new DriveCommand(driveSubsystem, visionSubsystem,
-      () -> modifyAxisSquared(leftStickY) * -1, 
-      () -> modifyAxisSquared(leftStickX) * -1, 
-      () -> modifyAxisSquared(rightStickX) * -1, 
-      () -> !rightBumper.getAsBoolean()
-    );
-  
-    driveSubsystem.setDefaultCommand(driveCommand);
+    
+
+    // Command driveCommand = new DriveCommand(driveSubsystem, visionSubsystem,
+    //   () -> modifyAxisSquared(leftStickY) * -1, 
+    //   () -> modifyAxisSquared(leftStickX) * -1, 
+    //   () -> modifyAxisSquared(rightStickX) * -1, 
+    //   () -> !rightBumper.getAsBoolean()
+    // );
+
+    enableLock = new InstantCommand(armSubsystem::lockExtensionSolenoid, armSubsystem);
+    disableLock = new InstantCommand(armSubsystem::unlockExtensionSolenoid, armSubsystem);
+
+    JoystickButton enableButton = new JoystickButton(driverJoystick, JoystickConstants.A_BUTTON_ID);
+    JoystickButton disableButton = new JoystickButton(driverJoystick, JoystickConstants.B_BUTTON_ID);
+
+    enableButton.onTrue(enableLock);
+    disableButton.onTrue(disableLock);
+
+    // driveSubsystem.setDefaultCommand(driveCommand);
+    new JoystickButton(driverJoystick, JoystickConstants.A_BUTTON_ID).whileTrue(new RunCommand(() -> armSubsystem.manuallyRotate(leftStickY)));
 
     configureButtonBindings();
   }
@@ -105,8 +121,11 @@ public class RobotContainer {
     POVButton rightDirectionPad = new POVButton(driverJoystick, JoystickConstants.RIGHT_DPAD_ID);
     rightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
 
-    JoystickButton bButton = new JoystickButton(driverJoystick, JoystickConstants.B_BUTTON_ID);
+    // JoystickButton bButton = new JoystickButton(driverJoystick, JoystickConstants.B_BUTTON_ID);
     // bButton.whileTrue(new FollowRealTimeTrajectory(driveSubsystem, () -> !bButton.getAsBoolean()));
+
+    // new JoystickButton(driverJoystick, JoystickConstants.A_BUTTON_ID).onTrue(new InstantCommand(armSubsystem::lockExtensionSolenoid, armSubsystem));
+    // new JoystickButton(driverJoystick, JoystickConstants.B_BUTTON_ID).onTrue(new InstantCommand(armSubsystem::unlockExtensionSolenoid, armSubsystem));
   }
 
   public Command getAutonomousCommand() {

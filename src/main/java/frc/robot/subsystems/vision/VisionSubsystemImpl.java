@@ -3,6 +3,7 @@ package frc.robot.subsystems.vision;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.TrajectoryConstants;
@@ -32,6 +33,7 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
     currentlyUsedLimelight = frontLimelightDistance <= backLimelightDistance 
       ? LimelightConstants.FRONT_LIMELIGHT_NAME : LimelightConstants.BACK_LIMELIGHT_NAME;
     currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(currentlyUsedLimelight);
+    SmartDashboard.putString("currentlyUsedLimelight", currentlyUsedLimelight);
   }
 
   @Override

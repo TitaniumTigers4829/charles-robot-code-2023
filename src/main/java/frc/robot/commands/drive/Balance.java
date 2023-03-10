@@ -8,16 +8,13 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants.BalanceConstants;
-import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
-import frc.robot.subsystems.leds.LEDSubsystem;
 
 public class Balance extends CommandBase {
 
   private final DriveSubsystem driveSubsystem;
-  private final LEDSubsystem leds;
   private final boolean fromLeft;
 
   private boolean firstLatch;
@@ -39,11 +36,10 @@ public class Balance extends CommandBase {
   /** Creates a new Balance.
    * @param fromLeft true if approaching from the left side, false if approaching from the right.
    */
-  public Balance(DriveSubsystem driveSubsystem, boolean fromLeft, LEDSubsystem leds) {
+  public Balance(DriveSubsystem driveSubsystem, boolean fromLeft) {
     this.fromLeft = fromLeft;
     this.driveSubsystem = driveSubsystem;
-    this.leds = leds;
-    addRequirements(driveSubsystem, leds);
+    addRequirements(driveSubsystem);
   }
 
   @Override
@@ -55,8 +51,6 @@ public class Balance extends CommandBase {
   @Override
   public void execute() {
   
-    leds.setProcess(LEDProcess.BALANCE);
-
     double error = driveSubsystem.getBalanceError();
 
     if (Math.abs(error) > BalanceConstants.BALANCE_ERROR_INIT_DEGREES) {
@@ -81,9 +75,7 @@ public class Balance extends CommandBase {
   }
 
   @Override
-  public void end(boolean interrupted) {
-    leds.setProcess(LEDProcess.DEFAULT);
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {
