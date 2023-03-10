@@ -305,6 +305,9 @@ public final class Constants {
     public static final PneumaticsModuleType EXTENSION_LOCK_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
     public static final int EXTENSION_LOCK_ENGAGED_ID = 2;
     public static final int EXTENSION_LOCK_DISENGAGED_ID = 3;
+
+    public static final double EXTENSION_ACCEPTABLE_ERROR = 0.1;
+    public static final double ROTATION_ACCEPTABLE_ERROR = 5;
   }
 
   public static final class ClawConstants {
@@ -335,6 +338,8 @@ public final class Constants {
 
     public static final double MIN_WRIST_ROTATION_DEGREES = 0-9;
     public static final double MIN_WRIST_ROTATION_ENCODER_UNITS = 0-9;
+
+    public static final double WRIST_ROTATION_ACCEPTABLE_ERROR = 3;
   }
 
   public static final class JoystickConstants {
