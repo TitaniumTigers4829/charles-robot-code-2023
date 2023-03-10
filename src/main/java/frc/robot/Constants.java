@@ -183,7 +183,7 @@ public final class Constants {
 
     public static final int LEDPort = 0-9;
     public static final double ANIMATION_SPEED = 24; // "frames" per second
-    public static final String EASTER_EGG_MESSAGE = "C:/HARLES/4829 -AndrewAriIshanJackKevinLukeMatthewMaxRyanZevZubin";
+    public static final String EASTER_EGG_MESSAGE = "We'll miss you, Mr. Blanchard! -4829";
 
     public static final double ALLIANCE_ANIMATION_STRENGTH = 0.2; // 0-1
 
