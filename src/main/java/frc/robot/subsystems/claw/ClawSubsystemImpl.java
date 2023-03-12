@@ -23,8 +23,8 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   // private final WPI_TalonFX wristMotor;
 
-  private final CANSparkMax leftWheelMotor;
-  private final CANSparkMax rightWheelMotor;
+  // private final CANSparkMax leftWheelMotor;
+  // private final CANSparkMax rightWheelMotor;
 
   private boolean isClawClosed;
 
@@ -45,17 +45,17 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
     // wristMotor.setNeutralMode(NeutralMode.Brake);
 
-    leftWheelMotor = new CANSparkMax(ClawConstants.LEFT_WHEEL_MOTOR_ID, MotorType.kBrushless);
-    rightWheelMotor = new CANSparkMax(ClawConstants.RIGHT_WHEEL_MOTOR_ID, MotorType.kBrushless);
+    // leftWheelMotor = new CANSparkMax(ClawConstants.LEFT_WHEEL_MOTOR_ID, MotorType.kBrushless);
+    // rightWheelMotor = new CANSparkMax(ClawConstants.RIGHT_WHEEL_MOTOR_ID, MotorType.kBrushless);
 
-    leftWheelMotor.restoreFactoryDefaults();
-    rightWheelMotor.restoreFactoryDefaults();
+    // leftWheelMotor.restoreFactoryDefaults();
+    // rightWheelMotor.restoreFactoryDefaults();
 
-    leftWheelMotor.setInverted(ClawConstants.LEFT_WHEEL_MOTOR_INVERTED);
-    rightWheelMotor.setInverted(ClawConstants.RIGHT_WHEEL_MOTOR_INVERTED);
+    // leftWheelMotor.setInverted(ClawConstants.LEFT_WHEEL_MOTOR_INVERTED);
+    // rightWheelMotor.setInverted(ClawConstants.RIGHT_WHEEL_MOTOR_INVERTED);
 
-    leftWheelMotor.setIdleMode(IdleMode.kBrake);
-    rightWheelMotor.setIdleMode(IdleMode.kBrake);
+    // leftWheelMotor.setIdleMode(IdleMode.kBrake);
+    // rightWheelMotor.setIdleMode(IdleMode.kBrake);
   }
 
   @Override
@@ -80,8 +80,8 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   @Override
   public void setIntakeSpeed(double speed) {
-    leftWheelMotor.set(speed);
-    rightWheelMotor.set(speed);
+    // leftWheelMotor.set(speed);
+    // rightWheelMotor.set(speed);
   }
 
   @Override 

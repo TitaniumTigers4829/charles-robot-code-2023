@@ -39,7 +39,7 @@ public interface DriveSubsystem extends Subsystem {
 
   /**
    * Returns the magnitude of the robot's pitch and roll, the "balance error."
-   * sign(pitch) * sqrt(pitch^2 + roll^2)
+   * pitch * cos(yaw) + roll * sin(yaw)
    */
   public double getBalanceError();
 

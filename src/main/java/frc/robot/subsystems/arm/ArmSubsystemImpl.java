@@ -20,6 +20,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
@@ -169,6 +170,14 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   }
 
   @Override
+  public void stopArmMotorFromMoving() {
+    // double speed = getCurrentExtensionSpeed();
+    // double desiredSpeed = 0;
+    // double motorOutput = rotationPIDController.calculate(speed, desiredSpeed);
+    // extensionMotor.set(motorOutput);
+  }
+
+  @Override
   public boolean isExtensionMotorStalling() {
     return Math.abs(extensionMotor.getSelectedSensorVelocity()) < ArmConstants.STALLING_VELOCITY 
       && (Math.abs(currentExtensionSpeed) > 0) && (ticksAfterSpeedChange > ArmConstants.TICKS_BEFORE_STALL);
@@ -184,9 +193,10 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   @Override
   public void periodic() {
     ticksAfterSpeedChange += 1;
-    SmartDashboardLogger.infoString("isStalling", String.valueOf(isExtensionMotorStalling()));
-    SmartDashboardLogger.infoNumber("Extension %", getExtension());
+    // SmartDashboardLogger.infoString("isStalling", String.valueOf(isExtensionMotorStalling()));
+    // SmartDashboardLogger.infoNumber("Extension %", getExtension());
     // SmartDashboardLogger.infoNumber("Extension encoder units", extensionMotor.getSelectedSensorPosition());
-    SmartDashboardLogger.infoNumber("Rotation encoder pos:", rotationEncoder.getAbsolutePosition());
+    // SmartDashboardLogger.infoNumber("Rotation encoder pos:", rotationEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("encoder pos", rotationEncoder.getAbsolutePosition());
   }
 }

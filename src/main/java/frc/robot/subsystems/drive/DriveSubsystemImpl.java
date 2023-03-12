@@ -112,6 +112,10 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     for (int i = 0; i < swerveModules.length; i++) {
       swerveModules[i].setDesiredState(swerveModuleStates[i]);
     }
+
+    SmartDashboard.putNumber("Pitch", getPitch());
+    SmartDashboard.putNumber("Yaw", getHeading());
+    SmartDashboard.putNumber("Roll", getRoll());
   }
 
   @Override
@@ -133,8 +137,8 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   public double getBalanceError() {
     double roll = getRoll();
     double pitch = getPitch();
-    double pitchSign = Math.signum(pitch);
-    return pitchSign * Math.sqrt(roll*roll + pitch*pitch);
+    double yaw = getHeading();
+    return (pitch * Math.cos(yaw)) + (roll * Math.sin(yaw));
   }
 
   @Override

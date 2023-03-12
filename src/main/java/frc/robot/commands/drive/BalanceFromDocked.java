@@ -13,13 +13,9 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 
-public class Balance extends CommandBase {
+public class BalanceFromDocked extends CommandBase {
 
   private final DriveSubsystem driveSubsystem;
-  private final boolean fromLeft;
-
-  private boolean firstLatch;
-  private boolean secondLatch;
 
   private final PIDController balancePidController = new PIDController(
     BalanceConstants.BALANCE_P,
@@ -34,49 +30,26 @@ public class Balance extends CommandBase {
     TrajectoryConstants.THETA_CONTROLLER_CONSTRAINTS
   );
 
-  /** Creates a new Balance.
-   * @param fromLeft true if approaching from the left side, false if approaching from the right.
+  /** 
+   * Creates a new BalanceFromDockde.
    */
-  public Balance(DriveSubsystem driveSubsystem, boolean fromLeft) {
-    this.fromLeft = fromLeft;
+  public BalanceFromDocked(DriveSubsystem driveSubsystem) {
     this.driveSubsystem = driveSubsystem;
     addRequirements(driveSubsystem);
   }
 
   @Override
   public void initialize() {
-    firstLatch = false;
-    secondLatch = false; 
   }
 
   @Override
   public void execute() {
-
-    SmartDashboard.putBoolean("First Latch", firstLatch);
-    SmartDashboard.putBoolean("Second Latch", secondLatch);
   
     double error = driveSubsystem.getBalanceError();
 
     SmartDashboard.putNumber("Total Balance Error", error);
 
-    if (Math.abs(error) > BalanceConstants.BALANCE_ERROR_INIT_DEGREES) {
-      firstLatch = true;
-    }
-
-    // Has surpassed the limits.
-    if (Math.abs(error) < BalanceConstants.BALANCE_ERROR_NEAR_BALANCED && firstLatch) {
-      secondLatch = true;
-    }
-
-    if (secondLatch) {
-      if (Math.abs(error) < BalanceConstants.BALANCE_ERROR_CONSIDERED_BALANCED) {
-        driveForward(0, true);
-      } else {
-        driveForward(1 * balancePidController.calculate(error, 0), true);
-      }
-    } else {
-      driveForward(BalanceConstants.INITIAL_SPEED, false);
-    }
+    driveForward(-1 * balancePidController.calculate(error, 0), true);
 
   }
 
@@ -95,10 +68,6 @@ public class Balance extends CommandBase {
   private void driveForward(double speed, boolean faceForward) {
     double driveSpeed = speed;
     double rot = 0;
-
-    if (fromLeft) {
-      driveSpeed *= -1;
-    }
 
     if (faceForward && !(Math.abs(driveSubsystem.getHeading()) < BalanceConstants.ORIENTATION_ERROR_CONSIDERED_ORIENTED)) {
       rot = thetaController.calculate(driveSubsystem.getHeading(), 0);

@@ -59,6 +59,11 @@ public interface ArmSubsystem extends Subsystem {
   public void setCurrentExtensionSpeed(double speed);
 
   /**
+   * Stops the arm motor from moving
+   */
+  public void stopArmMotorFromMoving();
+
+  /**
    * Returns true if the extension motor is stalling.
    */
   public boolean isExtensionMotorStalling();

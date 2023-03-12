@@ -50,7 +50,7 @@ public final class Constants {
     public static final double TURNING_V = 0.75;
     public static final double TURNING_A = 0; // Default to zero
 
-    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI * 2;
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI * 4;
 
     public static final double MAX_SPEED_METERS_PER_SECOND = 4;
 
@@ -88,17 +88,20 @@ public final class Constants {
     public static final double FACEFORWARD_P = 0.015;
 
     public static final class BalanceConstants {
-      // TODO: Tune all these; They are ballpark esitmates
-      public static final double BALANCE_P = 0.0472;
+      // TODO: Tune all these;
+      public static final double BALANCE_P = 0.07;
       public static final double BALANCE_I = 0;
-      public static final double BALANCE_D = 0.003;
+      public static final double BALANCE_D = 0;
       
-      public static final double INITIAL_SPEED = 1.4;
-
-      public static final double BALANCE_ERROR_INIT_DEGREES = 14;
-      public static final double BALANCE_ERROR_NEAR_BALANCED = 10;
-      public static final double BALANCE_ERROR_CONSIDERED_BALANCED = 2.4; // +/- degrees
       public static final double ORIENTATION_ERROR_CONSIDERED_ORIENTED = 2.5; // +/- degrees
+      public static final double BALANCE_ERROR_CONSIDERED_BALANCED = 2.4; // +/- degrees
+
+      // Might be removed
+      public static final double INITIAL_SPEED = 0.7;
+      public static final double BALANCE_ERROR_INIT_DEGREES = 10;
+      public static final double BALANCE_ERROR_NEAR_BALANCED = 3;
+
+
       
     }
   }
@@ -275,9 +278,9 @@ public final class Constants {
     public static final double EXTENSION_MAX_VELOCITY = 0.0;
     public static final double EXTENSION_MAX_ACCELERATION = 0.0;
     
-    public static final double ROTATION_P = 0-9;
-    public static final double ROTATION_I = 0-9;
-    public static final double ROTATION_D = 0-9;
+    public static final double ROTATION_P = 0;
+    public static final double ROTATION_I = 0;
+    public static final double ROTATION_D = 0;
     public static final TrapezoidProfile.Constraints ROTATION_CONSTRAINTS = new TrapezoidProfile.Constraints(
       ROTATION_MAX_VELOCITY, ROTATION_MAX_ACCELERATION);
     public static final TrapezoidProfile.Constraints EXTENSION_CONSTRAINTS = new TrapezoidProfile.Constraints(
@@ -298,7 +301,7 @@ public final class Constants {
     public static final double EXTENSION_MOTOR_GEAR_RATIO = 1.0 / 5.0;
     public static final double EXTENSION_SPOOL_DIAMETER = Units.inchesToMeters(2.5);
     public static final double MAX_EXTENSION_LENGTH = Units.inchesToMeters(48.48);
-    public static final double EXTENSION_ENCODER_OFFSET = 0;
+    public static final double EXTENSION_ENCODER_OFFSET = 95.009765625;
 
     public static final PneumaticsModuleType EXTENSION_LOCK_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
     public static final int EXTENSION_LOCK_ENGAGED_ID = 2;
