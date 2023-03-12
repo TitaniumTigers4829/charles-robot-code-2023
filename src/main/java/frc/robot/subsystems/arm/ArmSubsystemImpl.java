@@ -8,8 +8,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
@@ -17,6 +15,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.dashboard.SmartDashboardLogger;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -48,6 +47,9 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     ArmConstants.EXTENSION_D,
     ArmConstants.EXTENSION_CONSTRAINTS
   );
+
+  private double currentExtensionSpeed;
+  private double ticksAfterSpeedChange;
 
   /** Creates a new ArmSubsystemImpl. 
    * Feed Forward Gain, Velocity Gain, and Acceleration Gain need to be tuned in constants
@@ -92,40 +94,51 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
       ArmConstants.EXTENSION_LOCK_ENGAGED_ID,
       ArmConstants.EXTENSION_LOCK_DISENGAGED_ID
     );
+
+    currentExtensionSpeed = 0;
+    ticksAfterSpeedChange = 0;
   }
 
   @Override
-  public void periodic() { }
-
-  @Override
   public void goToAngle(double desiredAngle) {
-    double PIDOutput = rotationPIDController.calculate(getAngle(), desiredAngle);
-    double feedForwardOutput = rotationFeedForward.calculate(desiredAngle, rotationPIDController.getSetpoint().velocity);
-    rotationMotorControllerGroup.set(motorOutputClamp(PIDOutput + feedForwardOutput));
+    if (desiredAngle >= ArmConstants.MIN_ROTATION_DEGREES && desiredAngle <= ArmConstants.MAX_ROTATION_DEGREES) {
+      double PIDOutput = rotationPIDController.calculate(getAngle(), desiredAngle);
+      double feedForwardOutput = rotationFeedForward.calculate(desiredAngle, rotationPIDController.getSetpoint().velocity);
+      rotationMotorControllerGroup.set(motorOutputClamp(PIDOutput + feedForwardOutput));
+    }
   }
 
   @Override
   public double getAngle() {
-    return rotationEncoder.getAbsolutePosition() * Math.PI / 180;
+    // FIXME: commented out radian conversion because goToAngle() takes in degrees
+    return rotationEncoder.getAbsolutePosition();// * Math.PI / 180;
+  }
+
+  public void resetExtensionEncoder() {
+    extensionMotor.setSelectedSensorPosition(0);
   }
 
   @Override
   public double getExtension() {
     // Convert motor rotation units (2048 or 4096 for 1 full rotation) to number of rotations
-    double motorRotation = extensionMotor.getSelectedSensorPosition() * 
-      (360 / Constants.FALCON_ENCODER_RESOLUTION) / ArmConstants.EXTENSION_MOTOR_GEAR_RATIO;
+    double motorRotation = (extensionMotor.getSelectedSensorPosition() / 
+      Constants.FALCON_ENCODER_RESOLUTION) * ArmConstants.EXTENSION_MOTOR_GEAR_RATIO;
     // Convert number of rotations to distance (multiply by diameter)
     double extension = motorRotation * ArmConstants.EXTENSION_SPOOL_DIAMETER * Math.PI; 
+    SmartDashboardLogger.infoNumber("extension", extension);
     // Converts to output from 0 to 1
     return extension / ArmConstants.MAX_EXTENSION_LENGTH;
   }
 
-
   @Override
   public void setExtension(double desiredExtension) {
-    double PIDOutput = extensionPIDController.calculate(getExtension(), desiredExtension);
-    double feedForwardOutput = extensionFeedForward.calculate(extensionPIDController.getSetpoint().velocity);
-    extensionMotor.set(ControlMode.PercentOutput, motorOutputClamp(PIDOutput + feedForwardOutput));
+    if (desiredExtension >= ArmConstants.MIN_EXTENSION_PROPORTION && desiredExtension <= ArmConstants.MAX_EXTENSION_PROPORTION) {
+      double PIDOutput = extensionPIDController.calculate(getExtension(), desiredExtension);
+      double feedForwardOutput = extensionFeedForward.calculate(extensionPIDController.getSetpoint().velocity);
+      extensionMotor.set(ControlMode.PercentOutput, motorOutputClamp(PIDOutput + feedForwardOutput));
+      currentExtensionSpeed = motorOutputClamp(PIDOutput + feedForwardOutput);
+      ticksAfterSpeedChange = 0;
+    }
   }
 
   @Override
@@ -138,10 +151,29 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     extensionLockSolenoid.set(DoubleSolenoid.Value.kReverse);
   }
 
-  public void manuallyRotate(DoubleSupplier speed) {
-    rotationMotorControllerGroup.set(speed.getAsDouble() / 2);
+  @Override
+  public void setRotationSpeed(double speed) {
+    rotationMotorControllerGroup.set(speed / 2);
   }
 
+  @Override
+  public double getCurrentExtensionSpeed() {
+    return extensionMotor.getSelectedSensorVelocity();
+  }
+
+  @Override
+  public void setCurrentExtensionSpeed(double speed) {
+    extensionMotor.set(speed);
+    currentExtensionSpeed = speed;
+    ticksAfterSpeedChange = 0;
+  }
+
+  @Override
+  public boolean isExtensionMotorStalling() {
+    return Math.abs(extensionMotor.getSelectedSensorVelocity()) < ArmConstants.STALLING_VELOCITY 
+      && (Math.abs(currentExtensionSpeed) > 0) && (ticksAfterSpeedChange > ArmConstants.TICKS_BEFORE_STALL);
+  }
+  
   /*
    * Returns the motor output with a min. of -1 and max. of 1.
    */
@@ -149,4 +181,12 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     return Math.max(-1, Math.min(1, motorOutput));
   }
 
+  @Override
+  public void periodic() {
+    ticksAfterSpeedChange += 1;
+    SmartDashboardLogger.infoString("isStalling", String.valueOf(isExtensionMotorStalling()));
+    SmartDashboardLogger.infoNumber("Extension %", getExtension());
+    // SmartDashboardLogger.infoNumber("Extension encoder units", extensionMotor.getSelectedSensorPosition());
+    SmartDashboardLogger.infoNumber("Rotation encoder pos:", rotationEncoder.getAbsolutePosition());
+  }
 }

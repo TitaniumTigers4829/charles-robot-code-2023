@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.dashboard.SmartDashboardLogger;
 
 public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem {
 
@@ -40,7 +41,8 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     DriveConstants.FRONT_LEFT_CANCODER_ID,
     DriveConstants.FRONT_LEFT_ZERO_ANGLE,
     DriveConstants.FRONT_LEFT_CANCODER_REVERSED,
-    DriveConstants.FRONT_LEFT_DRIVE_ENCODER_REVERSED
+    DriveConstants.FRONT_LEFT_DRIVE_ENCODER_REVERSED,
+    "FL"
   );
   private final SwerveModule frontRightSwerveModule = new SwerveModule(
     DriveConstants.FRONT_RIGHT_DRIVE_MOTOR_ID,
@@ -48,7 +50,8 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     DriveConstants.FRONT_RIGHT_CANCODER_ID,
     DriveConstants.FRONT_RIGHT_ZERO_ANGLE,
     DriveConstants.FRONT_RIGHT_CANCODER_REVERSED,
-    DriveConstants.FRONT_RIGHT_DRIVE_ENCODER_REVERSED
+    DriveConstants.FRONT_RIGHT_DRIVE_ENCODER_REVERSED,
+    "FR"
   );
   private final SwerveModule rearLeftSwerveModule = new SwerveModule(
     DriveConstants.REAR_LEFT_DRIVE_MOTOR_ID,
@@ -56,7 +59,8 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     DriveConstants.REAR_LEFT_CANCODER_ID,
     DriveConstants.REAR_LEFT_ZERO_ANGLE,
     DriveConstants.REAR_LEFT_CANCODER_REVERSED,
-    DriveConstants.REAR_LEFT_DRIVE_ENCODER_REVERSED
+    DriveConstants.REAR_LEFT_DRIVE_ENCODER_REVERSED,
+    "RL"
   );
   private final SwerveModule rearRightSwerveModule = new SwerveModule(
     DriveConstants.REAR_RIGHT_DRIVE_MOTOR_ID,
@@ -64,7 +68,8 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     DriveConstants.REAR_RIGHT_CANCODER_ID,
     DriveConstants.REAR_RIGHT_ZERO_ANGLE,
     DriveConstants.REAR_RIGHT_CANCODER_REVERSED,
-    DriveConstants.REAR_RIGHT_DRIVE_ENCODER_REVERSED
+    DriveConstants.REAR_RIGHT_DRIVE_ENCODER_REVERSED,
+    "RR"
   );
 
   private final SwerveModule[] swerveModules = {
@@ -94,20 +99,10 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     );
   }
 
-  @Override
-  public void periodic() {
-    // Uses the swerve's sensors to update the pose estimator
-    odometry.update(
-      getRotation2d(),
-      getModulePositions()
-    );
-    
-    SmartDashboard.putString("Estimated Pose", odometry.getEstimatedPosition().toString());
-  }
-
   @SuppressWarnings("ParameterName")
   @Override
   public void drive(double xSpeed, double ySpeed, double rotationSpeed, boolean fieldRelative) {
+    SmartDashboard.putBoolean("isFieldRelative", fieldRelative);
     SwerveModuleState[] swerveModuleStates = DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
       fieldRelative
       ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, getFieldRelativeRotation2d())
@@ -151,7 +146,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   public Rotation2d getFieldRelativeRotation2d() {
     // Because the field isn't vertically symmetrical, we have the pose
     // coordinates always start from the bottom left
-    return Rotation2d.fromDegrees(DriverStation.getAlliance() == Alliance.Blue ? 0 : 180);
+    return Rotation2d.fromDegrees((getHeading() + (DriverStation.getAlliance() == Alliance.Blue ? 0 : 180)) % 360);
   }
 
   @Override
@@ -216,5 +211,18 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     return swerveModulePositions;
   }
   
+  @Override
+  public void periodic() {
+    // Uses the swerve's sensors to update the pose estimator
+    odometry.update(
+      getRotation2d(),
+      getModulePositions()
+    );
+
+    frontLeftSwerveModule.periodicFunction();
+    rearLeftSwerveModule.periodicFunction();
+    frontRightSwerveModule.periodicFunction();
+    rearRightSwerveModule.periodicFunction();
+  }
 
 }

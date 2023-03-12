@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.DriveCommandBase;
+import frc.robot.dashboard.SmartDashboardLogger;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
@@ -136,7 +137,7 @@ public class AutoPlace extends DriveCommandBase {
         driveSubsystem
       ).schedule();
     } catch(Exception e) {
-      SmartDashboard.putString("Trajectory Error Message", e.getLocalizedMessage());
+      SmartDashboardLogger.errorString("Trajectory Error Message", e.getLocalizedMessage());
     }
   }
 

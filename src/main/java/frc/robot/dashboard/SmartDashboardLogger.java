@@ -13,7 +13,7 @@ public final class SmartDashboardLogger {
     /*
      * TODO - maybe read from config
      */
-    private static final SmartDashboardLogLevel systemLogLevel = SmartDashboardLogLevel.DEBUG;
+    private static final SmartDashboardLogLevel systemLogLevel = SmartDashboardLogLevel.INFO;
 
     /**
      * Put a string in the table at logLevel {@link SmartDashboardLogLevel#DEBUG}

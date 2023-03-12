@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.arm;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public interface ArmSubsystem extends Subsystem {
@@ -20,13 +18,18 @@ public interface ArmSubsystem extends Subsystem {
    */
   public void setExtension(double desiredExtension);
 
+  /**
+   * Resets the extension motor's encoder to 0.
+   */
+  public void resetExtensionEncoder();
+
   /** 
-   * Returns the angle, in radians, of the arm (0 being straight down).  
+   * Returns the angle, in degrees, of the arm (0 being straight down).  
    */
   public double getAngle();
 
   /** 
-   * Sets the arm angle in radians (0 being straight down).
+   * Sets the arm angle in degrees (0 being straight down).
    */
   public void goToAngle(double desiredAngle);
 
@@ -40,5 +43,23 @@ public interface ArmSubsystem extends Subsystem {
    */
   public void unlockExtensionSolenoid();
 
-  public void manuallyRotate(DoubleSupplier speed);
+  /**
+   * Sets the speed from -1 to 1 of the rotation motors.
+   */
+  public void setRotationSpeed(double speed);
+
+  /**
+   * Returns the speed of the extension motor.
+   */
+  public double getCurrentExtensionSpeed();
+
+  /**
+   * Sets the speed from -1 to 1 of the rotation motors.
+   */
+  public void setCurrentExtensionSpeed(double speed);
+
+  /**
+   * Returns true if the extension motor is stalling.
+   */
+  public boolean isExtensionMotorStalling();
 }

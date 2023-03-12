@@ -55,19 +55,19 @@ public final class Constants {
     public static final double MAX_SPEED_METERS_PER_SECOND = 4;
 
     public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 1;
-    public static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 4;
+    public static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 2;
     public static final int REAR_LEFT_DRIVE_MOTOR_ID = 3;
-    public static final int REAR_RIGHT_DRIVE_MOTOR_ID = 0;
+    public static final int REAR_RIGHT_DRIVE_MOTOR_ID = 4;
 
-    public static final int FRONT_LEFT_TURN_MOTOR_ID = 7;
-    public static final int FRONT_RIGHT_TURN_MOTOR_ID = 8;
-    public static final int REAR_LEFT_TURN_MOTOR_ID = 10;
-    public static final int REAR_RIGHT_TURN_MOTOR_ID = 13;
+    public static final int FRONT_LEFT_TURN_MOTOR_ID = 5;
+    public static final int FRONT_RIGHT_TURN_MOTOR_ID = 6;
+    public static final int REAR_LEFT_TURN_MOTOR_ID = 7;
+    public static final int REAR_RIGHT_TURN_MOTOR_ID = 8;
 
-    public static final int FRONT_LEFT_CANCODER_ID = 0;
-    public static final int FRONT_RIGHT_CANCODER_ID = 3;
-    public static final int REAR_LEFT_CANCODER_ID = 2;
-    public static final int REAR_RIGHT_CANCODER_ID = 1;
+    public static final int FRONT_LEFT_CANCODER_ID = 11;
+    public static final int FRONT_RIGHT_CANCODER_ID = 12;
+    public static final int REAR_LEFT_CANCODER_ID = 13;
+    public static final int REAR_RIGHT_CANCODER_ID = 14;
 
     // In degrees.
     public static final double FRONT_LEFT_ZERO_ANGLE = 169.716796875;
@@ -80,10 +80,10 @@ public final class Constants {
     public static final boolean REAR_LEFT_CANCODER_REVERSED = false;
     public static final boolean REAR_RIGHT_CANCODER_REVERSED = false;
     
-    public static final boolean FRONT_LEFT_DRIVE_ENCODER_REVERSED = true;
-    public static final boolean FRONT_RIGHT_DRIVE_ENCODER_REVERSED = false;
-    public static final boolean REAR_LEFT_DRIVE_ENCODER_REVERSED = true;
-    public static final boolean REAR_RIGHT_DRIVE_ENCODER_REVERSED = false;
+    public static final boolean FRONT_LEFT_DRIVE_ENCODER_REVERSED = false;
+    public static final boolean FRONT_RIGHT_DRIVE_ENCODER_REVERSED = true;
+    public static final boolean REAR_LEFT_DRIVE_ENCODER_REVERSED = false;
+    public static final boolean REAR_RIGHT_DRIVE_ENCODER_REVERSED = true;
 
     public static final double FACEFORWARD_P = 0.015;
 
@@ -107,8 +107,7 @@ public final class Constants {
 
     public static final double DRIVE_GEAR_RATIO = 7.36;
 
-    // TODO: tune this
-    public static final double TURN_P = 8.1;
+    public static final double TURN_P = 7; // 8.1
     public static final double TURN_I = 0;
     public static final double TURN_D = 0;
 
@@ -116,7 +115,7 @@ public final class Constants {
     public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 6 * Math.PI;
 
     public static final double DRIVE_F = 0.055;
-    public static final double DRIVE_P = 0; // .1
+    public static final double DRIVE_P = .1; // .1
     public static final double DRIVE_I = 0;
     public static final double DRIVE_D = 0;
 
@@ -182,7 +181,6 @@ public final class Constants {
     public static final String TWO_CONE_BALANCE_AUTO_FIRST = "Two Cone Balance First";
     public static final String TWO_CONE_BALANCE_AUTO_SECOND = "Two Cone Balance Second";
     public static final String TWO_CONE_BALANCE_AUTO_THIRD = "Two Cone Balance Third";
-
   }
   
   public static final class LEDConstants {
@@ -262,15 +260,15 @@ public final class Constants {
 
   public static final class ArmConstants {
 
-    public static final int LEADER_ROTATION_MOTOR_ID = 2;
-    public static final int FOLLOWER_ROTATION_MOTOR_ID = 19;
+    public static final int LEADER_ROTATION_MOTOR_ID = 9;
+    public static final int FOLLOWER_ROTATION_MOTOR_ID = 10;
 
     public static final boolean LEADER_ROTATION_MOTOR_INVERTED = false;
     public static final boolean FOLLOWER_ROTATION_MOTOR_INVERTED = true;
 
     public static final int EXTENSION_MOTOR_ID = 16;
 
-    public static final int ROTATION_ENCODER_ID = 5;
+    public static final int ROTATION_ENCODER_ID = 15;
 
     public static final double ROTATION_MAX_VELOCITY = 0.0;
     public static final double ROTATION_MAX_ACCELERATION = 0.0;
@@ -300,78 +298,142 @@ public final class Constants {
     public static final double EXTENSION_MOTOR_GEAR_RATIO = 1.0 / 5.0;
     public static final double EXTENSION_SPOOL_DIAMETER = Units.inchesToMeters(2.5);
     public static final double MAX_EXTENSION_LENGTH = Units.inchesToMeters(48.48);
-    public static final double EXTENSION_ENCODER_OFFSET = 0-9;
+    public static final double EXTENSION_ENCODER_OFFSET = 0;
 
     public static final PneumaticsModuleType EXTENSION_LOCK_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
     public static final int EXTENSION_LOCK_ENGAGED_ID = 2;
     public static final int EXTENSION_LOCK_DISENGAGED_ID = 3;
 
-    public static final double EXTENSION_ACCEPTABLE_ERROR = 0.1;
+    public static final double EXTENSION_ACCEPTABLE_ERROR = 0.04; 
     public static final double ROTATION_ACCEPTABLE_ERROR = 5;
+
+    public static final double MIN_ROTATION_DEGREES = 0-9;
+    public static final double MAX_ROTATION_DEGREES = 0-9;
+
+    public static final double MIN_EXTENSION_PROPORTION = 0;
+    public static final double MAX_EXTENSION_PROPORTION = 1;
+
+    public static final int STALLING_VELOCITY = 150;
+    public static final int TICKS_BEFORE_STALL = 10;
   }
 
   public static final class ClawConstants {
 
-    public static final int SOLENOID_FORWARD = 1; // ID for opening claw
-    public static final int SOLENOID_BACKWARD = 0; // ID for closing claw
-    public static final int WRIST_MOTOR_ID = 0-9; // ID for the wrist motor
-    public static final int LEFT_WHEEL_MOTOR_ID = 0-9; //ID for left claw motor that controls the rollers
-    public static final int RIGHT_WHEEL_MOTOR_ID = 0-9; //ID for right claw motor that controls the rollers
+    public static final int SOLENOID_FORWARD = 0;
+    public static final int SOLENOID_BACKWARD = 1;
+    public static final int WRIST_MOTOR_ID = 17;
+    public static final int LEFT_WHEEL_MOTOR_ID = 22;
+    public static final int RIGHT_WHEEL_MOTOR_ID = 31;
     public static final boolean LEFT_WHEEL_MOTOR_INVERTED = false;
-    public static final boolean RIGHT_WHEEL_MOTOR_INVERTED = false;
+    public static final boolean RIGHT_WHEEL_MOTOR_INVERTED = true;
     public static final double WHEELS_MAX_RPM = 0-9;
-
-    public static final double WRIST_FEED_FORWARD_GAIN = 0-9;
-    public static final double WRIST_VELOCITY_GAIN = 0-9;
-    public static final double WRIST_ACCELERATION_GAIN = 0-9;
 
     public static final double WRIST_MAX_VELOCITY = 0.0;
     public static final double WRIST_MAX_ACCELERATION = 0.0;
 
-    public static final double WRIST_P = 0-9;
-    public static final double WRIST_I = 0-9;
-    public static final double WRIST_D = 0-9;
+    public static final double WRIST_F = 0;
+    public static final double WRIST_P = 0;
+    public static final double WRIST_I = 0;
+    public static final double WRIST_D = 0;
     public static final TrapezoidProfile.Constraints WRIST_CONSTRAINTS = new TrapezoidProfile.Constraints(
       WRIST_MAX_VELOCITY, WRIST_MAX_ACCELERATION);
 
-    public static final int WRIST_LIMIT_SWITCH_PORT = 0-9;
-
-    public static final double MIN_WRIST_ROTATION_DEGREES = 0-9;
-    public static final double MIN_WRIST_ROTATION_ENCODER_UNITS = 0-9;
+    public static final double MIN_WRIST_ROTATION_DEGREES = 0;
+    public static final double MIN_WRIST_ROTATION_ENCODER_UNITS = 180;
 
     public static final double WRIST_ROTATION_ACCEPTABLE_ERROR = 3;
   }
 
   public static final class JoystickConstants {
 
-    // Ports:
     public static final int DRIVER_JOYSTICK_ID = 0;
-    public static final int BUTTON_BOARD_ID = 1;
+    public static final int OPERATOR_JOYSTICK_ID = 1;
+    public static final int BUTTON_BOARD_ID = 2;
+    public static final int BUTTON_BOARD_ID_2 = 3;
 
-    // Axes IDs:
-    public static final int LEFT_STICK_X = 0;
-    public static final int LEFT_STICK_Y = 1;
-    public static final int RIGHT_STICK_X = 4;
-    public static final int RIGHT_STICK_Y = 5;
+    public static final int DRIVER_LEFT_STICK_X = 0;
+    public static final int DRIVER_LEFT_STICK_Y = 1;
+    public static final int DRIVER_RIGHT_STICK_X = 4;
+    public static final int DRIVER_RIGHT_STICK_Y = 5;
+    public static final int DRIVER_X_BUTTON_ID = 3;
+    public static final int DRIVER_A_BUTTON_ID = 1;
+    public static final int DRIVER_B_BUTTON_ID = 2;
+    public static final int DRIVER_Y_BUTTON_ID = 4;
+    public static final int DRIVER_LEFT_BUMPER_ID = 5;
+    public static final int DRIVER_RIGHT_BUMPER_ID = 6;
+    public static final int DRIVER_LEFT_TRIGGER_ID = 2;
+    public static final int DRIVER_RIGHT_TRIGGER_ID = 3;
+    public static final int DRIVER_BACK_BUTTON_ID = 7;
+    public static final int DRIVER_START_BUTTON_ID = 8;
+    public static final int DRIVER_LEFT_STICK_PRESS_ID = 9;
+    public static final int DRIVER_RIGHT_STICK_PRESS_ID = 10;
 
-    // Button IDs:
-    public static final int X_BUTTON_ID = 3;
-    public static final int A_BUTTON_ID = 1;
-    public static final int B_BUTTON_ID = 2;
-    public static final int Y_BUTTON_ID = 4;
-    public static final int LEFT_BUMPER_ID = 5;
-    public static final int RIGHT_BUMPER_ID = 6;
-    public static final int LEFT_TRIGGER_ID = 7;
-    public static final int RIGHT_TRIGGER_ID = 8;
-    public static final int BACK_BUTTON_ID = 9;
-    public static final int START_BUTTON_ID = 10;
-    public static final int LEFT_STICK_PRESS_ID = 11;
-    public static final int RIGHT_STICK_PRESS_ID = 12;
+    public static final int OPERATOR_LEFT_STICK_X = 0;
+    public static final int OPERATOR_LEFT_STICK_Y = 1;
+    public static final int OPERATOR_RIGHT_STICK_X = 4;
+    public static final int OPERATOR_RIGHT_STICK_Y = 5;
+
+    public static final int OPERATOR_X_BUTTON_ID = 3;
+    public static final int OPERATOR_A_BUTTON_ID = 1;
+    public static final int OPERATOR_B_BUTTON_ID = 2;
+    public static final int OPERATOR_Y_BUTTON_ID = 4;
+    public static final int OPERATOR_LEFT_BUMPER_ID = 5;
+    public static final int OPERATOR_RIGHT_BUMPER_ID = 6;
+    public static final int OPERATOR_LEFT_TRIGGER_ID = 2;
+    public static final int OPERATOR_RIGHT_TRIGGER_ID = 3;
+    public static final int OPERATOR_BACK_BUTTON_ID = 7;
+    public static final int OPERATOR_START_BUTTON_ID = 8;
+    public static final int OPERATOR_LEFT_STICK_PRESS_ID = 9;
+    public static final int OPERATOR_RIGHT_STICK_PRESS_ID = 10;
 
     public static final int LEFT_DPAD_ID = 270;
     public static final int UP_DPAD_ID = 0;
     public static final int RIGHT_DPAD_ID = 90;
     public static final int DOWN_DPAD_ID = 180;
+
+    // Top Six Buttons
+
+    // Z Axis
+    public static final int BIG_BUTTON_1 = -1;
+    public static final int BIG_BUTTON_2 = 1;
+    // X Axis
+    public static final int BIG_BUTTON_3 = -1;
+    public static final int BIG_BUTTON_4 = 1;
+    // Y Axis
+    public static final int BIG_BUTTON_5 = -1;
+    public static final int BIG_BUTTON_6 = 1;
+
+    // Joystick 1 Autoplace Buttons
+    public static final int BUTTON_1 = 1;
+    public static final int BUTTON_2 = 2;
+    public static final int BUTTON_3 = 3;
+    public static final int BUTTON_4 = 4;
+    public static final int BUTTON_5 = 5;
+    public static final int BUTTON_6 = 6;
+    public static final int BUTTON_7 = 7;
+    public static final int BUTTON_8 = 8;
+    public static final int BUTTON_9 = 9;
+    public static final int BUTTON_10 = 10;
+    public static final int BUTTON_11 = 11;
+    public static final int BUTTON_12 = 12;
+    public static final int BUTTON_13 = 0; // POV Joystick 1
+    public static final int BUTTON_14 = 180; // POV Joystick 1
+    public static final int BUTTON_15 = 270; // POV Joystick 1
+    public static final int BUTTON_16 = 90; // POV Joystick 1
+
+    // Joystick 2 Autoplace Buttons
+    public static final int BUTTON_17 = 1;
+    public static final int BUTTON_18 = 2;
+    public static final int BUTTON_19 = 3;
+    public static final int BUTTON_20 = 4;
+    public static final int BUTTON_21 = 5;
+    public static final int BUTTON_22 = 6;
+    public static final int BUTTON_23 = 7;
+    public static final int BUTTON_24 = 8;
+    public static final int BUTTON_25 = 9;
+    public static final int BUTTON_26 = 10;
+    public static final int BUTTON_27 = 11;
+    
   }
 
   public static final class LimelightConstants {

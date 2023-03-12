@@ -10,28 +10,26 @@ import frc.robot.subsystems.claw.ClawSubsystem;
 public class RunClaw extends CommandBase {
   private ClawSubsystem clawSubsystem;
   private double speed;
-  /** Creates a new RunClaw. */
+
   public RunClaw(ClawSubsystem clawSubsystem, double speed) {
     this.clawSubsystem = clawSubsystem;
     this.speed = speed;
     addRequirements(clawSubsystem);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    clawSubsystem.setMotorSpeed(speed);
+    clawSubsystem.setIntakeSpeed(speed);
   }
 
-  // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    clawSubsystem.setIntakeSpeed(0);
+  }
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;

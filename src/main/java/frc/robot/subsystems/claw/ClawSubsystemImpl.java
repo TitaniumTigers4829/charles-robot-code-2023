@@ -11,7 +11,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,8 +21,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   private final DoubleSolenoid clawSolenoid;
 
-  private final WPI_TalonFX wristMotor;
-  private final DigitalInput wristLimitSwitch;
+  // private final WPI_TalonFX wristMotor;
 
   private final CANSparkMax leftWheelMotor;
   private final CANSparkMax rightWheelMotor;
@@ -38,14 +36,14 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
       ClawConstants.SOLENOID_BACKWARD
     );
 
-    wristMotor = new WPI_TalonFX(ClawConstants.WRIST_MOTOR_ID);
+    // wristMotor = new WPI_TalonFX(ClawConstants.WRIST_MOTOR_ID, "rio");
 
-    wristMotor.config_kF(0, ClawConstants.WRIST_FEED_FORWARD_GAIN);
-    wristMotor.config_kP(0, ClawConstants.WRIST_P);
-    wristMotor.config_kI(0, ClawConstants.WRIST_I);
-    wristMotor.config_kD(0, ClawConstants.WRIST_D);
+    // wristMotor.config_kF(0, ClawConstants.WRIST_F);
+    // wristMotor.config_kP(0, ClawConstants.WRIST_P);
+    // wristMotor.config_kI(0, ClawConstants.WRIST_I);
+    // wristMotor.config_kD(0, ClawConstants.WRIST_D);
 
-    wristMotor.setNeutralMode(NeutralMode.Brake);
+    // wristMotor.setNeutralMode(NeutralMode.Brake);
 
     leftWheelMotor = new CANSparkMax(ClawConstants.LEFT_WHEEL_MOTOR_ID, MotorType.kBrushless);
     rightWheelMotor = new CANSparkMax(ClawConstants.RIGHT_WHEEL_MOTOR_ID, MotorType.kBrushless);
@@ -58,8 +56,6 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
     leftWheelMotor.setIdleMode(IdleMode.kBrake);
     rightWheelMotor.setIdleMode(IdleMode.kBrake);
-
-    wristLimitSwitch = new DigitalInput(ClawConstants.WRIST_LIMIT_SWITCH_PORT);
   }
 
   @Override
@@ -67,14 +63,14 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   @Override
   public void close() {
-    // TODO Auto-generated method stub
-    
+    clawSolenoid.set(DoubleSolenoid.Value.kReverse);
+    isClawClosed = true;
   }
 
   @Override
   public void open() {
-    // TODO Auto-generated method stub
-    
+    clawSolenoid.set(DoubleSolenoid.Value.kForward);    
+    isClawClosed = false;
   }
 
   @Override
@@ -83,33 +79,35 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   }
 
   @Override
-  public void setMotorSpeed(double speed) {
-    leftWheelMotor.set(motorOutputClamp(speed));
-    rightWheelMotor.set(motorOutputClamp(speed));
+  public void setIntakeSpeed(double speed) {
+    leftWheelMotor.set(speed);
+    rightWheelMotor.set(speed);
+  }
+
+  @Override 
+  public void setWristMotorSpeed(double speed) {
+    // wristMotor.set(speed);
   }
 
   @Override
   public double getWristAngle() {
-    return wristMotor.getSelectedSensorPosition() * (360 / Constants.FALCON_ENCODER_RESOLUTION);
+    // return wristMotor.getSelectedSensorPosition() * (360 / Constants.FALCON_ENCODER_RESOLUTION);
+    return 0;
   }
 
   @Override
   public void goToWristAngle(double desiredAngle) {
     // Stop's the wrist from rotating past its minimum position
-    if (!isWristLimitSwitchPressed() || desiredAngle > ClawConstants.MIN_WRIST_ROTATION_DEGREES) {
-      double desiredPos = desiredAngle * (Constants.FALCON_ENCODER_RESOLUTION / 360);
-      wristMotor.set(ControlMode.MotionMagic, desiredPos);
-    }
-  }
+    // if (desiredAngle > ClawConstants.MIN_WRIST_ROTATION_DEGREES) {
+    //   double desiredPos = desiredAngle * (Constants.FALCON_ENCODER_RESOLUTION / 360);
+      // wristMotor.set(ControlMode.MotionMagic, desiredPos);
+    // }
 
-  @Override
-  public boolean isWristLimitSwitchPressed() {
-    return wristLimitSwitch.get();
   }
 
   @Override
   public void zeroWristEncoder() {
-    wristMotor.setSelectedSensorPosition(ClawConstants.MIN_WRIST_ROTATION_ENCODER_UNITS);
+    // wristMotor.setSelectedSensorPosition(ClawConstants.MIN_WRIST_ROTATION_ENCODER_UNITS);
   }
 
   /*

@@ -20,9 +20,12 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
+import frc.robot.dashboard.SmartDashboardLogLevel;
+import frc.robot.dashboard.SmartDashboardLogger;
 
 public class SwerveModule {
 
@@ -40,7 +43,9 @@ public class SwerveModule {
     );
 
   private final SimpleMotorFeedforward turnFeedForward = new SimpleMotorFeedforward(
-      DriveConstants.TURNING_S, DriveConstants.TURNING_V, DriveConstants.TURNING_A);
+    DriveConstants.TURNING_S, DriveConstants.TURNING_V, DriveConstants.TURNING_A);
+
+  private String name;
 
   /**
    * Constructs a swerve module
@@ -57,8 +62,10 @@ public class SwerveModule {
       int turningEncoderChannel,
       double angleZero,
       boolean encoderReversed,
-      boolean driveReversed
+      boolean driveReversed,
+      String name
       ) {
+      this.name = name;
     
     // Initialize the motors
     driveMotor = new WPI_TalonFX(driveMotorChannel, Constants.CANIVORE_CAN_BUS_STRING);
@@ -170,6 +177,10 @@ public class SwerveModule {
     // Optimize the reference state to avoid spinning further than 90 degrees
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(turnRadians));
 
+    // SmartDashboard.putNumber(name + " desired speed", optimizedDesiredState.speedMetersPerSecond);
+    // SmartDashboard.putNumber(name + " current speed", getState().speedMetersPerSecond);
+    // SmartDashboard.putNumber(name + " error speed", optimizedDesiredState.speedMetersPerSecond - getState().speedMetersPerSecond);
+
     // Converts meters per second to rpm
     double desiredDriveRPM = optimizedDesiredState.speedMetersPerSecond * 60 
       * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
@@ -184,7 +195,7 @@ public class SwerveModule {
     double turnOutput =
       turnPIDController.calculate(turnRadians, optimizedDesiredState.angle.getRadians())
         + turnFeedForward.calculate(turnPIDController.getSetpoint().velocity);
-    turningMotor.set(turnOutput / 12);
+        turningMotor.set(turnOutput / 12);
   }
 
   public double getTurnRadians() {
@@ -208,5 +219,10 @@ public class SwerveModule {
   public void resetEncoders() {
       turnEncoder.setPosition(0);
       driveMotor.setSelectedSensorPosition(0);
+  }
+
+  public void periodicFunction() {
+    SwerveModuleState state = getState();
+    SmartDashboardLogger.debugNumber(name + " speed", state.speedMetersPerSecond);
   }
 }

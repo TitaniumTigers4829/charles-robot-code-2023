@@ -9,32 +9,29 @@ import frc.robot.Constants.ClawConstants;
 import frc.robot.subsystems.claw.ClawSubsystem;
 
 public class SetClawRotation extends CommandBase {
+  
   private ClawSubsystem clawSubsystem;
   private double desiredRotation;
-  /** Creates a new SetClawRotation. */
+
   public SetClawRotation(ClawSubsystem clawSubsystem, double desiredRotation) {
     this.clawSubsystem = clawSubsystem;
+    addRequirements(this.clawSubsystem);
     this.desiredRotation = desiredRotation;
-    addRequirements(clawSubsystem);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     clawSubsystem.goToWristAngle(desiredRotation);
   }
 
-  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
 
-  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(clawSubsystem.getWristAngle() - desiredRotation) < ClawConstants.WRIST_ROTATION_ACCEPTABLE_ERROR;
+    return Math.abs(desiredRotation - clawSubsystem.getWristAngle()) < ClawConstants.WRIST_ROTATION_ACCEPTABLE_ERROR;
   }
 }

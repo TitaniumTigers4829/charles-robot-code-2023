@@ -36,37 +36,37 @@ public abstract class DriveCommandBase extends CommandBase {
 
   @Override
   public void execute() {
-    // Updates the robot's odometry with april tags
-    double currentTimeStampSeconds = lastTimeStampSeconds;
+    // // Updates the robot's odometry with april tags
+    // double currentTimeStampSeconds = lastTimeStampSeconds;
 
-    if (visionSubsystem.canSeeAprilTags()) {
-      currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
-      consecutiveAprilTagFrames++;
+    // if (visionSubsystem.canSeeAprilTags()) {
+    //   currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
+    //   consecutiveAprilTagFrames++;
 
-      double distanceFromClosestAprilTag = visionSubsystem.getDistanceFromClosestAprilTag();
-      // Sets the pose estimator confidence in vision based off of number of april tags and distance
-      if (visionSubsystem.getNumberOfAprilTags() == 1) {
-        double xStandardDeviation = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[0];
-        double yStandardDeviation = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[1];
-        double thetaStandardDeviation = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[2];
-        driveSubsystem.setPoseEstimatorVisionConfidence(xStandardDeviation, yStandardDeviation, thetaStandardDeviation);
-      } else if (visionSubsystem.getNumberOfAprilTags() > 1) {
-        double xStandardDeviation = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[0];
-        double yStandardDeviation = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[1];
-        double thetaStandardDeviation = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[2];
-        driveSubsystem.setPoseEstimatorVisionConfidence(xStandardDeviation, yStandardDeviation, thetaStandardDeviation);
-      }
+    //   double distanceFromClosestAprilTag = visionSubsystem.getDistanceFromClosestAprilTag();
+    //   // Sets the pose estimator confidence in vision based off of number of april tags and distance
+    //   if (visionSubsystem.getNumberOfAprilTags() == 1) {
+    //     double xStandardDeviation = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[0];
+    //     double yStandardDeviation = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[1];
+    //     double thetaStandardDeviation = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[2];
+    //     driveSubsystem.setPoseEstimatorVisionConfidence(xStandardDeviation, yStandardDeviation, thetaStandardDeviation);
+    //   } else if (visionSubsystem.getNumberOfAprilTags() > 1) {
+    //     double xStandardDeviation = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[0];
+    //     double yStandardDeviation = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[1];
+    //     double thetaStandardDeviation = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[2];
+    //     driveSubsystem.setPoseEstimatorVisionConfidence(xStandardDeviation, yStandardDeviation, thetaStandardDeviation);
+    //   }
 
-      // Only updates the pose estimator if the limelight pose is new and reliable
-      if (currentTimeStampSeconds > lastTimeStampSeconds && consecutiveAprilTagFrames > LimelightConstants.DETECTED_FRAMES_FOR_RELIABILITY) {
-        Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
-        driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, currentTimeStampSeconds);
-      }
-    } else {
-      consecutiveAprilTagFrames = 0;
-    }
+    //   // Only updates the pose estimator if the limelight pose is new and reliable
+    //   if (currentTimeStampSeconds > lastTimeStampSeconds && consecutiveAprilTagFrames > LimelightConstants.DETECTED_FRAMES_FOR_RELIABILITY) {
+    //     Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
+    //     // driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, currentTimeStampSeconds);
+    //   }
+    // } else {
+    //   consecutiveAprilTagFrames = 0;
+    // }
 
-    lastTimeStampSeconds = currentTimeStampSeconds;
+    // lastTimeStampSeconds = currentTimeStampSeconds;
   }
 
 }
