@@ -47,9 +47,13 @@ public class BalanceFromDocked extends CommandBase {
   
     double error = driveSubsystem.getBalanceError();
 
-    SmartDashboard.putNumber("Total Balance Error", error);
+    // SmartDashboard.putNumber("Total Balance Error", error);
 
-    driveForward(-1 * balancePidController.calculate(error, 0), true);
+    if (Math.abs(error) < BalanceConstants.BALANCE_ERROR_CONSIDERED_BALANCED) {
+        driveForward(0, true);
+      } else {
+        driveForward(-1 * balancePidController.calculate(error, 0), false);
+    }
 
   }
 
