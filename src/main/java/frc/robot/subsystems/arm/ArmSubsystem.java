@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.arm;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public interface ArmSubsystem extends Subsystem {
@@ -16,7 +17,12 @@ public interface ArmSubsystem extends Subsystem {
   /** 
    * Sets the arm's extension in meters.
    */
-  public void setExtension(double desiredExtension);
+  public void setExtension(double extension);
+
+  /**
+   * Sets the arm's extension to 0.
+   */
+  public void retractArm();
 
   /**
    * Resets the extension motor's encoder to 0.
@@ -59,7 +65,18 @@ public interface ArmSubsystem extends Subsystem {
   public void setCurrentExtensionSpeed(double speed);
 
   /**
+   * Resets the PID controller for the extension motor.
+   */
+  public void resetExtensionController();
+
+  /**
    * Returns true if the extension motor is stalling.
    */
   public boolean isExtensionMotorStalling();
-}
+
+  /**
+   * Sets the neutral mode of the extension motor.
+   */
+  public void setExtensionMotorNeutralMode(NeutralMode neutralMode);
+
+  }

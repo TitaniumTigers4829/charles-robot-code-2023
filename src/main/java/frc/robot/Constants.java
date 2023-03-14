@@ -276,7 +276,7 @@ public final class Constants {
     public static final double ROTATION_I = 0;
     public static final double ROTATION_D = 0;
 
-    public static final double EXTENSION_P = .5;
+    public static final double EXTENSION_P = -5;
     public static final double EXTENSION_I = 0;
     public static final double EXTENSION_D = 0;
 
@@ -284,11 +284,12 @@ public final class Constants {
     public static final double ROTATION_ACCELERATION_GAIN = 0-9;
     public static final double ROTATION_VELOCITY_GAIN = 0-9;
 
-    public static final double EXTENSION_FEED_FORWARD_GAIN = 0-9;
-    public static final double EXTENSION_ACCELERATION_GAIN = 0-9;
-    public static final double EXTENSION_VELOCITY_GAIN = 0-9;
+    public static final double EXTENSION_FEED_FORWARD_GAIN = 0;
+    public static final double EXTENSION_ACCELERATION_GAIN = 0;
+    public static final double EXTENSION_VELOCITY_GAIN = 0.2;
 
     public static final double EXTENSION_MOTOR_GEAR_RATIO = 1.0 / 5.0;
+    public static final double EXTENSION_MOTOR_STALLING_AMPS = 7;
     public static final double EXTENSION_SPOOL_DIAMETER = Units.inchesToMeters(2.5);
     public static final double MAX_EXTENSION_LENGTH = Units.inchesToMeters(48.48);
     public static final double EXTENSION_ENCODER_OFFSET = 95.009765625;

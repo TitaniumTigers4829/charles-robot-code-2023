@@ -38,12 +38,6 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     ArmConstants.ROTATION_ACCELERATION_GAIN
   );
 
-  private final SimpleMotorFeedforward extensionFeedForward = new SimpleMotorFeedforward(
-    ArmConstants.EXTENSION_FEED_FORWARD_GAIN, 
-    ArmConstants.EXTENSION_VELOCITY_GAIN,
-    ArmConstants.EXTENSION_ACCELERATION_GAIN
-  );
-
   private final ProfiledPIDController rotationPIDController = new ProfiledPIDController(
     ArmConstants.ROTATION_P, 
     ArmConstants.ROTATION_I, 
@@ -57,6 +51,8 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     ArmConstants.EXTENSION_D,
     ArmConstants.EXTENSION_CONSTRAINTS
   );
+
+  private double consecutiveHighAmpLoops = 0;
 
   /** Creates a new ArmSubsystemImpl. 
    * Feed Forward Gain, Velocity Gain, and Acceleration Gain need to be tuned in constants
@@ -123,16 +119,26 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   }
 
   @Override
-  public void setExtension(double desiredExtension) {
-    if (desiredExtension >= ArmConstants.MIN_EXTENSION_PROPORTION && desiredExtension <= ArmConstants.MAX_EXTENSION_PROPORTION) {
-      // We control the extension differently based on if it is pulling it in or not
-      // if (desiredExtension < getCurrentExtension()) {
-      //   pullArmIn(desiredExtension);
-      // } else {
-      //   letArmOut(desiredExtension);
-      // }
-      letArmOut(desiredExtension);
+  public void setExtension(double extension) {
+    double PIDOutput = extensionSpeedPIDController.calculate(getCurrentExtension(), extension);
+    if (PIDOutput < -0.3) {
+      PIDOutput = -0.3;
     }
+    setCurrentExtensionSpeed(PIDOutput);
+  }
+
+  @Override
+  public void retractArm() {
+    if (Math.abs(getCurrentExtension() - .04) > ArmConstants.EXTENSION_ACCEPTABLE_ERROR) {
+      double PIDOutput = extensionSpeedPIDController.calculate(getCurrentExtension(), .04);
+      if (PIDOutput < -0.3) {
+        PIDOutput = -0.3;
+      }
+      setCurrentExtensionSpeed(PIDOutput);
+    } else {
+      extensionMotor.set(0);
+    }
+
   }
 
   @Override
@@ -152,7 +158,12 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
   @Override
   public double getCurrentExtensionSpeed() {
-    return extensionMotor.getSelectedSensorVelocity();
+    // Convert motor rotation units (2048 for 1 full rotation) to number of rotations
+    double motorRotation = (-extensionMotor.getSelectedSensorVelocity() / Constants.FALCON_ENCODER_RESOLUTION)
+      * ArmConstants.EXTENSION_MOTOR_GEAR_RATIO;
+    // Convert number of rotations to distance (multiply by diameter)
+    double metersPer100MS = motorRotation * ArmConstants.EXTENSION_SPOOL_DIAMETER * Math.PI;
+    return metersPer100MS * 10;
   }
 
   @Override
@@ -161,8 +172,13 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   }
 
   @Override
+  public void resetExtensionController() {
+    extensionSpeedPIDController.reset(getCurrentExtension(), getCurrentExtensionSpeed());
+  }
+
+  @Override
   public boolean isExtensionMotorStalling() {
-    return false;
+    return consecutiveHighAmpLoops >= 20;
   }
   
   @Override
