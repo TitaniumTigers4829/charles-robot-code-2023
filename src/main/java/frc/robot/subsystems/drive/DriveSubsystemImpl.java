@@ -121,12 +121,12 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
 
   @Override
   public double getRoll() {
-    return gyro.getRoll() - rollOffset;
+    return (-gyro.getRoll() + this.rollOffset) % 360;
   }
 
   @Override
   public double getPitch() {
-    return gyro.getPitch() - pitchOffset;
+    return (-gyro.getPitch() + this.pitchOffset) % 360;
   }
 
   @Override
