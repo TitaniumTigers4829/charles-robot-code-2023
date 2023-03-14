@@ -30,8 +30,8 @@ public class SetArmExtension extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    armSubsystem.setCurrentExtensionSpeed(0.1);
-    armSubsystem.lockExtensionSolenoid();
+//    armSubsystem.setCurrentExtensionSpeed(0.1);
+//    armSubsystem.lockExtensionSolenoid();\[]
   }
 
   @Override

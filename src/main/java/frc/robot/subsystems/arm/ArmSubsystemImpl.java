@@ -167,26 +167,21 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   
   @Override
   public void periodic() {
-    SmartDashboardLogger.infoNumber("extension", getCurrentExtension());
-    SmartDashboard.putNumber("encoder pos", rotationEncoder.getAbsolutePosition());
-    SmartDashboard.putNumber("extension speed", extensionMotor.getSelectedSensorVelocity());
-  }
+    SmartDashboardLogger.infoNumber("extension (meters)", getCurrentExtension());
+//    SmartDashboardLogger.infoNumber("encoder pos", rotationEncoder.getAbsolutePosition());
+    SmartDashboardLogger.infoNumber("extension speed (m/s)", getCurrentExtensionSpeed());
+    SmartDashboardLogger.infoNumber("extension amps", extensionMotor.getSupplyCurrent());
 
-  private void pullArmIn(double extension) {
-    double PIDOutput = extensionSpeedPIDController.calculate(getCurrentExtension(), extension);
-    double feedForwardOutput = extensionFeedForward.calculate(extensionSpeedPIDController.getSetpoint().velocity);
-    extensionMotor.set(PIDOutput + feedForwardOutput);
-  }
-
-  private void letArmOut(double extension) {
-    double PIDOutput = extensionSpeedPIDController.calculate(getCurrentExtension(), extension);
-    SmartDashboard.putNumber("PIDOutput", PIDOutput);
-    SmartDashboard.putNumber("PID Error", extension - getCurrentExtension());
-    // Positive pulls it in
-    if (PIDOutput < 0) {
-      PIDOutput = 0;
+    if (extensionMotor.getSupplyCurrent() > ArmConstants.EXTENSION_MOTOR_STALLING_AMPS) {
+      consecutiveHighAmpLoops++;
+    } else {
+      consecutiveHighAmpLoops = 0;
     }
-    extensionMotor.set(PIDOutput);
+  }
+
+  @Override
+  public void setExtensionMotorNeutralMode(NeutralMode neutralMode) {
+    extensionMotor.setNeutralMode(neutralMode);
   }
 
   /*

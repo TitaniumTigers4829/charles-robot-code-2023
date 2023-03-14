@@ -8,6 +8,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.dashboard.SmartDashboardLogger;
 import frc.robot.subsystems.arm.ArmSubsystem;
 
 public class ManuallyControlArm extends CommandBase {
@@ -39,7 +40,7 @@ public class ManuallyControlArm extends CommandBase {
     // }
 
     if (Math.abs(rotationSpeed.getAsDouble()) > 0.1) {
-      armSubsystem.setRotationSpeed(rotationSpeed.getAsDouble() / 2.0);
+      armSubsystem.setRotationSpeed(rotationSpeed.getAsDouble() / 1);
     } else {
       armSubsystem.setRotationSpeed(0);
       // armSubsystem.stopArmMotorFromMoving();
@@ -47,9 +48,10 @@ public class ManuallyControlArm extends CommandBase {
     // if (Math.abs(extensionSpeed.getAsDouble()) > 0.1 && armSubsystem.getCurrentExtension() < ArmConstants.MAX_EXTENSION_PROPORTION) {
     if (Math.abs(extensionSpeed.getAsDouble()) > 0.1) {
       armSubsystem.unlockExtensionSolenoid();
-      armSubsystem.setCurrentExtensionSpeed(extensionSpeed.getAsDouble() / 2.0);
+      armSubsystem.setCurrentExtensionSpeed(extensionSpeed.getAsDouble());
+      SmartDashboardLogger.infoNumber("motor output: ", extensionSpeed.getAsDouble());
     } else {
-      armSubsystem.lockExtensionSolenoid();
+//      armSubsystem.lockExtensionSolenoid();
       armSubsystem.setCurrentExtensionSpeed(0.075);
     }
   }

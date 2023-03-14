@@ -143,7 +143,9 @@ public class RobotContainer {
     );
 
     JoystickButton operatorYButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_Y_BUTTON_ID);
-    operatorYButton.whileTrue(new SetArmExtension(armSubsystem, .7));
+    operatorYButton.whileTrue(new SetArmExtension(armSubsystem, Units.inchesToMeters(30)));
+    JoystickButton operatorAButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_A_BUTTON_ID);
+    operatorAButton.whileTrue(new RunCommand(armSubsystem::retractArm));
     JoystickButton operatorXButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_X_BUTTON_ID);
     operatorXButton.onTrue(new InstantCommand(armSubsystem::resetExtensionEncoder));
 

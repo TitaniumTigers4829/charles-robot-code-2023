@@ -309,8 +309,8 @@ public final class Constants {
     public static final double ROTATION_MAX_VELOCITY = 0.0;
     public static final double ROTATION_MAX_ACCELERATION = 0.0;
 
-    public static final double EXTENSION_MAX_VELOCITY = 1.47;
-    public static final double EXTENSION_MAX_ACCELERATION = .5;
+    public static final double EXTENSION_MAX_VELOCITY = 0.75;
+    public static final double EXTENSION_MAX_ACCELERATION = 1;
 
     public static final TrapezoidProfile.Constraints ROTATION_CONSTRAINTS = new TrapezoidProfile.Constraints(
       ROTATION_MAX_VELOCITY, ROTATION_MAX_ACCELERATION);
