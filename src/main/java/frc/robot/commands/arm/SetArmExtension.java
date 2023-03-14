@@ -4,18 +4,10 @@
 
 package frc.robot.commands.arm;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.arm.ArmSubsystem;
 
 public class SetArmExtension extends CommandBase {
-
-  private final PIDController extensionSpeedPidController = new PIDController(
-    .001, 
-    0, 
-    0
-  );
 
   private ArmSubsystem armSubsystem;
   private double extension;
@@ -33,12 +25,7 @@ public class SetArmExtension extends CommandBase {
 
   @Override
   public void execute() {
-    // Sets the extension speed to 100% in the direction it needs to go.
-    if (Math.abs(extension - armSubsystem.getExtension()) > ArmConstants.EXTENSION_ACCEPTABLE_ERROR) {
-      armSubsystem.setCurrentExtensionSpeed((armSubsystem.getExtension() < extension ? -.005 : -.5));
-    } else {
-      armSubsystem.setCurrentExtensionSpeed(-.075);
-    }
+    armSubsystem.setExtension(extension);
   }
 
   @Override

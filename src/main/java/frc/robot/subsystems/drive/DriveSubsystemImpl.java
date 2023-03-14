@@ -112,10 +112,6 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     for (int i = 0; i < swerveModules.length; i++) {
       swerveModules[i].setDesiredState(swerveModuleStates[i]);
     }
-
-    SmartDashboard.putNumber("Pitch", getPitch());
-    SmartDashboard.putNumber("Yaw", getHeading());
-    SmartDashboard.putNumber("Roll", getRoll());
   }
 
   @Override

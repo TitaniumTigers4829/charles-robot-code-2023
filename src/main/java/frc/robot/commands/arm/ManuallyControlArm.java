@@ -44,12 +44,13 @@ public class ManuallyControlArm extends CommandBase {
       armSubsystem.setRotationSpeed(0);
       // armSubsystem.stopArmMotorFromMoving();
     }
-    if (Math.abs(extensionSpeed.getAsDouble()) > 0.1 && armSubsystem.getExtension() < ArmConstants.MAX_EXTENSION_PROPORTION) {
+    // if (Math.abs(extensionSpeed.getAsDouble()) > 0.1 && armSubsystem.getCurrentExtension() < ArmConstants.MAX_EXTENSION_PROPORTION) {
+    if (Math.abs(extensionSpeed.getAsDouble()) > 0.1) {
       armSubsystem.unlockExtensionSolenoid();
       armSubsystem.setCurrentExtensionSpeed(extensionSpeed.getAsDouble() / 2.0);
     } else {
       armSubsystem.lockExtensionSolenoid();
-      armSubsystem.setCurrentExtensionSpeed(-0.075);
+      armSubsystem.setCurrentExtensionSpeed(0.075);
     }
   }
 

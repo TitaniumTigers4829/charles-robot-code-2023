@@ -9,12 +9,12 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 public interface ArmSubsystem extends Subsystem {
 
   /** 
-   * Gets the arm's extension 0 to 1.
+   * Gets the arm's extension in meters.
    */
-  public double getExtension();
+  public double getCurrentExtension();
 
   /** 
-   * Sets the arm's extension from 0 to 1.
+   * Sets the arm's extension in meters.
    */
   public void setExtension(double desiredExtension);
 
@@ -57,11 +57,6 @@ public interface ArmSubsystem extends Subsystem {
    * Sets the speed from -1 to 1 of the rotation motors.
    */
   public void setCurrentExtensionSpeed(double speed);
-
-  /**
-   * Stops the arm motor from moving
-   */
-  public void stopArmMotorFromMoving();
 
   /**
    * Returns true if the extension motor is stalling.

@@ -100,9 +100,6 @@ public final class Constants {
       public static final double INITIAL_SPEED = 0.7;
       public static final double BALANCE_ERROR_INIT_DEGREES = 10;
       public static final double BALANCE_ERROR_NEAR_BALANCED = 3;
-
-
-      
     }
   }
   
@@ -266,29 +263,22 @@ public final class Constants {
     public static final int LEADER_ROTATION_MOTOR_ID = 9;
     public static final int FOLLOWER_ROTATION_MOTOR_ID = 10;
 
+    public static final boolean EXTENSION_MOTOR_INVERTED = false;
+
     public static final boolean LEADER_ROTATION_MOTOR_INVERTED = false;
     public static final boolean FOLLOWER_ROTATION_MOTOR_INVERTED = true;
 
     public static final int EXTENSION_MOTOR_ID = 16;
 
     public static final int ROTATION_ENCODER_ID = 15;
-
-    public static final double ROTATION_MAX_VELOCITY = 0.0;
-    public static final double ROTATION_MAX_ACCELERATION = 0.0;
-    public static final double EXTENSION_MAX_VELOCITY = 0.0;
-    public static final double EXTENSION_MAX_ACCELERATION = 0.0;
     
     public static final double ROTATION_P = 0;
     public static final double ROTATION_I = 0;
     public static final double ROTATION_D = 0;
-    public static final TrapezoidProfile.Constraints ROTATION_CONSTRAINTS = new TrapezoidProfile.Constraints(
-      ROTATION_MAX_VELOCITY, ROTATION_MAX_ACCELERATION);
-    public static final TrapezoidProfile.Constraints EXTENSION_CONSTRAINTS = new TrapezoidProfile.Constraints(
-      EXTENSION_MAX_VELOCITY, EXTENSION_MAX_ACCELERATION);
 
-    public static final double EXTENSION_P = 0-9;
-    public static final double EXTENSION_I = 0-9;
-    public static final double EXTENSION_D = 0-9;
+    public static final double EXTENSION_P = .5;
+    public static final double EXTENSION_I = 0;
+    public static final double EXTENSION_D = 0;
 
     public static final double ROTATION_FEED_FORWARD_GAIN = 0-9;
     public static final double ROTATION_ACCELERATION_GAIN = 0-9;
@@ -316,8 +306,25 @@ public final class Constants {
     public static final double MIN_EXTENSION_PROPORTION = 0;
     public static final double MAX_EXTENSION_PROPORTION = 1;
 
+    public static final double ROTATION_MAX_VELOCITY = 0.0;
+    public static final double ROTATION_MAX_ACCELERATION = 0.0;
+
+    public static final double EXTENSION_MAX_VELOCITY = 1.47;
+    public static final double EXTENSION_MAX_ACCELERATION = .5;
+
+    public static final TrapezoidProfile.Constraints ROTATION_CONSTRAINTS = new TrapezoidProfile.Constraints(
+      ROTATION_MAX_VELOCITY, ROTATION_MAX_ACCELERATION);
+    public static final TrapezoidProfile.Constraints EXTENSION_CONSTRAINTS = new TrapezoidProfile.Constraints(
+      EXTENSION_MAX_VELOCITY, EXTENSION_MAX_ACCELERATION);
+
     public static final int STALLING_VELOCITY = 150;
     public static final int TICKS_BEFORE_STALL = 10;
+
+    public static final double[][] ARM_EXTENSION_CORRECTION_LOOKUP_TABLE = {
+    //{arm rotation (degrees), voltage}
+      {}
+    };
+
   }
 
   public static final class ClawConstants {

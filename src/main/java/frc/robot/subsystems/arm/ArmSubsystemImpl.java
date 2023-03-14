@@ -32,8 +32,17 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
   private final MotorControllerGroup rotationMotorControllerGroup;
 
-  private final ArmFeedforward rotationFeedForward;
-  private final SimpleMotorFeedforward extensionFeedForward;
+  private final ArmFeedforward rotationFeedForward = new ArmFeedforward(
+    ArmConstants.ROTATION_FEED_FORWARD_GAIN, 
+    ArmConstants.ROTATION_VELOCITY_GAIN, 
+    ArmConstants.ROTATION_ACCELERATION_GAIN
+  );
+
+  private final SimpleMotorFeedforward extensionFeedForward = new SimpleMotorFeedforward(
+    ArmConstants.EXTENSION_FEED_FORWARD_GAIN, 
+    ArmConstants.EXTENSION_VELOCITY_GAIN,
+    ArmConstants.EXTENSION_ACCELERATION_GAIN
+  );
 
   private final ProfiledPIDController rotationPIDController = new ProfiledPIDController(
     ArmConstants.ROTATION_P, 
@@ -42,15 +51,12 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     ArmConstants.ROTATION_CONSTRAINTS
   );
   
-  private final ProfiledPIDController extensionPIDController = new ProfiledPIDController(
+  private final ProfiledPIDController extensionSpeedPIDController = new ProfiledPIDController(
     ArmConstants.EXTENSION_P,
     ArmConstants.EXTENSION_I,
     ArmConstants.EXTENSION_D,
     ArmConstants.EXTENSION_CONSTRAINTS
   );
-
-  private double currentExtensionSpeed;
-  private double ticksAfterSpeedChange;
 
   /** Creates a new ArmSubsystemImpl. 
    * Feed Forward Gain, Velocity Gain, and Acceleration Gain need to be tuned in constants
@@ -71,33 +77,21 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
     rotationMotorControllerGroup = new MotorControllerGroup(leaderRotationMotor, followerRotationMotor);
     
-    rotationFeedForward = new ArmFeedforward(
-      ArmConstants.ROTATION_FEED_FORWARD_GAIN, 
-      ArmConstants.ROTATION_VELOCITY_GAIN, 
-      ArmConstants.ROTATION_ACCELERATION_GAIN
-    );
-
     rotationEncoder = new CANCoder(ArmConstants.ROTATION_ENCODER_ID);
     rotationEncoder.configMagnetOffset(ArmConstants.EXTENSION_ENCODER_OFFSET);
     rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
 
     extensionMotor = new WPI_TalonFX(ArmConstants.EXTENSION_MOTOR_ID);
-    extensionFeedForward = new SimpleMotorFeedforward(
-      ArmConstants.EXTENSION_FEED_FORWARD_GAIN, 
-      ArmConstants.EXTENSION_VELOCITY_GAIN,
-      ArmConstants.EXTENSION_ACCELERATION_GAIN
-    );
 
-    extensionMotor.setNeutralMode(NeutralMode.Brake);
+    extensionMotor.setInverted(ArmConstants.EXTENSION_MOTOR_INVERTED);
+
+    extensionMotor.setNeutralMode(NeutralMode.Coast);
 
     extensionLockSolenoid = new DoubleSolenoid(
       ArmConstants.EXTENSION_LOCK_MODULE_TYPE, 
       ArmConstants.EXTENSION_LOCK_ENGAGED_ID,
       ArmConstants.EXTENSION_LOCK_DISENGAGED_ID
     );
-
-    currentExtensionSpeed = 0;
-    ticksAfterSpeedChange = 0;
   }
 
   @Override
@@ -120,25 +114,24 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   }
 
   @Override
-  public double getExtension() {
+  public double getCurrentExtension() {
     // Convert motor rotation units (2048 or 4096 for 1 full rotation) to number of rotations
-    double motorRotation = (extensionMotor.getSelectedSensorPosition() / 
+    double motorRotation = (-extensionMotor.getSelectedSensorPosition() / 
       Constants.FALCON_ENCODER_RESOLUTION) * ArmConstants.EXTENSION_MOTOR_GEAR_RATIO;
     // Convert number of rotations to distance (multiply by diameter)
-    double extension = motorRotation * ArmConstants.EXTENSION_SPOOL_DIAMETER * Math.PI; 
-    SmartDashboardLogger.infoNumber("extension", extension);
-    // Converts to output from 0 to 1
-    return extension / ArmConstants.MAX_EXTENSION_LENGTH;
+    return motorRotation * ArmConstants.EXTENSION_SPOOL_DIAMETER * Math.PI;
   }
 
   @Override
   public void setExtension(double desiredExtension) {
     if (desiredExtension >= ArmConstants.MIN_EXTENSION_PROPORTION && desiredExtension <= ArmConstants.MAX_EXTENSION_PROPORTION) {
-      double PIDOutput = extensionPIDController.calculate(getExtension(), desiredExtension);
-      double feedForwardOutput = extensionFeedForward.calculate(extensionPIDController.getSetpoint().velocity);
-      extensionMotor.set(ControlMode.PercentOutput, motorOutputClamp(PIDOutput + feedForwardOutput));
-      currentExtensionSpeed = motorOutputClamp(PIDOutput + feedForwardOutput);
-      ticksAfterSpeedChange = 0;
+      // We control the extension differently based on if it is pulling it in or not
+      // if (desiredExtension < getCurrentExtension()) {
+      //   pullArmIn(desiredExtension);
+      // } else {
+      //   letArmOut(desiredExtension);
+      // }
+      letArmOut(desiredExtension);
     }
   }
 
@@ -165,24 +158,37 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   @Override
   public void setCurrentExtensionSpeed(double speed) {
     extensionMotor.set(speed);
-    currentExtensionSpeed = speed;
-    ticksAfterSpeedChange = 0;
-  }
-
-  @Override
-  public void stopArmMotorFromMoving() {
-    // double speed = getCurrentExtensionSpeed();
-    // double desiredSpeed = 0;
-    // double motorOutput = rotationPIDController.calculate(speed, desiredSpeed);
-    // extensionMotor.set(motorOutput);
   }
 
   @Override
   public boolean isExtensionMotorStalling() {
-    return Math.abs(extensionMotor.getSelectedSensorVelocity()) < ArmConstants.STALLING_VELOCITY 
-      && (Math.abs(currentExtensionSpeed) > 0) && (ticksAfterSpeedChange > ArmConstants.TICKS_BEFORE_STALL);
+    return false;
   }
   
+  @Override
+  public void periodic() {
+    SmartDashboardLogger.infoNumber("extension", getCurrentExtension());
+    SmartDashboard.putNumber("encoder pos", rotationEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("extension speed", extensionMotor.getSelectedSensorVelocity());
+  }
+
+  private void pullArmIn(double extension) {
+    double PIDOutput = extensionSpeedPIDController.calculate(getCurrentExtension(), extension);
+    double feedForwardOutput = extensionFeedForward.calculate(extensionSpeedPIDController.getSetpoint().velocity);
+    extensionMotor.set(PIDOutput + feedForwardOutput);
+  }
+
+  private void letArmOut(double extension) {
+    double PIDOutput = extensionSpeedPIDController.calculate(getCurrentExtension(), extension);
+    SmartDashboard.putNumber("PIDOutput", PIDOutput);
+    SmartDashboard.putNumber("PID Error", extension - getCurrentExtension());
+    // Positive pulls it in
+    if (PIDOutput < 0) {
+      PIDOutput = 0;
+    }
+    extensionMotor.set(PIDOutput);
+  }
+
   /*
    * Returns the motor output with a min. of -1 and max. of 1.
    */
@@ -190,13 +196,4 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     return Math.max(-1, Math.min(1, motorOutput));
   }
 
-  @Override
-  public void periodic() {
-    ticksAfterSpeedChange += 1;
-    // SmartDashboardLogger.infoString("isStalling", String.valueOf(isExtensionMotorStalling()));
-    // SmartDashboardLogger.infoNumber("Extension %", getExtension());
-    // SmartDashboardLogger.infoNumber("Extension encoder units", extensionMotor.getSelectedSensorPosition());
-    // SmartDashboardLogger.infoNumber("Rotation encoder pos:", rotationEncoder.getAbsolutePosition());
-    SmartDashboard.putNumber("encoder pos", rotationEncoder.getAbsolutePosition());
-  }
 }

@@ -24,7 +24,6 @@ import frc.robot.commands.claw.OpenClaw;
 import frc.robot.commands.claw.RunClaw;
 import frc.robot.commands.claw.SetClawRotation;
 import frc.robot.commands.drive.Balance;
-import frc.robot.commands.drive.BalanceFromDocked;
 import frc.robot.commands.drive.DriveCommand;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.arm.ArmSubsystemImpl;
@@ -127,13 +126,15 @@ public class RobotContainer {
 
     driveSubsystem.setDefaultCommand(driveCommand);
 
+
     POVButton driverRightDirectionPad = new POVButton(driverJoystick, JoystickConstants.RIGHT_DPAD_ID);
     driverRightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
     driverRightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroPitchAndRoll));
 
+    
     /* Arm Buttons */
     DoubleSupplier operatorLeftStickY = () -> operatorJoystick.getRawAxis(JoystickConstants.OPERATOR_LEFT_STICK_Y);
-    DoubleSupplier operatorRightStickY = () -> operatorJoystick.getRawAxis(JoystickConstants.OPERATOR_RIGHT_STICK_Y) * -1;
+    DoubleSupplier operatorRightStickY = () -> operatorJoystick.getRawAxis(JoystickConstants.OPERATOR_RIGHT_STICK_Y);
 
     Command manualArmCommand = new ManuallyControlArm(
       armSubsystem, 
@@ -141,10 +142,10 @@ public class RobotContainer {
       operatorRightStickY
     );
 
-    // JoystickButton operatorYButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_Y_BUTTON_ID);
-    // operatorYButton.whileTrue(new SetArmExtension(armSubsystem, .5));
-    // JoystickButton operatorXButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_X_BUTTON_ID);
-    // operatorXButton.onTrue(new InstantCommand(armSubsystem::resetExtensionEncoder));
+    JoystickButton operatorYButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_Y_BUTTON_ID);
+    operatorYButton.whileTrue(new SetArmExtension(armSubsystem, .7));
+    JoystickButton operatorXButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_X_BUTTON_ID);
+    operatorXButton.onTrue(new InstantCommand(armSubsystem::resetExtensionEncoder));
 
     armSubsystem.setDefaultCommand(manualArmCommand);
 
@@ -153,28 +154,6 @@ public class RobotContainer {
     operatorAButton.onTrue(new OpenClaw(clawSubsystem));
     JoystickButton operatorBButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_B_BUTTON_ID);
     operatorBButton.onTrue(new CloseClaw(clawSubsystem));
-
-    JoystickButton operatorYButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_Y_BUTTON_ID);
-    operatorYButton.whileTrue(new SimpleAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem));
-    // operatorYButton.onTrue(new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, "Simple Auto", true));
-
-    JoystickButton operatorXButton = new JoystickButton(driverJoystick, JoystickConstants.OPERATOR_X_BUTTON_ID);
-    operatorXButton.whileTrue(new BalanceFromDocked(driveSubsystem));
-
-    // POVButton operatorDPadUp = new POVButton(operatorJoystick, JoystickConstants.UP_DPAD_ID);
-    // POVButton operatorDPadDown = new POVButton(operatorJoystick, JoystickConstants.DOWN_DPAD_ID);
-    // operatorDPadUp.onTrue(new SetClawRotation(clawSubsystem, 0));
-    // operatorDPadDown.onTrue(new SetClawRotation(clawSubsystem, 180));
-
-    // JoystickButton operatorXButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_X_BUTTON_ID);
-    // operatorXButton.whileTrue(new RunClaw(clawSubsystem, 1));
-
-    // JoystickButton operatorAButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_A_BUTTON_ID);
-    // operatorAButton.onTrue(new InstantCommand(() -> clawSubsystem.setWristMotorSpeed(.05)));
-    // operatorAButton.onFalse(new InstantCommand(() -> clawSubsystem.setWristMotorSpeed(0)));
-
-    // clawSubsystem.setDefaultCommand(new SetClawRotation(clawSubsystem, 0));
-
 
     //Auto Place Buttons
     // JoystickButton autoplaceButton1 = new JoystickButton(buttonBoard, JoystickConstants.BUTTON_1);
