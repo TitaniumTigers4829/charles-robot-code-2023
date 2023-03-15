@@ -154,9 +154,9 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   public double getTorqueFromGravity() {
     // Torque = mg(COM Distance*sin(theta) - r*sin(theta))
     double centerOfMassDistance = (0.4659 * getExtension()) + 0.02528; // This is the equation fit to COM distance
-    double theta = getRotation() - 90; // The angle of the arm is 0 when it's pointing down
-    return ArmConstants.ARM_WEIGHT_NEWTONS * Math.sin(Math.toRadians(theta))
-     * (centerOfMassDistance - ArmConstants.ARM_AXIS_OF_ROTATION_RADIUS);
+    double theta = Math.toRadians(getRotation() - 180); // The angle of the arm is 0 when it's pointing down
+    return ArmConstants.ARM_WEIGHT_NEWTONS * 
+      (centerOfMassDistance * Math.cos(theta) - ArmConstants.ARM_AXIS_OF_ROTATION_RADIUS * Math.sin(theta));
   }
 
   @Override
