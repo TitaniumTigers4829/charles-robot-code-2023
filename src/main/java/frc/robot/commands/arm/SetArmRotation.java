@@ -24,7 +24,7 @@ public class SetArmRotation extends CommandBase {
 
   @Override
   public void execute() {
-    armSubsystem.goToAngle(rotationDegrees);
+    armSubsystem.setRotation(rotationDegrees);
   }
 
   @Override
@@ -34,6 +34,6 @@ public class SetArmRotation extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return Math.abs(armSubsystem.getAngle() - rotationDegrees) < ArmConstants.ROTATION_ACCEPTABLE_ERROR;
+    return Math.abs(armSubsystem.getRotation() - rotationDegrees) < ArmConstants.ROTATION_ACCEPTABLE_ERROR;
   }
 }

@@ -7,20 +7,15 @@ package frc.robot.subsystems.arm;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.dashboard.SmartDashboardLogger;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
@@ -31,12 +26,6 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   private final DoubleSolenoid extensionLockSolenoid;
 
   private final MotorControllerGroup rotationMotorControllerGroup;
-
-  private final ArmFeedforward rotationFeedForward = new ArmFeedforward(
-    ArmConstants.ROTATION_FEED_FORWARD_GAIN, 
-    ArmConstants.ROTATION_VELOCITY_GAIN, 
-    ArmConstants.ROTATION_ACCELERATION_GAIN
-  );
 
   private final ProfiledPIDController rotationPIDController = new ProfiledPIDController(
     ArmConstants.ROTATION_P, 
@@ -68,8 +57,8 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     leaderRotationMotor.setInverted(ArmConstants.LEADER_ROTATION_MOTOR_INVERTED);
     followerRotationMotor.setInverted(ArmConstants.FOLLOWER_ROTATION_MOTOR_INVERTED);
 
-    leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
-    followerRotationMotor.setNeutralMode(NeutralMode.Brake);
+    leaderRotationMotor.setNeutralMode(NeutralMode.Coast);
+    followerRotationMotor.setNeutralMode(NeutralMode.Coast);
 
     rotationMotorControllerGroup = new MotorControllerGroup(leaderRotationMotor, followerRotationMotor);
     
@@ -91,26 +80,24 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   }
 
   @Override
-  public void goToAngle(double desiredAngle) {
-    if (desiredAngle >= ArmConstants.MIN_ROTATION_DEGREES && desiredAngle <= ArmConstants.MAX_ROTATION_DEGREES) {
-      double PIDOutput = rotationPIDController.calculate(getAngle(), desiredAngle);
-      double feedForwardOutput = rotationFeedForward.calculate(desiredAngle, rotationPIDController.getSetpoint().velocity);
-      rotationMotorControllerGroup.set(motorOutputClamp(PIDOutput + feedForwardOutput));
-    }
+  public void setRotation(double desiredAngle) {
+    double PIDOutput = rotationPIDController.calculate(getRotation(), desiredAngle);
+    double feedForwardOutput = ArmConstants.ROTATION_FEED_FORWARD_CONSTANT * getTorqueFromGravity();
+    setRotationSpeed(PIDOutput + feedForwardOutput);
   }
 
   @Override
-  public double getAngle() {
-    // FIXME: commented out radian conversion because goToAngle() takes in degrees
-    return rotationEncoder.getAbsolutePosition();// * Math.PI / 180;
+  public double getRotation() {
+    return rotationEncoder.getAbsolutePosition();
   }
 
+  @Override
   public void resetExtensionEncoder() {
     extensionMotor.setSelectedSensorPosition(0);
   }
 
   @Override
-  public double getCurrentExtension() {
+  public double getExtension() {
     // Convert motor rotation units (2048 or 4096 for 1 full rotation) to number of rotations
     double motorRotation = (-extensionMotor.getSelectedSensorPosition() / 
       Constants.FALCON_ENCODER_RESOLUTION) * ArmConstants.EXTENSION_MOTOR_GEAR_RATIO;
@@ -120,25 +107,12 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
   @Override
   public void setExtension(double extension) {
-    double PIDOutput = extensionSpeedPIDController.calculate(getCurrentExtension(), extension);
-    if (PIDOutput < -0.3) {
-      PIDOutput = -0.3;
-    }
-    setCurrentExtensionSpeed(PIDOutput);
-  }
-
-  @Override
-  public void retractArm() {
-    if (Math.abs(getCurrentExtension() - .04) > ArmConstants.EXTENSION_ACCEPTABLE_ERROR) {
-      double PIDOutput = extensionSpeedPIDController.calculate(getCurrentExtension(), .04);
-      if (PIDOutput < -0.3) {
-        PIDOutput = -0.3;
-      }
-      setCurrentExtensionSpeed(PIDOutput);
-    } else {
-      extensionMotor.set(0);
-    }
-
+    double PIDOutput = extensionSpeedPIDController.calculate(getExtension(), extension);
+    // Sets a floor
+    PIDOutput = Math.max(PIDOutput, ArmConstants.EXTENSION_MOTOR_MIN_OUTPUT);
+    // Sets a ceiling
+    PIDOutput = Math.min(PIDOutput, ArmConstants.EXTENSION_MOTOR_MAX_OUTPUT);
+    setExtensionSpeed(PIDOutput);
   }
 
   @Override
@@ -152,12 +126,17 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   }
 
   @Override
+  public double getRotationSpeed() {
+    return rotationEncoder.getVelocity();
+  }
+
+  @Override
   public void setRotationSpeed(double speed) {
     rotationMotorControllerGroup.set(speed / 2);
   }
 
   @Override
-  public double getCurrentExtensionSpeed() {
+  public double getExtensionSpeed() {
     // Convert motor rotation units (2048 for 1 full rotation) to number of rotations
     double motorRotation = (-extensionMotor.getSelectedSensorVelocity() / Constants.FALCON_ENCODER_RESOLUTION)
       * ArmConstants.EXTENSION_MOTOR_GEAR_RATIO;
@@ -167,37 +146,49 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   }
 
   @Override
-  public void setCurrentExtensionSpeed(double speed) {
+  public void setExtensionSpeed(double speed) {
     extensionMotor.set(speed);
   }
 
   @Override
-  public void resetExtensionController() {
-    extensionSpeedPIDController.reset(getCurrentExtension(), getCurrentExtensionSpeed());
+  public double getTorqueFromGravity() {
+    // Torque = mg(COM Distance*sin(theta) - r*sin(theta))
+    double centerOfMassDistance = (0.4659 * getExtension()) + 0.02528; // This is the equation fit to COM distance
+    double theta = getRotation() - 90; // The angle of the arm is 0 when it's pointing down
+    return ArmConstants.ARM_WEIGHT_NEWTONS * Math.sin(Math.toRadians(theta))
+     * (centerOfMassDistance - ArmConstants.ARM_AXIS_OF_ROTATION_RADIUS);
   }
 
   @Override
   public boolean isExtensionMotorStalling() {
     return consecutiveHighAmpLoops >= 20;
   }
+
+  @Override
+  public void setExtensionMotorNeutralMode(NeutralMode neutralMode) {
+    extensionMotor.setNeutralMode(neutralMode);
+  }
   
   @Override
+  public void resetRotationController() {
+    rotationPIDController.reset(getRotation(), getExtensionSpeed());
+  }
+
+  @Override
+  public void resetExtensionController() {
+    extensionSpeedPIDController.reset(getExtension(), getExtensionSpeed());
+  }
+
+  @Override
   public void periodic() {
-    SmartDashboardLogger.infoNumber("extension (meters)", getCurrentExtension());
-//    SmartDashboardLogger.infoNumber("encoder pos", rotationEncoder.getAbsolutePosition());
-    SmartDashboardLogger.infoNumber("extension speed (m/s)", getCurrentExtensionSpeed());
-    SmartDashboardLogger.infoNumber("extension amps", extensionMotor.getSupplyCurrent());
+    SmartDashboardLogger.infoNumber("extension (meters)", getExtension());
+    SmartDashboardLogger.infoNumber("encoder pos", rotationEncoder.getAbsolutePosition());
 
     if (extensionMotor.getSupplyCurrent() > ArmConstants.EXTENSION_MOTOR_STALLING_AMPS) {
       consecutiveHighAmpLoops++;
     } else {
       consecutiveHighAmpLoops = 0;
     }
-  }
-
-  @Override
-  public void setExtensionMotorNeutralMode(NeutralMode neutralMode) {
-    extensionMotor.setNeutralMode(neutralMode);
   }
 
   /*

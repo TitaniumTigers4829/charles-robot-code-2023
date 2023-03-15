@@ -260,6 +260,9 @@ public final class Constants {
 
   public static final class ArmConstants {
 
+    public static final double ARM_WEIGHT_NEWTONS = 9.8 * 0-9;
+    public static final double ARM_AXIS_OF_ROTATION_RADIUS = Units.inchesToMeters(2.1);
+
     public static final int LEADER_ROTATION_MOTOR_ID = 9;
     public static final int FOLLOWER_ROTATION_MOTOR_ID = 10;
 
@@ -280,9 +283,7 @@ public final class Constants {
     public static final double EXTENSION_I = 0;
     public static final double EXTENSION_D = 0;
 
-    public static final double ROTATION_FEED_FORWARD_GAIN = 0-9;
-    public static final double ROTATION_ACCELERATION_GAIN = 0-9;
-    public static final double ROTATION_VELOCITY_GAIN = 0-9;
+    public static final double ROTATION_FEED_FORWARD_CONSTANT = 0-9;
 
     public static final double EXTENSION_FEED_FORWARD_GAIN = 0;
     public static final double EXTENSION_ACCELERATION_GAIN = 0;
@@ -298,14 +299,15 @@ public final class Constants {
     public static final int EXTENSION_LOCK_ENGAGED_ID = 2;
     public static final int EXTENSION_LOCK_DISENGAGED_ID = 3;
 
-    public static final double EXTENSION_ACCEPTABLE_ERROR = 0.04; 
+    public static final double EXTENSION_MOTOR_MIN_OUTPUT = -.3;
+    public static final double EXTENSION_MOTOR_MAX_OUTPUT = .75;
+
+    public static final double EXTENSION_ACCEPTABLE_ERROR = 0.01; 
     public static final double ROTATION_ACCEPTABLE_ERROR = 5;
 
     public static final double MIN_ROTATION_DEGREES = 0-9;
     public static final double MAX_ROTATION_DEGREES = 0-9;
 
-    public static final double MIN_EXTENSION_PROPORTION = 0;
-    public static final double MAX_EXTENSION_PROPORTION = 1;
 
     public static final double ROTATION_MAX_VELOCITY = 0.0;
     public static final double ROTATION_MAX_ACCELERATION = 0.0;
@@ -320,6 +322,18 @@ public final class Constants {
 
     public static final int STALLING_VELOCITY = 150;
     public static final int TICKS_BEFORE_STALL = 10;
+
+    public static final double[][] CENTER_OF_MASS_LOOKUP_TABLE = {
+      //{extension (meters), distance from pivot point to COM}
+      {0, Units.inchesToMeters(1.024)},
+      {.1, Units.inchesToMeters(2.9)},
+      {.2, Units.inchesToMeters(4.5)},
+      {.4, Units.inchesToMeters(8.4)},
+      {.6, Units.inchesToMeters(12)},
+      {.75, Units.inchesToMeters(16)},
+      {1.05, Units.inchesToMeters(20)},
+      {1.25, Units.inchesToMeters(34)},
+    };
 
     public static final double[][] ARM_EXTENSION_CORRECTION_LOOKUP_TABLE = {
     //{arm rotation (degrees), voltage}
@@ -449,8 +463,8 @@ public final class Constants {
 
   public static final class LimelightConstants {
   
-    public static final String FRONT_LIMELIGHT_NAME = "limelight-tigers";
-    public static final String BACK_LIMELIGHT_NAME = "limelight-jack";
+    public static final String FRONT_LIMELIGHT_NAME = "limelight-jack";
+    public static final String BACK_LIMELIGHT_NAME = "limelight-tigers";
 
     public static final double[][] APRIL_TAG_POSITIONS = {
       // { x, y, z}

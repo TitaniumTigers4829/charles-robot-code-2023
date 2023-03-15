@@ -48,11 +48,11 @@ public class ManuallyControlArm extends CommandBase {
     // if (Math.abs(extensionSpeed.getAsDouble()) > 0.1 && armSubsystem.getCurrentExtension() < ArmConstants.MAX_EXTENSION_PROPORTION) {
     if (Math.abs(extensionSpeed.getAsDouble()) > 0.1) {
       armSubsystem.unlockExtensionSolenoid();
-      armSubsystem.setCurrentExtensionSpeed(extensionSpeed.getAsDouble());
+      armSubsystem.setExtensionSpeed(extensionSpeed.getAsDouble());
       SmartDashboardLogger.infoNumber("motor output: ", extensionSpeed.getAsDouble());
     } else {
-//      armSubsystem.lockExtensionSolenoid();
-      armSubsystem.setCurrentExtensionSpeed(0.075);
+      armSubsystem.lockExtensionSolenoid();
+      armSubsystem.setExtensionSpeed(0.075);
     }
   }
 

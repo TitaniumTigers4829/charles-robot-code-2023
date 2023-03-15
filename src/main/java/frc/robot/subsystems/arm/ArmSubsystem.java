@@ -12,17 +12,12 @@ public interface ArmSubsystem extends Subsystem {
   /** 
    * Gets the arm's extension in meters.
    */
-  public double getCurrentExtension();
+  public double getExtension();
 
   /** 
    * Sets the arm's extension in meters.
    */
   public void setExtension(double extension);
-
-  /**
-   * Sets the arm's extension to 0.
-   */
-  public void retractArm();
 
   /**
    * Resets the extension motor's encoder to 0.
@@ -32,12 +27,12 @@ public interface ArmSubsystem extends Subsystem {
   /** 
    * Returns the angle, in degrees, of the arm (0 being straight down).  
    */
-  public double getAngle();
+  public double getRotation();
 
   /** 
    * Sets the arm angle in degrees (0 being straight down).
    */
-  public void goToAngle(double desiredAngle);
+  public void setRotation(double desiredAngle);
 
   /**
    * Locks the extension solenoid
@@ -50,6 +45,11 @@ public interface ArmSubsystem extends Subsystem {
   public void unlockExtensionSolenoid();
 
   /**
+   * Returns the rotation speed of the arm in degrees per second.
+   */
+  public double getRotationSpeed();
+
+  /**
    * Sets the speed from -1 to 1 of the rotation motors.
    */
   public void setRotationSpeed(double speed);
@@ -57,17 +57,17 @@ public interface ArmSubsystem extends Subsystem {
   /**
    * Returns the speed of the extension motor.
    */
-  public double getCurrentExtensionSpeed();
+  public double getExtensionSpeed();
 
   /**
    * Sets the speed from -1 to 1 of the rotation motors.
    */
-  public void setCurrentExtensionSpeed(double speed);
+  public void setExtensionSpeed(double speed);
 
   /**
-   * Resets the PID controller for the extension motor.
+   * Returns the torque on the arm caused by gravity.
    */
-  public void resetExtensionController();
+  public double getTorqueFromGravity();
 
   /**
    * Returns true if the extension motor is stalling.
@@ -78,5 +78,15 @@ public interface ArmSubsystem extends Subsystem {
    * Sets the neutral mode of the extension motor.
    */
   public void setExtensionMotorNeutralMode(NeutralMode neutralMode);
+
+  /**
+   * Resets the PID controller for the rotation motor.
+   */
+  public void resetRotationController();
+
+  /**
+   * Resets the PID controller for the extension motor.
+   */
+  public void resetExtensionController();
 
   }
