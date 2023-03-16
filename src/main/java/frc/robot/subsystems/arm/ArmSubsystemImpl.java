@@ -16,6 +16,7 @@ import frc.robot.dashboard.SmartDashboardLogger;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
@@ -57,8 +58,8 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     leaderRotationMotor.setInverted(ArmConstants.LEADER_ROTATION_MOTOR_INVERTED);
     followerRotationMotor.setInverted(ArmConstants.FOLLOWER_ROTATION_MOTOR_INVERTED);
 
-    leaderRotationMotor.setNeutralMode(NeutralMode.Coast);
-    followerRotationMotor.setNeutralMode(NeutralMode.Coast);
+    leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
+    followerRotationMotor.setNeutralMode(NeutralMode.Brake);
 
     rotationMotorControllerGroup = new MotorControllerGroup(leaderRotationMotor, followerRotationMotor);
     
@@ -69,7 +70,6 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     extensionMotor = new WPI_TalonFX(ArmConstants.EXTENSION_MOTOR_ID);
 
     extensionMotor.setInverted(ArmConstants.EXTENSION_MOTOR_INVERTED);
-
     extensionMotor.setNeutralMode(NeutralMode.Coast);
 
     extensionLockSolenoid = new DoubleSolenoid(
@@ -84,6 +84,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     double PIDOutput = rotationPIDController.calculate(getRotation(), desiredAngle);
     double feedForwardOutput = ArmConstants.ROTATION_FEED_FORWARD_CONSTANT * getTorqueFromGravity();
     setRotationSpeed(PIDOutput + feedForwardOutput);
+    SmartDashboard.putNumber("motor output", PIDOutput + feedForwardOutput);
   }
 
   @Override
@@ -133,6 +134,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   @Override
   public void setRotationSpeed(double speed) {
     rotationMotorControllerGroup.set(speed / 2);
+    SmartDashboard.putNumber("rotation output", speed / 2);
   }
 
   @Override
@@ -154,7 +156,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   public double getTorqueFromGravity() {
     // Torque = mg(COM Distance*sin(theta) - r*sin(theta))
     double centerOfMassDistance = (0.4659 * getExtension()) + 0.02528; // This is the equation fit to COM distance
-    double theta = Math.toRadians(getRotation() - 180); // The angle of the arm is 0 when it's pointing down
+    double theta = Math.toRadians(getRotation() - 90); // The angle of the arm is 0 when it's pointing down
     return ArmConstants.ARM_WEIGHT_NEWTONS * 
       (centerOfMassDistance * Math.cos(theta) - ArmConstants.ARM_AXIS_OF_ROTATION_RADIUS * Math.sin(theta));
   }

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.JoystickConstants;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.arm.HoldArm;
 import frc.robot.commands.arm.ManuallyControlArm;
 import frc.robot.commands.arm.SetArmExtension;
 import frc.robot.commands.autonomous.FollowPathPlannerTrajectory;
@@ -145,7 +146,7 @@ public class RobotContainer {
     );
 
     JoystickButton operatorYButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_Y_BUTTON_ID);
-    operatorYButton.whileTrue(new SetArmExtension(armSubsystem, Units.inchesToMeters(30)));
+    operatorYButton.whileTrue(new HoldArm(armSubsystem));
     JoystickButton operatorAButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_A_BUTTON_ID);
     operatorAButton.whileTrue(new SetArmExtension(armSubsystem, .01));
     JoystickButton operatorXButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_X_BUTTON_ID);

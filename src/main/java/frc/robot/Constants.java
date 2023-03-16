@@ -260,7 +260,7 @@ public final class Constants {
 
   public static final class ArmConstants {
 
-    public static final double ARM_WEIGHT_NEWTONS = 9.8 * 0-9;
+    public static final double ARM_WEIGHT_NEWTONS = 9.8 * 25;
     public static final double ARM_AXIS_OF_ROTATION_RADIUS = Units.inchesToMeters(2.1);
 
     public static final int LEADER_ROTATION_MOTOR_ID = 9;
@@ -283,7 +283,7 @@ public final class Constants {
     public static final double EXTENSION_I = 0;
     public static final double EXTENSION_D = 0;
 
-    public static final double ROTATION_FEED_FORWARD_CONSTANT = 0-9;
+    public static final double ROTATION_FEED_FORWARD_CONSTANT = .001;
 
     public static final double EXTENSION_FEED_FORWARD_GAIN = 0;
     public static final double EXTENSION_ACCELERATION_GAIN = 0;
