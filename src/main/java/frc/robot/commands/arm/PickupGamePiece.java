@@ -6,23 +6,20 @@ package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.claw.ClawSubsystem;
 
-public class PlaceGamePiece extends CommandBase {
+public class PickupGamePiece extends CommandBase {
 
   private final ArmSubsystem armSubsystem;
   private final ClawSubsystem clawSubsystem;
-  private final double rotation;
-  private final double extension;
+  private final double rotation = 108.5;
+  private final double extension = .95;
 
-  public PlaceGamePiece(ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, double rotation, double extension) {
+  public PickupGamePiece(ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem) {
     this.armSubsystem = armSubsystem;
     this.clawSubsystem = clawSubsystem;
     addRequirements(this.armSubsystem);
-    this.rotation = rotation;
-    this.extension = extension;
   }
 
   @Override
@@ -30,8 +27,13 @@ public class PlaceGamePiece extends CommandBase {
     armSubsystem.resetExtensionController();
     armSubsystem.resetRotationController();
     armSubsystem.unlockExtensionSolenoid();
-    if (armSubsystem.getCargoMode() == "Cone") {
-      clawSubsystem.setWristPosition(Math.PI);
+    clawSubsystem.setWristPosition(0);
+    if (armSubsystem.getCargoMode() == "Cube") {
+      clawSubsystem.open();
+      clawSubsystem.setIntakeSpeed(.15);
+    } else {
+      clawSubsystem.close();
+      clawSubsystem.setIntakeSpeed(.15);
     }
   }
 
@@ -45,9 +47,10 @@ public class PlaceGamePiece extends CommandBase {
   public void end(boolean interrupted) {
     armSubsystem.setRotationSpeed(0);
     armSubsystem.setExtensionSpeed(0);
-    clawSubsystem.open();
     if (armSubsystem.getCargoMode() == "Cube") {
-      clawSubsystem.setIntakeSpeed(-.08);
+      clawSubsystem.setIntakeSpeed(.08);
+    } else {
+      clawSubsystem.setIntakeSpeed(0);
     }
   }
 

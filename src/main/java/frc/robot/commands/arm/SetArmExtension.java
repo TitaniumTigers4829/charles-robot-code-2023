@@ -5,6 +5,7 @@
 package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.arm.ArmSubsystem;
 
 public class SetArmExtension extends CommandBase {
@@ -31,12 +32,12 @@ public class SetArmExtension extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-//    armSubsystem.setCurrentExtensionSpeed(0.1);
-//    armSubsystem.lockExtensionSolenoid();\[]
+   armSubsystem.setExtensionSpeed(0.01);
+   armSubsystem.lockExtensionSolenoid();
   }
 
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(extension - armSubsystem.getExtension()) < ArmConstants.EXTENSION_ACCEPTABLE_ERROR;
   }
 }

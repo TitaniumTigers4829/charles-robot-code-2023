@@ -276,7 +276,7 @@ public final class Constants {
 
     public static final int ROTATION_ENCODER_ID = 15;
     
-    public static final double ROTATION_P = 0.045;
+    public static final double ROTATION_P = 0.05;
     public static final double ROTATION_I = 0;
     public static final double ROTATION_D = 0;
 
@@ -310,8 +310,8 @@ public final class Constants {
     public static final double MAX_ROTATION_DEGREES = 0-9;
 
 
-    public static final double ROTATION_MAX_VELOCITY = 90;
-    public static final double ROTATION_MAX_ACCELERATION = 70;
+    public static final double ROTATION_MAX_VELOCITY = 100;
+    public static final double ROTATION_MAX_ACCELERATION = 80;
 
     public static final double EXTENSION_MAX_VELOCITY = 0.75;
     public static final double EXTENSION_MAX_ACCELERATION = 2;
@@ -365,8 +365,8 @@ public final class Constants {
     public static final double INTAKE_I = 0;
     public static final double INTAKE_D = 0;
 
-    public static final int MIN_WRIST_ROTATION_DEGREES = 0;
-    public static final int MAX_WRIST_ROTATION_DEGREES = 180;
+    public static final double MIN_WRIST_ROTATION_RADIANS = 0;
+    public static final double MAX_WRIST_ROTATION_RADIANS = Math.PI;
 
     public static final double WRIST_ROTATION_ACCEPTABLE_ERROR = 3;
   }

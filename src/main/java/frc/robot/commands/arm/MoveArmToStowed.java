@@ -4,7 +4,6 @@
 
 package frc.robot.commands.arm;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.arm.ArmSubsystem;
@@ -28,19 +27,17 @@ public class MoveArmToStowed extends CommandBase {
   public void initialize() {
     armSubsystem.resetExtensionController();
     armSubsystem.resetRotationController();
-    armSubsystem.unlockExtensionSolenoid();
+    armSubsystem.lockExtensionSolenoid();
     numberOfSchedulerRuns = 0;
   }
 
   @Override
   public void execute() {
     numberOfSchedulerRuns++;
-    if (numberOfSchedulerRuns == 15) {
-      clawSubsystem.close();
-      clawSubsystem.setIntakeSpeed(0);
-    } else if (numberOfSchedulerRuns > 15) {
+    if (numberOfSchedulerRuns > 15) {
       armSubsystem.setRotation(rotation);
       if (numberOfSchedulerRuns > 25) {
+        armSubsystem.unlockExtensionSolenoid();
         armSubsystem.setExtension(extension);
       }
     }

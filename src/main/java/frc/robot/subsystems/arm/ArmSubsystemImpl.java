@@ -43,6 +43,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   );
 
   private double consecutiveHighAmpLoops = 0;
+  private String cargoMode = "Cone";
 
   /** Creates a new ArmSubsystemImpl. 
    * Feed Forward Gain, Velocity Gain, and Acceleration Gain need to be tuned in constants
@@ -181,10 +182,25 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   }
 
   @Override
+  public void switchCargoMode() {
+    if (cargoMode == "Cone") {
+      cargoMode = "Cube";
+    } else {
+      cargoMode = "Cone";
+    }
+  }
+
+  @Override
+  public String getCargoMode() {
+    return cargoMode;
+  }
+
+  @Override
   public void periodic() {
     SmartDashboardLogger.infoNumber("extension (meters)", getExtension());
     SmartDashboardLogger.infoNumber("encoder pos", rotationEncoder.getAbsolutePosition());
     SmartDashboardLogger.infoNumber("arm vel", getRotationSpeed());
+    SmartDashboardLogger.infoString("Cargo Mode", cargoMode);
 
     if (extensionMotor.getSupplyCurrent() > ArmConstants.EXTENSION_MOTOR_STALLING_AMPS) {
       consecutiveHighAmpLoops++;

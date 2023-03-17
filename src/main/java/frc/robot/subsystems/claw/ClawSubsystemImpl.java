@@ -61,8 +61,8 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     SmartDashboard.putNumber("intake amps", intakeMotor.getSupplyCurrent());
     SmartDashboard.putNumber("wrist angle", getWristAngle());
     // wristPIDController.reset(getWristAngle(), getRotationSpeed());
-    if (setWristAngle >= ClawConstants.MIN_WRIST_ROTATION_DEGREES && setWristAngle <= ClawConstants.MAX_WRIST_ROTATION_DEGREES) {
-      wristMotor.set(ControlMode.Position, 0);
+    if (setWristAngle >= ClawConstants.MIN_WRIST_ROTATION_RADIANS && setWristAngle <= ClawConstants.MAX_WRIST_ROTATION_RADIANS) {
+      wristMotor.set(ControlMode.Position, setWristAngle);
       SmartDashboard.putBoolean("working", true);
     } else {
       wristMotor.set(0);

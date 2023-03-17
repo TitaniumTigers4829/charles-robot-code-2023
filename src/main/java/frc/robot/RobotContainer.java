@@ -10,16 +10,17 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.JoystickConstants;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.commands.arm.HoldArm;
 import frc.robot.commands.arm.ManuallyControlArm;
 import frc.robot.commands.arm.PlaceGamePiece;
 import frc.robot.commands.arm.MoveArmToStowed;
+import frc.robot.commands.arm.PickupGamePiece;
 import frc.robot.commands.arm.SetArmExtension;
 import frc.robot.commands.arm.SetArmRotation;
 import frc.robot.commands.autonomous.FollowPathPlannerTrajectory;
@@ -153,16 +154,17 @@ public class RobotContainer {
 
 
     JoystickButton operatorAButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_A_BUTTON_ID);
-    operatorAButton.whileTrue(new SetArmExtension(armSubsystem, .01));
-    JoystickButton operatorYButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_Y_BUTTON_ID);
-    operatorYButton.whileTrue(new SetArmExtension(armSubsystem, .7));
-    JoystickButton operatorXButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_X_BUTTON_ID);
-    operatorXButton.onTrue(new InstantCommand(armSubsystem::resetExtensionEncoder));
+    operatorAButton.whileTrue(new PlaceGamePiece(armSubsystem, clawSubsystem, 242, 0.95));
+    operatorAButton.onFalse(new MoveArmToStowed(armSubsystem, clawSubsystem));
     JoystickButton operatorBButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_B_BUTTON_ID);
-    // operatorBButton.whileTrue(new SetArmRotation(armSubsystem, 180));
-    operatorBButton.whileTrue(new PlaceGamePiece(armSubsystem, clawSubsystem, 242, 0.95));
+    operatorBButton.whileTrue(new PickupGamePiece(armSubsystem, clawSubsystem));
     operatorBButton.onFalse(new MoveArmToStowed(armSubsystem, clawSubsystem));
     
+    JoystickButton operatorXButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_X_BUTTON_ID);
+    operatorXButton.onTrue(new InstantCommand(armSubsystem::resetExtensionEncoder));
+    JoystickButton operatorYButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_Y_BUTTON_ID);
+    operatorYButton.onTrue(new InstantCommand(armSubsystem::switchCargoMode));
+
     armSubsystem.setDefaultCommand(manualArmCommand);
 
     /* Claw Buttons */

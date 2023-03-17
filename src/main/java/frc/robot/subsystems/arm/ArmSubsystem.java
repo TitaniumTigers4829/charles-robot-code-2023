@@ -89,4 +89,8 @@ public interface ArmSubsystem extends Subsystem {
    */
   public void resetExtensionController();
 
+  public void switchCargoMode();
+
+  public String getCargoMode();
+
   }

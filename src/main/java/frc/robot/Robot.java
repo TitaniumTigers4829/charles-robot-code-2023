@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.arm.SetArmExtension;
 import frc.robot.commands.arm.SetArmRotation;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -106,6 +107,7 @@ public class Robot extends TimedRobot {
 
     m_robotContainer.armSubsystem.setExtensionMotorNeutralMode(NeutralMode.Coast);
     new SetArmRotation(m_robotContainer.armSubsystem, 180).schedule();
+    new SetArmExtension(m_robotContainer.armSubsystem, 0).schedule();
   }
 
   /**
