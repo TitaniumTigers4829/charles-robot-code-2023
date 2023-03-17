@@ -4,17 +4,9 @@
 
 package frc.robot.subsystems.claw;
 
-import java.util.ResourceBundle.Control;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -40,6 +32,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
       ClawConstants.SOLENOID_BACKWARD
     );
 
+    // TODO: check
     wristMotor = new WPI_TalonFX(ClawConstants.WRIST_MOTOR_ID, Constants.RIO_CAN_BUS_STRING);
     intakeMotor = new WPI_TalonFX(ClawConstants.INTAKE_MOTOR_ID, Constants.RIO_CAN_BUS_STRING);
 
@@ -61,8 +54,8 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     SmartDashboard.putNumber("intake amps", intakeMotor.getSupplyCurrent());
     SmartDashboard.putNumber("wrist angle", getWristAngle());
     // wristPIDController.reset(getWristAngle(), getRotationSpeed());
-    if (setWristAngle >= ClawConstants.MIN_WRIST_ROTATION_RADIANS && setWristAngle <= ClawConstants.MAX_WRIST_ROTATION_RADIANS) {
-      wristMotor.set(ControlMode.MotionMagic, setWristAngle * (Constants.FALCON_ENCODER_RESOLUTION * 360.0));
+    if (setWristAngle >= ClawConstants.MIN_WRIST_ROTATION_DEGREES && setWristAngle <= ClawConstants.MAX_WRIST_ROTATION_DEGREES) {
+      wristMotor.set(ControlMode.MotionMagic, setWristAngle * (Constants.FALCON_ENCODER_RESOLUTION / 360.0));
       SmartDashboard.putBoolean("working", true);
     } else {
       wristMotor.set(0);
@@ -112,9 +105,9 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     setWristAngle = angle;
   }
 
-  private double getRotationSpeed() {
-    return wristMotor.getSelectedSensorVelocity() * (2.0 * Math.PI / Constants.FALCON_ENCODER_RESOLUTION) * 10.0;
-  }
+  // private double getRotationSpeed() {
+  //   return wristMotor.getSelectedSensorVelocity() * (2.0 * Math.PI / Constants.FALCON_ENCODER_RESOLUTION) * 10.0;
+  // }
 
   /*
    * Returns the motor output with a min. of -1 and max. of 1.
@@ -122,6 +115,4 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   private double motorOutputClamp(double motorOutput) {
     return Math.max(-1, Math.min(1, motorOutput));
   }
-
-
 }

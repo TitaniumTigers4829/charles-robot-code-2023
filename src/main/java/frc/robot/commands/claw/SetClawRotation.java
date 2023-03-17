@@ -4,34 +4,24 @@
 
 package frc.robot.commands.claw;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.ClawConstants;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.claw.ClawSubsystem;
 
-public class SetClawRotation extends CommandBase {
-  
+// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
+// information, see:
+// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
+public class SetClawRotation extends InstantCommand {
   private ClawSubsystem clawSubsystem;
-  private int wristAngle;
-
-  public SetClawRotation(ClawSubsystem clawSubsystem, int wristAngle) {
+  private double rotation;
+  public SetClawRotation(ClawSubsystem clawSubsystem, double rotation) {
     this.clawSubsystem = clawSubsystem;
-    addRequirements(this.clawSubsystem);
-    this.wristAngle = wristAngle;
+    this.rotation = rotation;
+    addRequirements(clawSubsystem);
   }
 
+  // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
-
-  @Override
-  public void execute() {
-    clawSubsystem.setWristPosition(wristAngle);
-  }
-
-  @Override
-  public void end(boolean interrupted) {}
-
-  @Override
-  public boolean isFinished() {
-    return true;
+  public void initialize() {
+    clawSubsystem.setWristPosition(rotation);
   }
 }

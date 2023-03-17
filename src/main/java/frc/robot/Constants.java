@@ -370,8 +370,8 @@ public final class Constants {
     public static final double INTAKE_I = 0;
     public static final double INTAKE_D = 0;
 
-    public static final double MIN_WRIST_ROTATION_RADIANS = 0;
-    public static final double MAX_WRIST_ROTATION_RADIANS = Math.PI;
+    public static final double MIN_WRIST_ROTATION_DEGREES = 0;
+    public static final double MAX_WRIST_ROTATION_DEGREES = 180;
 
     public static final double WRIST_ROTATION_ACCEPTABLE_ERROR = 3;
   }
