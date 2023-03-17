@@ -11,12 +11,12 @@ import frc.robot.subsystems.claw.ClawSubsystem;
 public class SetClawRotation extends CommandBase {
   
   private ClawSubsystem clawSubsystem;
-  private double desiredRotation;
+  private int wristAngle;
 
-  public SetClawRotation(ClawSubsystem clawSubsystem, double desiredRotation) {
+  public SetClawRotation(ClawSubsystem clawSubsystem, int wristAngle) {
     this.clawSubsystem = clawSubsystem;
     addRequirements(this.clawSubsystem);
-    this.desiredRotation = desiredRotation;
+    this.wristAngle = wristAngle;
   }
 
   @Override
@@ -24,7 +24,7 @@ public class SetClawRotation extends CommandBase {
 
   @Override
   public void execute() {
-    clawSubsystem.goToWristAngle(desiredRotation);
+    clawSubsystem.setWristPosition(wristAngle);
   }
 
   @Override
@@ -32,6 +32,6 @@ public class SetClawRotation extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return Math.abs(desiredRotation - clawSubsystem.getWristAngle()) < ClawConstants.WRIST_ROTATION_ACCEPTABLE_ERROR;
+    return true;
   }
 }

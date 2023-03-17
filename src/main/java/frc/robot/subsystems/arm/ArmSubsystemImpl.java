@@ -83,8 +83,8 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   public void setRotation(double desiredAngle) {
     double PIDOutput = rotationPIDController.calculate(getRotation(), desiredAngle);
     double feedForwardOutput = ArmConstants.ROTATION_FEED_FORWARD_CONSTANT * getTorqueFromGravity();
+    SmartDashboard.putNumber("Rot PID Output", PIDOutput);
     setRotationSpeed(PIDOutput + feedForwardOutput);
-    SmartDashboard.putNumber("motor output", PIDOutput + feedForwardOutput);
   }
 
   @Override
@@ -134,7 +134,6 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   @Override
   public void setRotationSpeed(double speed) {
     rotationMotorControllerGroup.set(speed / 2);
-    SmartDashboard.putNumber("rotation output", speed / 2);
   }
 
   @Override
@@ -185,6 +184,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   public void periodic() {
     SmartDashboardLogger.infoNumber("extension (meters)", getExtension());
     SmartDashboardLogger.infoNumber("encoder pos", rotationEncoder.getAbsolutePosition());
+    SmartDashboardLogger.infoNumber("arm vel", getRotationSpeed());
 
     if (extensionMotor.getSupplyCurrent() > ArmConstants.EXTENSION_MOTOR_STALLING_AMPS) {
       consecutiveHighAmpLoops++;

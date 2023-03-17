@@ -32,6 +32,7 @@ public final class Constants {
   public static final int FALCON_ENCODER_RESOLUTION = 2048;
   public static final int CANCODER_RESOLUTION = 4096; 
   public static final String CANIVORE_CAN_BUS_STRING = "Canivore 1";
+  public static final String RIO_CAN_BUS_STRING = "rio";
 
   public static final class DriveConstants {
 
@@ -275,15 +276,15 @@ public final class Constants {
 
     public static final int ROTATION_ENCODER_ID = 15;
     
-    public static final double ROTATION_P = 0;
+    public static final double ROTATION_P = 0.045;
     public static final double ROTATION_I = 0;
     public static final double ROTATION_D = 0;
 
-    public static final double EXTENSION_P = -5;
+    public static final double EXTENSION_P = -5.5;
     public static final double EXTENSION_I = 0;
     public static final double EXTENSION_D = 0;
 
-    public static final double ROTATION_FEED_FORWARD_CONSTANT = .001;
+    public static final double ROTATION_FEED_FORWARD_CONSTANT = .0013;
 
     public static final double EXTENSION_FEED_FORWARD_GAIN = 0;
     public static final double EXTENSION_ACCELERATION_GAIN = 0;
@@ -302,18 +303,18 @@ public final class Constants {
     public static final double EXTENSION_MOTOR_MIN_OUTPUT = -.3;
     public static final double EXTENSION_MOTOR_MAX_OUTPUT = .75;
 
-    public static final double EXTENSION_ACCEPTABLE_ERROR = 0.01; 
-    public static final double ROTATION_ACCEPTABLE_ERROR = 5;
+    public static final double EXTENSION_ACCEPTABLE_ERROR = 0.05; 
+    public static final double ROTATION_ACCEPTABLE_ERROR = 4;
 
     public static final double MIN_ROTATION_DEGREES = 0-9;
     public static final double MAX_ROTATION_DEGREES = 0-9;
 
 
-    public static final double ROTATION_MAX_VELOCITY = 0.0;
-    public static final double ROTATION_MAX_ACCELERATION = 0.0;
+    public static final double ROTATION_MAX_VELOCITY = 90;
+    public static final double ROTATION_MAX_ACCELERATION = 70;
 
     public static final double EXTENSION_MAX_VELOCITY = 0.75;
-    public static final double EXTENSION_MAX_ACCELERATION = 1;
+    public static final double EXTENSION_MAX_ACCELERATION = 2;
 
     public static final TrapezoidProfile.Constraints ROTATION_CONSTRAINTS = new TrapezoidProfile.Constraints(
       ROTATION_MAX_VELOCITY, ROTATION_MAX_ACCELERATION);
@@ -347,24 +348,25 @@ public final class Constants {
     public static final int SOLENOID_FORWARD = 0;
     public static final int SOLENOID_BACKWARD = 1;
     public static final int WRIST_MOTOR_ID = 17;
-    public static final int LEFT_WHEEL_MOTOR_ID = 22;
-    public static final int RIGHT_WHEEL_MOTOR_ID = 31;
-    public static final boolean LEFT_WHEEL_MOTOR_INVERTED = false;
-    public static final boolean RIGHT_WHEEL_MOTOR_INVERTED = true;
+    public static final int INTAKE_MOTOR_ID = 18;
+    public static final boolean INTAKE_MOTOR_INVERTED = false;
     public static final double WHEELS_MAX_RPM = 0-9;
 
-    public static final double WRIST_MAX_VELOCITY = 0.0;
-    public static final double WRIST_MAX_ACCELERATION = 0.0;
+    public static final double WRIST_MAX_RADIANS_PER_SECOND = Math.PI;
+    public static final double WRIST_MAX_RADIANS_PER_SECOND_SQUARED = Math.PI / 24;
 
     public static final double WRIST_F = 0;
-    public static final double WRIST_P = 0;
+    public static final double WRIST_P = 0.3;
     public static final double WRIST_I = 0;
     public static final double WRIST_D = 0;
-    public static final TrapezoidProfile.Constraints WRIST_CONSTRAINTS = new TrapezoidProfile.Constraints(
-      WRIST_MAX_VELOCITY, WRIST_MAX_ACCELERATION);
 
-    public static final double MIN_WRIST_ROTATION_DEGREES = 0;
-    public static final double MIN_WRIST_ROTATION_ENCODER_UNITS = 180;
+    public static final double INTAKE_F = 0;
+    public static final double INTAKE_P = 0;
+    public static final double INTAKE_I = 0;
+    public static final double INTAKE_D = 0;
+
+    public static final int MIN_WRIST_ROTATION_DEGREES = 0;
+    public static final int MAX_WRIST_ROTATION_DEGREES = 180;
 
     public static final double WRIST_ROTATION_ACCEPTABLE_ERROR = 3;
   }

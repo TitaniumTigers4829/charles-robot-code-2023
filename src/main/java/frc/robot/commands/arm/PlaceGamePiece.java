@@ -7,35 +7,45 @@ package frc.robot.commands.arm;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.claw.ClawSubsystem;
 
-public class SetArmRotation extends CommandBase {
+public class PlaceGamePiece extends CommandBase {
 
-  private ArmSubsystem armSubsystem;
-  private double rotation;
+  private final ArmSubsystem armSubsystem;
+  private final ClawSubsystem clawSubsystem;
+  private final double rotation;
+  private final double extension;
 
-  public SetArmRotation(ArmSubsystem armSubsystem, double rotation) {
+  public PlaceGamePiece(ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, double rotation, double extension) {
     this.armSubsystem = armSubsystem;
+    this.clawSubsystem = clawSubsystem;
+    addRequirements(this.armSubsystem);
     this.rotation = rotation;
-    addRequirements(armSubsystem);
+    this.extension = extension;
   }
 
   @Override
   public void initialize() {
+    armSubsystem.resetExtensionController();
     armSubsystem.resetRotationController();
+    armSubsystem.unlockExtensionSolenoid();
   }
 
   @Override
   public void execute() {
     armSubsystem.setRotation(rotation);
+    armSubsystem.setExtension(extension);
   }
 
   @Override
   public void end(boolean interrupted) {
     armSubsystem.setRotationSpeed(0);
+    armSubsystem.setExtensionSpeed(0);
+    clawSubsystem.open();
   }
 
   @Override
   public boolean isFinished() {
-    return Math.abs(rotation - armSubsystem.getRotation()) < ArmConstants.ROTATION_ACCEPTABLE_ERROR;
+    return false;
   }
 }

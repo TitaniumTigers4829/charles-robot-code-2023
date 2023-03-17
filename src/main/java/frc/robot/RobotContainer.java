@@ -18,7 +18,10 @@ import frc.robot.Constants.JoystickConstants;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.arm.HoldArm;
 import frc.robot.commands.arm.ManuallyControlArm;
+import frc.robot.commands.arm.PlaceGamePiece;
+import frc.robot.commands.arm.MoveArmToStowed;
 import frc.robot.commands.arm.SetArmExtension;
+import frc.robot.commands.arm.SetArmRotation;
 import frc.robot.commands.autonomous.FollowPathPlannerTrajectory;
 import frc.robot.commands.autonomous.SimpleAuto;
 import frc.robot.commands.autonomous.TwoConeBalanceAuto;
@@ -134,6 +137,9 @@ public class RobotContainer {
     driverRightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
     driverRightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroPitchAndRoll));
 
+    // JoystickButton driverAButton = new JoystickButton(driverJoystick, JoystickConstants.DRIVER_A_BUTTON_ID);
+    // driverAButton.onTrue(new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, "Simple Auto Red", true));
+
     
     /* Arm Buttons */
     DoubleSupplier operatorLeftStickY = () -> operatorJoystick.getRawAxis(JoystickConstants.OPERATOR_LEFT_STICK_Y);
@@ -145,20 +151,25 @@ public class RobotContainer {
       operatorRightStickY
     );
 
-    JoystickButton operatorYButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_Y_BUTTON_ID);
-    operatorYButton.whileTrue(new HoldArm(armSubsystem));
+
     JoystickButton operatorAButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_A_BUTTON_ID);
     operatorAButton.whileTrue(new SetArmExtension(armSubsystem, .01));
+    JoystickButton operatorYButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_Y_BUTTON_ID);
+    operatorYButton.whileTrue(new SetArmExtension(armSubsystem, .7));
     JoystickButton operatorXButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_X_BUTTON_ID);
     operatorXButton.onTrue(new InstantCommand(armSubsystem::resetExtensionEncoder));
-
+    JoystickButton operatorBButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_B_BUTTON_ID);
+    // operatorBButton.whileTrue(new SetArmRotation(armSubsystem, 180));
+    operatorBButton.whileTrue(new PlaceGamePiece(armSubsystem, clawSubsystem, 242, 0.95));
+    operatorBButton.onFalse(new MoveArmToStowed(armSubsystem, clawSubsystem));
+    
     armSubsystem.setDefaultCommand(manualArmCommand);
 
     /* Claw Buttons */
-//    JoystickButton operatorAButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_A_BUTTON_ID);
-//    operatorAButton.onTrue(new OpenClaw(clawSubsystem));
-//    JoystickButton operatorBButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_B_BUTTON_ID);
-//    operatorBButton.onTrue(new CloseClaw(clawSubsystem));
+  //  JoystickButton operatorAButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_A_BUTTON_ID);
+  //  operatorAButton.onTrue(new OpenClaw(clawSubsystem));
+  //  JoystickButton operatorYButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_Y_BUTTON_ID);
+  //  operatorYButton.onTrue(new CloseClaw(clawSubsystem));
 
     //Auto Place Buttons
     // JoystickButton autoplaceButton1 = new JoystickButton(buttonBoard, JoystickConstants.BUTTON_1);

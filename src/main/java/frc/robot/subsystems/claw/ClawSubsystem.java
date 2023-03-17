@@ -29,17 +29,19 @@ public interface ClawSubsystem extends Subsystem {
    */
   public void setWristMotorSpeed(double speed);
   /** 
-   * Returns the angle, in degrees, of the wrist (0 meaning the claw is
+   * Returns the angle, in radians, of the wrist (0 meaning the claw is
    * parallel with the ground).
    */
   public double getWristAngle();
-
-  /** Sets the target angle of the wrist.
-   */
-  public void goToWristAngle(double angle);
 
   /**
    * Resets the wrist's encoder position to the minimum position.
    */
   public void zeroWristEncoder();
+
+  /**
+   * Sets the position of the wrist in radians.
+   */
+  public void setWristPosition(double angle);
+  
 }

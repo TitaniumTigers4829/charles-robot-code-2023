@@ -13,42 +13,61 @@ import frc.robot.extras.LimelightHelpers.LimelightTarget_Fiducial;
 
 public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsystem {
 
-  private LimelightResults currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.FRONT_LIMELIGHT_NAME);
+  private LimelightResults currentlyUsedLimelightResults;
   private String currentlyUsedLimelight = LimelightConstants.FRONT_LIMELIGHT_NAME;
   
-  public VisionSubsystemImpl() {}
+  public VisionSubsystemImpl() {
+    try {
+      currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.FRONT_LIMELIGHT_NAME);
+    } catch (Exception e) {
+      currentlyUsedLimelightResults = null;
+    }
+  }
 
   @Override
   public void periodic() {
-    // Every periodic chooses the limelight to use based off of their distance from april tags
-    LimelightTarget_Fiducial[] frontLimelightAprilTags = LimelightHelpers.getLatestResults(LimelightConstants.FRONT_LIMELIGHT_NAME).targetingResults.targets_Fiducials;
-    LimelightTarget_Fiducial[] backLimelightAprilTags = LimelightHelpers.getLatestResults(LimelightConstants.BACK_LIMELIGHT_NAME).targetingResults.targets_Fiducials;
+    try {
+      // Every periodic chooses the limelight to use based off of their distance from april tags
+      LimelightTarget_Fiducial[] frontLimelightAprilTags = LimelightHelpers.getLatestResults(LimelightConstants.FRONT_LIMELIGHT_NAME).targetingResults.targets_Fiducials;
+      LimelightTarget_Fiducial[] backLimelightAprilTags = LimelightHelpers.getLatestResults(LimelightConstants.BACK_LIMELIGHT_NAME).targetingResults.targets_Fiducials;
 
-    // Gets the distance from the closest april tag. If it can't see one, returns a really big number.
-    double frontLimelightDistance = frontLimelightAprilTags.length > 0
-      ? getLimelightAprilTagDistance((int) frontLimelightAprilTags[0].fiducialID) : Double.MAX_VALUE;
-    double backLimelightDistance = backLimelightAprilTags.length > 0
-      ? getLimelightAprilTagDistance((int) backLimelightAprilTags[0].fiducialID) : Double.MAX_VALUE;
+      // Gets the distance from the closest april tag. If it can't see one, returns a really big number.
+      double frontLimelightDistance = frontLimelightAprilTags.length > 0
+        ? getLimelightAprilTagDistance((int) frontLimelightAprilTags[0].fiducialID) : Double.MAX_VALUE;
+      double backLimelightDistance = backLimelightAprilTags.length > 0
+        ? getLimelightAprilTagDistance((int) backLimelightAprilTags[0].fiducialID) : Double.MAX_VALUE;
 
-    currentlyUsedLimelight = frontLimelightDistance <= backLimelightDistance 
-      ? LimelightConstants.FRONT_LIMELIGHT_NAME : LimelightConstants.BACK_LIMELIGHT_NAME;
-    currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(currentlyUsedLimelight);
-    SmartDashboard.putString("currentlyUsedLimelight", currentlyUsedLimelight);
+      currentlyUsedLimelight = frontLimelightDistance <= backLimelightDistance 
+        ? LimelightConstants.FRONT_LIMELIGHT_NAME : LimelightConstants.BACK_LIMELIGHT_NAME;
+      currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(currentlyUsedLimelight);
+      SmartDashboard.putString("currentlyUsedLimelight", currentlyUsedLimelight);
+    } catch (Exception e) {
+      SmartDashboard.putString("currentlyUsedLimelight", "Limelight err: " + e.toString());
+    }
   }
 
   @Override
   public boolean canSeeAprilTags() {
-    return LimelightHelpers.getFiducialID(currentlyUsedLimelight) != -1;
+    try {
+      return LimelightHelpers.getFiducialID(currentlyUsedLimelight) != -1;
+    } catch (Exception e) {
+      return false;
+    }
   }
 
   @Override
   public Pose2d getPoseFromAprilTags() {
-    Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
-    // The origin of botpose is at the center of the field
-    double robotX = botPose.getX() + TrajectoryConstants.FIELD_LENGTH_METERS / 2;
-    double robotY = botPose.getY() + TrajectoryConstants.FIELD_WIDTH_METERS / 2;
-    Rotation2d robotRotation = botPose.getRotation();
-    return new Pose2d(robotX, robotY, robotRotation);
+    try {
+      Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
+      // The origin of botpose is at the center of the field
+      double robotX = botPose.getX() + TrajectoryConstants.FIELD_LENGTH_METERS / 2;
+      double robotY = botPose.getY() + TrajectoryConstants.FIELD_WIDTH_METERS / 2;
+      Rotation2d robotRotation = botPose.getRotation();
+      return new Pose2d(robotX, robotY, robotRotation);
+    } catch (Exception e) {
+      // TODO: add logic here
+      return null;
+    }
   }
 
   @Override
@@ -64,12 +83,21 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
 
   @Override
   public int getNumberOfAprilTags() {
-    return currentlyUsedLimelightResults.targetingResults.targets_Fiducials.length;
+    try {
+      return currentlyUsedLimelightResults.targetingResults.targets_Fiducials.length;
+    } catch (Exception e) {
+      return 0;
+    }
   }
 
   @Override
   public long getTimeStampSeconds() {
-    return (long) (currentlyUsedLimelightResults.targetingResults.timestamp_LIMELIGHT_publish / 1000);
+    try {
+      return (long) (currentlyUsedLimelightResults.targetingResults.timestamp_LIMELIGHT_publish / 1000);
+    } catch (Exception e) {
+      // TODO: add more logic
+      return -1;
+    }
   }
 
   @Override
@@ -121,8 +149,10 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
     if (aprilTagID >= 1) {
       double aprilTagX = LimelightConstants.APRIL_TAG_POSITIONS[aprilTagID - 1][0]; // April tag id starts at 1
       double aprilTagY = LimelightConstants.APRIL_TAG_POSITIONS[aprilTagID - 1][1];
-      double robotX = getPoseFromAprilTags().getX();
-      double robotY = getPoseFromAprilTags().getY();
+      // Added a little optimization
+      Pose2d pose = getPoseFromAprilTags();
+      double robotX = pose.getX();
+      double robotY = pose.getY();
       return Math.sqrt(Math.pow(aprilTagX - robotX, 2) + Math.pow(aprilTagY - robotY, 2));
     }
 
