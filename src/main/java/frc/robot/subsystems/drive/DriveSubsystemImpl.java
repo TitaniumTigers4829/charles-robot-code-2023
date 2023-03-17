@@ -218,6 +218,14 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
       getRotation2d(),
       getModulePositions()
     );
+    double[] pose = new double[2];
+    Pose2d position = odometry.getEstimatedPosition();
+    pose[0] = position.getX();
+    pose[1] = position.getY();
+    SmartDashboard.putNumberArray("botPose", pose);
+    SmartDashboard.putNumber("pitch", getHeading());
+    SmartDashboard.putNumber("roll", getRoll());
+    SmartDashboard.putNumber("yaw", gyro.getYaw());
 
     frontLeftSwerveModule.periodicFunction();
     rearLeftSwerveModule.periodicFunction();

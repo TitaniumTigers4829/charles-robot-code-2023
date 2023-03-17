@@ -31,7 +31,7 @@ public class PlaceGamePiece extends CommandBase {
     armSubsystem.resetRotationController();
     armSubsystem.unlockExtensionSolenoid();
     if (armSubsystem.getCargoMode() == "Cone") {
-      clawSubsystem.setWristPosition(Math.PI);
+      clawSubsystem.setWristPosition(180);
     }
   }
 

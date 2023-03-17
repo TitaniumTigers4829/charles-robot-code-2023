@@ -62,7 +62,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     SmartDashboard.putNumber("wrist angle", getWristAngle());
     // wristPIDController.reset(getWristAngle(), getRotationSpeed());
     if (setWristAngle >= ClawConstants.MIN_WRIST_ROTATION_RADIANS && setWristAngle <= ClawConstants.MAX_WRIST_ROTATION_RADIANS) {
-      wristMotor.set(ControlMode.Position, setWristAngle);
+      wristMotor.set(ControlMode.MotionMagic, setWristAngle * (Constants.FALCON_ENCODER_RESOLUTION * 360.0));
       SmartDashboard.putBoolean("working", true);
     } else {
       wristMotor.set(0);
@@ -99,7 +99,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   @Override
   public double getWristAngle() {
-    return wristMotor.getSelectedSensorPosition() * (2.0 * Math.PI / Constants.FALCON_ENCODER_RESOLUTION);
+    return wristMotor.getSelectedSensorPosition() * (360.0 / Constants.FALCON_ENCODER_RESOLUTION);
   }
 
   @Override

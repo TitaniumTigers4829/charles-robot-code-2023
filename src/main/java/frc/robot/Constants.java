@@ -356,7 +356,12 @@ public final class Constants {
     public static final double WRIST_MAX_RADIANS_PER_SECOND_SQUARED = Math.PI / 24;
 
     public static final double WRIST_F = 0;
-    public static final double WRIST_P = 0.3;
+    // TODO: tune
+    // 0.005 * 180 ~ 0.99 (max motor speed)
+    // This is a rough estimate done by Ryan in the car
+    public static final double WRIST_P = 0.005;
+    // previous value:
+    // public static final double WRIST_P = 0.3;
     public static final double WRIST_I = 0;
     public static final double WRIST_D = 0;
 
