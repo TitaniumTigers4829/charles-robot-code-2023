@@ -37,8 +37,14 @@ public class MoveArmToStowed extends CommandBase {
     if (numberOfSchedulerRuns > 15) {
       armSubsystem.setRotation(rotation);
       if (numberOfSchedulerRuns > 25) {
-        armSubsystem.unlockExtensionSolenoid();
-        armSubsystem.setExtension(extension);
+        clawSubsystem.setWristPosition(-180);
+        if (Math.abs(extension - armSubsystem.getExtension()) < ArmConstants.EXTENSION_ACCEPTABLE_ERROR) {
+          armSubsystem.setExtensionSpeed(0);
+          armSubsystem.lockExtensionSolenoid();
+        } else {
+          armSubsystem.unlockExtensionSolenoid();
+          armSubsystem.setExtension(extension);
+        }
       }
     }
   }
@@ -52,7 +58,7 @@ public class MoveArmToStowed extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return Math.abs(rotation - armSubsystem.getRotation()) < ArmConstants.ROTATION_ACCEPTABLE_ERROR
+    return Math.abs(rotation - armSubsystem.getRotation()) < 3.0
       && Math.abs(extension - armSubsystem.getExtension()) < ArmConstants.EXTENSION_ACCEPTABLE_ERROR;
   }
 }

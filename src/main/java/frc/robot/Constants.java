@@ -276,11 +276,11 @@ public final class Constants {
 
     public static final int ROTATION_ENCODER_ID = 15;
     
-    public static final double ROTATION_P = 0.05;
+    public static final double ROTATION_P = 0.043;
     public static final double ROTATION_I = 0;
     public static final double ROTATION_D = 0;
 
-    public static final double EXTENSION_P = -5.5;
+    public static final double EXTENSION_P = -6;
     public static final double EXTENSION_I = 0;
     public static final double EXTENSION_D = 0;
 
@@ -304,7 +304,7 @@ public final class Constants {
     public static final double EXTENSION_MOTOR_MAX_OUTPUT = .75;
 
     public static final double EXTENSION_ACCEPTABLE_ERROR = 0.05; 
-    public static final double ROTATION_ACCEPTABLE_ERROR = 4;
+    public static final double ROTATION_ACCEPTABLE_ERROR = 1; // 4
 
     public static final double MIN_ROTATION_DEGREES = 0-9;
     public static final double MAX_ROTATION_DEGREES = 0-9;
@@ -344,27 +344,33 @@ public final class Constants {
   }
 
   public static final class ClawConstants {
+    public static final double WRIST_POS_TO_DEG = (360.0 / Constants.FALCON_ENCODER_RESOLUTION) / (76.0 / 20.0);
+    public static final double DEG_TO_WRIST_POS = (Constants.FALCON_ENCODER_RESOLUTION / 360.0) * (76.0 / 20.0);
 
     public static final int SOLENOID_FORWARD = 0;
     public static final int SOLENOID_BACKWARD = 1;
+
     public static final int WRIST_MOTOR_ID = 17;
     public static final int INTAKE_MOTOR_ID = 18;
-    public static final boolean INTAKE_MOTOR_INVERTED = false;
-    public static final double WHEELS_MAX_RPM = 0-9;
 
-    public static final double WRIST_MAX_RADIANS_PER_SECOND = Math.PI;
-    public static final double WRIST_MAX_RADIANS_PER_SECOND_SQUARED = Math.PI / 24;
+    public static final boolean INTAKE_MOTOR_INVERTED = false;
+    public static final boolean WRIST_MOTOR_INVERTED = false;
+
+    public static final double WRIST_MAX_RADIANS_PER_SECOND = 180;
+    public static final double WRIST_MAX_RADIANS_PER_SECOND_SQUARED = 180.0 / 24;
 
     public static final double WRIST_F = 0;
-    // TODO: tune
-    // 0.005 * 180 ~ 0.99 (max motor speed)
-    // This is a rough estimate done by Ryan in the car
-    public static final double WRIST_P = 0.005;
-    // previous value:
-    // public static final double WRIST_P = 0.3;
+    public static final double WRIST_P = 0.08;
     public static final double WRIST_I = 0;
     public static final double WRIST_D = 0;
+    public static final double WRIST_I_ZONE = 0;
 
+    // TODO: tune
+    public static final double WRIST_MAX_VELOCITY = 6.5;
+    public static final double WRIST_MAX_ACCELERATION = 6.5 / 1.25;
+    public static final int WRIST_SMOOTHING = 5;
+    public static final double WRIST_TOLERANCE = 30;
+    
     public static final double INTAKE_F = 0;
     public static final double INTAKE_P = 0;
     public static final double INTAKE_I = 0;

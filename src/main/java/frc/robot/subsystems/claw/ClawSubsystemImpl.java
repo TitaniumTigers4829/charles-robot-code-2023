@@ -6,6 +6,8 @@ package frc.robot.subsystems.claw;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -22,9 +24,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   private final WPI_TalonFX intakeMotor;
 
   private boolean isClawClosed;
-  private double setWristAngle = 0;
 
-  /** Creates a new ClawSubsystemImpl. */
   public ClawSubsystemImpl() {
     clawSolenoid = new DoubleSolenoid(
       PneumaticsModuleType.CTREPCM,
@@ -32,20 +32,28 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
       ClawConstants.SOLENOID_BACKWARD
     );
 
-    // TODO: check
     wristMotor = new WPI_TalonFX(ClawConstants.WRIST_MOTOR_ID, Constants.RIO_CAN_BUS_STRING);
-    intakeMotor = new WPI_TalonFX(ClawConstants.INTAKE_MOTOR_ID, Constants.RIO_CAN_BUS_STRING);
 
-    wristMotor.config_kF(0, ClawConstants.WRIST_F);
+    wristMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+    wristMotor.setInverted(ClawConstants.WRIST_MOTOR_INVERTED);
+    wristMotor.setNeutralMode(NeutralMode.Brake);
     wristMotor.config_kP(0, ClawConstants.WRIST_P);
     wristMotor.config_kI(0, ClawConstants.WRIST_I);
     wristMotor.config_kD(0, ClawConstants.WRIST_D);
-    intakeMotor.config_kF(0, ClawConstants.INTAKE_F);
-    intakeMotor.config_kP(0, ClawConstants.INTAKE_P);
-    intakeMotor.config_kI(0, ClawConstants.INTAKE_I);
-    intakeMotor.config_kD(0, ClawConstants.INTAKE_D);
+    wristMotor.config_kF(0, ClawConstants.WRIST_F);
+    wristMotor.config_IntegralZone(0, ClawConstants.WRIST_I_ZONE);
+    // How should we get these?
+    wristMotor.configMotionCruiseVelocity(ClawConstants.WRIST_MAX_VELOCITY);
+    wristMotor.configMotionAcceleration(ClawConstants.WRIST_MAX_ACCELERATION);
+    // What do you recommend?
+    wristMotor.configMotionSCurveStrength(ClawConstants.WRIST_SMOOTHING);
+    // What does this do?
+    wristMotor.configAllowableClosedloopError(0, ClawConstants.WRIST_TOLERANCE);
 
-    wristMotor.setNeutralMode(NeutralMode.Brake);
+    // What does configForwardSoftLimitThreshold do? Should we do it?
+
+    intakeMotor = new WPI_TalonFX(ClawConstants.INTAKE_MOTOR_ID, Constants.RIO_CAN_BUS_STRING);
+
     intakeMotor.setNeutralMode(NeutralMode.Brake);
   }
 
@@ -53,14 +61,8 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   public void periodic() {
     SmartDashboard.putNumber("intake amps", intakeMotor.getSupplyCurrent());
     SmartDashboard.putNumber("wrist angle", getWristAngle());
-    // wristPIDController.reset(getWristAngle(), getRotationSpeed());
-    if (setWristAngle >= ClawConstants.MIN_WRIST_ROTATION_DEGREES && setWristAngle <= ClawConstants.MAX_WRIST_ROTATION_DEGREES) {
-      wristMotor.set(ControlMode.MotionMagic, setWristAngle * (Constants.FALCON_ENCODER_RESOLUTION / 360.0));
-      SmartDashboard.putBoolean("working", true);
-    } else {
-      wristMotor.set(0);
-      SmartDashboard.putBoolean("working", false);
-    }
+    SmartDashboard.putNumber("position_", wristMotor.getSelectedSensorPosition());
+
   }
 
   @Override
@@ -92,7 +94,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   @Override
   public double getWristAngle() {
-    return wristMotor.getSelectedSensorPosition() * (360.0 / Constants.FALCON_ENCODER_RESOLUTION);
+    return wristMotor.getSelectedSensorPosition() * ClawConstants.WRIST_POS_TO_DEG;
   }
 
   @Override
@@ -102,12 +104,17 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   @Override
   public void setWristPosition(double angle) {
-    setWristAngle = angle;
-  }
+    double angleInEncoderUnits = angle * ClawConstants.DEG_TO_WRIST_POS;
+    // Should we do the arbitrary ff stuff?
+    wristMotor.set(ControlMode.MotionMagic, angleInEncoderUnits);
 
-  // private double getRotationSpeed() {
-  //   return wristMotor.getSelectedSensorVelocity() * (2.0 * Math.PI / Constants.FALCON_ENCODER_RESOLUTION) * 10.0;
-  // }
+    // if (angle >= ClawConstants.MIN_WRIST_ROTATION_DEGREES && angle <= ClawConstants.MAX_WRIST_ROTATION_DEGREES) {
+      // wristMotor.set(ControlMode.Position, angle * ClawConstants.DEG_TO_WRIST_POS);
+      // wristMotor.set(ControlMode.MotionMagic, angle * ClawConstants.DEG_TO_WRIST_POS);
+    // } else {
+    //   wristMotor.set(0);
+    // }
+  }
 
   /*
    * Returns the motor output with a min. of -1 and max. of 1.

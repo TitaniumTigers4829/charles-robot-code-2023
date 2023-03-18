@@ -12,8 +12,8 @@ public class PickupGamePiece extends CommandBase {
 
   private final ArmSubsystem armSubsystem;
   private final ClawSubsystem clawSubsystem;
-  private final double rotation = 108.5;
-  private final double extension = .95;
+  private final double rotation = 105.3;
+  private final double extension = 1.39;
 
   public PickupGamePiece(ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem) {
     this.armSubsystem = armSubsystem;
@@ -26,7 +26,7 @@ public class PickupGamePiece extends CommandBase {
     armSubsystem.resetExtensionController();
     armSubsystem.resetRotationController();
     armSubsystem.unlockExtensionSolenoid();
-    clawSubsystem.setWristPosition(0);
+    clawSubsystem.setWristPosition(-180);
     if (armSubsystem.getCargoMode() == "Cube") {
       clawSubsystem.open();
       clawSubsystem.setIntakeSpeed(.15);

@@ -19,6 +19,9 @@ import frc.robot.commands.arm.PlaceGamePiece;
 import frc.robot.commands.arm.MoveArmToStowed;
 import frc.robot.commands.arm.PickupGamePiece;
 import frc.robot.commands.autonomous.SimpleAuto;
+import frc.robot.commands.claw.RunClaw;
+import frc.robot.commands.claw.SetClawRotation;
+import frc.robot.commands.claw.SetClawRotationSpeed;
 import frc.robot.commands.drive.DriveCommand;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.arm.ArmSubsystemImpl;
@@ -140,7 +143,6 @@ public class RobotContainer {
       operatorRightStickY
     );
 
-
     JoystickButton operatorAButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_A_BUTTON_ID);
     operatorAButton.whileTrue(new PlaceGamePiece(armSubsystem, clawSubsystem, 242, 0.95));
     operatorAButton.onFalse(new MoveArmToStowed(armSubsystem, clawSubsystem));
@@ -150,8 +152,12 @@ public class RobotContainer {
     
     JoystickButton operatorXButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_X_BUTTON_ID);
     operatorXButton.onTrue(new InstantCommand(armSubsystem::resetExtensionEncoder));
+    operatorXButton.onTrue(new InstantCommand(clawSubsystem::zeroWristEncoder));
     JoystickButton operatorYButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_Y_BUTTON_ID);
     operatorYButton.onTrue(new InstantCommand(armSubsystem::switchCargoMode));
+
+    // JoystickButton operatorXButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_X_BUTTON_ID);
+    // operatorXButton.whileTrue(new RunClaw(clawSubsystem, 0.15));
 
     armSubsystem.setDefaultCommand(manualArmCommand);
 
@@ -221,5 +227,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // return new TwoConeBalanceAuto(driveSubsystem, visionSubsystem);
     return new SimpleAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem);
+    // return null;
   }
 }

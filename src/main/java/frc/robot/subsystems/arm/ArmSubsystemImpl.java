@@ -82,7 +82,10 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   @Override
   public void setRotation(double desiredAngle) {
     double PIDOutput = rotationPIDController.calculate(getRotation(), desiredAngle);
-    double feedForwardOutput = ArmConstants.ROTATION_FEED_FORWARD_CONSTANT * getTorqueFromGravity();
+    double feedForwardOutput = 0;
+    if (Math.abs(desiredAngle - getRotation()) < ArmConstants.ROTATION_ACCEPTABLE_ERROR) {
+      feedForwardOutput = ArmConstants.ROTATION_FEED_FORWARD_CONSTANT * getTorqueFromGravity();
+    }
     SmartDashboard.putNumber("Rot PID Output", PIDOutput);
     setRotationSpeed(PIDOutput + feedForwardOutput);
   }

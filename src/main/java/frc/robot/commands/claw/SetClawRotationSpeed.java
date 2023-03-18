@@ -4,35 +4,38 @@
 
 package frc.robot.commands.claw;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.claw.ClawSubsystem;
 
-public class SetClawRotation extends CommandBase {
-
-  private final ClawSubsystem clawSubsystem;
-  private final double rotation;
-
-  public SetClawRotation(ClawSubsystem clawSubsystem, double rotation) {
+public class SetClawRotationSpeed extends CommandBase {
+  private ClawSubsystem clawSubsystem;
+  private DoubleSupplier speed;
+  /** Creates a new SetClawRotationSpeed. */
+  public SetClawRotationSpeed(ClawSubsystem clawSubsystem, DoubleSupplier speed) {
     this.clawSubsystem = clawSubsystem;
-    this.rotation = rotation;
+    this.speed = speed;
     addRequirements(clawSubsystem);
   }
 
+  // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
+  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    clawSubsystem.setWristPosition(rotation);
+    clawSubsystem.setWristMotorSpeed(speed.getAsDouble());
   }
 
+  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     clawSubsystem.setWristMotorSpeed(0);
   }
 
+  // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;
