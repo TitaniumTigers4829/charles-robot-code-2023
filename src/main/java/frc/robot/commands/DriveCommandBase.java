@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.extras.MultiLinearInterpolator;
@@ -44,6 +45,7 @@ public abstract class DriveCommandBase extends CommandBase {
       consecutiveAprilTagFrames++;
 
       double distanceFromClosestAprilTag = visionSubsystem.getDistanceFromClosestAprilTag();
+      SmartDashboard.putNumber("distance from closest", distanceFromClosestAprilTag);
       // Sets the pose estimator confidence in vision based off of number of april tags and distance
       if (visionSubsystem.getNumberOfAprilTags() == 1) {
         double xStandardDeviation = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[0];
@@ -60,10 +62,12 @@ public abstract class DriveCommandBase extends CommandBase {
       // Only updates the pose estimator if the limelight pose is new and reliable
       if (currentTimeStampSeconds > lastTimeStampSeconds && consecutiveAprilTagFrames > LimelightConstants.DETECTED_FRAMES_FOR_RELIABILITY) {
         Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
+        SmartDashboard.putBoolean("updating pose", true);
         driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, currentTimeStampSeconds);
       }
     } else {
       consecutiveAprilTagFrames = 0;
+      SmartDashboard.putBoolean("updating pose", false);
     }
 
     lastTimeStampSeconds = currentTimeStampSeconds;

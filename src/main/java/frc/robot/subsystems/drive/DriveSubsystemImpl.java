@@ -100,7 +100,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   @SuppressWarnings("ParameterName")
   @Override
   public void drive(double xSpeed, double ySpeed, double rotationSpeed, boolean fieldRelative) {
-    SmartDashboard.putBoolean("isFieldRelative", fieldRelative);
+    // SmartDashboard.putBoolean("isFieldRelative", fieldRelative);
     SwerveModuleState[] swerveModuleStates = DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
       fieldRelative
       ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotationSpeed, getFieldRelativeRotation2d())
@@ -174,6 +174,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     // The gyro barely drifts throughout the match, so we trust it absolutely
     Pose2d visionMeasurementExcludingRotation = 
       new Pose2d(visionMeasurement.getX(), visionMeasurement.getY(), getRotation2d());
+      // SmartDashboard.putString("vision measurement", visionMeasurementExcludingRotation.toString());
     odometry.addVisionMeasurement(visionMeasurementExcludingRotation, currentTimeStampSeconds);
   }
 
@@ -185,6 +186,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   @Override
   public void setPoseEstimatorVisionConfidence(double xStandardDeviation, double yStandardDeviation,
     double thetaStandardDeviation) {
+      SmartDashboard.putNumber("y std", yStandardDeviation);
     odometry.setVisionMeasurementStdDevs(VecBuilder.fill(xStandardDeviation, yStandardDeviation, thetaStandardDeviation));
   }
   
@@ -218,14 +220,6 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     );
     Pose2d pose = odometry.getEstimatedPosition();
     SmartDashboard.putString("Estimated pose", pose.toString());
-
-    double[] pose_ = new double[2];
-    pose_[0] = pose.getX();
-    pose_[1] = pose.getY();
-    SmartDashboard.putNumberArray("botPose", pose_);
-    SmartDashboard.putNumber("pitch", getHeading());
-    SmartDashboard.putNumber("roll", getRoll());
-    SmartDashboard.putNumber("yaw", gyro.getYaw());
   }
 
 }

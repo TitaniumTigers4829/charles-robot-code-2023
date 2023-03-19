@@ -42,17 +42,17 @@ public class SimpleAuto extends SequentialCommandGroup {
       // zero wrist
       new InstantCommand(clawSubsystem::zeroWristEncoder),
       // place
-      new PlaceGamePiece(armSubsystem, clawSubsystem, 241, 0.97).withTimeout(1.75),
+      new PlaceGamePiece(armSubsystem, clawSubsystem, 241, 0.97).withTimeout(2),
       // stow
       new MoveArmToStowedAfterPlacing(armSubsystem, clawSubsystem, () -> false).withTimeout(2),
       // back up over charge station.
 
       new DriveCommand(driveSubsystem, visionSubsystem, ()->0.25, ()->0, ()->0, ()->false).withTimeout(.5),
       new DriveCommand(driveSubsystem, visionSubsystem, ()->0, ()->0, ()->.135, ()->false).withTimeout(2),
-      new DriveCommand(driveSubsystem, visionSubsystem, ()->-0.25, ()->0, ()->0, ()->false).withTimeout(3.7), // 4.5
+      new DriveCommand(driveSubsystem, visionSubsystem, ()->-0.25, ()->0, ()->0, ()->false).withTimeout(3.6), // 4.5
       // back up to balance and stop
       new DriveCommand(driveSubsystem, visionSubsystem, ()->0, ()->0, ()->.135, ()->false).withTimeout(2),
-      new DriveCommand(driveSubsystem, visionSubsystem, ()->-.25, ()->0, ()->0, ()->false).withTimeout(2.3), // 2.75
+      new DriveCommand(driveSubsystem, visionSubsystem, ()->-.25, ()->0, ()->0, ()->false).withTimeout(2.17), // 2.75
       new DriveCommand(driveSubsystem, visionSubsystem, ()->0, ()->0, ()->.1, ()->false).withTimeout(.2),
       new DriveCommand(driveSubsystem, visionSubsystem, ()->0, ()->0, ()->0, ()->false).withTimeout(.2)
     );

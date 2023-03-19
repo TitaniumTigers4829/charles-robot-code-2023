@@ -18,12 +18,12 @@ import frc.robot.dashboard.SmartDashboardLogger;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
   private final WPI_TalonFX leaderRotationMotor;
   private final WPI_TalonFX followerRotationMotor;
+
   private final CANCoder rotationEncoder;
   private final WPI_TalonFX extensionMotor;
   private final DoubleSolenoid extensionLockSolenoid;
@@ -98,7 +98,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     if (Math.abs(desiredAngle - getRotation()) < ArmConstants.ROTATION_ACCEPTABLE_ERROR) {
       feedForwardOutput = ArmConstants.ROTATION_FEED_FORWARD_CONSTANT * getTorqueFromGravity();
     }
-    SmartDashboard.putNumber("Rot PID Output", PIDOutput);
+    // SmartDashboard.putNumber("Rot PID Output", PIDOutput);
     setRotationSpeed(PIDOutput + feedForwardOutput);
   }
 
@@ -211,8 +211,8 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
   @Override
   public void periodic() {
-    SmartDashboardLogger.infoNumber("extension (meters)", getExtension());
-    SmartDashboardLogger.infoNumber("encoder pos", rotationEncoder.getAbsolutePosition());
+    // SmartDashboardLogger.infoNumber("extension (meters)", getExtension());
+    // SmartDashboardLogger.infoNumber("encoder pos", rotationEncoder.getAbsolutePosition());
     // SmartDashboardLogger.infoNumber("arm vel", getRotationSpeed());
     SmartDashboardLogger.infoString("Cargo Mode", cargoMode);
 

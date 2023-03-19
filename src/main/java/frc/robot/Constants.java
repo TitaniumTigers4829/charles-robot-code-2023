@@ -53,7 +53,7 @@ public final class Constants {
 
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI * 4;
 
-    public static final double MAX_SPEED_METERS_PER_SECOND = 4;
+    public static final double MAX_SPEED_METERS_PER_SECOND = 4.5;
 
     public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 1;
     public static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 2;
@@ -500,20 +500,25 @@ public final class Constants {
     };
 
     public static final double[][] ONE_APRIL_TAG_LOOKUP_TABLE = {
-      // {x position in meters, x std deviation, y std deviation, r (in degrees) std deviation}
-      {0, 0.01, 0.01, 1},
-      {1.5, 0.01, 0.01, 1},
-      {3, 0.01, 0.10, 6},
-      {4.5, 0.2, 0.4, 12},
-      {6, 0.7, 1.2, 20}
+      // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
+      // {0, 0.01, 0.01, 1},
+      // {1.5, 0.01, 0.01, 1},
+      // {3, 0.01, 0.10, 6},
+      // {4.5, 0.2, 0.4, 12},
+      // {6, 0.7, 1.2, 20}
+      {0, 0.01, 0.01, 100000},
+      {1.5, 0.01, 0.01, 100000},
+      {3, 0.01, 0.10, 100000},
+      {4.5, 0.2, 0.4, 100000},
+      {6, 0.7, 1.2, 100000}
     };
 
     public static final double[][] TWO_APRIL_TAG_LOOKUP_TABLE = {
-      // {x position in meters, x std deviation, y std deviation, r (in degrees) std deviation}
-      {1.5, 0.01, 0.01, 1},
-      {3, 0.01, 0.01, 1},
-      {4.5, 0.01, 0.03, 1},
-      {6, 0.02, 0.08, 2}
+      // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
+      {1.5, 0.01, 0.01, 100000},
+      {3, 0.01, 0.01, 100000},
+      {4.5, 0.01, 0.03, 100000},
+      {6, 0.02, 0.08, 100000}
     };
 
     public static final int DETECTED_FRAMES_FOR_RELIABILITY = 2;

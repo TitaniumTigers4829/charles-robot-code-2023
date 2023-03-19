@@ -8,6 +8,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.DriveCommandBase;
@@ -45,6 +47,9 @@ public class AutoPickup extends DriveCommandBase {
 
   @Override
   public void initialize() {
+    // Try making it do a path with hard coded setpoints
+    // Make sure when the gyro is zeroes it's right
+
     // The start of the trajectory is the robot's current location
     List<PathPoint> pathPoints = new ArrayList<PathPoint>();
     Translation2d start = new Translation2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY());
@@ -56,8 +61,10 @@ public class AutoPickup extends DriveCommandBase {
 
     // The middle waypoints and end pos change depending on alliance
     if (DriverStation.getAlliance() == Alliance.Blue) {
-      endX = 15.13;
-      endY = 7.35;
+      endX = start.getX() + .5;
+      endY = start.getY();
+      // endX = 15.13;
+      // endY = 7.35;
       endRotation = Rotation2d.fromDegrees(0);
     } else {
       endX = 0-9;
@@ -68,6 +75,9 @@ public class AutoPickup extends DriveCommandBase {
     Translation2d end = new Translation2d(endX, endY);
 
     pathPoints.add(new PathPoint(end, endRotation, endRotation));
+
+    SmartDashboard.putString("start", start.toString());
+    SmartDashboard.putString("end", end.toString());
 
     // You probably only want to edit the P values
     PIDController xController = new PIDController(TrajectoryConstants.X_CONTROLLER_P, 0, 0);
@@ -81,7 +91,9 @@ public class AutoPickup extends DriveCommandBase {
         new PathConstraints(TrajectoryConstants.MAX_SPEED, TrajectoryConstants.MAX_ACCELERATION),
         // Pathpoints go in: position, heading (direction of travel)
         pathPoints
-      );                                               
+      );
+
+      System.out.println(trajectoryToFollow.getStates());
 
     // IMPORTANT: Make sure your driveSubsystem has the methods getPose and setModuleStates
 

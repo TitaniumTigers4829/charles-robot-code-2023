@@ -16,7 +16,6 @@ public class PlaceGamePiece extends CommandBase {
   private final ClawSubsystem clawSubsystem;
   private double rotation;
   private double extension;
-  private Timer timer;
 
   public PlaceGamePiece(ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, double rotation, double extension) {
     this.armSubsystem = armSubsystem;
@@ -30,7 +29,6 @@ public class PlaceGamePiece extends CommandBase {
   public void initialize() {
     armSubsystem.resetExtensionController();
     armSubsystem.resetRotationController();
-    armSubsystem.unlockExtensionSolenoid();
     if (armSubsystem.getCargoMode() == "Cone") {
       clawSubsystem.setWristPosition(0);
       rotation -= 3;
@@ -39,19 +37,13 @@ public class PlaceGamePiece extends CommandBase {
     } else {
       clawSubsystem.setWristPosition(180);
     }
-    timer = new Timer();
-    timer.reset();
-    timer.start();
   }
 
   @Override
   public void execute() {
     armSubsystem.setRotation(rotation);
-    if (timer.get() > 0.1) { // 10 ticks
-      armSubsystem.setExtension(extension);
-    } else {
-      armSubsystem.setExtensionSpeed(ArmConstants.ARM_MOVE_SPEED_BEFORE_REAL_MOVE);
-    }
+    armSubsystem.unlockExtensionSolenoid();
+    armSubsystem.setExtension(extension);
   }
 
   @Override

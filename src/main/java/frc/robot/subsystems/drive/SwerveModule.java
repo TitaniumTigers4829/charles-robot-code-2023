@@ -20,6 +20,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
@@ -217,5 +218,9 @@ public class SwerveModule {
   public void resetEncoders() {
       turnEncoder.setPosition(0);
       driveMotor.setSelectedSensorPosition(0);
+  }
+
+  public void periodicFunction() {
+    // SmartDashboard.putNumber("speed", getState().speedMetersPerSecond);
   }
 }

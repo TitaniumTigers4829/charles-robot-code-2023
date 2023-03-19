@@ -205,6 +205,16 @@ public class RobotContainer {
     Trigger onButton1Pressed = new Trigger(isButton1Pressed);
     onButton1Pressed.onTrue(new InstantCommand(armSubsystem::switchCargoMode));
 
+    // middle
+    // BooleanSupplier isLeftButtonPressed = () -> (zAxis.getAsDouble() < -0.2);
+    // Trigger onLeftButtonPressed = new Trigger(isLeftButtonPressed);
+    // onLeftButtonPressed.whileTrue(new PlaceGamePiece(armSubsystem, clawSubsystem, 243, 0.47));
+    // onLeftButtonPressed.onFalse(new MoveArmToStowedAfterPlacing(armSubsystem, clawSubsystem, operatorLeftBumperPressed));
+    BooleanSupplier isLeftButtonPressed = () -> (zAxis.getAsDouble() < -0.2);
+    Trigger onLeftButtonPressed = new Trigger(isLeftButtonPressed);
+    onLeftButtonPressed.whileTrue(new PlaceGamePiece(armSubsystem, clawSubsystem, 243, 0.47));
+    onLeftButtonPressed.onFalse(new MoveArmToStowedAfterPlacing(armSubsystem, clawSubsystem, operatorLeftBumperPressed));
+
     /* Extra Buttons */
     // JoystickButton operatorXButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_X_BUTTON_ID);
     // operatorXButton.whileTrue(new RunClaw(clawSubsystem, 0.15));

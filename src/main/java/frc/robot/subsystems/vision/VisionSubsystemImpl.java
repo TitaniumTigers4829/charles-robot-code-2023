@@ -17,58 +17,44 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
   private String currentlyUsedLimelight = LimelightConstants.FRONT_LIMELIGHT_NAME;
   
   public VisionSubsystemImpl() {
-    try {
-      currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.FRONT_LIMELIGHT_NAME);
-    } catch (Exception e) {
-      currentlyUsedLimelightResults = null;
-    }
+    // currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.FRONT_LIMELIGHT_NAME);
   }
 
   @Override
   public void periodic() {
-    try {
-      // Every periodic chooses the limelight to use based off of their distance from april tags
-      LimelightTarget_Fiducial[] frontLimelightAprilTags = LimelightHelpers.getLatestResults(LimelightConstants.FRONT_LIMELIGHT_NAME).targetingResults.targets_Fiducials;
-      LimelightTarget_Fiducial[] backLimelightAprilTags = LimelightHelpers.getLatestResults(LimelightConstants.BACK_LIMELIGHT_NAME).targetingResults.targets_Fiducials;
+    // Every periodic chooses the limelight to use based off of their distance from april tags
+    LimelightResults frontLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.FRONT_LIMELIGHT_NAME);
+    LimelightResults backLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.BACK_LIMELIGHT_NAME);
+    LimelightTarget_Fiducial[] frontLimelightAprilTags = frontLimelightResults.targetingResults.targets_Fiducials;
+    LimelightTarget_Fiducial[] backLimelightAprilTags = backLimelightResults.targetingResults.targets_Fiducials;
 
-      // Gets the distance from the closest april tag. If it can't see one, returns a really big number.
-      double frontLimelightDistance = frontLimelightAprilTags.length > 0
-        ? getLimelightAprilTagDistance((int) frontLimelightAprilTags[0].fiducialID) : Double.MAX_VALUE;
-      double backLimelightDistance = backLimelightAprilTags.length > 0
-        ? getLimelightAprilTagDistance((int) backLimelightAprilTags[0].fiducialID) : Double.MAX_VALUE;
+    // Gets the distance from the closest april tag. If it can't see one, returns a really big number.
+    double frontLimelightDistance = frontLimelightAprilTags.length > 0
+      ? getLimelightAprilTagDistance((int) frontLimelightAprilTags[0].fiducialID) : Double.MAX_VALUE;
+    double backLimelightDistance = backLimelightAprilTags.length > 0
+      ? getLimelightAprilTagDistance((int) backLimelightAprilTags[0].fiducialID) : Double.MAX_VALUE;
 
-      currentlyUsedLimelight = frontLimelightDistance <= backLimelightDistance 
-        ? LimelightConstants.FRONT_LIMELIGHT_NAME : LimelightConstants.BACK_LIMELIGHT_NAME;
-      currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(currentlyUsedLimelight);
-      SmartDashboard.putString("currentlyUsedLimelight", currentlyUsedLimelight);
-      SmartDashboard.putString("limelight pose", getPoseFromAprilTags().toString());
-    } catch (Exception e) {
-      SmartDashboard.putString("currentlyUsedLimelight", "Limelight err: " + e.toString());
-    }
+    currentlyUsedLimelight = frontLimelightDistance <= backLimelightDistance 
+      ? LimelightConstants.FRONT_LIMELIGHT_NAME : LimelightConstants.BACK_LIMELIGHT_NAME;
+    currentlyUsedLimelightResults = currentlyUsedLimelight == LimelightConstants.FRONT_LIMELIGHT_NAME
+      ? frontLimelightResults : backLimelightResults;
+    SmartDashboard.putString("currentlyUsedLimelight", currentlyUsedLimelight);
+    SmartDashboard.putString("limelight pose", getPoseFromAprilTags().toString());
   }
 
   @Override
   public boolean canSeeAprilTags() {
-    try {
-      return LimelightHelpers.getFiducialID(currentlyUsedLimelight) != -1;
-    } catch (Exception e) {
-      return false;
-    }
+    return LimelightHelpers.getFiducialID(currentlyUsedLimelight) != -1;
   }
 
   @Override
   public Pose2d getPoseFromAprilTags() {
-    try {
-      Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
-      // The origin of botpose is at the center of the field
-      double robotX = botPose.getX() + TrajectoryConstants.FIELD_LENGTH_METERS / 2;
-      double robotY = botPose.getY() + TrajectoryConstants.FIELD_WIDTH_METERS / 2;
-      Rotation2d robotRotation = botPose.getRotation();
-      return new Pose2d(robotX, robotY, robotRotation);
-    } catch (Exception e) {
-      // TODO: add logic here
-      return null;
-    }
+    Pose2d botPose = LimelightHelpers.getBotPose2d(currentlyUsedLimelight);
+    // The origin of botpose is at the center of the field
+    double robotX = botPose.getX() + TrajectoryConstants.FIELD_LENGTH_METERS / 2;
+    double robotY = botPose.getY() + TrajectoryConstants.FIELD_WIDTH_METERS / 2;
+    Rotation2d robotRotation = botPose.getRotation();
+    return new Pose2d(robotX, robotY, robotRotation);
   }
 
   @Override
@@ -84,21 +70,12 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
 
   @Override
   public int getNumberOfAprilTags() {
-    try {
-      return currentlyUsedLimelightResults.targetingResults.targets_Fiducials.length;
-    } catch (Exception e) {
-      return 0;
-    }
+    return currentlyUsedLimelightResults.targetingResults.targets_Fiducials.length;
   }
 
   @Override
   public long getTimeStampSeconds() {
-    try {
-      return (long) (currentlyUsedLimelightResults.targetingResults.timestamp_LIMELIGHT_publish / 1000);
-    } catch (Exception e) {
-      // TODO: add more logic
-      return -1;
-    }
+    return (long) (currentlyUsedLimelightResults.targetingResults.timestamp_LIMELIGHT_publish / 1000);
   }
 
   @Override
