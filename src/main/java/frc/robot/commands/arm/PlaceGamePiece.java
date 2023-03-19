@@ -4,7 +4,9 @@
 
 package frc.robot.commands.arm;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.claw.ClawSubsystem;
 
@@ -12,8 +14,9 @@ public class PlaceGamePiece extends CommandBase {
 
   private final ArmSubsystem armSubsystem;
   private final ClawSubsystem clawSubsystem;
-  private final double rotation;
-  private final double extension;
+  private double rotation;
+  private double extension;
+  private Timer timer;
 
   public PlaceGamePiece(ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, double rotation, double extension) {
     this.armSubsystem = armSubsystem;
@@ -30,15 +33,25 @@ public class PlaceGamePiece extends CommandBase {
     armSubsystem.unlockExtensionSolenoid();
     if (armSubsystem.getCargoMode() == "Cone") {
       clawSubsystem.setWristPosition(0);
+      rotation -= 3;
+      extension += 0.03;
+      clawSubsystem.setIntakeSpeed(-0.075);
     } else {
-      clawSubsystem.setWristPosition(-180);
+      clawSubsystem.setWristPosition(180);
     }
+    timer = new Timer();
+    timer.reset();
+    timer.start();
   }
 
   @Override
   public void execute() {
     armSubsystem.setRotation(rotation);
-    armSubsystem.setExtension(extension);
+    if (timer.get() > 0.1) { // 10 ticks
+      armSubsystem.setExtension(extension);
+    } else {
+      armSubsystem.setExtensionSpeed(ArmConstants.ARM_MOVE_SPEED_BEFORE_REAL_MOVE);
+    }
   }
 
   @Override

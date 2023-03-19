@@ -7,7 +7,10 @@ package frc.robot.subsystems.arm;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
@@ -54,6 +57,11 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   public ArmSubsystemImpl() {
     leaderRotationMotor = new WPI_TalonFX(ArmConstants.LEADER_ROTATION_MOTOR_ID, Constants.CANIVORE_CAN_BUS_STRING);
     followerRotationMotor = new WPI_TalonFX(ArmConstants.FOLLOWER_ROTATION_MOTOR_ID, Constants.CANIVORE_CAN_BUS_STRING);
+    
+    rotationEncoder = new CANCoder(ArmConstants.ROTATION_ENCODER_ID, Constants.CANIVORE_CAN_BUS_STRING);
+    rotationEncoder.configMagnetOffset(ArmConstants.EXTENSION_ENCODER_OFFSET);
+    rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
+    rotationEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
 
     leaderRotationMotor.setInverted(ArmConstants.LEADER_ROTATION_MOTOR_INVERTED);
     followerRotationMotor.setInverted(ArmConstants.FOLLOWER_ROTATION_MOTOR_INVERTED);
@@ -61,13 +69,17 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
     followerRotationMotor.setNeutralMode(NeutralMode.Brake);
 
+    // leaderRotationMotor.setSelectedSensorPosition(rotationEncoder.getAbsolutePosition() * (4096.0 / 360.0));
+    // followerRotationMotor.setSelectedSensorPosition(rotationEncoder.getAbsolutePosition() * (4096.0 / 360.0));
+
     rotationMotorControllerGroup = new MotorControllerGroup(leaderRotationMotor, followerRotationMotor);
-    
-    rotationEncoder = new CANCoder(ArmConstants.ROTATION_ENCODER_ID);
-    rotationEncoder.configMagnetOffset(ArmConstants.EXTENSION_ENCODER_OFFSET);
-    rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
 
     extensionMotor = new WPI_TalonFX(ArmConstants.EXTENSION_MOTOR_ID);
+
+    extensionMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+    leaderRotationMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+    followerRotationMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+
 
     extensionMotor.setInverted(ArmConstants.EXTENSION_MOTOR_INVERTED);
     extensionMotor.setNeutralMode(NeutralMode.Coast);
@@ -175,7 +187,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   
   @Override
   public void resetRotationController() {
-    rotationPIDController.reset(getRotation(), getExtensionSpeed());
+    rotationPIDController.reset(getRotation(), getRotationSpeed());
   }
 
   @Override
@@ -201,7 +213,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   public void periodic() {
     SmartDashboardLogger.infoNumber("extension (meters)", getExtension());
     SmartDashboardLogger.infoNumber("encoder pos", rotationEncoder.getAbsolutePosition());
-    SmartDashboardLogger.infoNumber("arm vel", getRotationSpeed());
+    // SmartDashboardLogger.infoNumber("arm vel", getRotationSpeed());
     SmartDashboardLogger.infoString("Cargo Mode", cargoMode);
 
     if (extensionMotor.getSupplyCurrent() > ArmConstants.EXTENSION_MOTOR_STALLING_AMPS) {
@@ -210,12 +222,4 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
       consecutiveHighAmpLoops = 0;
     }
   }
-
-  /*
-   * Returns the motor output with a min. of -1 and max. of 1.
-   */
-  private double motorOutputClamp(double motorOutput) {
-    return Math.max(-1, Math.min(1, motorOutput));
-  }
-
 }

@@ -218,9 +218,4 @@ public class SwerveModule {
       turnEncoder.setPosition(0);
       driveMotor.setSelectedSensorPosition(0);
   }
-
-  public void periodicFunction() {
-    SwerveModuleState state = getState();
-    SmartDashboardLogger.debugNumber(name + " speed", state.speedMetersPerSecond);
-  }
 }

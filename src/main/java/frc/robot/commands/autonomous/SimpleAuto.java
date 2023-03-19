@@ -4,8 +4,11 @@
 
 package frc.robot.commands.autonomous;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.arm.MoveArmToStowedAfterPlacing;
+import frc.robot.commands.arm.PlaceGamePiece;
 import frc.robot.commands.arm.SetRotationSpeed;
 import frc.robot.commands.claw.CloseClaw;
 import frc.robot.commands.drive.DriveCommand;
@@ -23,17 +26,33 @@ public class SimpleAuto extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new SetRotationSpeed(armSubsystem, -0.4),
-      new WaitCommand(1.5),
-      new SetRotationSpeed(armSubsystem, 0),
-      new CloseClaw(clawSubsystem),
-      new WaitCommand(0.5),
-      new SetRotationSpeed(armSubsystem, 0.4),
-      new WaitCommand(1.5),
-      new SetRotationSpeed(armSubsystem, 0),
-      new DriveCommand(driveSubsystem, visionSubsystem, ()->-0.25, ()->0, ()->0, ()->false).withTimeout(4.5),
+      // new SetRotationSpeed(armSubsystem, -0.4),
+      // new WaitCommand(1.5),
+      // new SetRotationSpeed(armSubsystem, 0),
+      // new CloseClaw(clawSubsystem),
+      // new WaitCommand(0.5),
+      // new SetRotationSpeed(armSubsystem, 0.4),
+      // new WaitCommand(1.5),
+      // new SetRotationSpeed(armSubsystem, 0),
+      // new DriveCommand(driveSubsystem, visionSubsystem, ()->0, ()->0, ()->.135, ()->false).withTimeout(2),
+      // new DriveCommand(driveSubsystem, visionSubsystem, ()->0.25, ()->0, ()->0, ()->false).withTimeout(0.75),
+      // new DriveCommand(driveSubsystem, visionSubsystem, ()->0, ()->0, ()->.135, ()->false).withTimeout(2),
+
+      // actual
+      // zero wrist
+      new InstantCommand(clawSubsystem::zeroWristEncoder),
+      // place
+      new PlaceGamePiece(armSubsystem, clawSubsystem, 241, 0.97).withTimeout(1.75),
+      // stow
+      new MoveArmToStowedAfterPlacing(armSubsystem, clawSubsystem, () -> false).withTimeout(2),
+      // back up over charge station.
+
+      new DriveCommand(driveSubsystem, visionSubsystem, ()->0.25, ()->0, ()->0, ()->false).withTimeout(.5),
       new DriveCommand(driveSubsystem, visionSubsystem, ()->0, ()->0, ()->.135, ()->false).withTimeout(2),
-      new DriveCommand(driveSubsystem, visionSubsystem, ()->-.25, ()->0, ()->0, ()->false).withTimeout(2.75),
+      new DriveCommand(driveSubsystem, visionSubsystem, ()->-0.25, ()->0, ()->0, ()->false).withTimeout(3.7), // 4.5
+      // back up to balance and stop
+      new DriveCommand(driveSubsystem, visionSubsystem, ()->0, ()->0, ()->.135, ()->false).withTimeout(2),
+      new DriveCommand(driveSubsystem, visionSubsystem, ()->-.25, ()->0, ()->0, ()->false).withTimeout(2.3), // 2.75
       new DriveCommand(driveSubsystem, visionSubsystem, ()->0, ()->0, ()->.1, ()->false).withTimeout(.2),
       new DriveCommand(driveSubsystem, visionSubsystem, ()->0, ()->0, ()->0, ()->false).withTimeout(.2)
     );

@@ -41,6 +41,7 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
         ? LimelightConstants.FRONT_LIMELIGHT_NAME : LimelightConstants.BACK_LIMELIGHT_NAME;
       currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(currentlyUsedLimelight);
       SmartDashboard.putString("currentlyUsedLimelight", currentlyUsedLimelight);
+      SmartDashboard.putString("limelight pose", getPoseFromAprilTags().toString());
     } catch (Exception e) {
       SmartDashboard.putString("currentlyUsedLimelight", "Limelight err: " + e.toString());
     }

@@ -260,6 +260,7 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
+    public static final double ARM_MOVE_SPEED_BEFORE_REAL_MOVE = 0.15;
 
     public static final double ARM_WEIGHT_NEWTONS = 9.8 * 25;
     public static final double ARM_AXIS_OF_ROTATION_RADIUS = Units.inchesToMeters(2.1);
@@ -276,7 +277,7 @@ public final class Constants {
 
     public static final int ROTATION_ENCODER_ID = 15;
     
-    public static final double ROTATION_P = 0.043;
+    public static final double ROTATION_P = 0.035; // .04
     public static final double ROTATION_I = 0;
     public static final double ROTATION_D = 0;
 
@@ -300,7 +301,7 @@ public final class Constants {
     public static final int EXTENSION_LOCK_ENGAGED_ID = 2;
     public static final int EXTENSION_LOCK_DISENGAGED_ID = 3;
 
-    public static final double EXTENSION_MOTOR_MIN_OUTPUT = -.3;
+    public static final double EXTENSION_MOTOR_MIN_OUTPUT = -.2;
     public static final double EXTENSION_MOTOR_MAX_OUTPUT = .75;
 
     public static final double EXTENSION_ACCEPTABLE_ERROR = 0.05; 
@@ -354,40 +355,37 @@ public final class Constants {
     public static final int INTAKE_MOTOR_ID = 18;
 
     public static final boolean INTAKE_MOTOR_INVERTED = false;
-    public static final boolean WRIST_MOTOR_INVERTED = false;
+    public static final boolean WRIST_MOTOR_INVERTED = true;
 
     public static final double WRIST_MAX_RADIANS_PER_SECOND = 180;
     public static final double WRIST_MAX_RADIANS_PER_SECOND_SQUARED = 180.0 / 24;
 
     public static final double WRIST_F = 0;
-    public static final double WRIST_P = 0.08;
+    public static final double WRIST_P = 2;
     public static final double WRIST_I = 0;
     public static final double WRIST_D = 0;
     public static final double WRIST_I_ZONE = 0;
 
-    // TODO: tune
-    public static final double WRIST_MAX_VELOCITY = 6.5;
-    public static final double WRIST_MAX_ACCELERATION = 6.5 / 1.25;
-    public static final int WRIST_SMOOTHING = 5;
-    public static final double WRIST_TOLERANCE = 30;
+    public static final double WRIST_MAX_VELOCITY_ENCODER_UNITS = 90 * DEG_TO_WRIST_POS;
+    public static final double WRIST_MAX_ACCELERATION_ENCODER_UNITS = 120 * DEG_TO_WRIST_POS;
+    public static final int WRIST_SMOOTHING = 0;
+    public static final double WRIST_TOLERANCE = 1 * DEG_TO_WRIST_POS;
     
     public static final double INTAKE_F = 0;
     public static final double INTAKE_P = 0;
     public static final double INTAKE_I = 0;
     public static final double INTAKE_D = 0;
 
-    public static final double MIN_WRIST_ROTATION_DEGREES = 0;
-    public static final double MAX_WRIST_ROTATION_DEGREES = 180;
-
-    public static final double WRIST_ROTATION_ACCEPTABLE_ERROR = 3;
+    public static final double MIN_WRIST_ROTATION_ENCODER_UNITS = 0 * DEG_TO_WRIST_POS;
+    public static final double MAX_WRIST_ROTATION_ENCODER_UNITS = 180 * DEG_TO_WRIST_POS;
   }
 
   public static final class JoystickConstants {
 
     public static final int DRIVER_JOYSTICK_ID = 0;
     public static final int OPERATOR_JOYSTICK_ID = 1;
-    public static final int BUTTON_BOARD_ID = 2;
-    public static final int BUTTON_BOARD_ID_2 = 3;
+    public static final int BUTTON_BOARD_1_ID = 2;
+    public static final int BUTTON_BOARD_2_ID = 3;
 
     public static final int DRIVER_LEFT_STICK_X = 0;
     public static final int DRIVER_LEFT_STICK_Y = 1;

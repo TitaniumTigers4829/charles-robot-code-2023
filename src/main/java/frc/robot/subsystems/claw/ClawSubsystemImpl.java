@@ -26,14 +26,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   private boolean isClawClosed;
 
   public ClawSubsystemImpl() {
-    clawSolenoid = new DoubleSolenoid(
-      PneumaticsModuleType.CTREPCM,
-      ClawConstants.SOLENOID_FORWARD,
-      ClawConstants.SOLENOID_BACKWARD
-    );
-
     wristMotor = new WPI_TalonFX(ClawConstants.WRIST_MOTOR_ID, Constants.RIO_CAN_BUS_STRING);
-
     wristMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
     wristMotor.setInverted(ClawConstants.WRIST_MOTOR_INVERTED);
     wristMotor.setNeutralMode(NeutralMode.Brake);
@@ -42,26 +35,31 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     wristMotor.config_kD(0, ClawConstants.WRIST_D);
     wristMotor.config_kF(0, ClawConstants.WRIST_F);
     wristMotor.config_IntegralZone(0, ClawConstants.WRIST_I_ZONE);
-    // How should we get these?
-    wristMotor.configMotionCruiseVelocity(ClawConstants.WRIST_MAX_VELOCITY);
-    wristMotor.configMotionAcceleration(ClawConstants.WRIST_MAX_ACCELERATION);
-    // What do you recommend?
+    wristMotor.configMotionCruiseVelocity(ClawConstants.WRIST_MAX_VELOCITY_ENCODER_UNITS);
+    wristMotor.configMotionAcceleration(ClawConstants.WRIST_MAX_ACCELERATION_ENCODER_UNITS);
     wristMotor.configMotionSCurveStrength(ClawConstants.WRIST_SMOOTHING);
-    // What does this do?
     wristMotor.configAllowableClosedloopError(0, ClawConstants.WRIST_TOLERANCE);
-
-    // What does configForwardSoftLimitThreshold do? Should we do it?
+    wristMotor.configForwardSoftLimitThreshold(ClawConstants.MAX_WRIST_ROTATION_ENCODER_UNITS);
+    wristMotor.configForwardSoftLimitEnable(true);
+    wristMotor.configReverseSoftLimitThreshold(ClawConstants.MIN_WRIST_ROTATION_ENCODER_UNITS);
+    wristMotor.configReverseSoftLimitEnable(true);
+    wristMotor.setSelectedSensorPosition(0);
 
     intakeMotor = new WPI_TalonFX(ClawConstants.INTAKE_MOTOR_ID, Constants.RIO_CAN_BUS_STRING);
-
     intakeMotor.setNeutralMode(NeutralMode.Brake);
+
+    clawSolenoid = new DoubleSolenoid(
+      PneumaticsModuleType.CTREPCM,
+      ClawConstants.SOLENOID_FORWARD,
+      ClawConstants.SOLENOID_BACKWARD
+    );
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("intake amps", intakeMotor.getSupplyCurrent());
-    SmartDashboard.putNumber("wrist angle", getWristAngle());
-    SmartDashboard.putNumber("position_", wristMotor.getSelectedSensorPosition());
+    // SmartDashboard.putNumber("intake amps", intakeMotor.getSupplyCurrent());
+    // SmartDashboard.putNumber("wrist angle", getWristAngle());
+    // SmartDashboard.putNumber("position_", wristMotor.getSelectedSensorPosition());
 
   }
 
@@ -105,7 +103,6 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   @Override
   public void setWristPosition(double angle) {
     double angleInEncoderUnits = angle * ClawConstants.DEG_TO_WRIST_POS;
-    // Should we do the arbitrary ff stuff?
     wristMotor.set(ControlMode.MotionMagic, angleInEncoderUnits);
 
     // if (angle >= ClawConstants.MIN_WRIST_ROTATION_DEGREES && angle <= ClawConstants.MAX_WRIST_ROTATION_DEGREES) {
