@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderStatusFrame;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
@@ -19,7 +20,6 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.dashboard.SmartDashboardLogger;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 
 public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
@@ -30,7 +30,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   private final WPI_TalonFX extensionMotor;
   private final DoubleSolenoid extensionLockSolenoid;
 
-  private final MotorControllerGroup rotationMotorControllerGroup;
+  // private final MotorControllerGroup rotationMotorControllerGroup;
 
   private final ProfiledPIDController rotationPIDController = new ProfiledPIDController(
     ArmConstants.ROTATION_P, 
@@ -62,7 +62,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     followerRotationMotor = new WPI_TalonFX(ArmConstants.FOLLOWER_ROTATION_MOTOR_ID, Constants.CANIVORE_CAN_BUS_STRING);
     
     rotationEncoder = new CANCoder(ArmConstants.ROTATION_ENCODER_ID, Constants.CANIVORE_CAN_BUS_STRING);
-    rotationEncoder.configMagnetOffset(ArmConstants.EXTENSION_ENCODER_OFFSET);
+    rotationEncoder.configMagnetOffset(ArmConstants.ROTATION_ENCODER_OFFSET);
     rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
     rotationEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
 
@@ -73,14 +73,14 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     // followerRotationMotor.setNeutralMode(NeutralMode.Brake);
 
     TalonFXConfiguration leaderConfig = new TalonFXConfiguration();
-    leaderConfig.remoteFilter0.remoteSensorDeviceID = rotationEncoder.getDeviceID();
+    leaderConfig.remoteFilter0.remoteSensorDeviceID = rotationEncoder.getDeviceID(); // must be 15 or less due to oddity in CTRE electronics
     leaderConfig.remoteFilter0.remoteSensorSource = RemoteSensorSource.CANCoder;
     leaderConfig.slot0.kP = ArmConstants.ROTATION_P;
     leaderConfig.slot0.kI = ArmConstants.ROTATION_I;
     leaderConfig.slot0.kD = ArmConstants.ROTATION_D;
     // leaderConfig.slot0.closedLoopPeakOutput = 1;
-    leaderConfig.motionAcceleration = ArmConstants.ROTATION_MAX_ACCELERATION * ArmConstants.ARM_DEGREES_TO_ENCODER_UNITS;
-    leaderConfig.motionCruiseVelocity = ArmConstants.ROTATION_MAX_VELOCITY * ArmConstants.ARM_DEGREES_TO_ENCODER_UNITS;
+    leaderConfig.motionAcceleration = ArmConstants.ROTATION_MAX_ACCELERATION * ArmConstants.ARM_DEGREES_TO_CANCODER_UNITS;
+    leaderConfig.motionCruiseVelocity = ArmConstants.ROTATION_MAX_VELOCITY * ArmConstants.ARM_DEGREES_TO_CANCODER_UNITS;
     leaderConfig.motionCurveStrength = 1; // TODO: tune
     leaderRotationMotor.configAllSettings(leaderConfig);
     leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
@@ -89,10 +89,20 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     followerRotationMotor.setNeutralMode(NeutralMode.Brake);
     followerRotationMotor.setInverted(ArmConstants.FOLLOWER_ROTATION_MOTOR_INVERTED);
 
-    rotationMotorControllerGroup = new MotorControllerGroup(leaderRotationMotor, followerRotationMotor);
+    followerRotationMotor.follow(leaderRotationMotor);
 
+    // rotationMotorControllerGroup = new MotorControllerGroup(leaderRotationMotor, followerRotationMotor);
 
     extensionMotor = new WPI_TalonFX(ArmConstants.EXTENSION_MOTOR_ID);
+
+    TalonFXConfiguration extensionConfig = new TalonFXConfiguration();
+    extensionConfig.slot0.kP = ArmConstants.EXTENSION_P;
+    extensionConfig.slot0.kI = ArmConstants.EXTENSION_I;
+    extensionConfig.slot0.kD = ArmConstants.EXTENSION_D;
+    extensionConfig.motionAcceleration = ArmConstants.EXTENSION_MAX_ACCELERATION * ArmConstants.EXTENSION_METERS_TO_MOTOR_POS;
+    extensionConfig.motionCruiseVelocity = ArmConstants.EXTENSION_MAX_VELOCITY * ArmConstants.EXTENSION_METERS_TO_MOTOR_POS;
+    extensionConfig.motionCurveStrength = 1; // TODO: tune
+    extensionMotor.configAllSettings(extensionConfig);
 
     extensionMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
     leaderRotationMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
@@ -111,13 +121,15 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
   @Override
   public void setRotation(double desiredAngle) {
-    double PIDOutput = rotationPIDController.calculate(getRotation(), desiredAngle);
-    double feedForwardOutput = 0;
-    if (Math.abs(desiredAngle - getRotation()) < ArmConstants.ROTATION_ACCEPTABLE_ERROR) {
-      feedForwardOutput = ArmConstants.ROTATION_FEED_FORWARD_CONSTANT * getTorqueFromGravity();
-    }
-    // SmartDashboard.putNumber("Rot PID Output", PIDOutput);
-    setRotationSpeed(PIDOutput + feedForwardOutput);
+    double encoderPos = desiredAngle * ArmConstants.ARM_DEGREES_TO_CANCODER_UNITS;
+    leaderRotationMotor.set(ControlMode.MotionMagic, encoderPos);
+    // double PIDOutput = rotationPIDController.calculate(getRotation(), desiredAngle);
+    // double feedForwardOutput = 0;
+    // if (Math.abs(desiredAngle - getRotation()) < ArmConstants.ROTATION_ACCEPTABLE_ERROR) {
+    //   feedForwardOutput = ArmConstants.ROTATION_FEED_FORWARD_CONSTANT * getTorqueFromGravity();
+    // }
+    // // SmartDashboard.putNumber("Rot PID Output", PIDOutput);
+    // setRotationSpeed(PIDOutput + feedForwardOutput);
   }
 
   @Override
@@ -132,21 +144,23 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
   @Override
   public double getExtension() {
-    // Convert motor rotation units (2048 or 4096 for 1 full rotation) to number of rotations
-    double motorRotation = (-extensionMotor.getSelectedSensorPosition() / 
-      Constants.FALCON_ENCODER_RESOLUTION) * ArmConstants.EXTENSION_MOTOR_GEAR_RATIO;
-    // Convert number of rotations to distance (multiply by diameter)
-    return motorRotation * ArmConstants.EXTENSION_SPOOL_DIAMETER * Math.PI;
+    // // Convert motor rotation units (2048 or 4096 for 1 full rotation) to number of rotations
+    // double motorRotation = (-extensionMotor.getSelectedSensorPosition() / 
+    //   Constants.FALCON_ENCODER_RESOLUTION) * ArmConstants.EXTENSION_MOTOR_GEAR_RATIO;
+    // // Convert number of rotations to distance (multiply by diameter)
+    // return motorRotation * ArmConstants.EXTENSION_SPOOL_DIAMETER * Math.PI;
+    return extensionMotor.getSelectedSensorPosition() * ArmConstants.EXTENSION_MOTOR_POS_TO_METERS;
   }
 
   @Override
   public void setExtension(double extension) {
-    double PIDOutput = extensionSpeedPIDController.calculate(getExtension(), extension);
-    // Sets a floor
-    PIDOutput = Math.max(PIDOutput, ArmConstants.EXTENSION_MOTOR_MIN_OUTPUT);
-    // Sets a ceiling
-    PIDOutput = Math.min(PIDOutput, ArmConstants.EXTENSION_MOTOR_MAX_OUTPUT);
-    setExtensionSpeed(PIDOutput);
+    extensionMotor.set(ControlMode.MotionMagic, extension * ArmConstants.EXTENSION_METERS_TO_MOTOR_POS);
+    // double PIDOutput = extensionSpeedPIDController.calculate(getExtension(), extension);
+    // // Sets a floor
+    // PIDOutput = Math.max(PIDOutput, ArmConstants.EXTENSION_MOTOR_MIN_OUTPUT);
+    // // Sets a ceiling
+    // PIDOutput = Math.min(PIDOutput, ArmConstants.EXTENSION_MOTOR_MAX_OUTPUT);
+    // setExtensionSpeed(PIDOutput);
   }
 
   @Override
@@ -166,7 +180,8 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
   @Override
   public void setRotationSpeed(double speed) {
-    rotationMotorControllerGroup.set(speed / 2);
+    // rotationMotorControllerGroup.set(speed / 2);
+    leaderRotationMotor.set(speed / 2);
   }
 
   @Override

@@ -267,7 +267,7 @@ public final class Constants {
 
     public static final double ARM_ROTATION_GEAR_RATIO = 1.0 / 1.0;
     public static final double ARM_ENCODER_UNITS_TO_DEGREES = (360.0 / Constants.CANCODER_RESOLUTION) * ARM_ROTATION_GEAR_RATIO;
-    public static final double ARM_DEGREES_TO_ENCODER_UNITS = (Constants.CANCODER_RESOLUTION / 360.0) / ARM_ROTATION_GEAR_RATIO;
+    public static final double ARM_DEGREES_TO_CANCODER_UNITS = (Constants.CANCODER_RESOLUTION / 360.0) / ARM_ROTATION_GEAR_RATIO;
 
     public static final int LEADER_ROTATION_MOTOR_ID = 9;
     public static final int FOLLOWER_ROTATION_MOTOR_ID = 10;
@@ -276,6 +276,7 @@ public final class Constants {
 
     public static final boolean LEADER_ROTATION_MOTOR_INVERTED = false;
     public static final boolean FOLLOWER_ROTATION_MOTOR_INVERTED = true;
+    public static final double ROTATION_ENCODER_OFFSET = 95.009765625;
 
     public static final int EXTENSION_MOTOR_ID = 16;
 
@@ -299,7 +300,8 @@ public final class Constants {
     public static final double EXTENSION_MOTOR_STALLING_AMPS = 7;
     public static final double EXTENSION_SPOOL_DIAMETER = Units.inchesToMeters(2.5);
     public static final double MAX_EXTENSION_LENGTH = Units.inchesToMeters(48.48);
-    public static final double EXTENSION_ENCODER_OFFSET = 95.009765625;
+    public static final double EXTENSION_MOTOR_POS_TO_METERS = (-1 * Constants.FALCON_ENCODER_RESOLUTION * EXTENSION_MOTOR_GEAR_RATIO) * EXTENSION_SPOOL_DIAMETER * Math.PI;
+    public static final double EXTENSION_METERS_TO_MOTOR_POS = (-1 * Constants.FALCON_ENCODER_RESOLUTION / EXTENSION_MOTOR_GEAR_RATIO) / EXTENSION_SPOOL_DIAMETER / Math.PI;
 
     public static final PneumaticsModuleType EXTENSION_LOCK_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
     public static final int EXTENSION_LOCK_ENGAGED_ID = 2;
