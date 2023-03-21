@@ -29,7 +29,7 @@ public class PlaceGamePiece extends CommandBase {
   public void initialize() {
     armSubsystem.resetExtensionController();
     armSubsystem.resetRotationController();
-    if (armSubsystem.getCargoMode() == "Cone") {
+    if (armSubsystem.isConeMode()) {
       clawSubsystem.setWristPosition(0);
       rotation -= 3;
       extension += 0.03;
@@ -51,7 +51,7 @@ public class PlaceGamePiece extends CommandBase {
     armSubsystem.setRotationSpeed(0);
     armSubsystem.setExtensionSpeed(0);
     clawSubsystem.open();
-    if (armSubsystem.getCargoMode() == "Cube") {
+    if (!armSubsystem.isConeMode()) {
       clawSubsystem.setIntakeSpeed(-.08);
     }
   }

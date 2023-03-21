@@ -91,6 +91,6 @@ public interface ArmSubsystem extends Subsystem {
 
   public void switchCargoMode();
 
-  public String getCargoMode();
+  public boolean isConeMode();
 
   }

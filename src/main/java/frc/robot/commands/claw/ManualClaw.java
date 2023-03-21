@@ -50,7 +50,7 @@ public class ManualClaw extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (armSubsystem.getCargoMode().equals("Cube")) {
+    if (!armSubsystem.isConeMode()) {
       clawSubsystem.open();
       if (succCargo.getAsBoolean()) {
         clawSubsystem.setIntakeSpeed(0.15);

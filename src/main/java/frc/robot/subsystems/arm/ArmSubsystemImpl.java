@@ -4,11 +4,13 @@
 
 package frc.robot.subsystems.arm;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -45,7 +47,8 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   );
 
   private double consecutiveHighAmpLoops = 0;
-  private String cargoMode = "Cone";
+  // private String cargoMode = "Cone";
+  private boolean isConeMode = true;
 
   /** Creates a new ArmSubsystemImpl. 
    * Feed Forward Gain, Velocity Gain, and Acceleration Gain need to be tuned in constants
@@ -63,16 +66,31 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
     rotationEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
 
+    // leaderRotationMotor.setInverted(ArmConstants.LEADER_ROTATION_MOTOR_INVERTED);
+    // followerRotationMotor.setInverted(ArmConstants.FOLLOWER_ROTATION_MOTOR_INVERTED);
+
+    // leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
+    // followerRotationMotor.setNeutralMode(NeutralMode.Brake);
+
+    TalonFXConfiguration leaderConfig = new TalonFXConfiguration();
+    leaderConfig.remoteFilter0.remoteSensorDeviceID = rotationEncoder.getDeviceID();
+    leaderConfig.remoteFilter0.remoteSensorSource = RemoteSensorSource.CANCoder;
+    leaderConfig.slot0.kP = ArmConstants.ROTATION_P;
+    leaderConfig.slot0.kI = ArmConstants.ROTATION_I;
+    leaderConfig.slot0.kD = ArmConstants.ROTATION_D;
+    // leaderConfig.slot0.closedLoopPeakOutput = 1;
+    leaderConfig.motionAcceleration = ArmConstants.ROTATION_MAX_ACCELERATION * ArmConstants.ARM_DEGREES_TO_ENCODER_UNITS;
+    leaderConfig.motionCruiseVelocity = ArmConstants.ROTATION_MAX_VELOCITY * ArmConstants.ARM_DEGREES_TO_ENCODER_UNITS;
+    leaderConfig.motionCurveStrength = 1; // TODO: tune
+    leaderRotationMotor.configAllSettings(leaderConfig);
+    leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
     leaderRotationMotor.setInverted(ArmConstants.LEADER_ROTATION_MOTOR_INVERTED);
+    followerRotationMotor.configAllSettings(leaderConfig);
+    followerRotationMotor.setNeutralMode(NeutralMode.Brake);
     followerRotationMotor.setInverted(ArmConstants.FOLLOWER_ROTATION_MOTOR_INVERTED);
 
-    leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
-    followerRotationMotor.setNeutralMode(NeutralMode.Brake);
-
-    // leaderRotationMotor.setSelectedSensorPosition(rotationEncoder.getAbsolutePosition() * (4096.0 / 360.0));
-    // followerRotationMotor.setSelectedSensorPosition(rotationEncoder.getAbsolutePosition() * (4096.0 / 360.0));
-
     rotationMotorControllerGroup = new MotorControllerGroup(leaderRotationMotor, followerRotationMotor);
+
 
     extensionMotor = new WPI_TalonFX(ArmConstants.EXTENSION_MOTOR_ID);
 
@@ -197,16 +215,17 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
   @Override
   public void switchCargoMode() {
-    if (cargoMode == "Cone") {
-      cargoMode = "Cube";
-    } else {
-      cargoMode = "Cone";
-    }
+    // if (cargoMode == "Cone") {
+    //   cargoMode = "Cube";
+    // } else {
+    //   cargoMode = "Cone";
+    // }
+    isConeMode = !isConeMode;
   }
 
   @Override
-  public String getCargoMode() {
-    return cargoMode;
+  public boolean isConeMode() {
+    return isConeMode;
   }
 
   @Override
@@ -214,7 +233,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     // SmartDashboardLogger.infoNumber("extension (meters)", getExtension());
     // SmartDashboardLogger.infoNumber("encoder pos", rotationEncoder.getAbsolutePosition());
     // SmartDashboardLogger.infoNumber("arm vel", getRotationSpeed());
-    SmartDashboardLogger.infoString("Cargo Mode", cargoMode);
+    SmartDashboardLogger.infoString("Cargo Mode", isConeMode ? "Cone" : "Cube");
 
     if (extensionMotor.getSupplyCurrent() > ArmConstants.EXTENSION_MOTOR_STALLING_AMPS) {
       consecutiveHighAmpLoops++;
