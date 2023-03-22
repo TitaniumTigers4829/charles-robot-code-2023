@@ -36,7 +36,7 @@ public interface VisionSubsystem extends Subsystem {
    * tags, it uses the limelight that is closest to an april tag. Returns
    * 0 if no timestamp value is found.
    */
-  public long getTimeStampSeconds();
+  public double getTimeStampSeconds();
 
   /**
    * Returns true if the limelight(s) can see one or more cubes.

@@ -37,6 +37,9 @@ public abstract class DriveCommandBase extends CommandBase {
 
   @Override
   public void execute() {
+    // Updates the pose estimator using the swerve modules
+    driveSubsystem.addPoseEstimatorSwerveMeasurement();
+
     // Updates the robot's odometry with april tags
     double currentTimeStampSeconds = lastTimeStampSeconds;
 
@@ -63,6 +66,10 @@ public abstract class DriveCommandBase extends CommandBase {
       if (currentTimeStampSeconds > lastTimeStampSeconds && consecutiveAprilTagFrames > LimelightConstants.DETECTED_FRAMES_FOR_RELIABILITY) {
         Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
         SmartDashboard.putBoolean("updating pose", true);
+        double[] tmpPose = new double[2];
+        tmpPose[0] = limelightVisionMeasurement.getX();
+        tmpPose[1] = limelightVisionMeasurement.getY();
+        SmartDashboard.putNumberArray("limelight_pose", tmpPose);
         driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, currentTimeStampSeconds);
       }
     } else {

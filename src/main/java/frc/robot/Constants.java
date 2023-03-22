@@ -474,8 +474,8 @@ public final class Constants {
 
   public static final class LimelightConstants {
   
-    public static final String FRONT_LIMELIGHT_NAME = "limelight-jack";
-    public static final String BACK_LIMELIGHT_NAME = "limelight-tigers";
+    public static final String FRONT_LIMELIGHT_NAME = "limelight-front";
+    public static final String BACK_LIMELIGHT_NAME = "limelight-back";
 
     public static final double[][] APRIL_TAG_POSITIONS = {
       // { x, y, z}
@@ -506,11 +506,16 @@ public final class Constants {
       // {3, 0.01, 0.10, 6},
       // {4.5, 0.2, 0.4, 12},
       // {6, 0.7, 1.2, 20}
-      {0, 0.01, 0.01, 100000},
-      {1.5, 0.01, 0.01, 100000},
-      {3, 0.01, 0.10, 100000},
-      {4.5, 0.2, 0.4, 100000},
-      {6, 0.7, 1.2, 100000}
+      // {0, 0.01, 0.01, 100000},
+      // {1.5, 0.01, 0.01, 100000},
+      // {3, 0.01, 0.10, 100000},
+      // {4.5, 0.2, 0.4, 100000},
+      // {6, 0.7, 1.2, 100000}
+      {0, 0.1, 0.1, 100000},
+      {1.5, 0.4, 1.0, 100000},
+      {3, 1.0, 3.0, 100000},
+      {4.5, 3.0, 6.0, 100000},
+      {6, 10.0, 15.0, 100000}
     };
 
     public static final double[][] TWO_APRIL_TAG_LOOKUP_TABLE = {

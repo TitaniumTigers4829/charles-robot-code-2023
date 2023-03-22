@@ -27,9 +27,9 @@ import frc.robot.Constants.DriveConstants;
 public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem {
 
   // This will stay the same throughout the match. These values are harder to test for and tune, so assume this guess is right.
-  private final Vector<N3> stateStandardDeviations = VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5));
+  private final Vector<N3> stateStandardDeviations = VecBuilder.fill(0.03, 0.03, Units.degreesToRadians(3));
   // This will be changed throughout the match depending on how confident we are that the limelight is right.
-  private final Vector<N3> visionMeasurementStandardDeviations = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10));
+  private final Vector<N3> visionMeasurementStandardDeviations = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10000));
 
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
@@ -168,6 +168,14 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   public Pose2d getPose() {
     return odometry.getEstimatedPosition();
   }
+
+  @Override
+  public void addPoseEstimatorSwerveMeasurement() {
+    odometry.update(
+      getRotation2d(),
+      getModulePositions()
+    );
+  }
   
   @Override
   public void addPoseEstimatorVisionMeasurement(Pose2d visionMeasurement, double currentTimeStampSeconds) {
@@ -176,6 +184,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
       new Pose2d(visionMeasurement.getX(), visionMeasurement.getY(), getRotation2d());
       // SmartDashboard.putString("vision measurement", visionMeasurementExcludingRotation.toString());
     odometry.addVisionMeasurement(visionMeasurementExcludingRotation, currentTimeStampSeconds);
+    odometry.resetPosition(odometry.getEstimatedPosition().getRotation(), getModulePositions(), odometry.getEstimatedPosition());
   }
 
   @Override
@@ -213,13 +222,16 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   
   @Override
   public void periodic() {
-    // Uses the swerve's sensors to update the pose estimator
-    odometry.update(
-      getRotation2d(),
-      getModulePositions()
-    );
     Pose2d pose = odometry.getEstimatedPosition();
     SmartDashboard.putString("Estimated pose", pose.toString());
+
+    double[] smarterDashboardPose = new double[2];
+    smarterDashboardPose[0] = pose.getX();
+    smarterDashboardPose[1] = pose.getY();
+    SmartDashboard.putNumberArray("botPose", smarterDashboardPose);
+    SmartDashboard.putNumber("pitch", getHeading());
+    SmartDashboard.putNumber("yaw", gyro.getYaw());
+    SmartDashboard.putNumber("roll", getRoll());
   }
 
 }

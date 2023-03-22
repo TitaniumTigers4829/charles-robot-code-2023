@@ -79,6 +79,12 @@ public interface DriveSubsystem extends Subsystem {
   public Pose2d getPose();
 
   /**
+   * Updates the pose estimator with the pose calculated from the swerve
+   * modules.
+   */
+  public void addPoseEstimatorSwerveMeasurement();
+
+  /**
    * Updates the pose estimator with the pose calculated from the april
    * tags. How much it contributes to the pose estimation is set by
    * setPoseEstimatorVisionConfidence.
