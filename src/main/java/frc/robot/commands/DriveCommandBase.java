@@ -64,9 +64,9 @@ public abstract class DriveCommandBase extends CommandBase {
       }
 
       // Only updates the pose estimator if the limelight pose is new and reliable
-      if (currentTimeStampSeconds > lastTimeStampSeconds && consecutiveAprilTagFrames > LimelightConstants.DETECTED_FRAMES_FOR_RELIABILITY) {
+      if (currentTimeStampSeconds > lastTimeStampSeconds) {
         Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
-        SmartDashboard.putBoolean("updating pose", true);
+        SmartDashboard.putString("limelight pose", limelightVisionMeasurement.toString());
         double[] tmpPose = new double[2];
         tmpPose[0] = limelightVisionMeasurement.getX();
         tmpPose[1] = limelightVisionMeasurement.getY();

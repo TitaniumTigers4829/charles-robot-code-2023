@@ -501,21 +501,11 @@ public final class Constants {
 
     public static final double[][] ONE_APRIL_TAG_LOOKUP_TABLE = {
       // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
-      // {0, 0.01, 0.01, 1},
-      // {1.5, 0.01, 0.01, 1},
-      // {3, 0.01, 0.10, 6},
-      // {4.5, 0.2, 0.4, 12},
-      // {6, 0.7, 1.2, 20}
-      // {0, 0.01, 0.01, 100000},
-      // {1.5, 0.01, 0.01, 100000},
-      // {3, 0.01, 0.10, 100000},
-      // {4.5, 0.2, 0.4, 100000},
-      // {6, 0.7, 1.2, 100000}
-      {0, 0.1, 0.1, 100000},
-      {1.5, 0.4, 1.0, 100000},
-      {3, 1.0, 3.0, 100000},
-      {4.5, 3.0, 6.0, 100000},
-      {6, 10.0, 15.0, 100000}
+      {0, 0.01, 0.01, 100000},
+      {1.5, 0.01, 0.01, 100000},
+      {3, 0.01, 0.10, 100000},
+      {4.5, 0.2, 0.4, 100000},
+      {6, 0.7, 1.2, 100000}
     };
 
     public static final double[][] TWO_APRIL_TAG_LOOKUP_TABLE = {
@@ -525,8 +515,6 @@ public final class Constants {
       {4.5, 0.01, 0.03, 100000},
       {6, 0.02, 0.08, 100000}
     };
-
-    public static final int DETECTED_FRAMES_FOR_RELIABILITY = 2;
   }
 
 }

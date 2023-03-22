@@ -180,9 +180,9 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   @Override
   public void addPoseEstimatorVisionMeasurement(Pose2d visionMeasurement, double currentTimeStampSeconds) {
     // The gyro barely drifts throughout the match, so we trust it absolutely
-    // Pose2d visionMeasurementExcludingRotation = 
-    //   new Pose2d(visionMeasurement.getX(), visionMeasurement.getY(), getRotation2d());
-    odometry.addVisionMeasurement(visionMeasurement, currentTimeStampSeconds);
+    Pose2d visionMeasurementExcludingRotation = 
+      new Pose2d(visionMeasurement.getX(), visionMeasurement.getY(), getRotation2d());
+    odometry.addVisionMeasurement(visionMeasurementExcludingRotation, currentTimeStampSeconds);
   }
 
   @Override
@@ -221,7 +221,6 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   public void periodic() {
     Pose2d pose = odometry.getEstimatedPosition();
     SmartDashboard.putString("Estimated pose", pose.toString());
-
     double[] smarterDashboardPose = new double[2];
     smarterDashboardPose[0] = pose.getX();
     smarterDashboardPose[1] = pose.getY();
@@ -229,6 +228,8 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     SmartDashboard.putNumber("pitch", getHeading());
     SmartDashboard.putNumber("yaw", gyro.getYaw());
     SmartDashboard.putNumber("roll", getRoll());
+
+    swerveModules[0].periodicFunction();
   }
 
 }

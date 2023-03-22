@@ -221,6 +221,6 @@ public class SwerveModule {
   }
 
   public void periodicFunction() {
-    // SmartDashboard.putNumber("speed", getState().speedMetersPerSecond);
+    SmartDashboard.putString("module position", getPosition().toString());
   }
 }
