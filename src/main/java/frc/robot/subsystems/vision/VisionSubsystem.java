@@ -31,12 +31,17 @@ public interface VisionSubsystem extends Subsystem {
   public int getNumberOfAprilTags();
 
   /**
-   * Returns the timestamp in seconds of when the limelight calculated the
-   * robot's pose. If there are multiple limelights that can see april 
-   * tags, it uses the limelight that is closest to an april tag. Returns
-   * 0 if no timestamp value is found.
+   * Returns the timestamp in seconds of when the limelight that is being
+   * used for pose estimation calculated the robot's pose. 
    */
   public double getTimeStampSeconds();
+
+  /**
+   * Returns the latency in seconds of when the limelight that is being
+   * used for pose estimation calculated the robot's pose. It adds the
+   * pipeline latency, capture latency, and json parsing latency.
+   */
+  public double getLatencySeconds();
 
   /**
    * Returns true if the limelight(s) can see one or more cubes.

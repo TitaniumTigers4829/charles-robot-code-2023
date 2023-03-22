@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.LimelightConstants;
@@ -70,7 +71,7 @@ public abstract class DriveCommandBase extends CommandBase {
         tmpPose[0] = limelightVisionMeasurement.getX();
         tmpPose[1] = limelightVisionMeasurement.getY();
         SmartDashboard.putNumberArray("limelight_pose", tmpPose);
-        driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, currentTimeStampSeconds);
+        driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
       }
     } else {
       consecutiveAprilTagFrames = 0;

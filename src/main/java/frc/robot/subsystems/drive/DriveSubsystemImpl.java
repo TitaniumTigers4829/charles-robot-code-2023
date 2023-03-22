@@ -180,11 +180,9 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   @Override
   public void addPoseEstimatorVisionMeasurement(Pose2d visionMeasurement, double currentTimeStampSeconds) {
     // The gyro barely drifts throughout the match, so we trust it absolutely
-    Pose2d visionMeasurementExcludingRotation = 
-      new Pose2d(visionMeasurement.getX(), visionMeasurement.getY(), getRotation2d());
-      // SmartDashboard.putString("vision measurement", visionMeasurementExcludingRotation.toString());
-    odometry.addVisionMeasurement(visionMeasurementExcludingRotation, currentTimeStampSeconds);
-    odometry.resetPosition(odometry.getEstimatedPosition().getRotation(), getModulePositions(), odometry.getEstimatedPosition());
+    // Pose2d visionMeasurementExcludingRotation = 
+    //   new Pose2d(visionMeasurement.getX(), visionMeasurement.getY(), getRotation2d());
+    odometry.addVisionMeasurement(visionMeasurement, currentTimeStampSeconds);
   }
 
   @Override
@@ -195,7 +193,6 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   @Override
   public void setPoseEstimatorVisionConfidence(double xStandardDeviation, double yStandardDeviation,
     double thetaStandardDeviation) {
-      SmartDashboard.putNumber("y std", yStandardDeviation);
     odometry.setVisionMeasurementStdDevs(VecBuilder.fill(xStandardDeviation, yStandardDeviation, thetaStandardDeviation));
   }
   

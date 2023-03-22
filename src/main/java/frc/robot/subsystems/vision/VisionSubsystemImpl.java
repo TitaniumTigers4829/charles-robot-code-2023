@@ -81,6 +81,13 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
   }
 
   @Override
+  public double getLatencySeconds() {
+    return (currentlyUsedLimelightResults.targetingResults.latency_capture 
+    + currentlyUsedLimelightResults.targetingResults.latency_pipeline 
+    + currentlyUsedLimelightResults.targetingResults.latency_jsonParse) / 1000.0;
+  }
+
+  @Override
   public boolean canSeeCube() {
     // TODO Auto-generated method stub
     return false;
