@@ -16,19 +16,13 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.JoystickConstants;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.arm.ManuallyControlArm;
 import frc.robot.commands.arm.MoveArmToStowedAfterPickup;
 import frc.robot.commands.arm.PlaceGamePiece;
 import frc.robot.commands.arm.MoveArmToStowedAfterPlacing;
 import frc.robot.commands.arm.PickupGamePiece;
-import frc.robot.commands.autonomous.AutoPickup;
 import frc.robot.commands.autonomous.AutoPlace;
 import frc.robot.commands.autonomous.SimpleAuto;
 import frc.robot.commands.claw.ManualClaw;
-import frc.robot.commands.claw.RotateClaw180;
-import frc.robot.commands.claw.RunClaw;
-import frc.robot.commands.claw.SetClawRotation;
-import frc.robot.commands.claw.SetClawRotationSpeed;
 import frc.robot.commands.claw.ToggleClaw;
 import frc.robot.commands.drive.DriveCommand;
 import frc.robot.subsystems.arm.ArmSubsystem;
@@ -90,7 +84,7 @@ public class RobotContainer {
     double value = supplierValue.getAsDouble();
 
     // Deadband
-    value = deadband(value, 0.1);
+    value = deadband(value, 0.01);
 
     // Cube the axis
     value = Math.copySign(value * value, value);
@@ -102,12 +96,23 @@ public class RobotContainer {
     double value = supplierValue.getAsDouble();
 
     // Deadband
-    value = deadband(value, 0.1);
+    value = deadband(value, 0.01);
 
     // Cube the axis
     value = Math.copySign(value * value * value, value);
 
     return value;
+  }
+
+  private static double[] modifyAxisCubedPolar(DoubleSupplier xJoystick, DoubleSupplier yJoystick) {
+    double xInput = deadband(xJoystick.getAsDouble(), 0.05);
+    double yInput = deadband(yJoystick.getAsDouble(), 0.05);
+    double theta = Math.atan(xInput / yInput);
+    double hypotenuse = Math.sqrt(xInput * xInput + yInput * yInput);
+    double cubedHypotenuse = Math.pow(hypotenuse, 3);
+    xInput = Math.copySign(Math.sin(theta) * cubedHypotenuse, xInput);
+    yInput = Math.copySign(Math.cos(theta) * cubedHypotenuse, yInput);
+    return new double[]{xInput, yInput};
   }
 
   /**
@@ -124,8 +129,8 @@ public class RobotContainer {
     JoystickButton driverRightBumper = new JoystickButton(driverJoystick, JoystickConstants.DRIVER_RIGHT_BUMPER_ID);
 
     Command driveCommand = new DriveCommand(driveSubsystem, visionSubsystem,
-      () -> modifyAxisCubed(driverLeftStickY) * -1,
-      () -> modifyAxisCubed(driverLeftStickX) * -1,
+      () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[0] * -1,
+      () -> modifyAxisCubedPolar(driverLeftStickY, driverLeftStickX)[1] * -1,
       () -> modifyAxisCubed(driverRightStickX) * -1,
       () -> !driverRightBumper.getAsBoolean()
     );
@@ -137,8 +142,9 @@ public class RobotContainer {
     driverRightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroPitchAndRoll));
 
     JoystickButton driverBButton = new JoystickButton(driverJoystick, JoystickConstants.DRIVER_B_BUTTON_ID);
-    driverBButton.whileTrue(new AutoPickup(driveSubsystem, visionSubsystem, () -> !driverBButton.getAsBoolean()));
-    
+    driverBButton.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !driverBButton.getAsBoolean(), 5));
+    // driverBButton.whileTrue(new AutoPickup(driveSubsystem, visionSubsystem, () -> !driverBButton.getAsBoolean()));
+
     /* Arm Buttons */
     DoubleSupplier operatorLeftStickY = () -> operatorJoystick.getRawAxis(JoystickConstants.OPERATOR_LEFT_STICK_Y);
     DoubleSupplier operatorRightStickY = () -> operatorJoystick.getRawAxis(JoystickConstants.OPERATOR_RIGHT_STICK_Y);
