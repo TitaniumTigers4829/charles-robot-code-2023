@@ -9,11 +9,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.DriveCommandBase;
-import frc.robot.dashboard.SmartDashboardLogger;
+import frc.robot.extras.SmartDashboardLogger;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
@@ -65,11 +64,11 @@ public class AutoPickup extends DriveCommandBase {
       endY = start.getY();
       // endX = 15.13;
       // endY = 7.35;
-      endRotation = Rotation2d.fromDegrees(0);
-    } else {
-      endX = 0-9;
-      endY = 0-9;
       endRotation = Rotation2d.fromDegrees(180);
+    } else {
+      endX = start.getX() + 1;
+      endY = start.getY();
+      endRotation = Rotation2d.fromDegrees(0);
     }
 
     Translation2d end = new Translation2d(endX, endY);

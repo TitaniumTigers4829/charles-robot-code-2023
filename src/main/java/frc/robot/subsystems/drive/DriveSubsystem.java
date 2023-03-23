@@ -18,71 +18,71 @@ public interface DriveSubsystem extends Subsystem {
    * @param fieldRelative Whether the provided x and y speeds are relative
    * to the field.
    */
-  public void drive(double xSpeed, double ySpeed, double rotationSpeed, 
+  void drive(double xSpeed, double ySpeed, double rotationSpeed, 
     boolean fieldRelative);
 
   /**
    * Returns the heading of the robot in degrees from 0 to 360. 
    * Counter-clockwise is positive. This factors in gyro offset.
    */
-  public double getHeading();
+  double getHeading();
   
   /**
    * Returns the pitch of the robot in degrees, same as the heading.
    */
-  public double getPitch();
+  double getPitch();
 
   /**
    * Returns the roll of the robot in degrees, same as the heading and pitch.
    */
-  public double getRoll();
+  double getRoll();
 
   /**
    * Returns the magnitude of the robot's pitch and roll, the "balance error."
    * pitch * cos(yaw) + roll * sin(yaw)
    */
-  public double getBalanceError();
+  double getBalanceError();
 
   /**
    * Returns a Rotation2d for the heading of the robot.
    */
-  public Rotation2d getRotation2d();
+  Rotation2d getRotation2d();
 
   /**
    * Returns a Rotation2d for the heading of the robot relative to the
    * field from the driver's perspective. This method is needed so that the
    * drive command and poseEstimator don't fight each other.
    */
-  public Rotation2d getFieldRelativeRotation2d();
+  Rotation2d getFieldRelativeRotation2d();
 
   /**
    * Sets the offset of the gyro.
    * @param gyroOffset The number of degrees that will be added to the
    * gyro's angle in getHeading.
    */
-  public void setGyroOffset(int gyroOffset);
+  void setGyroOffset(int gyroOffset);
 
   /**
    * Zeroes the heading of the robot.
    */
-  public void zeroHeading();
+  void zeroHeading();
 
   /**
    * Zeroes the pitch and roll of the robot.
    */
-  public void zeroPitchAndRoll();
+  void zeroPitchAndRoll();
 
   /**
    * Returns the estimated field-relative pose of the robot. Positive x 
    * being forward, positive y being left.
    */
-  public Pose2d getPose();
+  Pose2d getPose();
 
   /**
    * Updates the pose estimator with the pose calculated from the swerve
    * modules.
    */
-  public void addPoseEstimatorSwerveMeasurement();
+  void addPoseEstimatorSwerveMeasurement();
 
   /**
    * Updates the pose estimator with the pose calculated from the april
@@ -92,14 +92,14 @@ public interface DriveSubsystem extends Subsystem {
    * @param currentTimeStampSeconds The time stamp in seconds of when the
    * pose from the april tags was calculated.
    */
-  public void addPoseEstimatorVisionMeasurement(Pose2d visionMeasurement,
+  void addPoseEstimatorVisionMeasurement(Pose2d visionMeasurement,
     double currentTimeStampSeconds);
 
   /**
    * Resets the odometry to the specified pose, but keeps the current 
    * rotation.
    */
-  public void resetOdometry(Pose2d pose);
+  void resetOdometry(Pose2d pose);
 
   /**
    * Sets the standard deviations of model states, or how much the april
@@ -109,7 +109,7 @@ public interface DriveSubsystem extends Subsystem {
    * @param yStandardDeviation the y standard deviation in meters
    * @param thetaStandardDeviation the theta standard deviation in radians
    */
-  public void setPoseEstimatorVisionConfidence(double xStandardDeviation,
+  void setPoseEstimatorVisionConfidence(double xStandardDeviation,
    double yStandardDeviation, double thetaStandardDeviation);
 
   /**
@@ -117,7 +117,7 @@ public interface DriveSubsystem extends Subsystem {
    * themselves. The order is: frontLeft, frontRight, backLeft, backRight
    * (should be the same as the kinematics).
    */
-  public SwerveModulePosition[] getModulePositions();
+  SwerveModulePosition[] getModulePositions();
   
   /**
    * Sets the modules to the specified states.
@@ -125,5 +125,5 @@ public interface DriveSubsystem extends Subsystem {
    * order is: frontLeft, frontRight, backLeft, backRight (should be the 
    * same as the kinematics).
    */
-  public void setModuleStates(SwerveModuleState[] desiredStates);
+  void setModuleStates(SwerveModuleState[] desiredStates);
 }
