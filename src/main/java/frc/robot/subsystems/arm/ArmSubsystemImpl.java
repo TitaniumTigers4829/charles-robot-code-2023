@@ -45,6 +45,8 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
     rotationEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
 
+    // TODO: We have to add configForwardSoftLimitThreshold to both of these, and make it have the same convention as the wrist
+
     TalonFXConfiguration leaderConfig = new TalonFXConfiguration();
     leaderConfig.remoteFilter0.remoteSensorDeviceID = rotationEncoder.getDeviceID(); // must be 15 or less due to oddity in CTRE electronics
     leaderConfig.remoteFilter0.remoteSensorSource = RemoteSensorSource.CANCoder;
@@ -115,6 +117,10 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   @Override
   public void setExtension(double extension) {
     extensionMotor.set(ControlMode.MotionMagic, extension * ArmConstants.EXTENSION_METERS_TO_MOTOR_POS);
+  }
+
+  public void syncRotationEncoders() {
+    leaderRotationMotor.setSelectedSensorPosition(getRotation() * ArmConstants.ARM_DEGREES_TO_FALCON_UNITS);
   }
 
   @Override

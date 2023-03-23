@@ -35,6 +35,11 @@ public interface ArmSubsystem extends Subsystem {
   void setRotation(double desiredAngle);
 
   /**
+   * Sets the rotation motors' encoders to that of the cancoder.
+   */
+  void syncRotationEncoders();
+
+  /**
    * Locks the extension solenoid
    */
   void lockExtensionSolenoid();

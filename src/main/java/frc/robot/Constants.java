@@ -268,6 +268,7 @@ public final class Constants {
     public static final double ARM_ROTATION_GEAR_RATIO = 1.0 / 1.0;
     public static final double ARM_ENCODER_UNITS_TO_DEGREES = (360.0 / Constants.CANCODER_RESOLUTION) * ARM_ROTATION_GEAR_RATIO;
     public static final double ARM_DEGREES_TO_CANCODER_UNITS = (Constants.CANCODER_RESOLUTION / 360.0) / ARM_ROTATION_GEAR_RATIO;
+    public static final double ARM_DEGREES_TO_FALCON_UNITS = (Constants.FALCON_ENCODER_RESOLUTION / 360.0) / ARM_ROTATION_GEAR_RATIO;
 
     public static final int LEADER_ROTATION_MOTOR_ID = 9;
     public static final int FOLLOWER_ROTATION_MOTOR_ID = 10;
