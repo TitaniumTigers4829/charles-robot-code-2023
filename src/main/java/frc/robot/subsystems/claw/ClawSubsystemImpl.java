@@ -17,10 +17,9 @@ import frc.robot.extras.SmartDashboardLogger;
 
 public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
-  private final DoubleSolenoid clawSolenoid;
-
   private final WPI_TalonFX wristMotor;
   private final WPI_TalonFX intakeMotor;
+  private final DoubleSolenoid clawSolenoid;
 
   private boolean isClawClosed;
   private boolean isConeMode = true;
@@ -112,11 +111,5 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   public void switchCargoMode() {
     isConeMode = !isConeMode;
   }
-
-  /*
-   * Returns the motor output with a min. of -1 and max. of 1.
-   */
-  private double motorOutputClamp(double motorOutput) {
-    return Math.max(-1, Math.min(1, motorOutput));
-  }
+  
 }

@@ -28,9 +28,8 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   private final WPI_TalonFX extensionMotor;
   private final DoubleSolenoid extensionLockSolenoid;
 
-  private double consecutiveHighAmpLoops = 0;
-
-  /** Creates a new ArmSubsystemImpl. 
+  /** 
+   * Creates a new ArmSubsystemImpl. 
    * Feed Forward Gain, Velocity Gain, and Acceleration Gain need to be tuned in constants
    * Use 1/Max Acceleration for acc. gain
    * Use 1/Max Velocity for velocity gain
@@ -52,7 +51,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     leaderConfig.slot0.kP = ArmConstants.ROTATION_P;
     leaderConfig.slot0.kI = ArmConstants.ROTATION_I;
     leaderConfig.slot0.kD = ArmConstants.ROTATION_D;
-    // leaderConfig.slot0.closedLoopPeakOutput = 1;
+    leaderConfig.slot0.closedLoopPeakOutput = 1;
     leaderConfig.motionAcceleration = ArmConstants.ROTATION_MAX_ACCELERATION * ArmConstants.ARM_DEGREES_TO_CANCODER_UNITS;
     leaderConfig.motionCruiseVelocity = ArmConstants.ROTATION_MAX_VELOCITY * ArmConstants.ARM_DEGREES_TO_CANCODER_UNITS;
     leaderConfig.motionCurveStrength = 1; // TODO: tune
@@ -90,13 +89,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   }
 
   @Override
-  public void periodic() {
-    if (extensionMotor.getSupplyCurrent() > ArmConstants.EXTENSION_MOTOR_STALLING_AMPS) {
-      consecutiveHighAmpLoops++;
-    } else {
-      consecutiveHighAmpLoops = 0;
-    }
-  }
+  public void periodic() {}
 
   @Override
   public void setRotation(double desiredAngle) {
@@ -141,7 +134,6 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
   @Override
   public void setRotationSpeed(double speed) {
-    // rotationMotorControllerGroup.set(speed / 2);
     leaderRotationMotor.set(speed / 2);
   }
 
@@ -167,11 +159,6 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     double theta = Math.toRadians(getRotation() - 90); // The angle of the arm is 0 when it's pointing down
     return ArmConstants.ARM_WEIGHT_NEWTONS * 
       (centerOfMassDistance * Math.cos(theta) - ArmConstants.ARM_AXIS_OF_ROTATION_RADIUS * Math.sin(theta));
-  }
-
-  @Override
-  public boolean isExtensionMotorStalling() {
-    return consecutiveHighAmpLoops >= 20;
   }
 
   @Override

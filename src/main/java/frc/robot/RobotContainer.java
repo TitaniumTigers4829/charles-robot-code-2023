@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.JoystickConstants;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.arm.ManualArm;
 import frc.robot.commands.arm.MoveArmToStowedAfterPickup;
 import frc.robot.commands.arm.PlaceGamePiece;
 import frc.robot.commands.arm.MoveArmToStowedAfterPlacing;
@@ -133,23 +134,24 @@ public class RobotContainer {
 
     JoystickButton operatorXButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_X_BUTTON_ID);
     JoystickButton operatorYButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_Y_BUTTON_ID);
-    // Command manualArmCommand = new ManuallyControlArm(
-    //   armSubsystem, 
-    //   operatorLeftStickY, 
-    //   operatorRightStickY
-    // );
-    // armSubsystem.setDefaultCommand(manualArmCommand);
-
-    Command manualArmAndWristCommand = new ManualClaw(clawSubsystem, armSubsystem, operatorXButton::getAsBoolean, operatorYButton::getAsBoolean, operatorLeftStickY, operatorRightStickY, operatorRightTrigger);
-    /**
-     * X button: succ
-     * Y button: expel
-     * Left Y: rotation speed
-     * Right Y: extension speed
-     * Purple button: switch cargo mode (separate command)
-     */
-    armSubsystem.setDefaultCommand(manualArmAndWristCommand);
-
+    
+    Command manualArmCommand = new ManualArm(
+      armSubsystem, 
+      operatorLeftStickY, 
+      operatorRightStickY
+    );
+    
+    armSubsystem.setDefaultCommand(manualArmCommand);
+    
+    Command manualClawCommand = new ManualClaw(
+      clawSubsystem, 
+      operatorXButton::getAsBoolean, 
+      operatorYButton::getAsBoolean,
+      operatorRightTrigger
+    );
+    
+    clawSubsystem.setDefaultCommand(manualClawCommand);
+  
     JoystickButton operatorAButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_A_BUTTON_ID);
     JoystickButton operatorLeftBumper = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_LEFT_BUMPER_ID);
     BooleanSupplier operatorLeftBumperPressed = () -> operatorLeftBumper.getAsBoolean();

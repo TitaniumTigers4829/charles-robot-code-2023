@@ -70,11 +70,6 @@ public interface ArmSubsystem extends Subsystem {
   double getTorqueFromGravity();
 
   /**
-   * Returns true if the extension motor is stalling.
-   */
-  boolean isExtensionMotorStalling();
-
-  /**
    * Sets the neutral mode of the extension motor.
    */
   void setExtensionMotorNeutralMode(NeutralMode neutralMode);
