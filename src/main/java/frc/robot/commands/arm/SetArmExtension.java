@@ -21,10 +21,6 @@ public class SetArmExtension extends CommandBase {
 
   @Override
   public void initialize() {
-<<<<<<< HEAD
-=======
-    // armSubsystem.resetExtensionController();
->>>>>>> cce75229082836f45b66dfe2a6f372d1ac5dac9d
     armSubsystem.unlockExtensionSolenoid();
   }
 
