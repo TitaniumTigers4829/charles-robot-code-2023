@@ -1,4 +1,4 @@
-package frc.robot.dashboard;
+package frc.robot.extras;
 
 public enum SmartDashboardLogLevel {
 

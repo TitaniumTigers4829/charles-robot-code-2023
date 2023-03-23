@@ -17,7 +17,7 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
   private String currentlyUsedLimelight = LimelightConstants.FRONT_LIMELIGHT_NAME;
   
   public VisionSubsystemImpl() {
-    // currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.FRONT_LIMELIGHT_NAME);
+    currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.FRONT_LIMELIGHT_NAME);
   }
 
   @Override
@@ -38,8 +38,7 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
       ? LimelightConstants.FRONT_LIMELIGHT_NAME : LimelightConstants.BACK_LIMELIGHT_NAME;
     currentlyUsedLimelightResults = currentlyUsedLimelight == LimelightConstants.FRONT_LIMELIGHT_NAME
       ? frontLimelightResults : backLimelightResults;
-    SmartDashboard.putString("currentlyUsedLimelight", currentlyUsedLimelight);
-    SmartDashboard.putString("limelight pose", getPoseFromAprilTags().toString());
+    SmartDashboard.putString("Currently Used Limelight", currentlyUsedLimelight);
   }
 
   @Override
@@ -74,8 +73,15 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
   }
 
   @Override
-  public long getTimeStampSeconds() {
-    return (long) (currentlyUsedLimelightResults.targetingResults.timestamp_LIMELIGHT_publish / 1000);
+  public double getTimeStampSeconds() {
+    return currentlyUsedLimelightResults.targetingResults.timestamp_LIMELIGHT_publish / 1000.0;
+  }
+
+  @Override
+  public double getLatencySeconds() {
+    return (currentlyUsedLimelightResults.targetingResults.latency_capture 
+    + currentlyUsedLimelightResults.targetingResults.latency_pipeline 
+    + currentlyUsedLimelightResults.targetingResults.latency_jsonParse) / 1000.0;
   }
 
   @Override

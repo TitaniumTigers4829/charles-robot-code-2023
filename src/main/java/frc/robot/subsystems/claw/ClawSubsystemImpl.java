@@ -7,14 +7,13 @@ package frc.robot.subsystems.claw;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ClawConstants;
+import frc.robot.extras.SmartDashboardLogger;
 
 public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
@@ -24,6 +23,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   private final WPI_TalonFX intakeMotor;
 
   private boolean isClawClosed;
+  private boolean isConeMode = true;
 
   public ClawSubsystemImpl() {
     wristMotor = new WPI_TalonFX(ClawConstants.WRIST_MOTOR_ID, Constants.RIO_CAN_BUS_STRING);
@@ -57,10 +57,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   @Override
   public void periodic() {
-    // SmartDashboard.putNumber("intake amps", intakeMotor.getSupplyCurrent());
-    // SmartDashboard.putNumber("wrist angle", getWristAngle());
-    // SmartDashboard.putNumber("position_", wristMotor.getSelectedSensorPosition());
-
+    SmartDashboardLogger.infoString("Cargo Mode", isConeMode ? "Cone" : "Cube");
   }
 
   @Override
@@ -104,13 +101,16 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   public void setWristPosition(double angle) {
     double angleInEncoderUnits = angle * ClawConstants.DEG_TO_WRIST_POS;
     wristMotor.set(ControlMode.MotionMagic, angleInEncoderUnits);
+  }
 
-    // if (angle >= ClawConstants.MIN_WRIST_ROTATION_DEGREES && angle <= ClawConstants.MAX_WRIST_ROTATION_DEGREES) {
-      // wristMotor.set(ControlMode.Position, angle * ClawConstants.DEG_TO_WRIST_POS);
-      // wristMotor.set(ControlMode.MotionMagic, angle * ClawConstants.DEG_TO_WRIST_POS);
-    // } else {
-    //   wristMotor.set(0);
-    // }
+  @Override
+  public boolean isConeMode() {
+    return isConeMode;
+  }
+
+  @Override
+  public void switchCargoMode() {
+    isConeMode = !isConeMode;
   }
 
   /*

@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.LimelightConstants;
@@ -37,6 +38,9 @@ public abstract class DriveCommandBase extends CommandBase {
 
   @Override
   public void execute() {
+    // Updates the pose estimator using the swerve modules
+    driveSubsystem.addPoseEstimatorSwerveMeasurement();
+
     // Updates the robot's odometry with april tags
     double currentTimeStampSeconds = lastTimeStampSeconds;
 
@@ -60,14 +64,17 @@ public abstract class DriveCommandBase extends CommandBase {
       }
 
       // Only updates the pose estimator if the limelight pose is new and reliable
-      if (currentTimeStampSeconds > lastTimeStampSeconds && consecutiveAprilTagFrames > LimelightConstants.DETECTED_FRAMES_FOR_RELIABILITY) {
+      if (currentTimeStampSeconds > lastTimeStampSeconds) {
         Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
-        SmartDashboard.putBoolean("updating pose", true);
-        driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, currentTimeStampSeconds);
+        SmartDashboard.putString("limelight pose", limelightVisionMeasurement.toString());
+        double[] tmpPose = new double[2];
+        tmpPose[0] = limelightVisionMeasurement.getX();
+        tmpPose[1] = limelightVisionMeasurement.getY();
+        SmartDashboard.putNumberArray("limelight_pose", tmpPose);
+        driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
       }
     } else {
       consecutiveAprilTagFrames = 0;
-      SmartDashboard.putBoolean("updating pose", false);
     }
 
     lastTimeStampSeconds = currentTimeStampSeconds;

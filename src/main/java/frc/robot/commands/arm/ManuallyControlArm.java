@@ -7,7 +7,7 @@ package frc.robot.commands.arm;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.dashboard.SmartDashboardLogger;
+import frc.robot.extras.SmartDashboardLogger;
 import frc.robot.subsystems.arm.ArmSubsystem;
 
 public class ManuallyControlArm extends CommandBase {

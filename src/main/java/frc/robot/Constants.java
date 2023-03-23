@@ -168,7 +168,7 @@ public final class Constants {
       {0.508, 1.0668, 1.6256, 2.1844, 2.7432, 3.302, 3.8608, 4.4196, 4.9784};
     // Factors in bumper width and wheelbase
     public static final double BLUE_NODE_X_POSITION = 1.5;
-    public static final double RED_NODE_Y_POSITION = 15;
+    public static final double RED_NODE_Y_POSITION = 14.55;
     public static final double BLUE_OUTER_WAYPOINT_X = 5.3;
     public static final double RED_OUTER_WAYPOINT_X = 11.2;
     public static final double BLUE_INNER_WAYPOINT_X = 2.5;
@@ -480,8 +480,8 @@ public final class Constants {
 
   public static final class LimelightConstants {
   
-    public static final String FRONT_LIMELIGHT_NAME = "limelight-jack";
-    public static final String BACK_LIMELIGHT_NAME = "limelight-tigers";
+    public static final String FRONT_LIMELIGHT_NAME = "limelight-front";
+    public static final String BACK_LIMELIGHT_NAME = "limelight-back";
 
     public static final double[][] APRIL_TAG_POSITIONS = {
       // { x, y, z}
@@ -507,11 +507,6 @@ public final class Constants {
 
     public static final double[][] ONE_APRIL_TAG_LOOKUP_TABLE = {
       // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
-      // {0, 0.01, 0.01, 1},
-      // {1.5, 0.01, 0.01, 1},
-      // {3, 0.01, 0.10, 6},
-      // {4.5, 0.2, 0.4, 12},
-      // {6, 0.7, 1.2, 20}
       {0, 0.01, 0.01, 100000},
       {1.5, 0.01, 0.01, 100000},
       {3, 0.01, 0.10, 100000},
@@ -526,8 +521,6 @@ public final class Constants {
       {4.5, 0.01, 0.03, 100000},
       {6, 0.02, 0.08, 100000}
     };
-
-    public static final int DETECTED_FRAMES_FOR_RELIABILITY = 2;
   }
 
 }

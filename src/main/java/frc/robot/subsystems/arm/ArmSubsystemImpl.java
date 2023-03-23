@@ -17,8 +17,6 @@ import com.ctre.phoenix.motorcontrol.StatusFrame;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
-import frc.robot.dashboard.SmartDashboardLogger;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
@@ -30,25 +28,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   private final WPI_TalonFX extensionMotor;
   private final DoubleSolenoid extensionLockSolenoid;
 
-  // private final MotorControllerGroup rotationMotorControllerGroup;
-
-  private final ProfiledPIDController rotationPIDController = new ProfiledPIDController(
-    ArmConstants.ROTATION_P, 
-    ArmConstants.ROTATION_I, 
-    ArmConstants.ROTATION_D, 
-    ArmConstants.ROTATION_CONSTRAINTS
-  );
-  
-  private final ProfiledPIDController extensionSpeedPIDController = new ProfiledPIDController(
-    ArmConstants.EXTENSION_P,
-    ArmConstants.EXTENSION_I,
-    ArmConstants.EXTENSION_D,
-    ArmConstants.EXTENSION_CONSTRAINTS
-  );
-
   private double consecutiveHighAmpLoops = 0;
-  // private String cargoMode = "Cone";
-  private boolean isConeMode = true;
 
   /** Creates a new ArmSubsystemImpl. 
    * Feed Forward Gain, Velocity Gain, and Acceleration Gain need to be tuned in constants
@@ -65,12 +45,6 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     rotationEncoder.configMagnetOffset(ArmConstants.ROTATION_ENCODER_OFFSET);
     rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
     rotationEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
-
-    // leaderRotationMotor.setInverted(ArmConstants.LEADER_ROTATION_MOTOR_INVERTED);
-    // followerRotationMotor.setInverted(ArmConstants.FOLLOWER_ROTATION_MOTOR_INVERTED);
-
-    // leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
-    // followerRotationMotor.setNeutralMode(NeutralMode.Brake);
 
     TalonFXConfiguration leaderConfig = new TalonFXConfiguration();
     leaderConfig.remoteFilter0.remoteSensorDeviceID = rotationEncoder.getDeviceID(); // must be 15 or less due to oddity in CTRE electronics
@@ -91,8 +65,6 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
     followerRotationMotor.follow(leaderRotationMotor);
 
-    // rotationMotorControllerGroup = new MotorControllerGroup(leaderRotationMotor, followerRotationMotor);
-
     extensionMotor = new WPI_TalonFX(ArmConstants.EXTENSION_MOTOR_ID);
 
     TalonFXConfiguration extensionConfig = new TalonFXConfiguration();
@@ -103,14 +75,12 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     extensionConfig.motionCruiseVelocity = ArmConstants.EXTENSION_MAX_VELOCITY * ArmConstants.EXTENSION_METERS_TO_MOTOR_POS;
     extensionConfig.motionCurveStrength = 1; // TODO: tune
     extensionMotor.configAllSettings(extensionConfig);
+    extensionMotor.setInverted(ArmConstants.EXTENSION_MOTOR_INVERTED);
+    extensionMotor.setNeutralMode(NeutralMode.Coast);
 
     extensionMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
     leaderRotationMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
     followerRotationMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
-
-
-    extensionMotor.setInverted(ArmConstants.EXTENSION_MOTOR_INVERTED);
-    extensionMotor.setNeutralMode(NeutralMode.Coast);
 
     extensionLockSolenoid = new DoubleSolenoid(
       ArmConstants.EXTENSION_LOCK_MODULE_TYPE, 
@@ -120,16 +90,18 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   }
 
   @Override
+  public void periodic() {
+    if (extensionMotor.getSupplyCurrent() > ArmConstants.EXTENSION_MOTOR_STALLING_AMPS) {
+      consecutiveHighAmpLoops++;
+    } else {
+      consecutiveHighAmpLoops = 0;
+    }
+  }
+
+  @Override
   public void setRotation(double desiredAngle) {
     double encoderPos = desiredAngle * ArmConstants.ARM_DEGREES_TO_CANCODER_UNITS;
     leaderRotationMotor.set(ControlMode.MotionMagic, encoderPos);
-    // double PIDOutput = rotationPIDController.calculate(getRotation(), desiredAngle);
-    // double feedForwardOutput = 0;
-    // if (Math.abs(desiredAngle - getRotation()) < ArmConstants.ROTATION_ACCEPTABLE_ERROR) {
-    //   feedForwardOutput = ArmConstants.ROTATION_FEED_FORWARD_CONSTANT * getTorqueFromGravity();
-    // }
-    // // SmartDashboard.putNumber("Rot PID Output", PIDOutput);
-    // setRotationSpeed(PIDOutput + feedForwardOutput);
   }
 
   @Override
@@ -144,23 +116,12 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
   @Override
   public double getExtension() {
-    // // Convert motor rotation units (2048 or 4096 for 1 full rotation) to number of rotations
-    // double motorRotation = (-extensionMotor.getSelectedSensorPosition() / 
-    //   Constants.FALCON_ENCODER_RESOLUTION) * ArmConstants.EXTENSION_MOTOR_GEAR_RATIO;
-    // // Convert number of rotations to distance (multiply by diameter)
-    // return motorRotation * ArmConstants.EXTENSION_SPOOL_DIAMETER * Math.PI;
     return extensionMotor.getSelectedSensorPosition() * ArmConstants.EXTENSION_MOTOR_POS_TO_METERS;
   }
 
   @Override
   public void setExtension(double extension) {
     extensionMotor.set(ControlMode.MotionMagic, extension * ArmConstants.EXTENSION_METERS_TO_MOTOR_POS);
-    // double PIDOutput = extensionSpeedPIDController.calculate(getExtension(), extension);
-    // // Sets a floor
-    // PIDOutput = Math.max(PIDOutput, ArmConstants.EXTENSION_MOTOR_MIN_OUTPUT);
-    // // Sets a ceiling
-    // PIDOutput = Math.min(PIDOutput, ArmConstants.EXTENSION_MOTOR_MAX_OUTPUT);
-    // setExtensionSpeed(PIDOutput);
   }
 
   @Override
@@ -217,43 +178,5 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   public void setExtensionMotorNeutralMode(NeutralMode neutralMode) {
     extensionMotor.setNeutralMode(neutralMode);
   }
-  
-  @Override
-  public void resetRotationController() {
-    rotationPIDController.reset(getRotation(), getRotationSpeed());
-  }
 
-  @Override
-  public void resetExtensionController() {
-    extensionSpeedPIDController.reset(getExtension(), getExtensionSpeed());
-  }
-
-  @Override
-  public void switchCargoMode() {
-    // if (cargoMode == "Cone") {
-    //   cargoMode = "Cube";
-    // } else {
-    //   cargoMode = "Cone";
-    // }
-    isConeMode = !isConeMode;
-  }
-
-  @Override
-  public boolean isConeMode() {
-    return isConeMode;
-  }
-
-  @Override
-  public void periodic() {
-    // SmartDashboardLogger.infoNumber("extension (meters)", getExtension());
-    // SmartDashboardLogger.infoNumber("encoder pos", rotationEncoder.getAbsolutePosition());
-    // SmartDashboardLogger.infoNumber("arm vel", getRotationSpeed());
-    SmartDashboardLogger.infoString("Cargo Mode", isConeMode ? "Cone" : "Cube");
-
-    if (extensionMotor.getSupplyCurrent() > ArmConstants.EXTENSION_MOTOR_STALLING_AMPS) {
-      consecutiveHighAmpLoops++;
-    } else {
-      consecutiveHighAmpLoops = 0;
-    }
-  }
 }

@@ -29,11 +29,9 @@ public class PickupGamePiece extends CommandBase {
   @Override
   public void initialize() {
     armSubsystem.resetExtensionController();
-    armSubsystem.resetRotationController();
     armSubsystem.unlockExtensionSolenoid();
     clawSubsystem.setWristPosition(180);
-    // if (armSubsystem.isConeMode() == "Cube") {
-    if (!armSubsystem.isConeMode()) {
+    if (!clawSubsystem.isConeMode()) {
       clawSubsystem.open();
       clawSubsystem.setIntakeSpeed(.15);
     } else {
@@ -59,7 +57,7 @@ public class PickupGamePiece extends CommandBase {
   public void end(boolean interrupted) {
     armSubsystem.setRotationSpeed(0);
     armSubsystem.setExtensionSpeed(0);
-    if (armSubsystem.isConeMode()) {
+    if (clawSubsystem.isConeMode()) {
       clawSubsystem.setIntakeSpeed(.08);
     } else {
       clawSubsystem.setIntakeSpeed(0);

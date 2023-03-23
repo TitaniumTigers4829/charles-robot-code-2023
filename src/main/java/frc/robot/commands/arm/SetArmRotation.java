@@ -20,9 +20,7 @@ public class SetArmRotation extends CommandBase {
   }
 
   @Override
-  public void initialize() {
-    armSubsystem.resetRotationController();
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {

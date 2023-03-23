@@ -35,7 +35,6 @@ public class MoveArmToStowedAfterPickup extends CommandBase {
   @Override
   public void initialize() {
     armSubsystem.resetExtensionController();
-    armSubsystem.resetRotationController();
     armSubsystem.unlockExtensionSolenoid();
     timer = new Timer();
     timer.reset();

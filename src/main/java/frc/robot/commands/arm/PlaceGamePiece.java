@@ -4,9 +4,7 @@
 
 package frc.robot.commands.arm;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.claw.ClawSubsystem;
 
@@ -28,8 +26,7 @@ public class PlaceGamePiece extends CommandBase {
   @Override
   public void initialize() {
     armSubsystem.resetExtensionController();
-    armSubsystem.resetRotationController();
-    if (armSubsystem.isConeMode()) {
+    if (clawSubsystem.isConeMode()) {
       clawSubsystem.setWristPosition(0);
       rotation -= 3;
       extension += 0.03;
@@ -51,7 +48,7 @@ public class PlaceGamePiece extends CommandBase {
     armSubsystem.setRotationSpeed(0);
     armSubsystem.setExtensionSpeed(0);
     clawSubsystem.open();
-    if (!armSubsystem.isConeMode()) {
+    if (!clawSubsystem.isConeMode()) {
       clawSubsystem.setIntakeSpeed(-.08);
     }
   }

@@ -2,6 +2,8 @@ package frc.robot.dashboard;
 
 import org.junit.jupiter.api.Test;
 
+import frc.robot.extras.SmartDashboardLogger;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
