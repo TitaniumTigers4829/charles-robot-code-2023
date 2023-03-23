@@ -33,7 +33,7 @@ public class MoveArmToStowedAfterPlacing extends CommandBase {
 
   @Override
   public void initialize() {
-    armSubsystem.resetExtensionController();
+    // armSubsystem.resetExtensionEncoder();
     armSubsystem.lockExtensionSolenoid();
     timer = new Timer();
     timer.reset();

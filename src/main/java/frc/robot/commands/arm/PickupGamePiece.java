@@ -28,7 +28,7 @@ public class PickupGamePiece extends CommandBase {
 
   @Override
   public void initialize() {
-    armSubsystem.resetExtensionController();
+    // armSubsystem.resetExtensionController();
     armSubsystem.unlockExtensionSolenoid();
     clawSubsystem.setWristPosition(180);
     if (!clawSubsystem.isConeMode()) {
