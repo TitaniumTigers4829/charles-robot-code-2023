@@ -10,23 +10,33 @@ import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
+  private final CANCoder rotationEncoder;
   private final WPI_TalonFX leaderRotationMotor;
   private final WPI_TalonFX followerRotationMotor;
-
-  private final CANCoder rotationEncoder;
   private final WPI_TalonFX extensionMotor;
   private final DoubleSolenoid extensionLockSolenoid;
+
+  private final ProfiledPIDController extensionSpeedPIDController = new ProfiledPIDController(
+    ArmConstants.EXTENSION_P,
+    ArmConstants.EXTENSION_I,
+    ArmConstants.EXTENSION_D,
+    ArmConstants.EXTENSION_CONSTRAINTS
+  );
 
   /** 
    * Creates a new ArmSubsystemImpl. 
@@ -37,61 +47,54 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
    * Tune all parameters
   */
   public ArmSubsystemImpl() {
+    rotationEncoder = new CANCoder(ArmConstants.ROTATION_ENCODER_ID, Constants.CANIVORE_CAN_BUS_STRING);
     leaderRotationMotor = new WPI_TalonFX(ArmConstants.LEADER_ROTATION_MOTOR_ID, Constants.CANIVORE_CAN_BUS_STRING);
     followerRotationMotor = new WPI_TalonFX(ArmConstants.FOLLOWER_ROTATION_MOTOR_ID, Constants.CANIVORE_CAN_BUS_STRING);
+    extensionMotor = new WPI_TalonFX(ArmConstants.EXTENSION_MOTOR_ID);
+    extensionLockSolenoid = new DoubleSolenoid(ArmConstants.EXTENSION_LOCK_MODULE_TYPE, ArmConstants.EXTENSION_LOCK_ENGAGED_ID, ArmConstants.EXTENSION_LOCK_DISENGAGED_ID);
     
-    rotationEncoder = new CANCoder(ArmConstants.ROTATION_ENCODER_ID, Constants.CANIVORE_CAN_BUS_STRING);
     rotationEncoder.configMagnetOffset(ArmConstants.ROTATION_ENCODER_OFFSET);
     rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
     rotationEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
 
-    // TODO: We have to add configForwardSoftLimitThreshold to both of these, and make it have the same convention as the wrist
+    leaderRotationMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
+    leaderRotationMotor.configRemoteFeedbackFilter(rotationEncoder, 0, 0);
+    leaderRotationMotor.config_kP(0, ArmConstants.ROTATION_P);
+    leaderRotationMotor.config_kI(0, ArmConstants.ROTATION_I);
+    leaderRotationMotor.config_kD(0, ArmConstants.ROTATION_D);
+    leaderRotationMotor.configMotionCruiseVelocity(ArmConstants.ROTATION_MAX_VELOCITY_ENCODER_UNITS);
+    leaderRotationMotor.configMotionAcceleration(ArmConstants.ROTATION_MAX_VELOCITY_ENCODER_UNITS);
+    leaderRotationMotor.configMotionSCurveStrength(ArmConstants.ROTATION_SMOOTHING);
+    leaderRotationMotor.configAllowableClosedloopError(0, ArmConstants.ROTATION_TOLERANCE);
+    leaderRotationMotor.configForwardSoftLimitThreshold(ArmConstants.MAX_ROTATION_ENCODER_UNITS);
+    leaderRotationMotor.configForwardSoftLimitEnable(true);
+    leaderRotationMotor.configReverseSoftLimitThreshold(ArmConstants.MIN_ROTATION_ENCODER_UNITS);
+    leaderRotationMotor.configReverseSoftLimitEnable(true);
 
-    TalonFXConfiguration leaderConfig = new TalonFXConfiguration();
-    leaderConfig.remoteFilter0.remoteSensorDeviceID = rotationEncoder.getDeviceID(); // must be 15 or less due to oddity in CTRE electronics
-    leaderConfig.remoteFilter0.remoteSensorSource = RemoteSensorSource.CANCoder;
-    leaderConfig.slot0.kP = ArmConstants.ROTATION_P;
-    leaderConfig.slot0.kI = ArmConstants.ROTATION_I;
-    leaderConfig.slot0.kD = ArmConstants.ROTATION_D;
-    leaderConfig.slot0.closedLoopPeakOutput = 1;
-    leaderConfig.motionAcceleration = ArmConstants.ROTATION_MAX_ACCELERATION * ArmConstants.ARM_DEGREES_TO_CANCODER_UNITS;
-    leaderConfig.motionCruiseVelocity = ArmConstants.ROTATION_MAX_VELOCITY * ArmConstants.ARM_DEGREES_TO_CANCODER_UNITS;
-    leaderConfig.motionCurveStrength = 1; // TODO: tune
-    leaderRotationMotor.configAllSettings(leaderConfig);
-    leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
     leaderRotationMotor.setInverted(ArmConstants.LEADER_ROTATION_MOTOR_INVERTED);
-    followerRotationMotor.configAllSettings(leaderConfig);
-    followerRotationMotor.setNeutralMode(NeutralMode.Brake);
+    leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
+
     followerRotationMotor.setInverted(ArmConstants.FOLLOWER_ROTATION_MOTOR_INVERTED);
+    followerRotationMotor.setNeutralMode(NeutralMode.Brake);
 
     followerRotationMotor.follow(leaderRotationMotor);
-
-    extensionMotor = new WPI_TalonFX(ArmConstants.EXTENSION_MOTOR_ID);
-
-    TalonFXConfiguration extensionConfig = new TalonFXConfiguration();
-    extensionConfig.slot0.kP = ArmConstants.EXTENSION_P;
-    extensionConfig.slot0.kI = ArmConstants.EXTENSION_I;
-    extensionConfig.slot0.kD = ArmConstants.EXTENSION_D;
-    extensionConfig.motionAcceleration = ArmConstants.EXTENSION_MAX_ACCELERATION * ArmConstants.EXTENSION_METERS_TO_MOTOR_POS;
-    extensionConfig.motionCruiseVelocity = ArmConstants.EXTENSION_MAX_VELOCITY * ArmConstants.EXTENSION_METERS_TO_MOTOR_POS;
-    extensionConfig.motionCurveStrength = 1; // TODO: tune
-    extensionMotor.configAllSettings(extensionConfig);
+    
     extensionMotor.setInverted(ArmConstants.EXTENSION_MOTOR_INVERTED);
     extensionMotor.setNeutralMode(NeutralMode.Coast);
 
     extensionMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
     leaderRotationMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
     followerRotationMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
-
-    extensionLockSolenoid = new DoubleSolenoid(
-      ArmConstants.EXTENSION_LOCK_MODULE_TYPE, 
-      ArmConstants.EXTENSION_LOCK_ENGAGED_ID,
-      ArmConstants.EXTENSION_LOCK_DISENGAGED_ID
-    );
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    SmartDashboard.putNumber("Cancoder pos (deg)", rotationEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber("Cancoder pos (units)", rotationEncoder.getAbsolutePosition() * ArmConstants.ARM_CANCODER_DEGREES_TO_CANCODER_UNITS);
+    SmartDashboard.putNumber("Encoder pos (deg)", leaderRotationMotor.getSelectedSensorPosition() * ArmConstants.ARM_ROTATION_MOTOR_TO_DEGREES);
+    SmartDashboard.putNumber("Encoder pos (deg_cancoder)", leaderRotationMotor.getSelectedSensorPosition() * ArmConstants.ARM_CANCODER_DEGREES_TO_CANCODER_UNITS);
+    SmartDashboard.putNumber("Encoder pos (units)", leaderRotationMotor.getSelectedSensorPosition());
+  }
 
   @Override
   public void setRotation(double desiredAngle) {
@@ -111,12 +114,28 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
   @Override
   public double getExtension() {
-    return extensionMotor.getSelectedSensorPosition() * ArmConstants.EXTENSION_MOTOR_POS_TO_METERS;
+    // Convert motor rotation units (2048 or 4096 for 1 full rotation) to number of rotations
+    double motorRotation = (-extensionMotor.getSelectedSensorPosition() / 
+      Constants.FALCON_ENCODER_RESOLUTION) * ArmConstants.EXTENSION_MOTOR_GEAR_RATIO;
+    // Convert number of rotations to distance (multiply by diameter)
+    return motorRotation * ArmConstants.EXTENSION_SPOOL_DIAMETER * Math.PI;
   }
 
   @Override
   public void setExtension(double extension) {
-    extensionMotor.set(ControlMode.MotionMagic, extension * ArmConstants.EXTENSION_METERS_TO_MOTOR_POS);
+    // FIXME: rework so that this "just works" and the "user" doesn't need to worry about pneumatic brake or anything else.
+    // FIXME: we should also make this "safe" against going outside of frame perimeter, don't allow the user to make the arm go outside frame while this is running
+    // EXAMPLE IS FOR BOTH SET EXTENSION AND SET ROTATION
+    // example: if the arm is mostly extended and we want the arm to go from 90 to 270 (or however the degrees work i forget), but basically a 180 over the top,
+    // this method will handle pulling the arm in while it is in motion, and then return the arm to the desired extension.
+    // I have some ideas of how to do this, a cool way to visualize it is something called configuration space, see discord.
+    // Another thing that we need protect against is rotation and extension values that our not in our configuration space.
+    double PIDOutput = extensionSpeedPIDController.calculate(getExtension(), extension);
+    // Sets a floor
+    PIDOutput = Math.max(PIDOutput, ArmConstants.EXTENSION_MOTOR_MIN_OUTPUT);
+    // Sets a ceiling
+    PIDOutput = Math.min(PIDOutput, ArmConstants.EXTENSION_MOTOR_MAX_OUTPUT);
+    setExtensionSpeed(PIDOutput);
   }
 
   public void syncRotationEncoders() {
@@ -170,6 +189,11 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   @Override
   public void setExtensionMotorNeutralMode(NeutralMode neutralMode) {
     extensionMotor.setNeutralMode(neutralMode);
+  }
+
+  @Override
+  public void resetExtensionController() {
+    extensionSpeedPIDController.reset(getExtension(), getExtensionSpeed());
   }
 
 }

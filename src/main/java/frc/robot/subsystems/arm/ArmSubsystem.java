@@ -79,4 +79,9 @@ public interface ArmSubsystem extends Subsystem {
    */
   void setExtensionMotorNeutralMode(NeutralMode neutralMode);
 
+  /**
+   * Resets the PID controller for the extension motor.
+   */
+  void resetExtensionController();
+
   }

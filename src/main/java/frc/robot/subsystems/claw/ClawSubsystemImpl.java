@@ -27,8 +27,6 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   public ClawSubsystemImpl() {
     wristMotor = new WPI_TalonFX(ClawConstants.WRIST_MOTOR_ID, Constants.RIO_CAN_BUS_STRING);
     wristMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
-    wristMotor.setInverted(ClawConstants.WRIST_MOTOR_INVERTED);
-    wristMotor.setNeutralMode(NeutralMode.Brake);
     wristMotor.config_kP(0, ClawConstants.WRIST_P);
     wristMotor.config_kI(0, ClawConstants.WRIST_I);
     wristMotor.config_kD(0, ClawConstants.WRIST_D);
@@ -42,6 +40,9 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     wristMotor.configForwardSoftLimitEnable(true);
     wristMotor.configReverseSoftLimitThreshold(ClawConstants.MIN_WRIST_ROTATION_ENCODER_UNITS);
     wristMotor.configReverseSoftLimitEnable(true);
+    
+    wristMotor.setInverted(ClawConstants.WRIST_MOTOR_INVERTED);
+    wristMotor.setNeutralMode(NeutralMode.Brake);
     wristMotor.setSelectedSensorPosition(0);
 
     intakeMotor = new WPI_TalonFX(ClawConstants.INTAKE_MOTOR_ID, Constants.RIO_CAN_BUS_STRING);

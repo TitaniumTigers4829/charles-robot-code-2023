@@ -29,8 +29,9 @@ public final class Constants {
   private Constants() {}
 
   // These are the total encoder units for one revolution
-  public static final int FALCON_ENCODER_RESOLUTION = 2048;
-  public static final int CANCODER_RESOLUTION = 4096; 
+  public static final double FALCON_ENCODER_RESOLUTION = 2048.0;
+  public static final double CANCODER_RESOLUTION = 4096.0; 
+  public static final double DEGREES_TO_CANCODER_UNITS = CANCODER_RESOLUTION / 360.0;
   public static final String CANIVORE_CAN_BUS_STRING = "Canivore 1";
   public static final String RIO_CAN_BUS_STRING = "rio";
 
@@ -260,43 +261,46 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
+    // speed to move the arm before doing the real movement
     public static final double ARM_MOVE_SPEED_BEFORE_REAL_MOVE = 0.15;
 
+    // physics stuff
     public static final double ARM_WEIGHT_NEWTONS = 9.8 * 25;
     public static final double ARM_AXIS_OF_ROTATION_RADIUS = Units.inchesToMeters(2.1);
 
-    public static final double ARM_ROTATION_GEAR_RATIO = 1.0 / 1.0;
+    // unit conversions
+    public static final double ARM_ROTATION_GEAR_RATIO = 1.0 / 192.0;
     public static final double ARM_ENCODER_UNITS_TO_DEGREES = (360.0 / Constants.CANCODER_RESOLUTION) * ARM_ROTATION_GEAR_RATIO;
     public static final double ARM_DEGREES_TO_CANCODER_UNITS = (Constants.CANCODER_RESOLUTION / 360.0) / ARM_ROTATION_GEAR_RATIO;
-    public static final double ARM_DEGREES_TO_FALCON_UNITS = (Constants.FALCON_ENCODER_RESOLUTION / 360.0) / ARM_ROTATION_GEAR_RATIO;
+    public static final double ARM_DEGREES_TO_FALCON_UNITS = Constants.FALCON_ENCODER_RESOLUTION / 360.0;
+    public static final double ARM_CANCODER_DEGREES_TO_CANCODER_UNITS = Constants.CANCODER_RESOLUTION / 360.0;
+    public static final double ARM_ROTATION_MOTOR_TO_DEGREES = Constants.FALCON_ENCODER_RESOLUTION / 360.0 * ARM_ROTATION_GEAR_RATIO;
 
+    // motor IDs and config
     public static final int LEADER_ROTATION_MOTOR_ID = 9;
     public static final int FOLLOWER_ROTATION_MOTOR_ID = 10;
+    public static final int ROTATION_ENCODER_ID = 15;
 
-    public static final boolean EXTENSION_MOTOR_INVERTED = false;
+    public static final double ROTATION_ENCODER_OFFSET = 95.009765625;
 
     public static final boolean LEADER_ROTATION_MOTOR_INVERTED = false;
     public static final boolean FOLLOWER_ROTATION_MOTOR_INVERTED = true;
-    public static final double ROTATION_ENCODER_OFFSET = 95.009765625;
-
-    public static final int EXTENSION_MOTOR_ID = 16;
-
-    public static final int ROTATION_ENCODER_ID = 15;
     
+    // PID constants
+    public static final double ROTATION_FEED_FORWARD_CONSTANT = .0013;
     public static final double ROTATION_P = 0.035; // .04
     public static final double ROTATION_I = 0;
     public static final double ROTATION_D = 0;
 
-    public static final double EXTENSION_P = -6;
-    public static final double EXTENSION_I = 0;
-    public static final double EXTENSION_D = 0;
+    //  max velocity stuff
+    public static final double ROTATION_MAX_VELOCITY_ENCODER_UNITS = 100;
+    public static final double ROTATION_MAX_ACCELERATION_ENCODER_UNITS = 80;
+    public static final int ROTATION_SMOOTHING = 1;
+    public static final double ROTATION_TOLERANCE = 1 * ARM_DEGREES_TO_CANCODER_UNITS;
+    public static final double MAX_ROTATION_ENCODER_UNITS = 290 * DEGREES_TO_CANCODER_UNITS;
+    public static final double MIN_ROTATION_ENCODER_UNITS = 65 * DEGREES_TO_CANCODER_UNITS;
 
-    public static final double ROTATION_FEED_FORWARD_CONSTANT = .0013;
-
-    public static final double EXTENSION_FEED_FORWARD_GAIN = 0;
-    public static final double EXTENSION_ACCELERATION_GAIN = 0;
-    public static final double EXTENSION_VELOCITY_GAIN = 0.2;
-
+    // unit conversions
     public static final double EXTENSION_MOTOR_GEAR_RATIO = 1.0 / 5.0;
     public static final double EXTENSION_MOTOR_STALLING_AMPS = 7;
     public static final double EXTENSION_SPOOL_DIAMETER = Units.inchesToMeters(2.5);
@@ -304,28 +308,33 @@ public final class Constants {
     public static final double EXTENSION_MOTOR_POS_TO_METERS = (-1 * Constants.FALCON_ENCODER_RESOLUTION * EXTENSION_MOTOR_GEAR_RATIO) * EXTENSION_SPOOL_DIAMETER * Math.PI;
     public static final double EXTENSION_METERS_TO_MOTOR_POS = (-1 * Constants.FALCON_ENCODER_RESOLUTION / EXTENSION_MOTOR_GEAR_RATIO) / EXTENSION_SPOOL_DIAMETER / Math.PI;
 
+    public static final TrapezoidProfile.Constraints ROTATION_CONSTRAINTS = new TrapezoidProfile.Constraints(
+      ROTATION_MAX_VELOCITY_ENCODER_UNITS, ROTATION_MAX_ACCELERATION_ENCODER_UNITS);
+
+    public static final double EXTENSION_ACCELERATION_GAIN = 0;
+    public static final double EXTENSION_VELOCITY_GAIN = 0.2;
+    public static final double EXTENSION_P = -6;
+    public static final double EXTENSION_I = 0;
+    public static final double EXTENSION_D = 0;
+    public static final double EXTENSION_F = 0;
+
+    // pneumatic lock stuff
     public static final PneumaticsModuleType EXTENSION_LOCK_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
     public static final int EXTENSION_LOCK_ENGAGED_ID = 2;
     public static final int EXTENSION_LOCK_DISENGAGED_ID = 3;
 
+    // max/min output
     public static final double EXTENSION_MOTOR_MIN_OUTPUT = -.2;
     public static final double EXTENSION_MOTOR_MAX_OUTPUT = .75;
-
-    public static final double EXTENSION_ACCEPTABLE_ERROR = 0.05; 
-    public static final double ROTATION_ACCEPTABLE_ERROR = 1; // 4
-
-    public static final double MIN_ROTATION_DEGREES = 0-9;
-    public static final double MAX_ROTATION_DEGREES = 0-9;
-
-
-    public static final double ROTATION_MAX_VELOCITY = 100;
-    public static final double ROTATION_MAX_ACCELERATION = 80;
-
     public static final double EXTENSION_MAX_VELOCITY = 0.75;
     public static final double EXTENSION_MAX_ACCELERATION = 2;
 
-    public static final TrapezoidProfile.Constraints ROTATION_CONSTRAINTS = new TrapezoidProfile.Constraints(
-      ROTATION_MAX_VELOCITY, ROTATION_MAX_ACCELERATION);
+    public static final int EXTENSION_MOTOR_ID = 16;
+    public static final boolean EXTENSION_MOTOR_INVERTED = false;
+
+    // acceptable error
+    public static final double EXTENSION_ACCEPTABLE_ERROR = 0.05; 
+    public static final double ROTATION_ACCEPTABLE_ERROR = 1;
     public static final TrapezoidProfile.Constraints EXTENSION_CONSTRAINTS = new TrapezoidProfile.Constraints(
       EXTENSION_MAX_VELOCITY, EXTENSION_MAX_ACCELERATION);
 

@@ -96,12 +96,15 @@ public class RobotContainer {
   private static double[] modifyAxisCubedPolar(DoubleSupplier xJoystick, DoubleSupplier yJoystick) {
     double xInput = deadband(xJoystick.getAsDouble(), 0.05);
     double yInput = deadband(yJoystick.getAsDouble(), 0.05);
-    double theta = Math.atan(xInput / yInput);
-    double hypotenuse = Math.sqrt(xInput * xInput + yInput * yInput);
-    double cubedHypotenuse = Math.pow(hypotenuse, 3);
-    xInput = Math.copySign(Math.sin(theta) * cubedHypotenuse, xInput);
-    yInput = Math.copySign(Math.cos(theta) * cubedHypotenuse, yInput);
-    return new double[]{xInput, yInput};
+    if (Math.abs(xInput) > 0 && Math.abs(yInput) > 0) {
+      double theta = Math.atan(xInput / yInput);
+      double hypotenuse = Math.sqrt(xInput * xInput + yInput * yInput);
+      double cubedHypotenuse = Math.pow(hypotenuse, 3);
+      xInput = Math.copySign(Math.sin(theta) * cubedHypotenuse, xInput);
+      yInput = Math.copySign(Math.cos(theta) * cubedHypotenuse, yInput);
+      return new double[]{xInput, yInput};
+    }
+    return new double[]{ Math.copySign(xInput * xInput * xInput, xInput),  Math.copySign(yInput * yInput * yInput, yInput)};
   }
 
   private void configureButtonBindings() {
@@ -124,8 +127,9 @@ public class RobotContainer {
     driverRightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroPitchAndRoll));
 
     JoystickButton driverBButton = new JoystickButton(driverJoystick, JoystickConstants.DRIVER_B_BUTTON_ID);
-    driverBButton.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !driverBButton.getAsBoolean(), 5));
+    // driverBButton.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !driverBButton.getAsBoolean(), 5));
     // driverBButton.whileTrue(new AutoPickup(driveSubsystem, visionSubsystem, () -> !driverBButton.getAsBoolean()));
+    driverBButton.onTrue(new InstantCommand(armSubsystem::syncRotationEncoders));
 
     /* Arm Buttons */
     DoubleSupplier operatorLeftStickY = () -> operatorJoystick.getRawAxis(JoystickConstants.OPERATOR_LEFT_STICK_Y);

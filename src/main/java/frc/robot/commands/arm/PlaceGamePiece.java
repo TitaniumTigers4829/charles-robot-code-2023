@@ -25,6 +25,7 @@ public class PlaceGamePiece extends CommandBase {
 
   @Override
   public void initialize() {
+    armSubsystem.resetExtensionController();
     if (clawSubsystem.isConeMode()) {
       clawSubsystem.setWristPosition(0);
       rotation -= 3;
