@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
-import frc.robot.dashboard.SmartDashboardLogger;
+import frc.robot.extras.SmartDashboardLogger;
 
 public class SwerveModule {
 
@@ -220,7 +220,5 @@ public class SwerveModule {
       driveMotor.setSelectedSensorPosition(0);
   }
 
-  public void periodicFunction() {
-    SmartDashboard.putString("module position", getPosition().toString());
-  }
+  public void periodicFunction() {}
 }

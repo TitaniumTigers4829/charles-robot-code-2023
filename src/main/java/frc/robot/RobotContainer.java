@@ -80,23 +80,11 @@ public class RobotContainer {
     }
   }
 
-  private static double modifyAxisSquared(DoubleSupplier supplierValue) {
-    double value = supplierValue.getAsDouble();
-
-    // Deadband
-    value = deadband(value, 0.01);
-
-    // Cube the axis
-    value = Math.copySign(value * value, value);
-
-    return value;
-  }
-
   private static double modifyAxisCubed(DoubleSupplier supplierValue) {
     double value = supplierValue.getAsDouble();
 
     // Deadband
-    value = deadband(value, 0.01);
+    value = deadband(value, 0.05);
 
     // Cube the axis
     value = Math.copySign(value * value * value, value);
@@ -115,14 +103,7 @@ public class RobotContainer {
     return new double[]{xInput, yInput};
   }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
   private void configureButtonBindings() {
-
     DoubleSupplier driverLeftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_LEFT_STICK_X);
     DoubleSupplier driverLeftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_LEFT_STICK_Y);
     DoubleSupplier driverRightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_RIGHT_STICK_X);
@@ -181,17 +162,12 @@ public class RobotContainer {
     operatorBButton.onFalse(new MoveArmToStowedAfterPickup(armSubsystem, clawSubsystem, operatorLeftBumperPressed));
 
     /* Claw Buttons */
-    // POVButton operatorRightDirectionPad = new POVButton(operatorJoystick, 90);
-    // operatorRightDirectionPad.whileTrue(new SetClawRotation(clawSubsystem, 180));
     POVButton operatorRightDirectionPad = new POVButton(operatorJoystick, 90);
     operatorRightDirectionPad.onTrue(new InstantCommand(armSubsystem::resetExtensionEncoder));
     operatorRightDirectionPad.onTrue(new InstantCommand(clawSubsystem::zeroWristEncoder));
 
     JoystickButton operatorRightBumper = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_RIGHT_BUMPER_ID);
     operatorRightBumper.onTrue(new ToggleClaw(clawSubsystem));
-
-    // Trigger rotateClawTrigger = new Trigger(operatorRightTrigger);
-    // rotateClawTrigger.whileTrue(new RotateClaw180(clawSubsystem));
 
     /* Button Board Buttons */
     DoubleSupplier xAxis = () -> buttonBoard1.getRawAxis(0);

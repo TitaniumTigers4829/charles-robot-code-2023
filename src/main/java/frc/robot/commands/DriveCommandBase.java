@@ -75,7 +75,6 @@ public abstract class DriveCommandBase extends CommandBase {
       }
     } else {
       consecutiveAprilTagFrames = 0;
-      SmartDashboard.putBoolean("updating pose", false);
     }
 
     lastTimeStampSeconds = currentTimeStampSeconds;

@@ -168,7 +168,7 @@ public final class Constants {
       {0.508, 1.0668, 1.6256, 2.1844, 2.7432, 3.302, 3.8608, 4.4196, 4.9784};
     // Factors in bumper width and wheelbase
     public static final double BLUE_NODE_X_POSITION = 1.5;
-    public static final double RED_NODE_Y_POSITION = 15;
+    public static final double RED_NODE_Y_POSITION = 14.55;
     public static final double BLUE_OUTER_WAYPOINT_X = 5.3;
     public static final double RED_OUTER_WAYPOINT_X = 11.2;
     public static final double BLUE_INNER_WAYPOINT_X = 2.5;

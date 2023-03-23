@@ -758,10 +758,9 @@ public class LimelightHelpers {
 
         try {
             String json = getJSONDump(limelightName);
-            if (null != json || "" != json) {
+            if (json != null && !json.equals("")) {
                 results = mapper.readValue(json, LimelightResults.class);
             }
-        
         } catch (JsonProcessingException e) {
             System.err.println("lljson error: " + e.getMessage());
         }

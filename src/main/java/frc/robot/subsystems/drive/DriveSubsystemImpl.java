@@ -228,8 +228,6 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     SmartDashboard.putNumber("pitch", getHeading());
     SmartDashboard.putNumber("yaw", gyro.getYaw());
     SmartDashboard.putNumber("roll", getRoll());
-
-    swerveModules[0].periodicFunction();
   }
 
 }
