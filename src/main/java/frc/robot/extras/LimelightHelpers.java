@@ -370,11 +370,6 @@ public class LimelightHelpers {
 
     private static ObjectMapper mapper;
 
-    /**
-     * Print JSON Parse time to the console in milliseconds
-     */
-    static boolean profileJSON = false;
-
     static final String sanitizeName(String name) {
         if (name == "" || name == null) {
             return "limelight";
@@ -755,7 +750,6 @@ public class LimelightHelpers {
      * Parses Limelight's JSON results dump into a LimelightResults Object
      */
     public static LimelightResults getLatestResults(String limelightName) {
-
         long start = System.nanoTime();
         LimelightHelpers.LimelightResults results = new LimelightHelpers.LimelightResults();
         if (mapper == null) {
@@ -763,7 +757,10 @@ public class LimelightHelpers {
         }
 
         try {
-            results = mapper.readValue(getJSONDump(limelightName), LimelightResults.class);
+            String json = getJSONDump(limelightName);
+            if (json != null && !json.equals("")) {
+                results = mapper.readValue(json, LimelightResults.class);
+            }
         } catch (JsonProcessingException e) {
             System.err.println("lljson error: " + e.getMessage());
         }
@@ -771,9 +768,6 @@ public class LimelightHelpers {
         long end = System.nanoTime();
         double millis = (end - start) * .000001;
         results.targetingResults.latency_jsonParse = millis;
-        if (profileJSON) {
-            System.out.printf("lljson: %.2f\r\n", millis);
-        }
 
         return results;
     }

@@ -8,11 +8,12 @@ public interface LEDSubsystem extends Subsystem {
   /** 
    * Turns the LEDs off. 
    */
-  public void off();
+  void off();
   
-  /** Sets the LEDs to a specific LEDProcess.
+  /** 
+   * Sets the LEDs to a specific LEDProcess.
    * @param process the LEDProcess representing the action.
    */
-  public void setProcess(LEDProcess process);
+  void setProcess(LEDProcess process);
   
 }

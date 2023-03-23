@@ -9,14 +9,10 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.DriveCommandBase;
-import frc.robot.extras.MultiLinearInterpolator;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
@@ -61,6 +57,17 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
     addRequirements(visionSubsystem);
     this.trajectoryName = trajectoryName;
     this.resetOdometryToTrajectoryStart = resetOdometryToTrajectoryStart;
+  }
+
+  /**
+   * Follows the specified PathPlanner trajectory.
+   * @param driveSubsystem The subsystem for the swerve drive.
+   * @param visionSubsystem The subsystem for vision measurements
+   * @param trajectoryName The name of the PathPlanner path file. It should not include the filepath or 
+   * .path extension.
+   */
+  public FollowPathPlannerTrajectory(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, String trajectoryName) {
+    this(driveSubsystem, visionSubsystem, trajectoryName, false);
   }
 
   @Override

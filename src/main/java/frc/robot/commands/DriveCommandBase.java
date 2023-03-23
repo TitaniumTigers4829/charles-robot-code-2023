@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.extras.MultiLinearInterpolator;
@@ -36,6 +38,9 @@ public abstract class DriveCommandBase extends CommandBase {
 
   @Override
   public void execute() {
+    // Updates the pose estimator using the swerve modules
+    driveSubsystem.addPoseEstimatorSwerveMeasurement();
+
     // Updates the robot's odometry with april tags
     double currentTimeStampSeconds = lastTimeStampSeconds;
 
@@ -44,6 +49,7 @@ public abstract class DriveCommandBase extends CommandBase {
       consecutiveAprilTagFrames++;
 
       double distanceFromClosestAprilTag = visionSubsystem.getDistanceFromClosestAprilTag();
+      SmartDashboard.putNumber("distance from closest", distanceFromClosestAprilTag);
       // Sets the pose estimator confidence in vision based off of number of april tags and distance
       if (visionSubsystem.getNumberOfAprilTags() == 1) {
         double xStandardDeviation = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[0];
@@ -58,9 +64,14 @@ public abstract class DriveCommandBase extends CommandBase {
       }
 
       // Only updates the pose estimator if the limelight pose is new and reliable
-      if (currentTimeStampSeconds > lastTimeStampSeconds && consecutiveAprilTagFrames > LimelightConstants.DETECTED_FRAMES_FOR_RELIABILITY) {
+      if (currentTimeStampSeconds > lastTimeStampSeconds) {
         Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
-        driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, currentTimeStampSeconds);
+        SmartDashboard.putString("limelight pose", limelightVisionMeasurement.toString());
+        double[] tmpPose = new double[2];
+        tmpPose[0] = limelightVisionMeasurement.getX();
+        tmpPose[1] = limelightVisionMeasurement.getY();
+        SmartDashboard.putNumberArray("limelight_pose", tmpPose);
+        driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
       }
     } else {
       consecutiveAprilTagFrames = 0;

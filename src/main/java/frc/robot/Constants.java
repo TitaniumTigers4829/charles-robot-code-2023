@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -30,6 +31,8 @@ public final class Constants {
   // These are the total encoder units for one revolution
   public static final int FALCON_ENCODER_RESOLUTION = 2048;
   public static final int CANCODER_RESOLUTION = 4096; 
+  public static final String CANIVORE_CAN_BUS_STRING = "Canivore 1";
+  public static final String RIO_CAN_BUS_STRING = "rio";
 
   public static final class DriveConstants {
 
@@ -48,56 +51,56 @@ public final class Constants {
     public static final double TURNING_V = 0.75;
     public static final double TURNING_A = 0; // Default to zero
 
-    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI * 2;
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI * 4;
 
-    public static final double MAX_SPEED_METERS_PER_SECOND = 4;
+    public static final double MAX_SPEED_METERS_PER_SECOND = 4.5;
 
-    public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 12;
-    public static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 16;
-    public static final int REAR_LEFT_DRIVE_MOTOR_ID = 11;
-    public static final int REAR_RIGHT_DRIVE_MOTOR_ID = 9;
+    public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 1;
+    public static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 2;
+    public static final int REAR_LEFT_DRIVE_MOTOR_ID = 3;
+    public static final int REAR_RIGHT_DRIVE_MOTOR_ID = 4;
 
-    public static final int FRONT_LEFT_TURN_MOTOR_ID = 7;
-    public static final int FRONT_RIGHT_TURN_MOTOR_ID = 10;
-    public static final int REAR_LEFT_TURN_MOTOR_ID = 13;
+    public static final int FRONT_LEFT_TURN_MOTOR_ID = 5;
+    public static final int FRONT_RIGHT_TURN_MOTOR_ID = 6;
+    public static final int REAR_LEFT_TURN_MOTOR_ID = 7;
     public static final int REAR_RIGHT_TURN_MOTOR_ID = 8;
 
-    public static final int FRONT_LEFT_CANCODER_ID = 0;
-    public static final int FRONT_RIGHT_CANCODER_ID = 2;
-    public static final int REAR_LEFT_CANCODER_ID = 1;
-    public static final int REAR_RIGHT_CANCODER_ID = 3;
+    public static final int FRONT_LEFT_CANCODER_ID = 11;
+    public static final int FRONT_RIGHT_CANCODER_ID = 12;
+    public static final int REAR_LEFT_CANCODER_ID = 13;
+    public static final int REAR_RIGHT_CANCODER_ID = 14;
 
     // In degrees.
-    public static final double FRONT_LEFT_ZERO_ANGLE = 47.900390625;
-    public static final double FRONT_RIGHT_ZERO_ANGLE = -71.630859375;
-    public static final double REAR_LEFT_ZERO_ANGLE = -24.345703125;
-    public static final double REAR_RIGHT_ZERO_ANGLE = -88.681640625;
+    public static final double FRONT_LEFT_ZERO_ANGLE = 169.716796875;
+    public static final double FRONT_RIGHT_ZERO_ANGLE = -76.46484375;
+    public static final double REAR_LEFT_ZERO_ANGLE = 46.58203125;
+    public static final double REAR_RIGHT_ZERO_ANGLE = -78.57421875;
 
     public static final boolean FRONT_LEFT_CANCODER_REVERSED = false;
     public static final boolean FRONT_RIGHT_CANCODER_REVERSED = false;
     public static final boolean REAR_LEFT_CANCODER_REVERSED = false;
     public static final boolean REAR_RIGHT_CANCODER_REVERSED = false;
     
-    public static final boolean FRONT_LEFT_DRIVE_ENCODER_REVERSED = true;
+    public static final boolean FRONT_LEFT_DRIVE_ENCODER_REVERSED = false;
     public static final boolean FRONT_RIGHT_DRIVE_ENCODER_REVERSED = true;
-    public static final boolean REAR_LEFT_DRIVE_ENCODER_REVERSED = true;
+    public static final boolean REAR_LEFT_DRIVE_ENCODER_REVERSED = false;
     public static final boolean REAR_RIGHT_DRIVE_ENCODER_REVERSED = true;
 
     public static final double FACEFORWARD_P = 0.015;
 
     public static final class BalanceConstants {
-      // TODO: Tune all these; They are ballpark esitmates
-      public static final double BALANCE_P = 0.0472;
+      // TODO: Tune all these;
+      public static final double BALANCE_P = 0.07;
       public static final double BALANCE_I = 0;
-      public static final double BALANCE_D = 0.003;
+      public static final double BALANCE_D = 0;
       
-      public static final double INITIAL_SPEED = 1.4;
-
-      public static final double BALANCE_ERROR_INIT_DEGREES = 14;
-      public static final double BALANCE_ERROR_NEAR_BALANCED = 10;
-      public static final double BALANCE_ERROR_CONSIDERED_BALANCED = 2.4; // +/- degrees
       public static final double ORIENTATION_ERROR_CONSIDERED_ORIENTED = 2.5; // +/- degrees
-      
+      public static final double BALANCE_ERROR_CONSIDERED_BALANCED = 2.4; // +/- degrees
+
+      // Might be removed
+      public static final double INITIAL_SPEED = 0.7;
+      public static final double BALANCE_ERROR_INIT_DEGREES = 10;
+      public static final double BALANCE_ERROR_NEAR_BALANCED = 3;
     }
   }
   
@@ -105,8 +108,7 @@ public final class Constants {
 
     public static final double DRIVE_GEAR_RATIO = 7.36;
 
-    // TODO: tune this
-    public static final double TURN_P = 8.1;
+    public static final double TURN_P = 7; // 8.1
     public static final double TURN_I = 0;
     public static final double TURN_D = 0;
 
@@ -114,7 +116,7 @@ public final class Constants {
     public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 6 * Math.PI;
 
     public static final double DRIVE_F = 0.055;
-    public static final double DRIVE_P = 0; // .1
+    public static final double DRIVE_P = .1; // .1
     public static final double DRIVE_I = 0;
     public static final double DRIVE_D = 0;
 
@@ -131,8 +133,6 @@ public final class Constants {
         MAX_ANGULAR_SPEED_RADIANS_PER_SECOND,
         MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED
       );
-
-    public static final String CANIVORE_CAN_BUS_STRING = "Canivore 1";
 
   }
 
@@ -168,7 +168,7 @@ public final class Constants {
       {0.508, 1.0668, 1.6256, 2.1844, 2.7432, 3.302, 3.8608, 4.4196, 4.9784};
     // Factors in bumper width and wheelbase
     public static final double BLUE_NODE_X_POSITION = 1.5;
-    public static final double RED_NODE_Y_POSITION = 15;
+    public static final double RED_NODE_Y_POSITION = 14.55;
     public static final double BLUE_OUTER_WAYPOINT_X = 5.3;
     public static final double RED_OUTER_WAYPOINT_X = 11.2;
     public static final double BLUE_INNER_WAYPOINT_X = 2.5;
@@ -177,6 +177,11 @@ public final class Constants {
     public static final double LOWER_WAYPOINT_Y = 0.75;
     public static final Rotation2d BLUE_END_ROTATION = Rotation2d.fromDegrees(180);
     public static final Rotation2d RED_END_ROTATION = Rotation2d.fromDegrees(0);
+
+    // Auto Trajectory Names
+    public static final String TWO_CONE_BALANCE_AUTO_FIRST = "Two Cone Balance First";
+    public static final String TWO_CONE_BALANCE_AUTO_SECOND = "Two Cone Balance Second";
+    public static final String TWO_CONE_BALANCE_AUTO_THIRD = "Two Cone Balance Third";
   }
   
   public static final class LEDConstants {
@@ -261,114 +266,229 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
+    public static final double ARM_MOVE_SPEED_BEFORE_REAL_MOVE = 0.15;
 
-    public static final int LEADER_ROTATION_MOTOR_ID = 0-9;
-    public static final int FOLLOWER_ROTATION_MOTOR_ID = 0-9;
+    public static final double ARM_WEIGHT_NEWTONS = 9.8 * 25;
+    public static final double ARM_AXIS_OF_ROTATION_RADIUS = Units.inchesToMeters(2.1);
+
+    public static final double ARM_ROTATION_GEAR_RATIO = 1.0 / 1.0;
+    public static final double ARM_ENCODER_UNITS_TO_DEGREES = (360.0 / Constants.CANCODER_RESOLUTION) * ARM_ROTATION_GEAR_RATIO;
+    public static final double ARM_DEGREES_TO_CANCODER_UNITS = (Constants.CANCODER_RESOLUTION / 360.0) / ARM_ROTATION_GEAR_RATIO;
+    public static final double ARM_DEGREES_TO_FALCON_UNITS = (Constants.FALCON_ENCODER_RESOLUTION / 360.0) / ARM_ROTATION_GEAR_RATIO;
+
+    public static final int LEADER_ROTATION_MOTOR_ID = 9;
+    public static final int FOLLOWER_ROTATION_MOTOR_ID = 10;
+
+    public static final boolean EXTENSION_MOTOR_INVERTED = false;
 
     public static final boolean LEADER_ROTATION_MOTOR_INVERTED = false;
     public static final boolean FOLLOWER_ROTATION_MOTOR_INVERTED = true;
+    public static final double ROTATION_ENCODER_OFFSET = 95.009765625;
 
-    public static final int EXTENSION_MOTOR_ID = 0-9;
+    public static final int EXTENSION_MOTOR_ID = 16;
 
-    public static final int ROTATION_ENCODER_ID = 0-9;
-
-    public static final double ROTATION_MAX_VELOCITY = 0.0;
-    public static final double ROTATION_MAX_ACCELERATION = 0.0;
-    public static final double EXTENSION_MAX_VELOCITY = 0.0;
-    public static final double EXTENSION_MAX_ACCELERATION = 0.0;
+    public static final int ROTATION_ENCODER_ID = 15;
     
-    public static final double ROTATION_P = 0-9;
-    public static final double ROTATION_I = 0-9;
-    public static final double ROTATION_D = 0-9;
+    public static final double ROTATION_P = 0.035; // .04
+    public static final double ROTATION_I = 0;
+    public static final double ROTATION_D = 0;
+
+    public static final double EXTENSION_P = -6;
+    public static final double EXTENSION_I = 0;
+    public static final double EXTENSION_D = 0;
+
+    public static final double ROTATION_FEED_FORWARD_CONSTANT = .0013;
+
+    public static final double EXTENSION_FEED_FORWARD_GAIN = 0;
+    public static final double EXTENSION_ACCELERATION_GAIN = 0;
+    public static final double EXTENSION_VELOCITY_GAIN = 0.2;
+
+    public static final double EXTENSION_MOTOR_GEAR_RATIO = 1.0 / 5.0;
+    public static final double EXTENSION_MOTOR_STALLING_AMPS = 7;
+    public static final double EXTENSION_SPOOL_DIAMETER = Units.inchesToMeters(2.5);
+    public static final double MAX_EXTENSION_LENGTH = Units.inchesToMeters(48.48);
+    public static final double EXTENSION_MOTOR_POS_TO_METERS = (-1 * Constants.FALCON_ENCODER_RESOLUTION * EXTENSION_MOTOR_GEAR_RATIO) * EXTENSION_SPOOL_DIAMETER * Math.PI;
+    public static final double EXTENSION_METERS_TO_MOTOR_POS = (-1 * Constants.FALCON_ENCODER_RESOLUTION / EXTENSION_MOTOR_GEAR_RATIO) / EXTENSION_SPOOL_DIAMETER / Math.PI;
+
+    public static final PneumaticsModuleType EXTENSION_LOCK_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
+    public static final int EXTENSION_LOCK_ENGAGED_ID = 2;
+    public static final int EXTENSION_LOCK_DISENGAGED_ID = 3;
+
+    public static final double EXTENSION_MOTOR_MIN_OUTPUT = -.2;
+    public static final double EXTENSION_MOTOR_MAX_OUTPUT = .75;
+
+    public static final double EXTENSION_ACCEPTABLE_ERROR = 0.05; 
+    public static final double ROTATION_ACCEPTABLE_ERROR = 1; // 4
+
+    public static final double MIN_ROTATION_DEGREES = 0-9;
+    public static final double MAX_ROTATION_DEGREES = 0-9;
+
+
+    public static final double ROTATION_MAX_VELOCITY = 100;
+    public static final double ROTATION_MAX_ACCELERATION = 80;
+
+    public static final double EXTENSION_MAX_VELOCITY = 0.75;
+    public static final double EXTENSION_MAX_ACCELERATION = 2;
+
     public static final TrapezoidProfile.Constraints ROTATION_CONSTRAINTS = new TrapezoidProfile.Constraints(
       ROTATION_MAX_VELOCITY, ROTATION_MAX_ACCELERATION);
     public static final TrapezoidProfile.Constraints EXTENSION_CONSTRAINTS = new TrapezoidProfile.Constraints(
       EXTENSION_MAX_VELOCITY, EXTENSION_MAX_ACCELERATION);
 
-    public static final double EXTENSION_P = 0-9;
-    public static final double EXTENSION_I = 0-9;
-    public static final double EXTENSION_D = 0-9;
+    public static final int STALLING_VELOCITY = 150;
+    public static final int TICKS_BEFORE_STALL = 10;
 
-    public static final double ROTATION_FEED_FORWARD_GAIN = 0-9;
-    public static final double ROTATION_ACCELERATION_GAIN = 0-9;
-    public static final double ROTATION_VELOCITY_GAIN = 0-9;
+    public static final double[][] CENTER_OF_MASS_LOOKUP_TABLE = {
+      //{extension (meters), distance from pivot point to COM}
+      {0, Units.inchesToMeters(1.024)},
+      {.1, Units.inchesToMeters(2.9)},
+      {.2, Units.inchesToMeters(4.5)},
+      {.4, Units.inchesToMeters(8.4)},
+      {.6, Units.inchesToMeters(12)},
+      {.75, Units.inchesToMeters(16)},
+      {1.05, Units.inchesToMeters(20)},
+      {1.25, Units.inchesToMeters(34)},
+    };
 
-    public static final double EXTENSION_FEED_FORWARD_GAIN = 0-9;
-    public static final double EXTENSION_ACCELERATION_GAIN = 0-9;
-    public static final double EXTENSION_VELOCITY_GAIN = 0-9;
+    public static final double[][] ARM_EXTENSION_CORRECTION_LOOKUP_TABLE = {
+    //{arm rotation (degrees), voltage}
+      {}
+    };
 
-    public static final double EXTENSION_MOTOR_GEAR_RATIO = 1.0 / 5.0;
-    public static final double EXTENSION_SPOOL_DIAMETER = Units.inchesToMeters(2.5);
-    public static final double MAX_EXTENSION_LENGTH = Units.inchesToMeters(48.48);
-    public static final double EXTENSION_ENCODER_OFFSET = 0-9;
   }
 
   public static final class ClawConstants {
+    public static final double WRIST_POS_TO_DEG = (360.0 / Constants.FALCON_ENCODER_RESOLUTION) / (76.0 / 20.0);
+    public static final double DEG_TO_WRIST_POS = (Constants.FALCON_ENCODER_RESOLUTION / 360.0) * (76.0 / 20.0);
 
-    public static final int SOLENOID_FORWARD = 1; // ID for opening claw
-    public static final int SOLENOID_BACKWARD = 0; // ID for closing claw
-    public static final int WRIST_MOTOR_ID = 0-9; // ID for the wrist motor
-    public static final int LEFT_WHEEL_MOTOR_ID = 0-9; //ID for left claw motor that controls the rollers
-    public static final int RIGHT_WHEEL_MOTOR_ID = 0-9; //ID for right claw motor that controls the rollers
-    public static final boolean LEFT_WHEEL_MOTOR_INVERTED = false;
-    public static final boolean RIGHT_WHEEL_MOTOR_INVERTED = false;
-    public static final double WHEELS_MAX_RPM = 0-9;
+    public static final int SOLENOID_FORWARD = 0;
+    public static final int SOLENOID_BACKWARD = 1;
 
-    public static final double WRIST_FEED_FORWARD_GAIN = 0-9;
-    public static final double WRIST_VELOCITY_GAIN = 0-9;
-    public static final double WRIST_ACCELERATION_GAIN = 0-9;
+    public static final int WRIST_MOTOR_ID = 17;
+    public static final int INTAKE_MOTOR_ID = 18;
 
-    public static final double WRIST_MAX_VELOCITY = 0.0;
-    public static final double WRIST_MAX_ACCELERATION = 0.0;
+    public static final boolean INTAKE_MOTOR_INVERTED = false;
+    public static final boolean WRIST_MOTOR_INVERTED = true;
 
-    public static final double WRIST_P = 0-9;
-    public static final double WRIST_I = 0-9;
-    public static final double WRIST_D = 0-9;
-    public static final TrapezoidProfile.Constraints WRIST_CONSTRAINTS = new TrapezoidProfile.Constraints(
-      WRIST_MAX_VELOCITY, WRIST_MAX_ACCELERATION);
+    public static final double WRIST_MAX_RADIANS_PER_SECOND = 180;
+    public static final double WRIST_MAX_RADIANS_PER_SECOND_SQUARED = 180.0 / 24;
 
-    public static final int WRIST_LIMIT_SWITCH_PORT = 0-9;
+    public static final double WRIST_F = 0;
+    public static final double WRIST_P = 2;
+    public static final double WRIST_I = 0;
+    public static final double WRIST_D = 0;
+    public static final double WRIST_I_ZONE = 0;
 
-    public static final double MIN_WRIST_ROTATION_DEGREES = 0-9;
-    public static final double MIN_WRIST_ROTATION_ENCODER_UNITS = 0-9;
+    public static final double WRIST_MAX_VELOCITY_ENCODER_UNITS = 90 * DEG_TO_WRIST_POS;
+    public static final double WRIST_MAX_ACCELERATION_ENCODER_UNITS = 120 * DEG_TO_WRIST_POS;
+    public static final int WRIST_SMOOTHING = 0;
+    public static final double WRIST_TOLERANCE = 1 * DEG_TO_WRIST_POS;
+    
+    public static final double INTAKE_F = 0;
+    public static final double INTAKE_P = 0;
+    public static final double INTAKE_I = 0;
+    public static final double INTAKE_D = 0;
+
+    public static final double MIN_WRIST_ROTATION_ENCODER_UNITS = 0 * DEG_TO_WRIST_POS;
+    public static final double MAX_WRIST_ROTATION_ENCODER_UNITS = 180 * DEG_TO_WRIST_POS;
   }
 
   public static final class JoystickConstants {
 
-    // Ports:
     public static final int DRIVER_JOYSTICK_ID = 0;
-    public static final int BUTTON_BOARD_ID = 1;
+    public static final int OPERATOR_JOYSTICK_ID = 1;
+    public static final int BUTTON_BOARD_1_ID = 2;
+    public static final int BUTTON_BOARD_2_ID = 3;
 
-    // Axes IDs:
-    public static final int LEFT_STICK_X = 0;
-    public static final int LEFT_STICK_Y = 1;
-    public static final int RIGHT_STICK_X = 2;
-    public static final int RIGHT_STICK_Y = 3;
+    public static final int DRIVER_LEFT_STICK_X = 0;
+    public static final int DRIVER_LEFT_STICK_Y = 1;
+    public static final int DRIVER_RIGHT_STICK_X = 4;
+    public static final int DRIVER_RIGHT_STICK_Y = 5;
+    public static final int DRIVER_X_BUTTON_ID = 3;
+    public static final int DRIVER_A_BUTTON_ID = 1;
+    public static final int DRIVER_B_BUTTON_ID = 2;
+    public static final int DRIVER_Y_BUTTON_ID = 4;
+    public static final int DRIVER_LEFT_BUMPER_ID = 5;
+    public static final int DRIVER_RIGHT_BUMPER_ID = 6;
+    public static final int DRIVER_LEFT_TRIGGER_ID = 2;
+    public static final int DRIVER_RIGHT_TRIGGER_ID = 3;
+    public static final int DRIVER_BACK_BUTTON_ID = 7;
+    public static final int DRIVER_START_BUTTON_ID = 8;
+    public static final int DRIVER_LEFT_STICK_PRESS_ID = 9;
+    public static final int DRIVER_RIGHT_STICK_PRESS_ID = 10;
 
-    // Button IDs:
-    public static final int X_BUTTON_ID = 1;
-    public static final int A_BUTTON_ID = 2;
-    public static final int B_BUTTON_ID = 3;
-    public static final int Y_BUTTON_ID = 4;
-    public static final int LEFT_BUMPER_ID = 5;
-    public static final int RIGHT_BUMPER_ID = 6;
-    public static final int LEFT_TRIGGER_ID = 7;
-    public static final int RIGHT_TRIGGER_ID = 8;
-    public static final int BACK_BUTTON_ID = 9;
-    public static final int START_BUTTON_ID = 10;
-    public static final int LEFT_STICK_PRESS_ID = 11;
-    public static final int RIGHT_STICK_PRESS_ID = 12;
+    public static final int OPERATOR_LEFT_STICK_X = 0;
+    public static final int OPERATOR_LEFT_STICK_Y = 1;
+    public static final int OPERATOR_RIGHT_STICK_X = 4;
+    public static final int OPERATOR_RIGHT_STICK_Y = 5;
+
+    public static final int OPERATOR_X_BUTTON_ID = 3;
+    public static final int OPERATOR_A_BUTTON_ID = 1;
+    public static final int OPERATOR_B_BUTTON_ID = 2;
+    public static final int OPERATOR_Y_BUTTON_ID = 4;
+    public static final int OPERATOR_LEFT_BUMPER_ID = 5;
+    public static final int OPERATOR_RIGHT_BUMPER_ID = 6;
+    public static final int OPERATOR_LEFT_TRIGGER_ID = 2;
+    public static final int OPERATOR_RIGHT_TRIGGER_ID = 3;
+    public static final int OPERATOR_BACK_BUTTON_ID = 7;
+    public static final int OPERATOR_START_BUTTON_ID = 8;
+    public static final int OPERATOR_LEFT_STICK_PRESS_ID = 9;
+    public static final int OPERATOR_RIGHT_STICK_PRESS_ID = 10;
 
     public static final int LEFT_DPAD_ID = 270;
     public static final int UP_DPAD_ID = 0;
     public static final int RIGHT_DPAD_ID = 90;
     public static final int DOWN_DPAD_ID = 180;
+
+    // Top Six Buttons
+
+    // Z Axis
+    public static final int BIG_BUTTON_1 = -1;
+    public static final int BIG_BUTTON_2 = 1;
+    // X Axis
+    public static final int BIG_BUTTON_3 = -1;
+    public static final int BIG_BUTTON_4 = 1;
+    // Y Axis
+    public static final int BIG_BUTTON_5 = -1;
+    public static final int BIG_BUTTON_6 = 1;
+
+    // Joystick 1 Autoplace Buttons
+    public static final int BUTTON_1 = 1;
+    public static final int BUTTON_2 = 2;
+    public static final int BUTTON_3 = 3;
+    public static final int BUTTON_4 = 4;
+    public static final int BUTTON_5 = 5;
+    public static final int BUTTON_6 = 6;
+    public static final int BUTTON_7 = 7;
+    public static final int BUTTON_8 = 8;
+    public static final int BUTTON_9 = 9;
+    public static final int BUTTON_10 = 10;
+    public static final int BUTTON_11 = 11;
+    public static final int BUTTON_12 = 12;
+    public static final int BUTTON_13 = 0; // POV Joystick 1
+    public static final int BUTTON_14 = 180; // POV Joystick 1
+    public static final int BUTTON_15 = 270; // POV Joystick 1
+    public static final int BUTTON_16 = 90; // POV Joystick 1
+
+    // Joystick 2 Autoplace Buttons
+    public static final int BUTTON_17 = 1;
+    public static final int BUTTON_18 = 2;
+    public static final int BUTTON_19 = 3;
+    public static final int BUTTON_20 = 4;
+    public static final int BUTTON_21 = 5;
+    public static final int BUTTON_22 = 6;
+    public static final int BUTTON_23 = 7;
+    public static final int BUTTON_24 = 8;
+    public static final int BUTTON_25 = 9;
+    public static final int BUTTON_26 = 10;
+    public static final int BUTTON_27 = 11;
+    
   }
 
   public static final class LimelightConstants {
   
-    public static final String FRONT_LIMELIGHT_NAME = "limelight-tigers";
-    public static final String BACK_LIMELIGHT_NAME = "limelight-jack";
+    public static final String FRONT_LIMELIGHT_NAME = "limelight-front";
+    public static final String BACK_LIMELIGHT_NAME = "limelight-back";
 
     public static final double[][] APRIL_TAG_POSITIONS = {
       // { x, y, z}
@@ -393,23 +513,21 @@ public final class Constants {
     };
 
     public static final double[][] ONE_APRIL_TAG_LOOKUP_TABLE = {
-      // {x position in meters, x std deviation, y std deviation, r (in degrees) std deviation}
-      {0, 0.01, 0.01, 1},
-      {1.5, 0.01, 0.01, 1},
-      {3, 0.01, 0.10, 6},
-      {4.5, 0.2, 0.4, 12},
-      {6, 0.7, 1.2, 20}
+      // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
+      {0, 0.01, 0.01, 100000},
+      {1.5, 0.01, 0.01, 100000},
+      {3, 0.01, 0.10, 100000},
+      {4.5, 0.2, 0.4, 100000},
+      {6, 0.7, 1.2, 100000}
     };
 
     public static final double[][] TWO_APRIL_TAG_LOOKUP_TABLE = {
-      // {x position in meters, x std deviation, y std deviation, r (in degrees) std deviation}
-      {1.5, 0.01, 0.01, 1},
-      {3, 0.01, 0.01, 1},
-      {4.5, 0.01, 0.03, 1},
-      {6, 0.02, 0.08, 2}
+      // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
+      {1.5, 0.01, 0.01, 100000},
+      {3, 0.01, 0.01, 100000},
+      {4.5, 0.01, 0.03, 100000},
+      {6, 0.02, 0.08, 100000}
     };
-
-    public static final int DETECTED_FRAMES_FOR_RELIABILITY = 2;
   }
 
 }

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.DriveCommandBase;
+import frc.robot.extras.SmartDashboardLogger;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
@@ -81,23 +82,25 @@ public class AutoPlace extends DriveCommandBase {
       endX = TrajectoryConstants.RED_NODE_Y_POSITION;
       endY = TrajectoryConstants.RED_NODE_Y_POSITIONS[(nodeID % 9) - 1];
       endRotation = TrajectoryConstants.RED_END_ROTATION;
-      if (driveSubsystem.getPose().getX() < TrajectoryConstants.RED_OUTER_WAYPOINT_X) {
-        if (driveSubsystem.getPose().getY() - TrajectoryConstants.LOWER_WAYPOINT_Y > (TrajectoryConstants.UPPER_WAYPOINT_Y - TrajectoryConstants.LOWER_WAYPOINT_Y) / 2) {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_OUTER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
-        } else {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_OUTER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));        }
-      } else if (driveSubsystem.getPose().getX() > TrajectoryConstants.RED_INNER_WAYPOINT_X) {
-        if (driveSubsystem.getPose().getY() - TrajectoryConstants.LOWER_WAYPOINT_Y < (TrajectoryConstants.UPPER_WAYPOINT_Y - TrajectoryConstants.LOWER_WAYPOINT_Y) / 2) {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
-        } else {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));
-        }
-      }
+      // if (driveSubsystem.getPose().getX() < TrajectoryConstants.RED_OUTER_WAYPOINT_X) {
+      //   if (driveSubsystem.getPose().getY() - TrajectoryConstants.LOWER_WAYPOINT_Y > (TrajectoryConstants.UPPER_WAYPOINT_Y - TrajectoryConstants.LOWER_WAYPOINT_Y) / 2) {
+      //     pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_OUTER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
+      //     pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
+      //   } else {
+      //     pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_OUTER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));
+      //     pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));        }
+      // } else if (driveSubsystem.getPose().getX() > TrajectoryConstants.RED_INNER_WAYPOINT_X) {
+      //   if (driveSubsystem.getPose().getY() - TrajectoryConstants.LOWER_WAYPOINT_Y < (TrajectoryConstants.UPPER_WAYPOINT_Y - TrajectoryConstants.LOWER_WAYPOINT_Y) / 2) {
+      //     pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
+      //   } else {
+      //     pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));
+      //   }
+      // }
     }
 
     Translation2d end = new Translation2d(endX, endY);
+
+    SmartDashboard.putString("End", end.toString());
 
     pathPoints.add(new PathPoint(end, endRotation, endRotation));
 
@@ -136,7 +139,7 @@ public class AutoPlace extends DriveCommandBase {
         driveSubsystem
       ).schedule();
     } catch(Exception e) {
-      SmartDashboard.putString("Trajectory Error Message", e.getLocalizedMessage());
+      SmartDashboardLogger.errorString("Trajectory Error Message", e.getLocalizedMessage());
     }
   }
 

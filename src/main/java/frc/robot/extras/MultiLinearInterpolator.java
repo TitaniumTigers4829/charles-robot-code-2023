@@ -2,8 +2,6 @@ package frc.robot.extras;
 
 import java.util.Arrays;
 
-import frc.robot.dashboard.SmartDashboardLogger;
-
 public final class MultiLinearInterpolator {
 
   private final double[][] lookupTable;
