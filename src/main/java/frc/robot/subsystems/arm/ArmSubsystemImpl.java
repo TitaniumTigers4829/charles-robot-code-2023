@@ -74,10 +74,10 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     leaderRotationMotor.configReverseSoftLimitThreshold(ArmConstants.MIN_ROTATION_ENCODER_UNITS);
     leaderRotationMotor.configReverseSoftLimitEnable(true);
 
+    followerRotationMotor.configRemoteFeedbackFilter(leaderRotationMotor, 0);
+
     leaderRotationMotor.setInverted(ArmConstants.LEADER_ROTATION_MOTOR_INVERTED);
     leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
-
-    followerRotationMotor.follow(leaderRotationMotor, FollowerType.AuxOutput1);
 
     followerRotationMotor.setInverted(ArmConstants.FOLLOWER_ROTATION_MOTOR_INVERTED);
     followerRotationMotor.setNeutralMode(NeutralMode.Brake);
@@ -92,14 +92,15 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Cancoder pos (units)", rotationEncoder.getAbsolutePosition() * ArmConstants.ARM_CANCODER_DEGREES_TO_CANCODER_UNITS);
-    SmartDashboard.putNumber("Encoder pos (units)", leaderRotationMotor.getSelectedSensorPosition());
+    SmartDashboard.putNumber("leader", leaderRotationMotor.getClosedLoopError());
+    SmartDashboard.putNumber("follower", followerRotationMotor.getClosedLoopError());
   }
 
   @Override
   public void setRotation(double desiredAngle) {
     double encoderPos = desiredAngle * Constants.DEGREES_TO_CANCODER_UNITS;
     leaderRotationMotor.set(ControlMode.MotionMagic, encoderPos);
+    followerRotationMotor.follow(leaderRotationMotor);
   }
 
   @Override
