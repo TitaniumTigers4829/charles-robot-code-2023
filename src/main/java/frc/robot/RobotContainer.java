@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.arm.ManualArm;
 import frc.robot.commands.arm.MoveArmToStowedAfterPickup;
 import frc.robot.commands.arm.PlaceGamePiece;
+import frc.robot.commands.arm.SetArmRotation;
 import frc.robot.commands.arm.MoveArmToStowedAfterPlacing;
 import frc.robot.commands.arm.PickupGamePiece;
 import frc.robot.commands.autonomous.AutoPlace;
@@ -156,15 +157,18 @@ public class RobotContainer {
     
     clawSubsystem.setDefaultCommand(manualClawCommand);
   
-    JoystickButton operatorAButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_A_BUTTON_ID);
-    JoystickButton operatorLeftBumper = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_LEFT_BUMPER_ID);
-    BooleanSupplier operatorLeftBumperPressed = () -> operatorLeftBumper.getAsBoolean();
-    operatorAButton.whileTrue(new PlaceGamePiece(armSubsystem, clawSubsystem, 242, 0.95));
-    operatorAButton.onFalse(new MoveArmToStowedAfterPlacing(armSubsystem, clawSubsystem, operatorLeftBumperPressed));
+    // JoystickButton operatorAButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_A_BUTTON_ID);
+    // JoystickButton operatorLeftBumper = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_LEFT_BUMPER_ID);
+    // BooleanSupplier operatorLeftBumperPressed = () -> operatorLeftBumper.getAsBoolean();
+    // operatorAButton.whileTrue(new PlaceGamePiece(armSubsystem, clawSubsystem, 242, 0.95));
+    // operatorAButton.onFalse(new MoveArmToStowedAfterPlacing(armSubsystem, clawSubsystem, operatorLeftBumperPressed));
+
+    // JoystickButton operatorBButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_B_BUTTON_ID);
+    // operatorBButton.whileTrue(new PickupGamePiece(armSubsystem, clawSubsystem));
+    // operatorBButton.onFalse(new MoveArmToStowedAfterPickup(armSubsystem, clawSubsystem, operatorLeftBumperPressed));
 
     JoystickButton operatorBButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_B_BUTTON_ID);
-    operatorBButton.whileTrue(new PickupGamePiece(armSubsystem, clawSubsystem));
-    operatorBButton.onFalse(new MoveArmToStowedAfterPickup(armSubsystem, clawSubsystem, operatorLeftBumperPressed));
+    operatorBButton.whileTrue(new SetArmRotation(armSubsystem, 180));
 
     /* Claw Buttons */
     POVButton operatorRightDirectionPad = new POVButton(operatorJoystick, 90);
@@ -175,32 +179,32 @@ public class RobotContainer {
     operatorRightBumper.onTrue(new ToggleClaw(clawSubsystem));
 
     /* Button Board Buttons */
-    DoubleSupplier xAxis = () -> buttonBoard1.getRawAxis(0);
-    DoubleSupplier yAxis = () -> buttonBoard1.getRawAxis(1);
-    DoubleSupplier zAxis = () -> buttonBoard1.getRawAxis(2);
+    // DoubleSupplier xAxis = () -> buttonBoard1.getRawAxis(0);
+    // DoubleSupplier yAxis = () -> buttonBoard1.getRawAxis(1);
+    // DoubleSupplier zAxis = () -> buttonBoard1.getRawAxis(2);
 
-    BooleanSupplier isBlueButtonPressed = () -> (yAxis.getAsDouble() > 0.2);
-    Trigger onBlueButtonPressed = new Trigger(isBlueButtonPressed);
-    onBlueButtonPressed.onTrue(new InstantCommand(clawSubsystem::switchCargoMode));
+    // BooleanSupplier isBlueButtonPressed = () -> (yAxis.getAsDouble() > 0.2);
+    // Trigger onBlueButtonPressed = new Trigger(isBlueButtonPressed);
+    // onBlueButtonPressed.onTrue(new InstantCommand(clawSubsystem::switchCargoMode));
 
-    BooleanSupplier isRedButtonPressed = () -> (yAxis.getAsDouble() < -0.2);
-    Trigger onRedButtonPressed = new Trigger(isRedButtonPressed);
-    onRedButtonPressed.whileTrue(new PickupGamePiece(armSubsystem, clawSubsystem));
-    onRedButtonPressed.onFalse(new MoveArmToStowedAfterPlacing(armSubsystem, clawSubsystem, operatorLeftBumperPressed));
+    // BooleanSupplier isRedButtonPressed = () -> (yAxis.getAsDouble() < -0.2);
+    // Trigger onRedButtonPressed = new Trigger(isRedButtonPressed);
+    // onRedButtonPressed.whileTrue(new PickupGamePiece(armSubsystem, clawSubsystem));
+    // onRedButtonPressed.onFalse(new MoveArmToStowedAfterPlacing(armSubsystem, clawSubsystem, operatorLeftBumperPressed));
     
-    BooleanSupplier isButton1Pressed = () -> (zAxis.getAsDouble() > 0.2);
-    Trigger onButton1Pressed = new Trigger(isButton1Pressed);
-    onButton1Pressed.onTrue(new InstantCommand(clawSubsystem::switchCargoMode));
+    // BooleanSupplier isButton1Pressed = () -> (zAxis.getAsDouble() > 0.2);
+    // Trigger onButton1Pressed = new Trigger(isButton1Pressed);
+    // onButton1Pressed.onTrue(new InstantCommand(clawSubsystem::switchCargoMode));
 
-    // middle
+    // // middle
+    // // BooleanSupplier isLeftButtonPressed = () -> (zAxis.getAsDouble() < -0.2);
+    // // Trigger onLeftButtonPressed = new Trigger(isLeftButtonPressed);
+    // // onLeftButtonPressed.whileTrue(new PlaceGamePiece(armSubsystem, clawSubsystem, 243, 0.47));
+    // // onLeftButtonPressed.onFalse(new MoveArmToStowedAfterPlacing(armSubsystem, clawSubsystem, operatorLeftBumperPressed));
     // BooleanSupplier isLeftButtonPressed = () -> (zAxis.getAsDouble() < -0.2);
     // Trigger onLeftButtonPressed = new Trigger(isLeftButtonPressed);
     // onLeftButtonPressed.whileTrue(new PlaceGamePiece(armSubsystem, clawSubsystem, 243, 0.47));
     // onLeftButtonPressed.onFalse(new MoveArmToStowedAfterPlacing(armSubsystem, clawSubsystem, operatorLeftBumperPressed));
-    BooleanSupplier isLeftButtonPressed = () -> (zAxis.getAsDouble() < -0.2);
-    Trigger onLeftButtonPressed = new Trigger(isLeftButtonPressed);
-    onLeftButtonPressed.whileTrue(new PlaceGamePiece(armSubsystem, clawSubsystem, 243, 0.47));
-    onLeftButtonPressed.onFalse(new MoveArmToStowedAfterPlacing(armSubsystem, clawSubsystem, operatorLeftBumperPressed));
 
     /* Extra Buttons */
     // JoystickButton operatorXButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_X_BUTTON_ID);

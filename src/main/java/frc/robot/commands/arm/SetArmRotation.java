@@ -34,6 +34,6 @@ public class SetArmRotation extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return Math.abs(rotation - armSubsystem.getRotation()) < ArmConstants.ROTATION_ACCEPTABLE_ERROR;
+    return false;
   }
 }

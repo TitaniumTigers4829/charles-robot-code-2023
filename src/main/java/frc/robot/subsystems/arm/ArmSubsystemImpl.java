@@ -9,8 +9,10 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderStatusFrame;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.FollowerType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
@@ -56,6 +58,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     rotationEncoder.configMagnetOffset(ArmConstants.ROTATION_ENCODER_OFFSET);
     rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
     rotationEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
+    rotationEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition, 0);
 
     leaderRotationMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
     leaderRotationMotor.configRemoteFeedbackFilter(rotationEncoder, 0, 0);
@@ -74,10 +77,10 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     leaderRotationMotor.setInverted(ArmConstants.LEADER_ROTATION_MOTOR_INVERTED);
     leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
 
+    followerRotationMotor.follow(leaderRotationMotor, FollowerType.AuxOutput1);
+
     followerRotationMotor.setInverted(ArmConstants.FOLLOWER_ROTATION_MOTOR_INVERTED);
     followerRotationMotor.setNeutralMode(NeutralMode.Brake);
-
-    followerRotationMotor.follow(leaderRotationMotor);
     
     extensionMotor.setInverted(ArmConstants.EXTENSION_MOTOR_INVERTED);
     extensionMotor.setNeutralMode(NeutralMode.Coast);
@@ -89,16 +92,13 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Cancoder pos (deg)", rotationEncoder.getAbsolutePosition());
     SmartDashboard.putNumber("Cancoder pos (units)", rotationEncoder.getAbsolutePosition() * ArmConstants.ARM_CANCODER_DEGREES_TO_CANCODER_UNITS);
-    SmartDashboard.putNumber("Encoder pos (deg)", leaderRotationMotor.getSelectedSensorPosition() * ArmConstants.ARM_ROTATION_MOTOR_TO_DEGREES);
-    SmartDashboard.putNumber("Encoder pos (deg_cancoder)", leaderRotationMotor.getSelectedSensorPosition() * ArmConstants.ARM_CANCODER_DEGREES_TO_CANCODER_UNITS);
     SmartDashboard.putNumber("Encoder pos (units)", leaderRotationMotor.getSelectedSensorPosition());
   }
 
   @Override
   public void setRotation(double desiredAngle) {
-    double encoderPos = desiredAngle * ArmConstants.ARM_DEGREES_TO_CANCODER_UNITS;
+    double encoderPos = desiredAngle * Constants.DEGREES_TO_CANCODER_UNITS;
     leaderRotationMotor.set(ControlMode.MotionMagic, encoderPos);
   }
 
@@ -160,6 +160,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   @Override
   public void setRotationSpeed(double speed) {
     leaderRotationMotor.set(speed / 2);
+    followerRotationMotor.set(speed / 2);
   }
 
   @Override

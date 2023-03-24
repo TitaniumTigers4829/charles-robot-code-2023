@@ -288,15 +288,15 @@ public final class Constants {
     
     // PID constants
     public static final double ROTATION_FEED_FORWARD_CONSTANT = .0013;
-    public static final double ROTATION_P = 0.035; // .04
+    public static final double ROTATION_P = 1;
     public static final double ROTATION_I = 0;
     public static final double ROTATION_D = 0;
 
     //  max velocity stuff
-    public static final double ROTATION_MAX_VELOCITY_ENCODER_UNITS = 100;
-    public static final double ROTATION_MAX_ACCELERATION_ENCODER_UNITS = 80;
+    public static final double ROTATION_MAX_VELOCITY_ENCODER_UNITS = 500;
+    public static final double ROTATION_MAX_ACCELERATION_ENCODER_UNITS = 300;
     public static final int ROTATION_SMOOTHING = 1;
-    public static final double ROTATION_TOLERANCE = 1 * ARM_DEGREES_TO_CANCODER_UNITS;
+    public static final double ROTATION_TOLERANCE = 1 * DEGREES_TO_CANCODER_UNITS;
     public static final double MAX_ROTATION_ENCODER_UNITS = 290 * DEGREES_TO_CANCODER_UNITS;
     public static final double MIN_ROTATION_ENCODER_UNITS = 65 * DEGREES_TO_CANCODER_UNITS;
 
