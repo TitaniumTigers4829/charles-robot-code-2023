@@ -20,11 +20,12 @@ public class SetArmRotation extends CommandBase {
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+    armSubsystem.setRotation(rotation);
+  }
 
   @Override
   public void execute() {
-    armSubsystem.setRotation(rotation);
   }
 
   @Override

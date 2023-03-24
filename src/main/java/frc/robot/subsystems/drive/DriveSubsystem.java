@@ -60,7 +60,7 @@ public interface DriveSubsystem extends Subsystem {
    * @param gyroOffset The number of degrees that will be added to the
    * gyro's angle in getHeading.
    */
-  void setGyroOffset(int gyroOffset);
+  void setGyroOffset(double gyroOffset);
 
   /**
    * Zeroes the heading of the robot.
@@ -100,6 +100,11 @@ public interface DriveSubsystem extends Subsystem {
    * rotation.
    */
   void resetOdometry(Pose2d pose);
+
+  /**
+   * Resets the odometry and rotation.
+   */
+  void resetOdometryAndRotation(Pose2d pose);
 
   /**
    * Sets the standard deviations of model states, or how much the april

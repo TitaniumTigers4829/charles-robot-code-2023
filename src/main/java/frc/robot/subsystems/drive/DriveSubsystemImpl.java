@@ -79,7 +79,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
 
   private final SwerveDrivePoseEstimator odometry;
 
-  private int gyroOffset = 0;
+  private double gyroOffset = 0;
   private float rollOffset = 0;
   private float pitchOffset = 0;
   
@@ -148,7 +148,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   }
 
   @Override
-  public void setGyroOffset(int gyroOffset) {
+  public void setGyroOffset(double gyroOffset) {
     this.gyroOffset = gyroOffset;
   }
 
@@ -188,6 +188,10 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   @Override
   public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(getRotation2d(), getModulePositions(), pose);
+  }
+
+  public void resetOdometryAndRotation(Pose2d pose) {
+    odometry.resetPosition(pose.getRotation(), getModulePositions(), pose);
   }
 
   @Override

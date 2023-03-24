@@ -23,6 +23,7 @@ import frc.robot.commands.arm.SetArmRotation;
 import frc.robot.commands.arm.MoveArmToStowedAfterPlacing;
 import frc.robot.commands.arm.PickupGamePiece;
 import frc.robot.commands.autonomous.AutoPlace;
+import frc.robot.commands.autonomous.FollowPathPlannerTrajectory;
 import frc.robot.commands.autonomous.SimpleAuto;
 import frc.robot.commands.claw.ManualClaw;
 import frc.robot.commands.claw.ToggleClaw;
@@ -130,7 +131,7 @@ public class RobotContainer {
     JoystickButton driverBButton = new JoystickButton(driverJoystick, JoystickConstants.DRIVER_B_BUTTON_ID);
     // driverBButton.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !driverBButton.getAsBoolean(), 5));
     // driverBButton.whileTrue(new AutoPickup(driveSubsystem, visionSubsystem, () -> !driverBButton.getAsBoolean()));
-    driverBButton.onTrue(new InstantCommand(armSubsystem::syncRotationEncoders));
+    driverBButton.onTrue(new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, "Two Cone Balance First Red", true));
 
     /* Arm Buttons */
     DoubleSupplier operatorLeftStickY = () -> operatorJoystick.getRawAxis(JoystickConstants.OPERATOR_LEFT_STICK_Y);

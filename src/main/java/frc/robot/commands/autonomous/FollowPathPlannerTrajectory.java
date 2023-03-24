@@ -79,7 +79,7 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
     
     if (resetOdometryToTrajectoryStart) {
-      driveSubsystem.resetOdometry(trajectoryToFollow.getInitialPose());
+      driveSubsystem.resetOdometryAndRotation(trajectoryToFollow.getInitialPose());
     }
 
     // Create a PPSwerveControllerCommand. This is almost identical to WPILib's SwerveControllerCommand, but it uses the holonomic rotation from the PathPlannerTrajectory to control the robot's rotation.
