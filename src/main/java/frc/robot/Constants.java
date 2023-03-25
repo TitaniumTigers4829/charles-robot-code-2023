@@ -358,6 +358,12 @@ public final class Constants {
       {}
     };
 
+    // TODO: find out
+    public static final double PICKUP_FROM_GROUND_EXTENSION = 0.6;
+    public static final double PICKUP_FROM_GROUND_ROTATION = 290;
+
+    public static final double PLACE_HIGH_EXTENSION = 0.95;
+    public static final double PLACE_HIGH_ROTATION = 242;
   }
 
   public static final class ClawConstants {
