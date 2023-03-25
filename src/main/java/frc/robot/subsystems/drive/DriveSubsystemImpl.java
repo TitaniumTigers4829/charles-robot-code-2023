@@ -190,7 +190,10 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     odometry.resetPosition(getRotation2d(), getModulePositions(), pose);
   }
 
+  @Override
   public void resetOdometryAndRotation(Pose2d pose) {
+    zeroHeading();
+    setGyroOffset(pose.getRotation().getDegrees());
     odometry.resetPosition(pose.getRotation(), getModulePositions(), pose);
   }
 
