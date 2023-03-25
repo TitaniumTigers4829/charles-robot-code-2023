@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants.BalanceConstants;
+import frc.robot.extras.SmartDashboardLogger;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -52,8 +53,8 @@ public class Balance extends CommandBase {
   @Override
   public void execute() {
 
-    SmartDashboard.putBoolean("First Latch", firstLatch);
-    SmartDashboard.putBoolean("Second Latch", secondLatch);
+    SmartDashboardLogger.debugBoolean("First Latch", firstLatch);
+    SmartDashboardLogger.debugBoolean("Second Latch", secondLatch);
   
     double error = driveSubsystem.getBalanceError();
 
