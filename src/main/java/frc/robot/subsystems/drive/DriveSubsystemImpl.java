@@ -27,9 +27,9 @@ import frc.robot.Constants.DriveConstants;
 public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem {
 
   // This will stay the same throughout the match. These values are harder to test for and tune, so assume this guess is right.
-  private final Vector<N3> stateStandardDeviations = VecBuilder.fill(0.03, 0.03, Units.degreesToRadians(3));
+  private final Vector<N3> stateStandardDeviations = VecBuilder.fill(0.03, 0.03, Units.degreesToRadians(1));
   // This will be changed throughout the match depending on how confident we are that the limelight is right.
-  private final Vector<N3> visionMeasurementStandardDeviations = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(10000));
+  private final Vector<N3> visionMeasurementStandardDeviations = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(50));
 
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
@@ -179,10 +179,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   
   @Override
   public void addPoseEstimatorVisionMeasurement(Pose2d visionMeasurement, double currentTimeStampSeconds) {
-    // The gyro barely drifts throughout the match, so we trust it absolutely
-    Pose2d visionMeasurementExcludingRotation = 
-      new Pose2d(visionMeasurement.getX(), visionMeasurement.getY(), getRotation2d());
-    odometry.addVisionMeasurement(visionMeasurementExcludingRotation, currentTimeStampSeconds);
+    odometry.addVisionMeasurement(visionMeasurement, currentTimeStampSeconds);
   }
 
   @Override

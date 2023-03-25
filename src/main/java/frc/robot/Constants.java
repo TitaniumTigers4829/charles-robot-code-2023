@@ -523,19 +523,19 @@ public final class Constants {
 
     public static final double[][] ONE_APRIL_TAG_LOOKUP_TABLE = {
       // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
-      {0, 0.01, 0.01, 100000},
-      {1.5, 0.01, 0.01, 100000},
-      {3, 0.01, 0.10, 100000},
-      {4.5, 0.2, 0.4, 100000},
-      {6, 0.7, 1.2, 100000}
+      {0, 0.01, 0.01, 10},
+      {1.5, 0.01, 0.01, 10},
+      {3, 0.01, 0.10, 30},
+      {4.5, 0.2, 0.4, 90},
+      {6, 0.7, 1.2, 180}
     };
 
     public static final double[][] TWO_APRIL_TAG_LOOKUP_TABLE = {
       // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
-      {1.5, 0.01, 0.01, 100000},
-      {3, 0.01, 0.01, 100000},
-      {4.5, 0.01, 0.03, 100000},
-      {6, 0.02, 0.08, 100000}
+      {1.5, 0.01, 0.01, 5},
+      {3, 0.01, 0.01, 5},
+      {4.5, 0.01, 0.03, 10},
+      {6, 0.02, 0.08, 20}
     };
   }
 
