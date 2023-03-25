@@ -34,6 +34,7 @@ public final class Constants {
   public static final double DEGREES_TO_CANCODER_UNITS = CANCODER_RESOLUTION / 360.0;
   public static final String CANIVORE_CAN_BUS_STRING = "Canivore 1";
   public static final String RIO_CAN_BUS_STRING = "rio";
+  public static final PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
 
   public static final class DriveConstants {
 
@@ -319,7 +320,6 @@ public final class Constants {
     public static final double EXTENSION_F = 0;
 
     // pneumatic lock stuff
-    public static final PneumaticsModuleType EXTENSION_LOCK_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
     public static final int EXTENSION_LOCK_ENGAGED_ID = 2;
     public static final int EXTENSION_LOCK_DISENGAGED_ID = 3;
 

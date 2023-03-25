@@ -9,7 +9,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ClawConstants;
@@ -26,16 +25,20 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   public ClawSubsystemImpl() {
     wristMotor = new WPI_TalonFX(ClawConstants.WRIST_MOTOR_ID, Constants.RIO_CAN_BUS_STRING);
+
     wristMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
+
     wristMotor.config_kP(0, ClawConstants.WRIST_P);
     wristMotor.config_kI(0, ClawConstants.WRIST_I);
     wristMotor.config_kD(0, ClawConstants.WRIST_D);
     wristMotor.config_kF(0, ClawConstants.WRIST_F);
+
     wristMotor.config_IntegralZone(0, ClawConstants.WRIST_I_ZONE);
     wristMotor.configMotionCruiseVelocity(ClawConstants.WRIST_MAX_VELOCITY_ENCODER_UNITS);
     wristMotor.configMotionAcceleration(ClawConstants.WRIST_MAX_ACCELERATION_ENCODER_UNITS);
     wristMotor.configMotionSCurveStrength(ClawConstants.WRIST_SMOOTHING);
     wristMotor.configAllowableClosedloopError(0, ClawConstants.WRIST_TOLERANCE);
+
     wristMotor.configForwardSoftLimitThreshold(ClawConstants.MAX_WRIST_ROTATION_ENCODER_UNITS);
     wristMotor.configForwardSoftLimitEnable(true);
     wristMotor.configReverseSoftLimitThreshold(ClawConstants.MIN_WRIST_ROTATION_ENCODER_UNITS);
@@ -49,7 +52,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     intakeMotor.setNeutralMode(NeutralMode.Brake);
 
     clawSolenoid = new DoubleSolenoid(
-      PneumaticsModuleType.CTREPCM,
+      Constants.PNEUMATICS_MODULE_TYPE,
       ClawConstants.SOLENOID_FORWARD,
       ClawConstants.SOLENOID_BACKWARD
     );
