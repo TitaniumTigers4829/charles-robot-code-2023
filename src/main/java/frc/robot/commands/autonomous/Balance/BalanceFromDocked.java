@@ -37,18 +37,23 @@ public class BalanceFromDocked extends CommandBase {
     addRequirements(driveSubsystem);
   }
 
+  
+
   @Override
   public void initialize() {
+    balancePidController.setTolerance(Constants.BALANCE_ERROR_CONSIDERED_BALANCED); //If error is anything lower than this it will turn off the drive
   }
 
   @Override
   public void execute() {
   
-    double error = driveSubsystem.getBalanceError();
+    //double error = driveSubsystem.getBalanceError();
 
     // SmartDashboard.putNumber("Total Balance Error", error);
 
-    if (Math.abs(error) < BalanceConstants.BALANCE_ERROR_CONSIDERED_BALANCED) {
+    if (balancePidController.atSetpoint() == true 
+      //Math.abs(error) < BalanceConstants.BALANCE_ERROR_CONSIDERED_BALANCED
+      ) {
         driveForward(0, true);
       } else {
         driveForward(-1 * balancePidController.calculate(error, 0), false);

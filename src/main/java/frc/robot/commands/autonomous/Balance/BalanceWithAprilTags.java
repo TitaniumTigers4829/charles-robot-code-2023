@@ -25,7 +25,7 @@ public class BalanceWithAprilTags extends CommandBase {
   private final VisionSubsystemImpl visionSubsystem;
   private final boolean fromLeft;
 
-  
+  //Most likely won't be using this command :)
   Pose2d pose;
   double robotX = pose.getX();
   double robotY = pose.getY();
