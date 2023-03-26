@@ -29,6 +29,8 @@ public class BalanceFromDocked extends CommandBase {
     TrajectoryConstants.THETA_CONTROLLER_CONSTRAINTS
   );
 
+  balancePidController.setTolerance(BalanceConstants.BALANCE_ERROR_CONSIDERED_BALANCED);
+
   /** 
    * Creates a new BalanceFromDocked.
    */
@@ -41,13 +43,13 @@ public class BalanceFromDocked extends CommandBase {
 
   @Override
   public void initialize() {
-    balancePidController.setTolerance(Constants.BALANCE_ERROR_CONSIDERED_BALANCED); //If error is anything lower than this it will turn off the drive
+
   }
 
   @Override
   public void execute() {
   
-    //double error = driveSubsystem.getBalanceError();
+    double error = driveSubsystem.getBalanceError();
 
     // SmartDashboard.putNumber("Total Balance Error", error);
 
