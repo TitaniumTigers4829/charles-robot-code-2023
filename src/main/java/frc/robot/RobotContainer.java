@@ -184,7 +184,7 @@ public class RobotContainer {
 
     // rotation testing
     JoystickButton operatorBButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_B_BUTTON_ID);
-    operatorBButton.whileTrue(new SetArmRotation(armSubsystem, 180));
+    operatorBButton.whileTrue(new SetArmRotation(armSubsystem, 220));
 
     // reset encoders
     POVButton operatorRightDirectionPad = new POVButton(operatorJoystick, 90);

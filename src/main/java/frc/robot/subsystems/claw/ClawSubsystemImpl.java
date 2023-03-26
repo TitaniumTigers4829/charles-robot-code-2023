@@ -18,7 +18,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   private final WPI_TalonFX wristMotor;
   private final WPI_TalonFX intakeMotor;
-  private final DoubleSolenoid clawSolenoid;
+  // private final DoubleSolenoid clawSolenoid;
 
   private boolean isClawClosed;
   private boolean isConeMode = true;
@@ -51,11 +51,11 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     intakeMotor = new WPI_TalonFX(ClawConstants.INTAKE_MOTOR_ID, Constants.RIO_CAN_BUS_STRING);
     intakeMotor.setNeutralMode(NeutralMode.Brake);
 
-    clawSolenoid = new DoubleSolenoid(
-      Constants.PNEUMATICS_MODULE_TYPE,
-      ClawConstants.SOLENOID_FORWARD,
-      ClawConstants.SOLENOID_BACKWARD
-    );
+    // clawSolenoid = new DoubleSolenoid(
+    //   Constants.PNEUMATICS_MODULE_TYPE,
+    //   ClawConstants.SOLENOID_FORWARD,
+    //   ClawConstants.SOLENOID_BACKWARD
+    // );
   }
 
   @Override
@@ -65,13 +65,13 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   @Override
   public void close() {
-    clawSolenoid.set(DoubleSolenoid.Value.kReverse);
+    // clawSolenoid.set(DoubleSolenoid.Value.kReverse);
     isClawClosed = true;
   }
 
   @Override
   public void open() {
-    clawSolenoid.set(DoubleSolenoid.Value.kForward);    
+    // clawSolenoid.set(DoubleSolenoid.Value.kForward);    
     isClawClosed = false;
   }
 

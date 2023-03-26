@@ -53,7 +53,7 @@ public class MoveArmToStowedAfterPickup extends CommandBase {
       stage1Complete = (timer.get() > 0.3); // 30 ticks
     } else {
       armSubsystem.setRotation(rotationStage2);
-      if (Math.abs(armSubsystem.getRotation() - rotationStage2) < ArmConstants.ROTATION_ACCEPTABLE_ERROR) {
+      if (Math.abs(armSubsystem.getRotation() - rotationStage2) < ArmConstants.ROTATION_TOLERANCE_DEGREES) {
         stage2Complete = true;
       }
     }

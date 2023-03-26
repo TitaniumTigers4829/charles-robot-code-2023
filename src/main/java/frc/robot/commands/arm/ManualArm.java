@@ -57,8 +57,8 @@ public class ManualArm extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    armSubsystem.setExtensionSpeed(0);
-    armSubsystem.setRotationSpeed(0);
+    // armSubsystem.setExtensionSpeed(0);
+    // armSubsystem.setRotationSpeed(0);
   }
 
   @Override

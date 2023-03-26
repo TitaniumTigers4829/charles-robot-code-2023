@@ -11,6 +11,7 @@ import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
@@ -30,7 +31,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   private final WPI_TalonFX leaderRotationMotor;
   private final WPI_TalonFX followerRotationMotor;
   private final WPI_TalonFX extensionMotor;
-  private final DoubleSolenoid extensionLockSolenoid;
+  // private final DoubleSolenoid extensionLockSolenoid;
 
   private final ProfiledPIDController extensionSpeedPIDController = new ProfiledPIDController(
     ArmConstants.EXTENSION_P,
@@ -52,99 +53,49 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     leaderRotationMotor = new WPI_TalonFX(ArmConstants.LEADER_ROTATION_MOTOR_ID, Constants.CANIVORE_CAN_BUS_STRING);
     followerRotationMotor = new WPI_TalonFX(ArmConstants.FOLLOWER_ROTATION_MOTOR_ID, Constants.CANIVORE_CAN_BUS_STRING);
     extensionMotor = new WPI_TalonFX(ArmConstants.EXTENSION_MOTOR_ID);
-    extensionLockSolenoid = new DoubleSolenoid(Constants.PNEUMATICS_MODULE_TYPE, ArmConstants.EXTENSION_LOCK_ENGAGED_ID, ArmConstants.EXTENSION_LOCK_DISENGAGED_ID);
+    // extensionLockSolenoid = new DoubleSolenoid(Constants.PNEUMATICS_MODULE_TYPE, ArmConstants.EXTENSION_LOCK_ENGAGED_ID, ArmConstants.EXTENSION_LOCK_DISENGAGED_ID);
     
     rotationEncoder.configMagnetOffset(ArmConstants.ROTATION_ENCODER_OFFSET);
     rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
     rotationEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
     rotationEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition, 0);
 
-    // leaderRotationMotor.configRemoteFeedbackFilter(rotationEncoder, 0, 0);
-    // leaderRotationMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
-    // leaderRotationMotor.config_kP(0, ArmConstants.ROTATION_P);
-    // leaderRotationMotor.config_kI(0, ArmConstants.ROTATION_I);
-    // leaderRotationMotor.config_kD(0, ArmConstants.ROTATION_D);
-    // leaderRotationMotor.configMotionCruiseVelocity(ArmConstants.ROTATION_MAX_VELOCITY_ENCODER_UNITS);
-    // leaderRotationMotor.configMotionAcceleration(ArmConstants.ROTATION_MAX_ACCELERATION_ENCODER_UNITS);
-    // leaderRotationMotor.configMotionSCurveStrength(ArmConstants.ROTATION_SMOOTHING);
-    // leaderRotationMotor.configAllowableClosedloopError(0, ArmConstants.ROTATION_TOLERANCE);
-    // leaderRotationMotor.configForwardSoftLimitThreshold(ArmConstants.MAX_ROTATION_ENCODER_UNITS);
-    // leaderRotationMotor.configForwardSoftLimitEnable(true);
-    // leaderRotationMotor.configReverseSoftLimitThreshold(ArmConstants.MIN_ROTATION_ENCODER_UNITS);
-    // leaderRotationMotor.configReverseSoftLimitEnable(true);
+    leaderRotationMotor.configRemoteFeedbackFilter(rotationEncoder, 0, 0);
+    leaderRotationMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
+    leaderRotationMotor.config_kP(0, ArmConstants.ROTATION_P);
+    leaderRotationMotor.config_kI(0, ArmConstants.ROTATION_I);
+    leaderRotationMotor.config_kD(0, ArmConstants.ROTATION_D);
+    leaderRotationMotor.configMotionCruiseVelocity(ArmConstants.ROTATION_MAX_VELOCITY_ENCODER_UNITS);
+    leaderRotationMotor.configMotionAcceleration(ArmConstants.ROTATION_MAX_ACCELERATION_ENCODER_UNITS);
+    leaderRotationMotor.configMotionSCurveStrength(ArmConstants.ROTATION_SMOOTHING);
+    leaderRotationMotor.configAllowableClosedloopError(0, ArmConstants.ROTATION_TOLERANCE_ENCODER_UNITS);
+    leaderRotationMotor.configForwardSoftLimitThreshold(ArmConstants.MAX_ROTATION_ENCODER_UNITS);
+    leaderRotationMotor.configForwardSoftLimitEnable(true);
+    leaderRotationMotor.configReverseSoftLimitThreshold(ArmConstants.MIN_ROTATION_ENCODER_UNITS);
+    leaderRotationMotor.configReverseSoftLimitEnable(true);
+    leaderRotationMotor.configNeutralDeadband(.001);
 
-    // leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
+    leaderRotationMotor.setInverted(ArmConstants.LEADER_ROTATION_MOTOR_INVERTED);
+    leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
 
-    // // followerRotationMotor.setInverted(ArmConstants.FOLLOWER_ROTATION_MOTOR_INVERTED);
-    // followerRotationMotor.setInverted(InvertType.OpposeMaster);
-    // followerRotationMotor.setNeutralMode(NeutralMode.Brake);
-
-    // followerRotationMotor.setSensorPhase(true);
-    
-    // followerRotationMotor.follow(leaderRotationMotor);
+    followerRotationMotor.setInverted(InvertType.OpposeMaster);
+    followerRotationMotor.setNeutralMode(NeutralMode.Brake);
+    followerRotationMotor.setSensorPhase(true);    
+    followerRotationMotor.follow(leaderRotationMotor);
 
     extensionMotor.setInverted(ArmConstants.EXTENSION_MOTOR_INVERTED);
     extensionMotor.setNeutralMode(NeutralMode.Coast);
-
-    extensionMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
-    // leaderRotationMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
-    // followerRotationMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
-    leaderRotationMotor.setSelectedSensorPosition(0);
-    followerRotationMotor.setSelectedSensorPosition(0);
-
-    TalonFXConfiguration config = new TalonFXConfiguration();
-
-    config.remoteFilter0.remoteSensorSource = RemoteSensorSource.CANCoder;
-    config.remoteFilter0.remoteSensorDeviceID = rotationEncoder.getDeviceID();
-    // config.diff0Term = FeedbackDevice.RemoteSensor0;
-    // config.sum0Term = FeedbackDevice.RemoteSensor0;
-
-    config.slot0.kP = ArmConstants.ROTATION_P;
-    config.slot0.kI = ArmConstants.ROTATION_I;
-    config.slot0.kD = ArmConstants.ROTATION_D;
-
-    config.motionCruiseVelocity = ArmConstants.ROTATION_MAX_VELOCITY_ENCODER_UNITS;
-    config.motionAcceleration = ArmConstants.ROTATION_MAX_ACCELERATION_ENCODER_UNITS;
-    config.motionCurveStrength = ArmConstants.ROTATION_SMOOTHING;
-
-    config.slot0.allowableClosedloopError = ArmConstants.ROTATION_TOLERANCE;
-
-    config.forwardSoftLimitThreshold = ArmConstants.MAX_ROTATION_ENCODER_UNITS;
-    config.reverseSoftLimitThreshold = ArmConstants.MIN_ROTATION_ENCODER_UNITS;
-    config.forwardSoftLimitEnable = true;
-    config.reverseSoftLimitEnable = true;
-
-    leaderRotationMotor.configAllSettings(config);
-    followerRotationMotor.configAllSettings(config);
-
-    leaderRotationMotor.configRemoteFeedbackFilter(rotationEncoder, 0, 0);
-    leaderRotationMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
-    followerRotationMotor.configRemoteFeedbackFilter(rotationEncoder, 0, 0);
-    followerRotationMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
-
-    followerRotationMotor.setSensorPhase(true);
-
-    leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
-    followerRotationMotor.setNeutralMode(NeutralMode.Brake);
-
-    followerRotationMotor.setInverted(InvertType.OpposeMaster);
-
-    followerRotationMotor.follow(leaderRotationMotor);
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("cancoder pos", rotationEncoder.getAbsolutePosition() * Constants.DEGREES_TO_CANCODER_UNITS);
-    SmartDashboard.putNumber("leader pos", leaderRotationMotor.getSelectedSensorPosition());
-    SmartDashboard.putNumber("follower pos", followerRotationMotor.getSelectedSensorPosition());
-
-    SmartDashboard.putNumber("leader out", leaderRotationMotor.get());
-    SmartDashboard.putNumber("follower out", followerRotationMotor.get());
+    SmartDashboard.putNumber("Rot Speed", leaderRotationMotor.getSelectedSensorVelocity());
   }
 
   @Override
   public void setRotation(double desiredAngle) {
     leaderRotationMotor.set(ControlMode.MotionMagic, desiredAngle * Constants.DEGREES_TO_CANCODER_UNITS);
+    SmartDashboard.putNumber("vel error", leaderRotationMotor.getActiveTrajectoryVelocity() - leaderRotationMotor.getSelectedSensorVelocity());
   }
 
   @Override
@@ -189,12 +140,12 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
   @Override
   public void lockExtensionSolenoid() {
-    extensionLockSolenoid.set(DoubleSolenoid.Value.kForward);
+    // extensionLockSolenoid.set(DoubleSolenoid.Value.kForward);
   }
 
   @Override
   public void unlockExtensionSolenoid() {
-    extensionLockSolenoid.set(DoubleSolenoid.Value.kReverse);
+    // extensionLockSolenoid.set(DoubleSolenoid.Value.kReverse);
   }
 
   @Override
@@ -225,7 +176,8 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   @Override
   public double getTorqueFromGravity() {
     // Torque = mg(COM Distance*sin(theta) - r*sin(theta))
-    double centerOfMassDistance = (0.4659 * getExtension()) + 0.02528; // This is the equation fit to COM distance
+    // double centerOfMassDistance = (0.4659 * getExtension()) + 0.02528; // This is the equation fit to COM distance
+    double centerOfMassDistance = (0.4659 * getExtension()); // This is the equation fit to COM distance
     double theta = Math.toRadians(getRotation() - 90); // The angle of the arm is 0 when it's pointing down
     return ArmConstants.ARM_WEIGHT_NEWTONS * 
       (centerOfMassDistance * Math.cos(theta) - ArmConstants.ARM_AXIS_OF_ROTATION_RADIUS * Math.sin(theta));
