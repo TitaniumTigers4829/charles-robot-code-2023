@@ -25,33 +25,30 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   public ClawSubsystemImpl() {
     wristMotor = new WPI_TalonFX(ClawConstants.WRIST_MOTOR_ID, Constants.RIO_CAN_BUS_STRING);
+    intakeMotor = new WPI_TalonFX(ClawConstants.INTAKE_MOTOR_ID, Constants.RIO_CAN_BUS_STRING);
 
     wristMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
-
     wristMotor.config_kP(0, ClawConstants.WRIST_P);
     wristMotor.config_kI(0, ClawConstants.WRIST_I);
     wristMotor.config_kD(0, ClawConstants.WRIST_D);
     wristMotor.config_kF(0, ClawConstants.WRIST_F);
-
     wristMotor.config_IntegralZone(0, ClawConstants.WRIST_I_ZONE);
     wristMotor.configMotionCruiseVelocity(ClawConstants.WRIST_MAX_VELOCITY_ENCODER_UNITS);
     wristMotor.configMotionAcceleration(ClawConstants.WRIST_MAX_ACCELERATION_ENCODER_UNITS);
     wristMotor.configMotionSCurveStrength(ClawConstants.WRIST_SMOOTHING);
     wristMotor.configAllowableClosedloopError(0, ClawConstants.WRIST_TOLERANCE);
-
     wristMotor.configForwardSoftLimitThreshold(ClawConstants.MAX_WRIST_ROTATION_ENCODER_UNITS);
     wristMotor.configForwardSoftLimitEnable(true);
     wristMotor.configReverseSoftLimitThreshold(ClawConstants.MIN_WRIST_ROTATION_ENCODER_UNITS);
     wristMotor.configReverseSoftLimitEnable(true);
-    
     wristMotor.setInverted(ClawConstants.WRIST_MOTOR_INVERTED);
     wristMotor.setNeutralMode(NeutralMode.Brake);
     wristMotor.setSelectedSensorPosition(0);
+    wristMotor.configNeutralDeadband(Constants.MIN_FALCON_DEADBAND);
 
-    wristMotor.configNeutralDeadband(.001);
-
-    intakeMotor = new WPI_TalonFX(ClawConstants.INTAKE_MOTOR_ID, Constants.RIO_CAN_BUS_STRING);
+    intakeMotor.setInverted(ClawConstants.INTAKE_MOTOR_INVERTED);
     intakeMotor.setNeutralMode(NeutralMode.Brake);
+    intakeMotor.configNeutralDeadband(Constants.MIN_FALCON_DEADBAND);
 
     // clawSolenoid = new DoubleSolenoid(
     //   Constants.PNEUMATICS_MODULE_TYPE,

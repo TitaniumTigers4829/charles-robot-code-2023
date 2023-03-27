@@ -28,10 +28,10 @@ public final class Constants {
 
   private Constants() {}
 
-  // These are the total encoder units for one revolution
   public static final double FALCON_ENCODER_RESOLUTION = 2048.0;
   public static final double CANCODER_RESOLUTION = 4096.0; 
   public static final double DEGREES_TO_CANCODER_UNITS = CANCODER_RESOLUTION / 360.0;
+  public static final double MIN_FALCON_DEADBAND = 0.001;
   public static final String CANIVORE_CAN_BUS_STRING = "Canivore 1";
   public static final String RIO_CAN_BUS_STRING = "rio";
   public static final PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
@@ -49,9 +49,9 @@ public final class Constants {
       new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2) // Rear Right
     );
 
-    public static final double TURNING_S = 0.77;
-    public static final double TURNING_V = 0.75;
-    public static final double TURNING_A = 0; // Default to zero
+    public static final double TURN_S = 0.77;
+    public static final double TURN_V = 0.75;
+    public static final double TURN_A = 0; // Default to zero
 
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI * 4;
 
@@ -305,7 +305,6 @@ public final class Constants {
 
     // unit conversions
     public static final double EXTENSION_MOTOR_GEAR_RATIO = 16.0;
-    public static final double EXTENSION_MOTOR_STALLING_AMPS = 7;
     public static final double EXTENSION_SPOOL_DIAMETER = Units.inchesToMeters(2.5);
     public static final double MAX_EXTENSION_LENGTH = Units.inchesToMeters(48.48);
     public static final double EXTENSION_MOTOR_POS_TO_METERS = EXTENSION_SPOOL_DIAMETER / (Constants.FALCON_ENCODER_RESOLUTION * EXTENSION_MOTOR_GEAR_RATIO) * Math.PI;

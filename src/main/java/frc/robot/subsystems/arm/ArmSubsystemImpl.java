@@ -74,7 +74,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     leaderRotationMotor.configForwardSoftLimitEnable(true);
     leaderRotationMotor.configReverseSoftLimitThreshold(ArmConstants.MIN_ROTATION_ENCODER_UNITS);
     leaderRotationMotor.configReverseSoftLimitEnable(true);
-    // leaderRotationMotor.configNeutralDeadband(.001);
+    leaderRotationMotor.configNeutralDeadband(Constants.MIN_FALCON_DEADBAND);
 
     leaderRotationMotor.setInverted(ArmConstants.LEADER_ROTATION_MOTOR_INVERTED);
     leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
@@ -86,9 +86,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
     extensionMotor.setInverted(ArmConstants.EXTENSION_MOTOR_INVERTED);
     extensionMotor.setNeutralMode(NeutralMode.Coast);
-    extensionMotor.configNeutralDeadband(.001);
-    extensionMotor.setSensorPhase(false);
-
+    extensionMotor.configNeutralDeadband(Constants.MIN_FALCON_DEADBAND);
     extensionMotor.configReverseSoftLimitThreshold(1 * ArmConstants.EXTENSION_METERS_TO_MOTOR_POS);
     extensionMotor.configReverseSoftLimitEnable(true);
   }
