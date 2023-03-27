@@ -1,11 +1,6 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems.drive;
 
 import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -145,8 +140,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
 
   @Override
   public Rotation2d getFieldRelativeRotation2d() {
-    // Because the field isn't vertically symmetrical, we have the pose
-    // coordinates always start from the bottom left
+    // Because the field isn't vertically symmetrical, we have the pose coordinates always start from the bottom left
     return Rotation2d.fromDegrees((getHeading() + (DriverStation.getAlliance() == Alliance.Blue ? 0 : 180)) % 360);
   }
 
@@ -206,7 +200,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   @Override
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND); // TODO: Check if this has to be different
+      desiredStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
     frontLeftSwerveModule.setDesiredState(desiredStates[0]);
     frontRightSwerveModule.setDesiredState(desiredStates[1]);
     rearLeftSwerveModule.setDesiredState(desiredStates[2]);

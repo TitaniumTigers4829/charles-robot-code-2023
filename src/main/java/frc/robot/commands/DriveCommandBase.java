@@ -23,7 +23,6 @@ public abstract class DriveCommandBase extends CommandBase {
   private final DriveSubsystem driveSubsystem;
   private final VisionSubsystem visionSubsystem;
 
-  private double consecutiveAprilTagFrames = 0;
   private double lastTimeStampSeconds = 0;
 
   /**
@@ -46,7 +45,6 @@ public abstract class DriveCommandBase extends CommandBase {
 
     if (visionSubsystem.canSeeAprilTags()) {
       currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
-      consecutiveAprilTagFrames++;
 
       double distanceFromClosestAprilTag = visionSubsystem.getDistanceFromClosestAprilTag();
       SmartDashboard.putNumber("distance from closest", distanceFromClosestAprilTag);
@@ -73,8 +71,6 @@ public abstract class DriveCommandBase extends CommandBase {
         SmartDashboard.putNumberArray("limelight_pose", tmpPose);
         driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
       }
-    } else {
-      consecutiveAprilTagFrames = 0;
     }
 
     lastTimeStampSeconds = currentTimeStampSeconds;
