@@ -13,7 +13,6 @@ import frc.robot.Constants.JoystickConstants;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.arm.ManualArm;
 import frc.robot.commands.arm.SetArmExtension;
-import frc.robot.commands.arm.SetArmRotation;
 import frc.robot.commands.autonomous.FollowPathPlannerTrajectory;
 import frc.robot.commands.autonomous.SimpleAuto;
 import frc.robot.commands.autonomous.TwoConeBalanceAuto;
@@ -48,7 +47,6 @@ public class RobotContainer {
   private final Joystick buttonBoard2;
 
   private final SendableChooser<Command> autoChooser;
-  private final SendableChooser<Boolean> isSecondPieceConeChooser;
 
   public RobotContainer() {
     driverJoystick = new Joystick(JoystickConstants.DRIVER_JOYSTICK_ID);
@@ -62,13 +60,8 @@ public class RobotContainer {
     armSubsystem = new ArmSubsystemImpl();
     clawSubsystem = new ClawSubsystemImpl();
 
-    isSecondPieceConeChooser = new SendableChooser<Boolean>();
-    isSecondPieceConeChooser.setDefaultOption("Yes", true);
-    isSecondPieceConeChooser.setDefaultOption("No", false);
-    SmartDashboard.putData("Is second piece cone?", isSecondPieceConeChooser);
-
     autoChooser = new SendableChooser<Command>();
-    autoChooser.setDefaultOption("2 cone balance", new TwoConeBalanceAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem, isSecondPieceConeChooser.getSelected()));
+    autoChooser.setDefaultOption("2 cone balance", new TwoConeBalanceAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem));
     autoChooser.addOption("Simple Auto", new SimpleAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem));
     SmartDashboard.putData("Auto chooser", autoChooser);
 

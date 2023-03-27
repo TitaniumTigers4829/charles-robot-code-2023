@@ -6,43 +6,39 @@ package frc.robot.commands.arm;
 
 import java.util.function.BooleanSupplier;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.claw.ClawSubsystem;
 
-public class MoveArmToStowedAfterPlacing extends CommandBase {
+public class MoveArmToStowed extends CommandBase {
 
   private final ArmSubsystem armSubsystem;
   private final ClawSubsystem clawSubsystem;
-  private BooleanSupplier isFinishedSupplier;
-  private final double rotation = 180;
-  private final double extension = 0.01;
+  private final double armRotation = 180;
+  private final double armExtension = 0.01;
+  private final double wristRotation = 180;
 
-  public MoveArmToStowedAfterPlacing(ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, BooleanSupplier isFinishedSupplier) {
+  public MoveArmToStowed(ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem) {
     this.armSubsystem = armSubsystem;
     this.clawSubsystem = clawSubsystem;
-    this.isFinishedSupplier = isFinishedSupplier;
     addRequirements(this.armSubsystem, this.clawSubsystem);
   }
 
   @Override
-  public void initialize() {
-    armSubsystem.lockExtensionSolenoid();
-  }
+  public void initialize() {}
   
 
   @Override
   public void execute() {
-    armSubsystem.setRotation(rotation);
-    clawSubsystem.setWristPosition(180);
-    if (Math.abs(extension - armSubsystem.getExtension()) < ArmConstants.EXTENSION_ACCEPTABLE_ERROR) {
+    armSubsystem.setRotation(armRotation);
+    clawSubsystem.setWristPosition(wristRotation);
+    if (Math.abs(armExtension - armSubsystem.getExtension()) < ArmConstants.EXTENSION_TOLERANCE) {
       armSubsystem.setExtensionSpeed(0);
       armSubsystem.lockExtensionSolenoid();
     } else {
       armSubsystem.unlockExtensionSolenoid();
-      armSubsystem.setExtension(extension);
+      armSubsystem.setExtension(armExtension);
     }
   }
 
@@ -50,13 +46,11 @@ public class MoveArmToStowedAfterPlacing extends CommandBase {
   public void end(boolean interrupted) {
     armSubsystem.setRotationSpeed(0);
     armSubsystem.setExtensionSpeed(0);
-    armSubsystem.lockExtensionSolenoid();
   }
 
   @Override
   public boolean isFinished() {
-    return (Math.abs(rotation - armSubsystem.getRotation()) < 3.0
-      && Math.abs(extension - armSubsystem.getExtension()) < ArmConstants.EXTENSION_ACCEPTABLE_ERROR) || isFinishedSupplier.getAsBoolean()
-      || armSubsystem.getExtension() < 0.1;
+    return (Math.abs(armSubsystem.getRotation() - armRotation) < ArmConstants.ROTATION_ACCEPTABLE_ERROR
+      && Math.abs(armSubsystem.getExtension() - armExtension) < ArmConstants.EXTENSION_TOLERANCE);
   }
 }
