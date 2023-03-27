@@ -22,13 +22,10 @@ import frc.robot.subsystems.vision.VisionSubsystemImpl;
 public class BalanceWithAprilTags extends CommandBase {
 
   private final DriveSubsystem driveSubsystem;
-  private final VisionSubsystemImpl visionSubsystem;
+  private final VisionSubsystem visionSubsystem;
   private final boolean fromLeft;
 
-  //Most likely won't be using this command :)
-  Pose2d pose;
-  double robotX = pose.getX();
-  double robotY = pose.getY();
+  
 
   private final PIDController balancePidController = new PIDController(
     BalanceConstants.BALANCE_P,
@@ -61,14 +58,12 @@ public class BalanceWithAprilTags extends CommandBase {
 
   @Override
   public void execute() {
-    if (visionSubsystem.getDistanceFromClosestAprilTag() > 5
-     //&& robotY != Constants.LimelightConstants.APRIL_TAG_POSITIONS[6]
-     ) {
-        driveForward(1.1, true);
-    } else if (visionSubsystem.getDistanceFromClosestAprilTag() < 4) {
-        driveForward(-1, true);
+    if (driveSubsystem.getPose.getY() < visionSubsystem.getPoseFromAprilTags.getY()) {
+      driveForward(-1, true);
+    } else if (driveSubsystem.getPose.getY() > visionSubsystem.getPoseFromAprilTags.getY()) {
+      driveForward(1, true);
     } else {
-        driveForward(0, false);
+      new BalanceFromDocked(driveSubsystem);
     }
         
     
