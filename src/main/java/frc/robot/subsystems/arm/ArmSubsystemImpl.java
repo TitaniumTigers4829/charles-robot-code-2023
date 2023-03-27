@@ -12,6 +12,8 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.Conversions;
+import frc.robot.Constants.HardwareConstants;
 import frc.robot.extras.SmartDashboardLogger;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 
@@ -39,9 +41,9 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
    * Tune all parameters
   */
   public ArmSubsystemImpl() {
-    rotationEncoder = new WPI_CANCoder(ArmConstants.ROTATION_ENCODER_ID, Constants.CANIVORE_CAN_BUS_STRING);
-    leaderRotationMotor = new WPI_TalonFX(ArmConstants.LEADER_ROTATION_MOTOR_ID, Constants.CANIVORE_CAN_BUS_STRING);
-    followerRotationMotor = new WPI_TalonFX(ArmConstants.FOLLOWER_ROTATION_MOTOR_ID, Constants.CANIVORE_CAN_BUS_STRING);
+    rotationEncoder = new WPI_CANCoder(ArmConstants.ROTATION_ENCODER_ID, HardwareConstants.CANIVORE_CAN_BUS_STRING);
+    leaderRotationMotor = new WPI_TalonFX(ArmConstants.LEADER_ROTATION_MOTOR_ID, HardwareConstants.CANIVORE_CAN_BUS_STRING);
+    followerRotationMotor = new WPI_TalonFX(ArmConstants.FOLLOWER_ROTATION_MOTOR_ID, HardwareConstants.CANIVORE_CAN_BUS_STRING);
     extensionMotor = new WPI_TalonFX(ArmConstants.EXTENSION_MOTOR_ID);
     // extensionLockSolenoid = new DoubleSolenoid(Constants.PNEUMATICS_MODULE_TYPE, ArmConstants.EXTENSION_LOCK_ENGAGED_ID, ArmConstants.EXTENSION_LOCK_DISENGAGED_ID);
     
@@ -63,7 +65,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     leaderRotationMotor.configForwardSoftLimitEnable(true);
     leaderRotationMotor.configReverseSoftLimitThreshold(ArmConstants.MIN_ROTATION_ENCODER_UNITS);
     leaderRotationMotor.configReverseSoftLimitEnable(true);
-    leaderRotationMotor.configNeutralDeadband(Constants.MIN_FALCON_DEADBAND);
+    leaderRotationMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
 
     leaderRotationMotor.setInverted(ArmConstants.LEADER_ROTATION_MOTOR_INVERTED);
     leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
@@ -75,14 +77,14 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
     extensionMotor.setInverted(ArmConstants.EXTENSION_MOTOR_INVERTED);
     extensionMotor.setNeutralMode(NeutralMode.Coast);
-    extensionMotor.configNeutralDeadband(Constants.MIN_FALCON_DEADBAND);
-    extensionMotor.configReverseSoftLimitThreshold(1 * ArmConstants.EXTENSION_METERS_TO_MOTOR_POS);
+    extensionMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
+    extensionMotor.configReverseSoftLimitThreshold(ArmConstants.MAX_EXTENSION_METERS * ArmConstants.EXTENSION_METERS_TO_MOTOR_POS);
     extensionMotor.configReverseSoftLimitEnable(true);
   }
 
   @Override
   public void setRotation(double desiredAngle) {
-    leaderRotationMotor.set(ControlMode.MotionMagic, desiredAngle * Constants.DEGREES_TO_CANCODER_UNITS);
+    leaderRotationMotor.set(ControlMode.MotionMagic, desiredAngle * Conversions.DEGREES_TO_CANCODER_UNITS);
   }
 
   @Override
@@ -104,10 +106,6 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   public void setExtension(double extension) {
     double PIDOutput = extensionSpeedPIDController.calculate(getExtension(), extension);
     setExtensionSpeed(PIDOutput);
-  }
-
-  public void syncRotationEncoders() {
-    leaderRotationMotor.setSelectedSensorPosition(getRotation() * ArmConstants.ARM_DEGREES_TO_FALCON_UNITS);
   }
 
   @Override

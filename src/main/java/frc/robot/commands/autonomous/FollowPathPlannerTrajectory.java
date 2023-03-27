@@ -91,7 +91,7 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
       yController,
       thetaController,
       driveSubsystem::setModuleStates,
-      false,
+      true,
       driveSubsystem
     );
     

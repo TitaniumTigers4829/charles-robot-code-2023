@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ModuleConstants;
 
 public class SwerveModule {
@@ -59,9 +60,9 @@ public class SwerveModule {
     ) {
     this.name = name;
     
-    turnEncoder = new CANCoder(turnEncoderChannel, Constants.CANIVORE_CAN_BUS_STRING);
-    driveMotor = new WPI_TalonFX(driveMotorChannel, Constants.CANIVORE_CAN_BUS_STRING);
-    turnMotor = new WPI_TalonFX(turnMotorChannel, Constants.CANIVORE_CAN_BUS_STRING);
+    turnEncoder = new CANCoder(turnEncoderChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
+    driveMotor = new WPI_TalonFX(driveMotorChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
+    turnMotor = new WPI_TalonFX(turnMotorChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
         
     turnEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
     turnEncoder.configMagnetOffset(-angleZero);
@@ -74,13 +75,13 @@ public class SwerveModule {
     driveMotor.config_kD(0, ModuleConstants.DRIVE_D);     
     driveMotor.setNeutralMode(NeutralMode.Brake);
     driveMotor.setInverted(driveReversed);
-    driveMotor.configNeutralDeadband(Constants.MIN_FALCON_DEADBAND);
+    driveMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
     driveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 65, 0.1));
     driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.1));
 
     turnMotor.setNeutralMode(NeutralMode.Brake);
     turnMotor.setInverted(true);
-    turnMotor.configNeutralDeadband(Constants.MIN_FALCON_DEADBAND);
+    turnMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
     turnMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 65, 0.1));
     turnMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.1));
 
@@ -129,7 +130,7 @@ public class SwerveModule {
   }
 
   public SwerveModulePosition getPosition() {
-    double position = ModuleConstants.FALCON_UNITS_TO_METERS * driveMotor.getSelectedSensorPosition();
+    double position = ModuleConstants.DRIVE_TO_METERS * driveMotor.getSelectedSensorPosition();
     Rotation2d rotation = Rotation2d.fromDegrees(getCANCoderABS());
     return new SwerveModulePosition(position, rotation);
   }

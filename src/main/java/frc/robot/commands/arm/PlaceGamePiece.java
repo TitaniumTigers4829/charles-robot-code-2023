@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -12,8 +8,9 @@ public class PlaceGamePiece extends CommandBase {
 
   private final ArmSubsystem armSubsystem;
   private final ClawSubsystem clawSubsystem;
-  private double rotation;
-  private double extension;
+
+  private final double rotation;
+  private final double extension;
 
   public PlaceGamePiece(ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, double rotation, double extension) {
     this.armSubsystem = armSubsystem;
@@ -28,8 +25,6 @@ public class PlaceGamePiece extends CommandBase {
     armSubsystem.resetExtensionController();
     if (clawSubsystem.isConeMode()) {
       clawSubsystem.setWristPosition(0);
-      rotation -= 3;
-      extension += 0.03;
       clawSubsystem.setIntakeSpeed(-0.075);
     } else {
       clawSubsystem.setWristPosition(180);

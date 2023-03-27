@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ClawConstants;
+import frc.robot.Constants.HardwareConstants;
 import frc.robot.extras.SmartDashboardLogger;
 
 public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
@@ -19,15 +20,14 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   private boolean isConeMode = true;
 
   public ClawSubsystemImpl() {
-    wristMotor = new WPI_TalonFX(ClawConstants.WRIST_MOTOR_ID, Constants.RIO_CAN_BUS_STRING);
-    intakeMotor = new WPI_TalonFX(ClawConstants.INTAKE_MOTOR_ID, Constants.RIO_CAN_BUS_STRING);
+    wristMotor = new WPI_TalonFX(ClawConstants.WRIST_MOTOR_ID, HardwareConstants.RIO_CAN_BUS_STRING);
+    intakeMotor = new WPI_TalonFX(ClawConstants.INTAKE_MOTOR_ID, HardwareConstants.RIO_CAN_BUS_STRING);
 
     wristMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
     wristMotor.config_kP(0, ClawConstants.WRIST_P);
     wristMotor.config_kI(0, ClawConstants.WRIST_I);
     wristMotor.config_kD(0, ClawConstants.WRIST_D);
     wristMotor.config_kF(0, ClawConstants.WRIST_F);
-    wristMotor.config_IntegralZone(0, ClawConstants.WRIST_I_ZONE);
     wristMotor.configMotionCruiseVelocity(ClawConstants.WRIST_MAX_VELOCITY_ENCODER_UNITS);
     wristMotor.configMotionAcceleration(ClawConstants.WRIST_MAX_ACCELERATION_ENCODER_UNITS);
     wristMotor.configMotionSCurveStrength(ClawConstants.WRIST_SMOOTHING);
@@ -39,11 +39,11 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     wristMotor.setInverted(ClawConstants.WRIST_MOTOR_INVERTED);
     wristMotor.setNeutralMode(NeutralMode.Brake);
     wristMotor.setSelectedSensorPosition(0);
-    wristMotor.configNeutralDeadband(Constants.MIN_FALCON_DEADBAND);
+    wristMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
 
     intakeMotor.setInverted(ClawConstants.INTAKE_MOTOR_INVERTED);
     intakeMotor.setNeutralMode(NeutralMode.Brake);
-    intakeMotor.configNeutralDeadband(Constants.MIN_FALCON_DEADBAND);
+    intakeMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
 
     // clawSolenoid = new DoubleSolenoid(
     //   Constants.PNEUMATICS_MODULE_TYPE,
