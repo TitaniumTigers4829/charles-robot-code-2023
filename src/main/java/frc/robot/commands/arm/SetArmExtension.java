@@ -22,7 +22,6 @@ public class SetArmExtension extends CommandBase {
   @Override
   public void initialize() {
     armSubsystem.resetExtensionController();
-    armSubsystem.unlockExtensionSolenoid();
   }
 
   @Override
@@ -33,7 +32,6 @@ public class SetArmExtension extends CommandBase {
   @Override
   public void end(boolean interrupted) {
    armSubsystem.setExtensionSpeed(0.01);
-   armSubsystem.lockExtensionSolenoid();
   }
 
   @Override

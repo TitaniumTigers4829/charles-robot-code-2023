@@ -13,6 +13,7 @@ public class ManualClaw extends CommandBase {
   private BooleanSupplier rotateClaw180;
   private double initialRotation;
   private boolean lastState;
+  private boolean hasSetPos;
 
   public ManualClaw(ClawSubsystem clawSubsystem, BooleanSupplier intakeCargo, BooleanSupplier expelCargo, BooleanSupplier rotateClaw) {
     this.clawSubsystem = clawSubsystem;
@@ -26,6 +27,7 @@ public class ManualClaw extends CommandBase {
   public void initialize() {
     initialRotation = clawSubsystem.getWristAngle();
     lastState = false;
+    hasSetPos = false;
   }
 
   @Override
@@ -58,13 +60,17 @@ public class ManualClaw extends CommandBase {
     }
 
     if (rotateClaw180.getAsBoolean()) {
+      hasSetPos = false;
       if (initialRotation > 90) {
         clawSubsystem.setWristPosition(0);
       } else {
         clawSubsystem.setWristPosition(180);
         }
       } else {
-        clawSubsystem.setWristPosition(clawSubsystem.getWristAngle());
+        if (!hasSetPos) {
+          clawSubsystem.setWristPosition(clawSubsystem.getWristAngle());
+          hasSetPos = true;
+        }
       }
   }
 

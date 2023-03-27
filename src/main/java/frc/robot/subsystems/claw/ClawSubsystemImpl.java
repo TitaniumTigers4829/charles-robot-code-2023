@@ -48,6 +48,8 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     wristMotor.setNeutralMode(NeutralMode.Brake);
     wristMotor.setSelectedSensorPosition(0);
 
+    wristMotor.configNeutralDeadband(.001);
+
     intakeMotor = new WPI_TalonFX(ClawConstants.INTAKE_MOTOR_ID, Constants.RIO_CAN_BUS_STRING);
     intakeMotor.setNeutralMode(NeutralMode.Brake);
 
@@ -102,8 +104,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   @Override
   public void setWristPosition(double angle) {
-    double angleInEncoderUnits = angle * ClawConstants.DEG_TO_WRIST_POS;
-    wristMotor.set(ControlMode.MotionMagic, angleInEncoderUnits);
+    wristMotor.set(ControlMode.MotionMagic, angle * ClawConstants.DEG_TO_WRIST_POS);
   }
 
   @Override

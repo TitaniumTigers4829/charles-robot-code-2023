@@ -19,10 +19,6 @@ public class MoveArmToStowedAfterPlacing extends CommandBase {
   private BooleanSupplier isFinishedSupplier;
   private final double rotation = 180;
   private final double extension = 0.01;
-  // private int numberOfSchedulerRuns = 0;
-  private double startTime;
-  private double endTime;
-  private Timer timer;
 
   public MoveArmToStowedAfterPlacing(ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, BooleanSupplier isFinishedSupplier) {
     this.armSubsystem = armSubsystem;
@@ -34,30 +30,19 @@ public class MoveArmToStowedAfterPlacing extends CommandBase {
   @Override
   public void initialize() {
     armSubsystem.lockExtensionSolenoid();
-    timer = new Timer();
-    timer.reset();
-    timer.start();
   }
   
 
   @Override
   public void execute() {
-    // if (numberOfSchedulerRuns < 10) {
-    if (timer.get() < 0.1) {
-      armSubsystem.setExtensionSpeed(ArmConstants.ARM_MOVE_SPEED_BEFORE_REAL_MOVE);
-    }
-    if (timer.get() > 0.3) { // 30 ticks (before timer)
-      armSubsystem.setRotation(rotation);
-      if (timer.get() > 0.4) { // 40 ticks
-        clawSubsystem.setWristPosition(180);
-        if (Math.abs(extension - armSubsystem.getExtension()) < ArmConstants.EXTENSION_ACCEPTABLE_ERROR) {
-          armSubsystem.setExtensionSpeed(0);
-          armSubsystem.lockExtensionSolenoid();
-        } else {
-          armSubsystem.unlockExtensionSolenoid();
-          armSubsystem.setExtension(extension);
-        }
-      }
+    armSubsystem.setRotation(rotation);
+    clawSubsystem.setWristPosition(180);
+    if (Math.abs(extension - armSubsystem.getExtension()) < ArmConstants.EXTENSION_ACCEPTABLE_ERROR) {
+      armSubsystem.setExtensionSpeed(0);
+      armSubsystem.lockExtensionSolenoid();
+    } else {
+      armSubsystem.unlockExtensionSolenoid();
+      armSubsystem.setExtension(extension);
     }
   }
 
@@ -66,7 +51,6 @@ public class MoveArmToStowedAfterPlacing extends CommandBase {
     armSubsystem.setRotationSpeed(0);
     armSubsystem.setExtensionSpeed(0);
     armSubsystem.lockExtensionSolenoid();
-    timer.stop();
   }
 
   @Override

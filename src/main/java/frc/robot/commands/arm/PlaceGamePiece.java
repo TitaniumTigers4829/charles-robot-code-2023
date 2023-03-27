@@ -39,7 +39,6 @@ public class PlaceGamePiece extends CommandBase {
   @Override
   public void execute() {
     armSubsystem.setRotation(rotation);
-    armSubsystem.unlockExtensionSolenoid();
     armSubsystem.setExtension(extension);
   }
 

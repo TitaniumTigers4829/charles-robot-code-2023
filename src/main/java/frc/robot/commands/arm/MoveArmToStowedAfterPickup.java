@@ -35,7 +35,6 @@ public class MoveArmToStowedAfterPickup extends CommandBase {
   @Override
   public void initialize() {
     armSubsystem.resetExtensionController();
-    armSubsystem.unlockExtensionSolenoid();
     timer = new Timer();
     timer.reset();
     timer.start();
@@ -43,17 +42,13 @@ public class MoveArmToStowedAfterPickup extends CommandBase {
 
   @Override
   public void execute() {
-    if (timer.get() > 0.1) { // 10 ticks
-      armSubsystem.setExtension(extension);
-    } else {
-      armSubsystem.setExtensionSpeed(ArmConstants.ARM_MOVE_SPEED_BEFORE_REAL_MOVE);
-    }
+    armSubsystem.setExtension(extension);
     if (!stage1Complete) {
       armSubsystem.setRotation(rotationStage1);
-      stage1Complete = (timer.get() > 0.3); // 30 ticks
+      stage1Complete = (timer.get() > 0.3);
     } else {
       armSubsystem.setRotation(rotationStage2);
-      if (Math.abs(armSubsystem.getRotation() - rotationStage2) < ArmConstants.ROTATION_TOLERANCE_DEGREES) {
+      if (Math.abs(armSubsystem.getRotation() - rotationStage2) < ArmConstants.ROTATION_ACCEPTABLE_ERROR) {
         stage2Complete = true;
       }
     }

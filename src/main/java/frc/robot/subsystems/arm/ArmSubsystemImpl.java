@@ -21,6 +21,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.extras.SmartDashboardLogger;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -73,7 +74,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     leaderRotationMotor.configForwardSoftLimitEnable(true);
     leaderRotationMotor.configReverseSoftLimitThreshold(ArmConstants.MIN_ROTATION_ENCODER_UNITS);
     leaderRotationMotor.configReverseSoftLimitEnable(true);
-    leaderRotationMotor.configNeutralDeadband(.001);
+    // leaderRotationMotor.configNeutralDeadband(.001);
 
     leaderRotationMotor.setInverted(ArmConstants.LEADER_ROTATION_MOTOR_INVERTED);
     leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
@@ -85,17 +86,16 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
     extensionMotor.setInverted(ArmConstants.EXTENSION_MOTOR_INVERTED);
     extensionMotor.setNeutralMode(NeutralMode.Coast);
-  }
+    extensionMotor.configNeutralDeadband(.001);
+    extensionMotor.setSensorPhase(false);
 
-  @Override
-  public void periodic() {
-    SmartDashboard.putNumber("Rot Speed", leaderRotationMotor.getSelectedSensorVelocity());
+    extensionMotor.configReverseSoftLimitThreshold(1 * ArmConstants.EXTENSION_METERS_TO_MOTOR_POS);
+    extensionMotor.configReverseSoftLimitEnable(true);
   }
 
   @Override
   public void setRotation(double desiredAngle) {
     leaderRotationMotor.set(ControlMode.MotionMagic, desiredAngle * Constants.DEGREES_TO_CANCODER_UNITS);
-    SmartDashboard.putNumber("vel error", leaderRotationMotor.getActiveTrajectoryVelocity() - leaderRotationMotor.getSelectedSensorVelocity());
   }
 
   @Override
@@ -110,27 +110,17 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
   @Override
   public double getExtension() {
-    // Convert motor rotation units (2048 or 4096 for 1 full rotation) to number of rotations
-    double motorRotation = (-extensionMotor.getSelectedSensorPosition() / 
-      Constants.FALCON_ENCODER_RESOLUTION) * ArmConstants.EXTENSION_MOTOR_GEAR_RATIO;
-    // Convert number of rotations to distance (multiply by diameter)
-    return motorRotation * ArmConstants.EXTENSION_SPOOL_DIAMETER * Math.PI;
+    double motorRotation = -1 * extensionMotor.getSelectedSensorPosition()* ArmConstants.EXTENSION_MOTOR_POS_TO_METERS;
+    return motorRotation;
   }
 
   @Override
   public void setExtension(double extension) {
-    // FIXME: rework so that this "just works" and the "user" doesn't need to worry about pneumatic brake or anything else.
-    // FIXME: we should also make this "safe" against going outside of frame perimeter, don't allow the user to make the arm go outside frame while this is running
-    // EXAMPLE IS FOR BOTH SET EXTENSION AND SET ROTATION
-    // example: if the arm is mostly extended and we want the arm to go from 90 to 270 (or however the degrees work i forget), but basically a 180 over the top,
-    // this method will handle pulling the arm in while it is in motion, and then return the arm to the desired extension.
-    // I have some ideas of how to do this, a cool way to visualize it is something called configuration space, see discord.
-    // Another thing that we need protect against is rotation and extension values that our not in our configuration space.
     double PIDOutput = extensionSpeedPIDController.calculate(getExtension(), extension);
     // Sets a floor
-    PIDOutput = Math.max(PIDOutput, ArmConstants.EXTENSION_MOTOR_MIN_OUTPUT);
-    // Sets a ceiling
-    PIDOutput = Math.min(PIDOutput, ArmConstants.EXTENSION_MOTOR_MAX_OUTPUT);
+    // PIDOutput = Math.max(PIDOutput, ArmConstants.EXTENSION_MOTOR_MIN_OUTPUT);
+    // // Sets a ceiling
+    // PIDOutput = Math.min(PIDOutput, ArmConstants.EXTENSION_MOTOR_MAX_OUTPUT);
     setExtensionSpeed(PIDOutput);
   }
 
@@ -161,11 +151,8 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   @Override
   public double getExtensionSpeed() {
     // Convert motor rotation units (2048 for 1 full rotation) to number of rotations
-    double motorRotation = (-extensionMotor.getSelectedSensorVelocity() / Constants.FALCON_ENCODER_RESOLUTION)
-      * ArmConstants.EXTENSION_MOTOR_GEAR_RATIO;
-    // Convert number of rotations to distance (multiply by diameter)
-    double metersPer100MS = motorRotation * ArmConstants.EXTENSION_SPOOL_DIAMETER * Math.PI;
-    return metersPer100MS * 10;
+    return -extensionMotor.getSelectedSensorVelocity() * ArmConstants.EXTENSION_MOTOR_POS_TO_METERS * 10.0;
+    
   }
 
   @Override
@@ -193,4 +180,9 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     extensionSpeedPIDController.reset(getExtension(), getExtensionSpeed());
   }
 
+  @Override
+  public void periodic() {
+    SmartDashboardLogger.debugNumber("Arm rotation", getRotation());
+    SmartDashboardLogger.debugNumber("Arm extension", getExtension());    
+  }
 }

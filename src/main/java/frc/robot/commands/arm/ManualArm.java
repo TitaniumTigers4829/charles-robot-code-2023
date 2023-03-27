@@ -11,8 +11,6 @@ public class ManualArm extends CommandBase {
   private ArmSubsystem armSubsystem;
   private DoubleSupplier armRotationSpeed;
   private DoubleSupplier armExtensionSpeed;
-  private boolean extensionBrakeOn;
-  private int ticksFromStartOfExtension;
 
   public ManualArm(ArmSubsystem armSubsystem, DoubleSupplier armRotationSpeed, DoubleSupplier armExtensionSpeed) {
     this.armSubsystem = armSubsystem;
@@ -22,10 +20,7 @@ public class ManualArm extends CommandBase {
   }
 
   @Override
-  public void initialize() {
-    ticksFromStartOfExtension = 0;
-    extensionBrakeOn = false;
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
@@ -36,21 +31,9 @@ public class ManualArm extends CommandBase {
     }
 
     if (Math.abs(armExtensionSpeed.getAsDouble()) > 0.1) {
-      ticksFromStartOfExtension++;
-      if (extensionBrakeOn) {
-        armSubsystem.unlockExtensionSolenoid();
-        extensionBrakeOn = false;
-      } else if (ticksFromStartOfExtension > 10) {
         armSubsystem.setExtensionSpeed(armExtensionSpeed.getAsDouble());
-      } else {
-        armSubsystem.setExtensionSpeed(ArmConstants.ARM_MOVE_SPEED_BEFORE_REAL_MOVE);
-      }
-
     } else {
-      extensionBrakeOn = true;
-      ticksFromStartOfExtension = 0;
-      armSubsystem.lockExtensionSolenoid();
-      armSubsystem.setExtensionSpeed(0.075);
+      armSubsystem.setExtensionSpeed(0.025);
     }
   }
 

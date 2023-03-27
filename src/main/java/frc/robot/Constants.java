@@ -300,23 +300,23 @@ public final class Constants {
     // public static final double ROTATION_TOLERANCE_DEGREES= .5;
     public static final double ROTATION_TOLERANCE_DEGREES = 0;
     public static final double ROTATION_TOLERANCE_ENCODER_UNITS = ROTATION_TOLERANCE_DEGREES * DEGREES_TO_CANCODER_UNITS;
-    public static final double MAX_ROTATION_ENCODER_UNITS = 290 * DEGREES_TO_CANCODER_UNITS;
-    public static final double MIN_ROTATION_ENCODER_UNITS = 65 * DEGREES_TO_CANCODER_UNITS;
+    public static final double MAX_ROTATION_ENCODER_UNITS = 305 * DEGREES_TO_CANCODER_UNITS;
+    public static final double MIN_ROTATION_ENCODER_UNITS = 55 * DEGREES_TO_CANCODER_UNITS;
 
     // unit conversions
-    public static final double EXTENSION_MOTOR_GEAR_RATIO = 1.0 / 5.0;
+    public static final double EXTENSION_MOTOR_GEAR_RATIO = 16.0;
     public static final double EXTENSION_MOTOR_STALLING_AMPS = 7;
     public static final double EXTENSION_SPOOL_DIAMETER = Units.inchesToMeters(2.5);
     public static final double MAX_EXTENSION_LENGTH = Units.inchesToMeters(48.48);
-    public static final double EXTENSION_MOTOR_POS_TO_METERS = (-1 * Constants.FALCON_ENCODER_RESOLUTION * EXTENSION_MOTOR_GEAR_RATIO) * EXTENSION_SPOOL_DIAMETER * Math.PI;
-    public static final double EXTENSION_METERS_TO_MOTOR_POS = (-1 * Constants.FALCON_ENCODER_RESOLUTION / EXTENSION_MOTOR_GEAR_RATIO) / EXTENSION_SPOOL_DIAMETER / Math.PI;
+    public static final double EXTENSION_MOTOR_POS_TO_METERS = EXTENSION_SPOOL_DIAMETER / (Constants.FALCON_ENCODER_RESOLUTION * EXTENSION_MOTOR_GEAR_RATIO) * Math.PI;
+    public static final double EXTENSION_METERS_TO_MOTOR_POS = -1.0 / EXTENSION_MOTOR_POS_TO_METERS;
 
     public static final TrapezoidProfile.Constraints ROTATION_CONSTRAINTS = new TrapezoidProfile.Constraints(
       ROTATION_MAX_VELOCITY_ENCODER_UNITS, ROTATION_MAX_ACCELERATION_ENCODER_UNITS);
 
     public static final double EXTENSION_ACCELERATION_GAIN = 0;
     public static final double EXTENSION_VELOCITY_GAIN = 0.2;
-    public static final double EXTENSION_P = -6;
+    public static final double EXTENSION_P = -8;
     public static final double EXTENSION_I = 0;
     public static final double EXTENSION_D = 0;
     public static final double EXTENSION_F = 0;
@@ -328,14 +328,14 @@ public final class Constants {
     // max/min output
     public static final double EXTENSION_MOTOR_MIN_OUTPUT = -.2;
     public static final double EXTENSION_MOTOR_MAX_OUTPUT = .75;
-    public static final double EXTENSION_MAX_VELOCITY = 0.75;
-    public static final double EXTENSION_MAX_ACCELERATION = 2;
+    public static final double EXTENSION_MAX_VELOCITY = 1;
+    public static final double EXTENSION_MAX_ACCELERATION = 2.5;
 
     public static final int EXTENSION_MOTOR_ID = 16;
     public static final boolean EXTENSION_MOTOR_INVERTED = true;
 
     // acceptable error
-    public static final double EXTENSION_ACCEPTABLE_ERROR = 0.05; 
+    public static final double EXTENSION_ACCEPTABLE_ERROR = 0.025; 
     public static final TrapezoidProfile.Constraints EXTENSION_CONSTRAINTS = new TrapezoidProfile.Constraints(
       EXTENSION_MAX_VELOCITY, EXTENSION_MAX_ACCELERATION);
 
@@ -365,6 +365,8 @@ public final class Constants {
 
     public static final double PLACE_HIGH_EXTENSION = 0.95;
     public static final double PLACE_HIGH_ROTATION = 242;
+
+    public static double ROTATION_ACCEPTABLE_ERROR;
   }
 
   public static final class ClawConstants {
@@ -392,7 +394,7 @@ public final class Constants {
     public static final double WRIST_MAX_VELOCITY_ENCODER_UNITS = 90 * DEG_TO_WRIST_POS;
     public static final double WRIST_MAX_ACCELERATION_ENCODER_UNITS = 120 * DEG_TO_WRIST_POS;
     public static final int WRIST_SMOOTHING = 0;
-    public static final double WRIST_TOLERANCE = 1 * DEG_TO_WRIST_POS;
+    public static final double WRIST_TOLERANCE = 0 * DEG_TO_WRIST_POS;
     
     public static final double INTAKE_F = 0;
     public static final double INTAKE_P = 0;

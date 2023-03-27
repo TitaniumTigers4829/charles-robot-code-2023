@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.JoystickConstants;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.arm.ManualArm;
+import frc.robot.commands.arm.SetArmExtension;
 import frc.robot.commands.arm.SetArmRotation;
 import frc.robot.commands.autonomous.FollowPathPlannerTrajectory;
 import frc.robot.commands.autonomous.SimpleAuto;
@@ -163,7 +164,7 @@ public class RobotContainer {
     // manual claw command
     Command manualClawCommand = new ManualClaw(
       clawSubsystem, 
-      operatorXButton::getAsBoolean, 
+      operatorXButton::getAsBoolean,
       operatorYButton::getAsBoolean,
       operatorRightTrigger
     );
@@ -184,7 +185,7 @@ public class RobotContainer {
 
     // rotation testing
     JoystickButton operatorBButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_B_BUTTON_ID);
-    operatorBButton.whileTrue(new SetArmRotation(armSubsystem, 220));
+    operatorBButton.whileTrue(new SetArmExtension(armSubsystem, 0.01));
 
     // reset encoders
     POVButton operatorRightDirectionPad = new POVButton(operatorJoystick, 90);

@@ -18,7 +18,6 @@ public class PickupGamePiece extends CommandBase {
   private final double rotation = 110.7;
   // private final double extension = 1.39;
   private final double extension = .768;
-  private Timer timer;
 
   public PickupGamePiece(ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem) {
     this.armSubsystem = armSubsystem;
@@ -29,7 +28,6 @@ public class PickupGamePiece extends CommandBase {
   @Override
   public void initialize() {
     armSubsystem.resetExtensionController();
-    armSubsystem.unlockExtensionSolenoid();
     clawSubsystem.setWristPosition(180);
     if (!clawSubsystem.isConeMode()) {
       clawSubsystem.open();
@@ -38,19 +36,12 @@ public class PickupGamePiece extends CommandBase {
       clawSubsystem.close();
       clawSubsystem.setIntakeSpeed(.25);
     }
-    timer = new Timer();
-    timer.reset();
-    timer.start();
   }
 
   @Override
   public void execute() {
     armSubsystem.setRotation(rotation);
-    if (timer.get() > 0.1) { // 10 ticks
-      armSubsystem.setExtension(extension);
-    } else {
-      armSubsystem.setExtensionSpeed(ArmConstants.ARM_MOVE_SPEED_BEFORE_REAL_MOVE);
-    }
+    armSubsystem.setExtension(extension);
   }
 
   @Override
@@ -63,7 +54,6 @@ public class PickupGamePiece extends CommandBase {
       clawSubsystem.setIntakeSpeed(0);
     }
     clawSubsystem.setWristPosition(clawSubsystem.getWristAngle());
-    timer.stop();
   }
 
   @Override
