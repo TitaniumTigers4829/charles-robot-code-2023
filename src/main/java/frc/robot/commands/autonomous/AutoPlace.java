@@ -53,7 +53,7 @@ public class AutoPlace extends DriveCommandBase {
     List<PathPoint> pathPoints = new ArrayList<PathPoint>();
     Translation2d start = new Translation2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY());
     Rotation2d startRotation = driveSubsystem.getPose().getRotation();
-    pathPoints.add(new PathPoint(start, startRotation, startRotation));
+    pathPoints.add(new PathPoint(start, startRotation, startRotation).withControlLengths(0.01, 0.01));
     double endX;
     double endY;
     Rotation2d endRotation;
@@ -102,7 +102,7 @@ public class AutoPlace extends DriveCommandBase {
 
     SmartDashboard.putString("End", end.toString());
 
-    pathPoints.add(new PathPoint(end, endRotation, endRotation));
+    pathPoints.add(new PathPoint(end, endRotation, endRotation).withControlLengths(0.01, 0.01));
 
     // You probably only want to edit the P values
     PIDController xController = new PIDController(TrajectoryConstants.X_CONTROLLER_P, 0, 0);
@@ -124,6 +124,8 @@ public class AutoPlace extends DriveCommandBase {
 
       // Makes it so wheels don't have to turn more than 90 degrees
       thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+      SmartDashboard.putString("end state", trajectoryToFollow.getEndState().toString());
 
       new RealTimePPSwerveControllerCommand(
         trajectoryToFollow,

@@ -63,7 +63,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    m_robotContainer.driveSubsystem.zeroHeading();
     m_robotContainer.driveSubsystem.resetOdometry(new Pose2d());
     m_robotContainer.armSubsystem.setExtensionMotorNeutralMode(NeutralMode.Brake);
   }

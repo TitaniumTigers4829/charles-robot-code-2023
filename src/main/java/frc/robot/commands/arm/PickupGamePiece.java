@@ -15,7 +15,7 @@ public class PickupGamePiece extends CommandBase {
   public PickupGamePiece(ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, double rotation, double extension) {
     this.armSubsystem = armSubsystem;
     this.clawSubsystem = clawSubsystem;
-    addRequirements(this.armSubsystem);
+    addRequirements(this.armSubsystem, this.clawSubsystem);
     this.rotation = rotation;
     this.extension = extension;
   }
@@ -29,7 +29,7 @@ public class PickupGamePiece extends CommandBase {
       clawSubsystem.setIntakeSpeed(.15);
     } else {
       clawSubsystem.close();
-      clawSubsystem.setIntakeSpeed(.25);
+      clawSubsystem.setIntakeSpeed(.5);
     }
   }
 

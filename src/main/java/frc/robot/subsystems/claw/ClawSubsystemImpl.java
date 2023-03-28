@@ -4,6 +4,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ClawConstants;
@@ -14,7 +16,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   private final WPI_TalonFX wristMotor;
   private final WPI_TalonFX intakeMotor;
-  // private final DoubleSolenoid clawSolenoid;
+  private final DoubleSolenoid clawSolenoid;
 
   private boolean isClawClosed;
   private boolean isConeMode = true;
@@ -23,6 +25,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     wristMotor = new WPI_TalonFX(ClawConstants.WRIST_MOTOR_ID, HardwareConstants.RIO_CAN_BUS_STRING);
     intakeMotor = new WPI_TalonFX(ClawConstants.INTAKE_MOTOR_ID, HardwareConstants.RIO_CAN_BUS_STRING);
 
+    wristMotor.configFactoryDefault();
     wristMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
     wristMotor.config_kP(0, ClawConstants.WRIST_P);
     wristMotor.config_kI(0, ClawConstants.WRIST_I);
@@ -41,31 +44,27 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     wristMotor.setSelectedSensorPosition(0);
     wristMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
 
+    intakeMotor.configFactoryDefault();
     intakeMotor.setInverted(ClawConstants.INTAKE_MOTOR_INVERTED);
     intakeMotor.setNeutralMode(NeutralMode.Brake);
     intakeMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
 
-    // clawSolenoid = new DoubleSolenoid(
-    //   Constants.PNEUMATICS_MODULE_TYPE,
-    //   ClawConstants.SOLENOID_FORWARD,
-    //   ClawConstants.SOLENOID_BACKWARD
-    // );
-  }
-
-  @Override
-  public void periodic() {
-    SmartDashboardLogger.infoString("Cargo Mode", isConeMode ? "Cone" : "Cube");
+    clawSolenoid = new DoubleSolenoid(
+      HardwareConstants.PNEUMATICS_MODULE_TYPE,
+      ClawConstants.CLAW_FORWARD,
+      ClawConstants.CLAW_BACKWARD
+    );
   }
 
   @Override
   public void close() {
-    // clawSolenoid.set(DoubleSolenoid.Value.kReverse);
+    clawSolenoid.set(DoubleSolenoid.Value.kReverse);
     isClawClosed = true;
   }
 
   @Override
   public void open() {
-    // clawSolenoid.set(DoubleSolenoid.Value.kForward);    
+    clawSolenoid.set(DoubleSolenoid.Value.kForward);    
     isClawClosed = false;
   }
 
@@ -109,4 +108,8 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     isConeMode = !isConeMode;
   }
   
+  @Override
+  public void periodic() {
+    SmartDashboardLogger.infoString("Cargo Mode", isConeMode ? "Cone" : "Cube");
+  }
 }

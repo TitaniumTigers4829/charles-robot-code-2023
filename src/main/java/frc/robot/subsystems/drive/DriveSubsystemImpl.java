@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.extras.SmartDashboardLogger;
 
 public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem {
 
@@ -176,6 +177,11 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   
   @Override
   public void addPoseEstimatorVisionMeasurement(Pose2d visionMeasurement, double currentTimeStampSeconds) {
+    double[] limelightPose = new double[3];
+    limelightPose[0] = visionMeasurement.getX();
+    limelightPose[1] = visionMeasurement.getY();
+    limelightPose[2] = visionMeasurement.getRotation().getDegrees();
+    SmartDashboard.putNumberArray("limelight_pose", limelightPose);
     odometry.addVisionMeasurement(visionMeasurement, currentTimeStampSeconds);
   }
 
@@ -185,9 +191,9 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   }
 
   @Override
-  public void resetOdometryAndRotation(Pose2d pose) {
+  public void resetOdometryAndRotation(Pose2d pose, double angle) {
     zeroHeading();
-    setGyroOffset(pose.getRotation().getDegrees());
+    setGyroOffset(angle);
     odometry.resetPosition(pose.getRotation(), getModulePositions(), pose);
   }
 
@@ -222,14 +228,12 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   @Override
   public void periodic() {
     Pose2d pose = odometry.getEstimatedPosition();
-    SmartDashboard.putString("Estimated pose", pose.toString());
+    SmartDashboardLogger.debugString("Estimated pose", pose.toString());
     double[] smarterDashboardPose = new double[2];
     smarterDashboardPose[0] = pose.getX();
     smarterDashboardPose[1] = pose.getY();
     SmartDashboard.putNumberArray("botPose", smarterDashboardPose);
     SmartDashboard.putNumber("pitch", getHeading());
-    SmartDashboard.putNumber("yaw", gyro.getYaw());
-    SmartDashboard.putNumber("roll", getRoll());
   }
 
 }

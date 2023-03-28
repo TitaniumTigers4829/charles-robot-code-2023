@@ -11,7 +11,7 @@ public class MoveArmToStowed extends CommandBase {
   private final ClawSubsystem clawSubsystem;
   private final double armRotation = 180;
   private final double armExtension = 0.01;
-  private final double wristRotation = 180;
+  private final double wristRotation = 0;
 
   public MoveArmToStowed(ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem) {
     this.armSubsystem = armSubsystem;
@@ -28,8 +28,7 @@ public class MoveArmToStowed extends CommandBase {
     armSubsystem.setRotation(armRotation);
     clawSubsystem.setWristPosition(wristRotation);
     if (Math.abs(armExtension - armSubsystem.getExtension()) < ArmConstants.EXTENSION_TOLERANCE) {
-      armSubsystem.setExtensionSpeed(0);
-      armSubsystem.lockExtensionSolenoid();
+      armSubsystem.setExtensionSpeed(ArmConstants.IDLE_EXTENSION_OUTPUT);
     } else {
       armSubsystem.unlockExtensionSolenoid();
       armSubsystem.setExtension(armExtension);

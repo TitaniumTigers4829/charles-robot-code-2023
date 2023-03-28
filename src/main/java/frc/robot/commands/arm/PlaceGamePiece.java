@@ -1,6 +1,7 @@
 package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.claw.ClawSubsystem;
 
@@ -15,7 +16,7 @@ public class PlaceGamePiece extends CommandBase {
   public PlaceGamePiece(ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, double rotation, double extension) {
     this.armSubsystem = armSubsystem;
     this.clawSubsystem = clawSubsystem;
-    addRequirements(this.armSubsystem);
+    addRequirements(this.armSubsystem, this.clawSubsystem);
     this.rotation = rotation;
     this.extension = extension;
   }
@@ -34,7 +35,9 @@ public class PlaceGamePiece extends CommandBase {
   @Override
   public void execute() {
     armSubsystem.setRotation(rotation);
-    armSubsystem.setExtension(extension);
+    if (Math.abs(rotation - armSubsystem.getRotation()) < ArmConstants.ROTATION_ACCEPTABLE_ERROR) {
+      armSubsystem.setExtension(extension);
+    }
   }
 
   @Override

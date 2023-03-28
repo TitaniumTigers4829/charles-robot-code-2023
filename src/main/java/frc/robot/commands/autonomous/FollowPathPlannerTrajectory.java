@@ -9,7 +9,11 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.DriveCommandBase;
@@ -79,7 +83,14 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
     
     if (resetOdometryToTrajectoryStart) {
-      driveSubsystem.resetOdometryAndRotation(trajectoryToFollow.getInitialPose());
+      if (DriverStation.getAlliance() == Alliance.Red) {
+        driveSubsystem.resetOdometryAndRotation(new Pose2d(
+          TrajectoryConstants.FIELD_WIDTH_METERS - trajectoryToFollow.getInitialPose().getX(), 
+          trajectoryToFollow.getInitialPose().getY(), 
+          new Rotation2d()),
+        180);
+      }
+      driveSubsystem.resetOdometryAndRotation(trajectoryToFollow.getInitialPose(), 0);
     }
 
     // Create a PPSwerveControllerCommand. This is almost identical to WPILib's SwerveControllerCommand, but it uses the holonomic rotation from the PathPlannerTrajectory to control the robot's rotation.
@@ -100,6 +111,7 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
 
   @Override
   public void execute() {
+    done = followPathPlannerTrajectoryCommand.isFinished();
     super.execute();
   }
 

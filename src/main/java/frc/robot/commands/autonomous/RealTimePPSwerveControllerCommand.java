@@ -325,9 +325,6 @@ public class RealTimePPSwerveControllerCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     // Ends the command if the button being held down is released or the robot reaches the end point
-    // return isFinished.getAsBoolean() || (Math.abs(endPose.getX() - driveSubsystem.getPose().getX()) < .05 
-    //   && Math.abs(endPose.getY() - driveSubsystem.getPose().getY()) < .05 
-    //   && Math.abs(endPose.getRotation().getDegrees() - driveSubsystem.getPose().getRotation().getDegrees()) < 4);
     return isFinished.getAsBoolean();
   }
 

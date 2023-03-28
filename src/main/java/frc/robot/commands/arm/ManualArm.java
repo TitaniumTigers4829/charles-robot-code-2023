@@ -33,7 +33,7 @@ public class ManualArm extends CommandBase {
     if (Math.abs(armExtensionSpeed.getAsDouble()) > 0.1) {
         armSubsystem.setExtensionSpeed(armExtensionSpeed.getAsDouble());
     } else {
-      armSubsystem.setExtensionSpeed(0.025);
+      armSubsystem.setExtensionSpeed(ArmConstants.IDLE_EXTENSION_OUTPUT);
     }
   }
 

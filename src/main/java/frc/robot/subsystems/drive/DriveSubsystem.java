@@ -104,7 +104,7 @@ public interface DriveSubsystem extends Subsystem {
   /**
    * Resets the odometry and rotation.
    */
-  void resetOdometryAndRotation(Pose2d pose);
+  void resetOdometryAndRotation(Pose2d pose, double angle);
 
   /**
    * Sets the standard deviations of model states, or how much the april

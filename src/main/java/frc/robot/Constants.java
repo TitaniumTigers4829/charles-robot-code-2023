@@ -230,11 +230,11 @@ public final class Constants {
     public static final double EXTENSION_METERS_TO_MOTOR_POS = -1.0 / EXTENSION_MOTOR_POS_TO_METERS;
 
     public static final boolean LEADER_ROTATION_MOTOR_INVERTED = false;
-    public static final double ROTATION_P = 3.75;
+    public static final double ROTATION_P = 3.5;
     public static final double ROTATION_I = 0;
     public static final double ROTATION_D = 0;
     public static final double ROTATION_MAX_VELOCITY_ENCODER_UNITS = 180;
-    public static final double ROTATION_MAX_ACCELERATION_ENCODER_UNITS = 180;
+    public static final double ROTATION_MAX_ACCELERATION_ENCODER_UNITS = 270;
     public static final int ROTATION_SMOOTHING = 1;
     public static final double ROTATION_ACCEPTABLE_ERROR = 1;
     public static final double ROTATION_TOLERANCE_DEGREES = 0;
@@ -255,12 +255,16 @@ public final class Constants {
     public static final TrapezoidProfile.Constraints EXTENSION_CONSTRAINTS = new TrapezoidProfile.Constraints(
       EXTENSION_MAX_VELOCITY, EXTENSION_MAX_ACCELERATION);
 
+    public static final double IDLE_EXTENSION_OUTPUT = 0.025;
+
     public static final double PICKUP_GROUND_EXTENSION = 0.6;
     public static final double PICKUP_GROUND_ROTATION = 290;
     public static final double PICKUP_LOADING_STATION_EXTENSION = .768;
     public static final double PICKUP_LOADING_STATION_ROTATION = 110.7;
-    public static final double PLACE_HIGH_EXTENSION = 0.95;
-    public static final double PLACE_HIGH_ROTATION = 242;
+    public static final double PICKUP_CHUTE_EXTENSION = .45;
+    public static final double PICKUP_CHUTE_ROTATION = 103;
+    public static final double PLACE_HIGH_EXTENSION = 0.99;
+    public static final double PLACE_HIGH_ROTATION = 240;
 
     public static final double ARM_WEIGHT_NEWTONS = 9.8 * 25;
     public static final double ARM_AXIS_OF_ROTATION_RADIUS = Units.inchesToMeters(2.1);
@@ -294,7 +298,7 @@ public final class Constants {
     public static final double WRIST_D = 0;
     public static final double WRIST_F = 0;
     public static final double WRIST_MAX_VELOCITY_ENCODER_UNITS = 90 * DEG_TO_WRIST_POS;
-    public static final double WRIST_MAX_ACCELERATION_ENCODER_UNITS = 120 * DEG_TO_WRIST_POS;
+    public static final double WRIST_MAX_ACCELERATION_ENCODER_UNITS = 180 * DEG_TO_WRIST_POS;
     public static final double WRIST_TOLERANCE = 0 * DEG_TO_WRIST_POS;
     public static final int WRIST_SMOOTHING = 0;
     
@@ -346,10 +350,11 @@ public final class Constants {
 
     public static final double[][] TWO_APRIL_TAG_LOOKUP_TABLE = {
       // {distance in meters, x std deviation, y std deviation, r (in degrees) std deviation}
-      {1.5, 0.01, 0.01, 5},
-      {3, 0.01, 0.01, 5},
-      {4.5, 0.01, 0.03, 10},
-      {6, 0.02, 0.08, 20}
+      {0, 0.01, 0.01, 5},
+      {1.5, 0.02, 0.02, 5},
+      {3, 0.04, 0.04, 15},
+      {4.5, 0.08, 0.08, 30},
+      {6, 0.2, 0.2, 60}
     };
   }
 
@@ -450,13 +455,14 @@ public final class Constants {
       {4.9784, 4.4196, 3.8608, 3.302, 2.7432, 2.1844, 1.6256, 1.0668, 0.508};
     public static final double[] RED_NODE_Y_POSITIONS = 
       {0.508, 1.0668, 1.6256, 2.1844, 2.7432, 3.302, 3.8608, 4.4196, 4.9784};
+
     // Factors in bumper width and wheelbase
-    public static final double BLUE_NODE_X_POSITION = 1.5;
-    public static final double RED_NODE_Y_POSITION = 14.55;
+    public static final double BLUE_NODE_X_POSITION = 1.96;
+    public static final double RED_NODE_Y_POSITION = 14.64;
     public static final double BLUE_OUTER_WAYPOINT_X = 5.3;
-    public static final double RED_OUTER_WAYPOINT_X = 11.2;
+    public static final double RED_OUTER_WAYPOINT_X = 11.26;
     public static final double BLUE_INNER_WAYPOINT_X = 2.5;
-    public static final double RED_INNER_WAYPOINT_X = 14;
+    public static final double RED_INNER_WAYPOINT_X = 14.26;
     public static final double UPPER_WAYPOINT_Y = 4.75;
     public static final double LOWER_WAYPOINT_Y = 0.75;
     public static final Rotation2d BLUE_END_ROTATION = Rotation2d.fromDegrees(180);

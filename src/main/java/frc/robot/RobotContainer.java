@@ -9,10 +9,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.JoystickConstants;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.arm.ManualArm;
+import frc.robot.commands.arm.MoveArmToStowed;
+import frc.robot.commands.arm.PickupGamePiece;
+import frc.robot.commands.arm.PlaceGamePiece;
 import frc.robot.commands.arm.SetArmExtension;
+import frc.robot.commands.autonomous.AutoPlace;
 import frc.robot.commands.autonomous.FollowPathPlannerTrajectory;
 import frc.robot.commands.autonomous.SimpleAuto;
 import frc.robot.commands.autonomous.TwoConeBalanceAuto;
@@ -37,7 +43,7 @@ import frc.robot.subsystems.vision.VisionSubsystemImpl;
 public class RobotContainer {
 
   public final DriveSubsystem driveSubsystem;
-  private final VisionSubsystem visionSubsystem;
+  public final VisionSubsystem visionSubsystem;
   public final ArmSubsystem armSubsystem;
   public final ClawSubsystem clawSubsystem;
 
@@ -125,13 +131,12 @@ public class RobotContainer {
     // reset gyro/pitch/roll
     POVButton driverRightDirectionPad = new POVButton(driverJoystick, JoystickConstants.RIGHT_DPAD_ID);
     driverRightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
+    driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometryAndRotation(driveSubsystem.getPose(), 0)));
     driverRightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroPitchAndRoll));
 
     // test trajectory
     JoystickButton driverBButton = new JoystickButton(driverJoystick, JoystickConstants.DRIVER_B_BUTTON_ID);
-    // driverBButton.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !driverBButton.getAsBoolean(), 5));
-    // driverBButton.whileTrue(new AutoPickup(driveSubsystem, visionSubsystem, () -> !driverBButton.getAsBoolean()));
-    driverBButton.onTrue(new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, "Two Cone Balance First Red", true));
+    driverBButton.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !driverBButton.getAsBoolean(), 8));
 
     /* Arm Buttons */
     // manual arm command
@@ -150,7 +155,6 @@ public class RobotContainer {
     
     armSubsystem.setDefaultCommand(manualArmCommand);
 
-    // manual claw command
     Command manualClawCommand = new ManualClaw(
       clawSubsystem, 
       operatorXButton::getAsBoolean,
@@ -161,20 +165,14 @@ public class RobotContainer {
     clawSubsystem.setDefaultCommand(manualClawCommand);
   
     // place game piece
-    // JoystickButton operatorAButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_A_BUTTON_ID);
-    // JoystickButton operatorLeftBumper = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_LEFT_BUMPER_ID);
-    // BooleanSupplier operatorLeftBumperPressed = () -> operatorLeftBumper.getAsBoolean();
-    // operatorAButton.whileTrue(new PlaceGamePiece(armSubsystem, clawSubsystem, 242, 0.95));
-    // operatorAButton.onFalse(new MoveArmToStowedAfterPlacing(armSubsystem, clawSubsystem, operatorLeftBumperPressed));
+    JoystickButton operatorAButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_A_BUTTON_ID);
+    operatorAButton.whileTrue(new PlaceGamePiece(armSubsystem, clawSubsystem, ArmConstants.PLACE_HIGH_ROTATION, ArmConstants.PLACE_HIGH_EXTENSION));
+    operatorAButton.onFalse(new MoveArmToStowed(armSubsystem, clawSubsystem));
 
     // pickup game piece
-    // JoystickButton operatorBButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_B_BUTTON_ID);
-    // operatorBButton.whileTrue(new PickupGamePiece(armSubsystem, clawSubsystem));
-    // operatorBButton.onFalse(new MoveArmToStowedAfterPickup(armSubsystem, clawSubsystem, operatorLeftBumperPressed));
-
-    // rotation testing
     JoystickButton operatorBButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_B_BUTTON_ID);
-    operatorBButton.whileTrue(new SetArmExtension(armSubsystem, 0.01));
+    operatorBButton.whileTrue(new PickupGamePiece(armSubsystem, clawSubsystem, ArmConstants.PICKUP_CHUTE_ROTATION, ArmConstants.PICKUP_CHUTE_EXTENSION));
+    operatorBButton.onFalse(new MoveArmToStowed(armSubsystem, clawSubsystem));
 
     // reset encoders
     POVButton operatorRightDirectionPad = new POVButton(operatorJoystick, 90);
@@ -185,13 +183,13 @@ public class RobotContainer {
     operatorRightBumper.onTrue(new ToggleClaw(clawSubsystem));
 
     /* Button Board Buttons */
-    // DoubleSupplier xAxis = () -> buttonBoard1.getRawAxis(0);
-    // DoubleSupplier yAxis = () -> buttonBoard1.getRawAxis(1);
-    // DoubleSupplier zAxis = () -> buttonBoard1.getRawAxis(2);
+    DoubleSupplier xAxis = () -> buttonBoard1.getRawAxis(0);
+    DoubleSupplier yAxis = () -> buttonBoard1.getRawAxis(1);
+    DoubleSupplier zAxis = () -> buttonBoard1.getRawAxis(2);
 
-    // BooleanSupplier isBlueButtonPressed = () -> (yAxis.getAsDouble() > 0.2);
-    // Trigger onBlueButtonPressed = new Trigger(isBlueButtonPressed);
-    // onBlueButtonPressed.onTrue(new InstantCommand(clawSubsystem::switchCargoMode));
+    BooleanSupplier isBlueButtonPressed = () -> (yAxis.getAsDouble() > 0.2);
+    Trigger onBlueButtonPressed = new Trigger(isBlueButtonPressed);
+    onBlueButtonPressed.onTrue(new InstantCommand(clawSubsystem::switchCargoMode));
 
     // BooleanSupplier isRedButtonPressed = () -> (yAxis.getAsDouble() < -0.2);
     // Trigger onRedButtonPressed = new Trigger(isRedButtonPressed);
