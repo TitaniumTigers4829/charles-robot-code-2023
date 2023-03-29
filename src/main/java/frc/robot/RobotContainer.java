@@ -53,7 +53,7 @@ public class RobotContainer {
 
     driveSubsystem = new DriveSubsystemImpl();
     visionSubsystem = new VisionSubsystemImpl();
-    leds = new LEDSubsystemImplBTF();
+    leds = new LEDSubsystemImplSpark();
 
     DoubleSupplier leftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.LEFT_STICK_X);
     DoubleSupplier leftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.LEFT_STICK_Y);

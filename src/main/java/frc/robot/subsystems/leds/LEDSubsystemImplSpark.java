@@ -34,7 +34,7 @@ public class LEDSubsystemImplSpark extends SubsystemBase implements LEDSubsystem
 
   @Override
   public void periodic() {
-    ledSpark.set(getCurrentPipelineIndex);
+    ledSpark.set(currentSparkValue);
   }
 
   /** Sets the pattern to a double value.

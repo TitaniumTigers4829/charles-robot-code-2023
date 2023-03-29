@@ -210,6 +210,9 @@ public final class Constants {
       public static final double STROBE_GOLD = -0.07;
       public static final double STROBE_WHITE = -0.05;
 
+      public static final double LARSON_1 = -0.01;
+      public static final double LARSON_2 = 0.19;
+
       public static final double MAGENTA = 0.57;
       public static final double DARK_RED = 0.59;
       public static final double RED = 0.61;
@@ -242,10 +245,11 @@ public final class Constants {
       RAINBOW (SparkConstants.RAINBOW, 0, 0, 0),
       RED_ALLIANCE (SparkConstants.FIRE, 255, 0, 0),
       BLUE_ALLIANCE (SparkConstants.OCEAN, 0, 0, 255),
-      INTAKE (SparkConstants.MAGENTA, 255, 0, 255),
-      SCORING (SparkConstants.YELLOW, 255, 255, 0),
-      BALANCE (SparkConstants.CYAN, 0, 255, 255),
+      SCORING_CUBE (SparkConstants.LARSON_1, 255, 255, 0),
+      SCORING_CONE (SparkConstants.LARSON_2, 255, 0, 200),
       OFF (SparkConstants.BLACK, 0, 0, 0),
+      CUBE (SparkConstants.PURPLE, 255, 0, 200),
+      CONE (SparkConstants.YELLOW, 255, 255, 0),
       AUTONOMOUS (SparkConstants.RAINBOW_WAVE, 0, 0, 0),
       LINE_UP (SparkConstants.GREEN, 0, 255, 0);
 

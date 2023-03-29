@@ -40,6 +40,7 @@ public class LEDSubsystemImplBTF extends SubsystemBase implements LEDSubsystem {
     
     // Update LEDs
     setLEDColor();
+    led.setData(buffer);
   }
 
   @Override
@@ -86,6 +87,22 @@ public class LEDSubsystemImplBTF extends SubsystemBase implements LEDSubsystem {
           LEDProcess.BLUE_ALLIANCE.getGreen(),
           LEDProcess.BLUE_ALLIANCE.getBlue(),
           LEDConstants.ALLIANCE_ANIMATION_STRENGTH
+        );
+        return;
+      case SCORING_CUBE:
+        blinkColor(
+          LEDProcess.SCORING_CUBE.getRed(),
+          LEDProcess.SCORING_CUBE.getGreen(),
+          LEDProcess.SCORING_CUBE.getBlue(),
+          2
+        );
+        return;
+      case SCORING_CONE:
+        blinkColor(
+          LEDProcess.SCORING_CONE.getRed(),
+          LEDProcess.SCORING_CONE.getGreen(),
+          LEDProcess.SCORING_CONE.getBlue(),
+          2
         );
         return;
       default:
@@ -185,6 +202,16 @@ public class LEDSubsystemImplBTF extends SubsystemBase implements LEDSubsystem {
         (green + range * Math.sin((Math.PI * 2.0/3.0) + (coefficient * relativeIndex))) % 255,
         (blue + range * Math.sin((Math.PI * 4.0/3.0) + (coefficient * relativeIndex))) % 255
       );
+    }
+  }
+
+  /**
+   * Displays a color that blinks a certain amount of times per second.
+   */
+  private void blinkColor(int red, int green, int blue, double timesPerSecond) {
+    double strength = ((totalOffsetInt * timesPerSecond) % LEDConstants.ANIMATION_SPEED) / (double)LEDConstants.ANIMATION_SPEED;
+    for (int i = 0; i < buffer.length; i++) {
+      bufer.set(i, (int)(red * strength), (int)(green * strength), (int)(blue * strength));
     }
   }
 
