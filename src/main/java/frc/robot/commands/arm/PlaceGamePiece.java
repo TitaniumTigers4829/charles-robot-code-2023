@@ -1,5 +1,6 @@
 package frc.robot.commands.arm;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.arm.ArmSubsystem;
@@ -27,9 +28,8 @@ public class PlaceGamePiece extends CommandBase {
     if (clawSubsystem.isConeMode()) {
       clawSubsystem.setWristPosition(0);
       clawSubsystem.setIntakeSpeed(-0.075);
-    } else {
-      clawSubsystem.setWristPosition(180);
     }
+    SmartDashboard.putBoolean("running", true);
   }
 
   @Override
@@ -38,6 +38,7 @@ public class PlaceGamePiece extends CommandBase {
     if (Math.abs(rotation - armSubsystem.getRotation()) < ArmConstants.ROTATION_ACCEPTABLE_ERROR) {
       armSubsystem.setExtension(extension);
     }
+    SmartDashboard.putBoolean("running", true);
   }
 
   @Override
@@ -48,6 +49,7 @@ public class PlaceGamePiece extends CommandBase {
     if (!clawSubsystem.isConeMode()) {
       clawSubsystem.setIntakeSpeed(-.08);
     }
+    SmartDashboard.putBoolean("running", false);
   }
 
   @Override

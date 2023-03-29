@@ -131,4 +131,14 @@ public interface DriveSubsystem extends Subsystem {
    * same as the kinematics).
    */
   void setModuleStates(SwerveModuleState[] desiredStates);
+
+  /**
+   * Returns the selected node id used for auto placing.
+   */
+  int getSelectedNode();
+
+  /**
+   * Sets the node id used for auto placing.
+   */
+  void setSelectedNode(int nodeID);
 }

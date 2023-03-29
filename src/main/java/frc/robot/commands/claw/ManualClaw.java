@@ -38,7 +38,7 @@ public class ManualClaw extends CommandBase {
       } else if (expelCargo.getAsBoolean()) {
         clawSubsystem.setIntakeSpeed(-0.15);
       } else {
-        clawSubsystem.setIntakeSpeed(0.06);
+        clawSubsystem.setIntakeSpeed(0.04);
       }
     } else {
       if (intakeCargo.getAsBoolean()) {

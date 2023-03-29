@@ -19,7 +19,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   private final DoubleSolenoid clawSolenoid;
 
   private boolean isClawClosed;
-  private boolean isConeMode = true;
+  private boolean isConeMode = false;
 
   public ClawSubsystemImpl() {
     wristMotor = new WPI_TalonFX(ClawConstants.WRIST_MOTOR_ID, HardwareConstants.RIO_CAN_BUS_STRING);

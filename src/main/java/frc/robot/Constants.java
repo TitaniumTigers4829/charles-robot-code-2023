@@ -207,7 +207,7 @@ public final class Constants {
         MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED
       );
 
-    public static final double DRIVE_F = 0.055;
+    public static final double DRIVE_F = 0.065;
     public static final double DRIVE_P = .1;
     public static final double DRIVE_I = 0;
     public static final double DRIVE_D = 0;
@@ -257,8 +257,8 @@ public final class Constants {
 
     public static final double IDLE_EXTENSION_OUTPUT = 0.025;
 
-    public static final double PICKUP_GROUND_EXTENSION = 0.6;
-    public static final double PICKUP_GROUND_ROTATION = 290;
+    public static final double PICKUP_GROUND_EXTENSION = 0.875;
+    public static final double PICKUP_GROUND_ROTATION = 288;
     public static final double PICKUP_LOADING_STATION_EXTENSION = .768;
     public static final double PICKUP_LOADING_STATION_ROTATION = 110.7;
     public static final double PICKUP_CHUTE_EXTENSION = .45;
@@ -344,8 +344,8 @@ public final class Constants {
       {0, 0.01, 0.01, 10},
       {1.5, 0.01, 0.01, 10},
       {3, 0.145, 1.20, 30},
-      {4.5, 0.5, 4.0, 90},
-      {6, 0.75, 8.0, 180}
+      {4.5, 0.75, 5.0, 90},
+      {6, 1.0, 8.0, 180}
     };
 
     public static final double[][] TWO_APRIL_TAG_LOOKUP_TABLE = {
@@ -353,8 +353,8 @@ public final class Constants {
       {0, 0.01, 0.01, 5},
       {1.5, 0.02, 0.02, 5},
       {3, 0.04, 0.04, 15},
-      {4.5, 0.08, 0.08, 30},
-      {6, 0.2, 0.2, 60}
+      {4.5, 0.1, 0.1, 30},
+      {6, 0.3, 0.3, 60}
     };
   }
 
@@ -430,12 +430,12 @@ public final class Constants {
     // Autonomous Period Constants TODO: Tune all of these values
     public static final double MAX_SPEED = 1; // meters/second
     public static final double MAX_ACCELERATION = 1; // meters/second/second
-    public static final double X_CONTROLLER_P = .5;
-    public static final double Y_CONTROLLER_P = .5;
-    public static final double THETA_CONTROLLER_P = 0.2;
+    public static final double X_CONTROLLER_P = 0.5;
+    public static final double Y_CONTROLLER_P = 0.5;
+    public static final double THETA_CONTROLLER_P = 0.1;
     public static final double THETA_PROFILED_CONTROLLER_P = 1;
-    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI;
-    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = Math.PI;
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI / 2;
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = Math.PI / 2;
     // The length of the field in the x direction (left to right)
     public static final double FIELD_LENGTH_METERS = 16.54175;
     // The length of the field in the y direction (top to bottom)

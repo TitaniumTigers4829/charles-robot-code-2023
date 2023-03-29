@@ -38,6 +38,8 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   private double gyroOffset = 0;
   private float rollOffset = 0;
   private float pitchOffset = 0;
+
+  private int selectedNode = 1;
   
   /**
    * Creates a new DriveSubsystem.
@@ -224,15 +226,24 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
 
     return swerveModulePositions;
   }
+
+  @Override
+  public int getSelectedNode() {
+    return selectedNode;
+  }
   
   @Override
+  public void setSelectedNode(int nodeID) {
+    selectedNode = nodeID;
+  }
+
+  @Override
   public void periodic() {
-    Pose2d pose = odometry.getEstimatedPosition();
-    SmartDashboardLogger.debugString("Estimated pose", pose.toString());
-    double[] smarterDashboardPose = new double[2];
-    smarterDashboardPose[0] = pose.getX();
-    smarterDashboardPose[1] = pose.getY();
-    SmartDashboard.putNumberArray("botPose", smarterDashboardPose);
+    Pose2d estimatedPose = odometry.getEstimatedPosition();
+    SmartDashboardLogger.infoString("Estimated pose", estimatedPose.toString());
+    SmartDashboardLogger.infoNumber("Selected Node", selectedNode);
+
+    SmartDashboard.putNumberArray("botPose", new double[]{estimatedPose.getX(), estimatedPose.getY()});
     SmartDashboard.putNumber("pitch", getHeading());
   }
 

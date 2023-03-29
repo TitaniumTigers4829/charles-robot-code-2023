@@ -70,8 +70,6 @@ public class RobotContainer {
     autoChooser.setDefaultOption("2 cone balance", new TwoConeBalanceAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem));
     autoChooser.addOption("Simple Auto", new SimpleAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem));
     SmartDashboard.putData("Auto chooser", autoChooser);
-
-    configureButtonBindings();
   }
 
   private static double deadband(double value, double deadband) {
@@ -112,7 +110,7 @@ public class RobotContainer {
     return new double[]{ Math.copySign(xInput * xInput * xInput, xInput),  Math.copySign(yInput * yInput * yInput, yInput)};
   }
 
-  private void configureButtonBindings() {
+  public void configureButtonBindings() {
     // drive command
     DoubleSupplier driverLeftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_LEFT_STICK_X);
     DoubleSupplier driverLeftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_LEFT_STICK_Y);
@@ -136,7 +134,7 @@ public class RobotContainer {
 
     // test trajectory
     JoystickButton driverBButton = new JoystickButton(driverJoystick, JoystickConstants.DRIVER_B_BUTTON_ID);
-    driverBButton.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !driverBButton.getAsBoolean(), 8));
+    driverBButton.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !driverBButton.getAsBoolean()));
 
     /* Arm Buttons */
     // manual arm command
@@ -221,64 +219,65 @@ public class RobotContainer {
     // operatorYButton.onFalse(new RunClaw(clawSubsystem, 0.0));
     // operatorYButton.onTrue(new InstantCommand(armSubsystem::switchCargoMode));
 
-    //Auto Place Buttons
-    // JoystickButton autoplaceButton1 = new JoystickButton(buttonBoard, JoystickConstants.BUTTON_1);
-    // autoplaceButton1.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton1.getAsBoolean(), 1));
-    // JoystickButton autoplaceButton2 = new JoystickButton(buttonBoard, JoystickConstants.BUTTON_2);
-    // autoplaceButton2.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton2.getAsBoolean(), 2));
-    // JoystickButton autoplaceButton3 = new JoystickButton(buttonBoard, JoystickConstants.BUTTON_3);
-    // autoplaceButton3.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton3.getAsBoolean(), 3));
-    // JoystickButton autoplaceButton4 = new JoystickButton(buttonBoard, JoystickConstants.BUTTON_4);
-    // autoplaceButton4.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton4.getAsBoolean(), 4));
-    // JoystickButton autoplaceButton5 = new JoystickButton(buttonBoard, JoystickConstants.BUTTON_5);
-    // autoplaceButton5.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton5.getAsBoolean(), 5));
-    // JoystickButton autoplaceButton6 = new JoystickButton(buttonBoard, JoystickConstants.BUTTON_6);
-    // autoplaceButton6.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton6.getAsBoolean(), 6));
-    // JoystickButton autoplaceButton7 = new JoystickButton(buttonBoard, JoystickConstants.BUTTON_7);
-    // autoplaceButton7.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton7.getAsBoolean(), 7));
-    // JoystickButton autoplaceButton8 = new JoystickButton(buttonBoard, JoystickConstants.BUTTON_8);
-    // autoplaceButton8.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton8.getAsBoolean(), 8));
-    // JoystickButton autoplaceButton9 = new JoystickButton(buttonBoard, JoystickConstants.BUTTON_9);
-    // autoplaceButton9.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton9.getAsBoolean(), 9));
-    // JoystickButton autoplaceButton10 = new JoystickButton(buttonBoard, JoystickConstants.BUTTON_10);
-    // autoplaceButton10.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton10.getAsBoolean(), 10));
-    // JoystickButton autoplaceButton11 = new JoystickButton(buttonBoard, JoystickConstants.BUTTON_11);
-    // autoplaceButton11.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton11.getAsBoolean(), 11));
-    // JoystickButton autoplaceButton12 = new JoystickButton(buttonBoard, JoystickConstants.BUTTON_12);
-    // autoplaceButton12.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton12.getAsBoolean(), 12));
-    // POVButton autoplaceButton13 = new POVButton(buttonBoard, JoystickConstants.BUTTON_13);
-    // autoplaceButton13.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton13.getAsBoolean(), 13));
-    // POVButton autoplaceButton14 = new POVButton(buttonBoard, JoystickConstants.BUTTON_14);
-    // autoplaceButton14.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton14.getAsBoolean(), 14));
-    // POVButton autoplaceButton15 = new POVButton(buttonBoard, JoystickConstants.BUTTON_15);
-    // autoplaceButton15.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton15.getAsBoolean(), 15));
-    // POVButton autoplaceButton16 = new POVButton(buttonBoard, JoystickConstants.BUTTON_16);
-    // autoplaceButton16.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton16.getAsBoolean(), 16));
-    // JoystickButton autoplaceButton17 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_17);
-    // autoplaceButton17.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton17.getAsBoolean(), 17));
-    // JoystickButton autoplaceButton18 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_18);
-    // autoplaceButton18.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton18.getAsBoolean(), 18));
-    // JoystickButton autoplaceButton19 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_19);
-    // autoplaceButton19.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton19.getAsBoolean(), 19));
-    // JoystickButton autoplaceButton20 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_20);
-    // autoplaceButton20.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton20.getAsBoolean(), 20));
-    // JoystickButton autoplaceButton21 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_21);
-    // autoplaceButton21.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton21.getAsBoolean(), 21));
-    // JoystickButton autoplaceButton22 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_22);
-    // autoplaceButton22.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton22.getAsBoolean(), 22));
-    // JoystickButton autoplaceButton23 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_23);
-    // autoplaceButton23.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton23.getAsBoolean(), 23));
-    // JoystickButton autoplaceButton24 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_24);
-    // autoplaceButton24.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton24.getAsBoolean(), 24));
-    // JoystickButton autoplaceButton25 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_25);
-    // autoplaceButton25.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton25.getAsBoolean(), 25));
-    // JoystickButton autoplaceButton26 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_26);
-    // autoplaceButton26.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton26.getAsBoolean(), 26));
-    // JoystickButton autoplaceButton27 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_27);
-    // autoplaceButton27.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !autoplaceButton27.getAsBoolean(), 27));
+    /* Auto Place Buttons */
+    JoystickButton autoplaceButton1 = new JoystickButton(buttonBoard1, JoystickConstants.BUTTON_1);
+    autoplaceButton1.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(1)));
+    JoystickButton autoplaceButton2 = new JoystickButton(buttonBoard1, JoystickConstants.BUTTON_2);
+    autoplaceButton2.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(2)));
+    JoystickButton autoplaceButton3 = new JoystickButton(buttonBoard1, JoystickConstants.BUTTON_3);
+    autoplaceButton3.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(3)));
+    JoystickButton autoplaceButton4 = new JoystickButton(buttonBoard1, JoystickConstants.BUTTON_4);
+    autoplaceButton4.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(4)));
+    JoystickButton autoplaceButton5 = new JoystickButton(buttonBoard1, JoystickConstants.BUTTON_5);
+    autoplaceButton5.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(5)));
+    JoystickButton autoplaceButton6 = new JoystickButton(buttonBoard1, JoystickConstants.BUTTON_6);
+    autoplaceButton6.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(6)));
+    JoystickButton autoplaceButton7 = new JoystickButton(buttonBoard1, JoystickConstants.BUTTON_7);
+    autoplaceButton7.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(7)));
+    JoystickButton autoplaceButton8 = new JoystickButton(buttonBoard1, JoystickConstants.BUTTON_8);
+    autoplaceButton8.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(8)));
+    JoystickButton autoplaceButton9 = new JoystickButton(buttonBoard1, JoystickConstants.BUTTON_9);
+    autoplaceButton9.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(9)));
+    JoystickButton autoplaceButton10 = new JoystickButton(buttonBoard1, JoystickConstants.BUTTON_10);
+    autoplaceButton10.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(10)));
+    JoystickButton autoplaceButton11 = new JoystickButton(buttonBoard1, JoystickConstants.BUTTON_11);
+    autoplaceButton11.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(11)));
+    JoystickButton autoplaceButton12 = new JoystickButton(buttonBoard1, JoystickConstants.BUTTON_12);
+    autoplaceButton12.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(12)));
+    POVButton autoplaceButton13 = new POVButton(buttonBoard1, JoystickConstants.BUTTON_13);
+    autoplaceButton13.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(13)));
+    POVButton autoplaceButton14 = new POVButton(buttonBoard1, JoystickConstants.BUTTON_14);
+    autoplaceButton14.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(14)));
+    POVButton autoplaceButton15 = new POVButton(buttonBoard1, JoystickConstants.BUTTON_15);
+    autoplaceButton15.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(15)));
+    POVButton autoplaceButton16 = new POVButton(buttonBoard1, JoystickConstants.BUTTON_16);
+    autoplaceButton16.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(16)));
+    JoystickButton autoplaceButton17 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_17);
+    autoplaceButton17.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(17)));
+    JoystickButton autoplaceButton18 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_18);
+    autoplaceButton18.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(18)));
+    JoystickButton autoplaceButton19 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_19);
+    autoplaceButton19.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(19)));
+    JoystickButton autoplaceButton20 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_20);
+    autoplaceButton20.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(20)));
+    JoystickButton autoplaceButton21 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_21);
+    autoplaceButton21.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(21)));
+    JoystickButton autoplaceButton22 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_22);
+    autoplaceButton22.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(22)));
+    JoystickButton autoplaceButton23 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_23);
+    autoplaceButton23.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(23)));
+    JoystickButton autoplaceButton24 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_24);
+    autoplaceButton24.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(24)));
+    JoystickButton autoplaceButton25 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_25);
+    autoplaceButton25.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(25)));
+    JoystickButton autoplaceButton26 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_26);
+    autoplaceButton26.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(26)));
+    JoystickButton autoplaceButton27 = new JoystickButton(buttonBoard2, JoystickConstants.BUTTON_27);
+    autoplaceButton27.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(27)));
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    // return autoChooser.getSelected();
+    return new TwoConeBalanceAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem);
   }
 }
