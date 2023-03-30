@@ -8,10 +8,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.extras.LimelightHelpers;
+import frc.robot.extras.SmartDashboardLogger;
 import frc.robot.extras.LimelightHelpers.LimelightResults;
 import frc.robot.extras.LimelightHelpers.LimelightTarget_Fiducial;
 
-public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsystem {
+public class VisionSubsystemImpl  implements VisionSubsystem {
 
   private LimelightResults currentlyUsedLimelightResults;
   private String currentlyUsedLimelight = LimelightConstants.FRONT_LIMELIGHT_NAME;
@@ -21,24 +22,16 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
   }
 
   @Override
-  public void periodic() {
-    // Every periodic chooses the limelight to use based off of their distance from april tags
-    LimelightResults frontLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.FRONT_LIMELIGHT_NAME);
-    LimelightResults backLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.BACK_LIMELIGHT_NAME);
-    LimelightTarget_Fiducial[] frontLimelightAprilTags = frontLimelightResults.targetingResults.targets_Fiducials;
-    LimelightTarget_Fiducial[] backLimelightAprilTags = backLimelightResults.targetingResults.targets_Fiducials;
-
-    // Gets the distance from the closest april tag. If it can't see one, returns a really big number.
-    double frontLimelightDistance = frontLimelightAprilTags.length > 0
-      ? getLimelightAprilTagDistance((int) frontLimelightAprilTags[0].fiducialID) : Double.MAX_VALUE;
-    double backLimelightDistance = backLimelightAprilTags.length > 0
-      ? getLimelightAprilTagDistance((int) backLimelightAprilTags[0].fiducialID) : Double.MAX_VALUE;
-
-    currentlyUsedLimelight = frontLimelightDistance <= backLimelightDistance 
-      ? LimelightConstants.FRONT_LIMELIGHT_NAME : LimelightConstants.BACK_LIMELIGHT_NAME;
-    currentlyUsedLimelightResults = currentlyUsedLimelight == LimelightConstants.FRONT_LIMELIGHT_NAME
-      ? frontLimelightResults : backLimelightResults;
-    SmartDashboard.putString("Limelight Pos", getPoseFromAprilTags().toString());
+  public void visionThread() {
+    try {
+      new Thread(() -> {
+        while(true) {
+          periodic();
+        }
+      }).start();
+    } catch(Exception e) {
+      SmartDashboardLogger.errorString("There was an error with the vision thread", e.getMessage());
+    }
   }
 
   @Override
@@ -142,6 +135,27 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
 
     // To be safe returns a big distance from the april tags
     return Double.MAX_VALUE;
+  }
+
+  @Override
+  public void periodic() {
+    // Every periodic chooses the limelight to use based off of their distance from april tags
+    LimelightResults frontLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.FRONT_LIMELIGHT_NAME);
+    LimelightResults backLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.BACK_LIMELIGHT_NAME);
+    LimelightTarget_Fiducial[] frontLimelightAprilTags = frontLimelightResults.targetingResults.targets_Fiducials;
+    LimelightTarget_Fiducial[] backLimelightAprilTags = backLimelightResults.targetingResults.targets_Fiducials;
+
+    // Gets the distance from the closest april tag. If it can't see one, returns a really big number.
+    double frontLimelightDistance = frontLimelightAprilTags.length > 0
+      ? getLimelightAprilTagDistance((int) frontLimelightAprilTags[0].fiducialID) : Double.MAX_VALUE;
+    double backLimelightDistance = backLimelightAprilTags.length > 0
+      ? getLimelightAprilTagDistance((int) backLimelightAprilTags[0].fiducialID) : Double.MAX_VALUE;
+
+    currentlyUsedLimelight = frontLimelightDistance <= backLimelightDistance 
+      ? LimelightConstants.FRONT_LIMELIGHT_NAME : LimelightConstants.BACK_LIMELIGHT_NAME;
+    currentlyUsedLimelightResults = currentlyUsedLimelight == LimelightConstants.FRONT_LIMELIGHT_NAME
+      ? frontLimelightResults : backLimelightResults;
+    SmartDashboard.putString("Limelight Pos", getPoseFromAprilTags().toString());
   }
 
 }

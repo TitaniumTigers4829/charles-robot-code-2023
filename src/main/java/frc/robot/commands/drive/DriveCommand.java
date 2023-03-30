@@ -45,11 +45,6 @@ public class DriveCommand extends DriveCommandBase {
 
   @Override
   public void execute() {
-
-    SmartDashboard.putNumber("leftY", leftY.getAsDouble());
-    SmartDashboard.putNumber("leftX", leftX.getAsDouble());
-    SmartDashboard.putNumber("rightX", rightX.getAsDouble());
-
     // Drives the robot
     driveSubsystem.drive(
       leftY.getAsDouble() * DriveConstants.MAX_SPEED_METERS_PER_SECOND,

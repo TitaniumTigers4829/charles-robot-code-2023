@@ -77,10 +77,7 @@ public class ManualClaw extends CommandBase {
 
 
   @Override
-  public void end(boolean interrupted) {
-    clawSubsystem.setWristPosition(clawSubsystem.getWristAngle());
-    clawSubsystem.setIntakeSpeed(0);
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {

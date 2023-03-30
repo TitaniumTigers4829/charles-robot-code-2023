@@ -43,7 +43,6 @@ public abstract class DriveCommandBase extends CommandBase {
       currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
 
       double distanceFromClosestAprilTag = visionSubsystem.getDistanceFromClosestAprilTag();
-      SmartDashboard.putNumber("distance from closest", distanceFromClosestAprilTag);
       // Sets the pose estimator confidence in vision based off of number of april tags and distance
       if (visionSubsystem.getNumberOfAprilTags() == 1) {
         double xStandardDeviation = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[0];
@@ -60,11 +59,6 @@ public abstract class DriveCommandBase extends CommandBase {
       // Only updates the pose estimator if the limelight pose is new and reliable
       if (currentTimeStampSeconds > lastTimeStampSeconds) {
         Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
-        SmartDashboard.putString("limelight pose", limelightVisionMeasurement.toString());
-        double[] tmpPose = new double[2];
-        tmpPose[0] = limelightVisionMeasurement.getX();
-        tmpPose[1] = limelightVisionMeasurement.getY();
-        SmartDashboard.putNumberArray("limelight_pose", tmpPose);
         driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
       }
     }

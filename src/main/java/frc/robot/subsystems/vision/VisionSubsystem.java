@@ -7,6 +7,12 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 public interface VisionSubsystem extends Subsystem {
 
   /**
+   * Starts a separate thread for the vision logic to run on. JSON
+   * parsing takes very long so this attempt to mitigate that.
+   */
+  void visionThread();
+
+  /**
    * Returns true if the limelight(s) can see one or more April Tag.
    */
   boolean canSeeAprilTags();
@@ -94,4 +100,9 @@ public interface VisionSubsystem extends Subsystem {
       return this.ID;
     }
   }
+
+  /**
+   * Called every scheduler run on a different thread.
+   */
+  void periodic();
 }
