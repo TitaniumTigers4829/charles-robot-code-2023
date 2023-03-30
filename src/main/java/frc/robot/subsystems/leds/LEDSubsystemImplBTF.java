@@ -4,10 +4,13 @@
 
 package frc.robot.subsystems.leds;
 
+import java.nio.charset.StandardCharsets;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 
 public class LEDSubsystemImplBTF extends SubsystemBase implements LEDSubsystem {
@@ -166,7 +169,7 @@ public class LEDSubsystemImplBTF extends SubsystemBase implements LEDSubsystem {
    */
   private void slidingASCII(String text) {
     byte[] bytes = textToBytes(text);
-    for (int k = 0; k < buffer.length; k++) {
+    for (int k = 0; k < buffer.getLength(); k++) {
       for (int i = 0; i < bytes.length; i++) {
         for (int j = 0; j < 8; j++) {
           if ((bytes[((8*i + j) + totalOffsetInt + k) % bytes.length] >> j) == 1) {
@@ -193,14 +196,14 @@ public class LEDSubsystemImplBTF extends SubsystemBase implements LEDSubsystem {
   private void animateColor(int red, int green, int blue, double strength) {
     int range = (int)(255 * strength);
 
-    for (int i = 0; i < buffer.length; i++) {
-      double coefficient = (2.0 * Math.PI / buffer.length);
-      int relativeIndex = (i + totalOffsetInt) % buffer.length;
+    for (int i = 0; i < buffer.getLength(); i++) {
+      double coefficient = (2.0 * Math.PI / buffer.getLength());
+      int relativeIndex = (i + totalOffsetInt) % buffer.getLength();
       buffer.setRGB(
         i,
-        (red + range * Math.sin(coefficient * relativeIndex)) % 255,
-        (green + range * Math.sin((Math.PI * 2.0/3.0) + (coefficient * relativeIndex))) % 255,
-        (blue + range * Math.sin((Math.PI * 4.0/3.0) + (coefficient * relativeIndex))) % 255
+        (int)(red + range * Math.sin(coefficient * relativeIndex)) % 255,
+        (int)(green + range * Math.sin((Math.PI * 2.0/3.0) + (coefficient * relativeIndex))) % 255,
+        (int)(blue + range * Math.sin((Math.PI * 4.0/3.0) + (coefficient * relativeIndex))) % 255
       );
     }
   }
@@ -210,8 +213,8 @@ public class LEDSubsystemImplBTF extends SubsystemBase implements LEDSubsystem {
    */
   private void blinkColor(int red, int green, int blue, double timesPerSecond) {
     double strength = ((totalOffsetInt * timesPerSecond) % LEDConstants.ANIMATION_SPEED) / (double)LEDConstants.ANIMATION_SPEED;
-    for (int i = 0; i < buffer.length; i++) {
-      bufer.set(i, (int)(red * strength), (int)(green * strength), (int)(blue * strength));
+    for (int i = 0; i < buffer.getLength(); i++) {
+      buffer.setRGB(i, (int)(red * strength), (int)(green * strength), (int)(blue * strength));
     }
   }
 
@@ -219,11 +222,11 @@ public class LEDSubsystemImplBTF extends SubsystemBase implements LEDSubsystem {
    * Displays two colors to the strip in a checkerboard pattern.
    */
   private void interlaceColors(int red1, int green1, int blue1, int red2, int green2, int blue2) {
-    for (int i = 0; i < buffer.length; i++) {
+    for (int i = 0; i < buffer.getLength(); i++) {
       if (i%2 == 0) {
-        buffer.set(i, red1, green1, blue1);
+        buffer.setRGB(i, red1, green1, blue1);
       } else {
-        buffer.set(i, red2, green2, blue2);
+        buffer.setRGB(i, red2, green2, blue2);
       }
     }
   }

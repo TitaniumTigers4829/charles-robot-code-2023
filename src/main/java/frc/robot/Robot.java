@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.LEDConstants.LEDProcess;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -32,8 +33,8 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    m_robotContainer.driveSubsystem.zeroHeading();
-    m_robotContainer.driveSubsystem.resetOdometry(new Pose2d());
+    //m_robotContainer.driveSubsystem.zeroHeading();
+    //m_robotContainer.driveSubsystem.resetOdometry(new Pose2d());
 //    uncomment the line below if there is a USB camera plugged into the RoboRIO
 //    CameraServer.startAutomaticCapture();
   }
@@ -59,8 +60,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    m_robotContainer.driveSubsystem.zeroHeading();
-    m_robotContainer.driveSubsystem.resetOdometry(new Pose2d());
+    //m_robotContainer.driveSubsystem.zeroHeading();
+    //m_robotContainer.driveSubsystem.resetOdometry(new Pose2d());
   }
 
   @Override

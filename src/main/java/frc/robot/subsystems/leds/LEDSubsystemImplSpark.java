@@ -6,6 +6,7 @@ package frc.robot.subsystems.leds;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.LEDConstants.SparkConstants;
@@ -34,7 +35,8 @@ public class LEDSubsystemImplSpark extends SubsystemBase implements LEDSubsystem
 
   @Override
   public void periodic() {
-    ledSpark.set(currentSparkValue);
+    //ledSpark.set(currentSparkValue);
+    SmartDashboard.putNumber("leds", currentSparkValue);
   }
 
   /** Sets the pattern to a double value.
@@ -53,14 +55,15 @@ public class LEDSubsystemImplSpark extends SubsystemBase implements LEDSubsystem
     switch (process) {
       case DEFAULT:
         currentSparkValue = defaultColor();
-        return;
+        break;
       case ALLIANCE_COLOR:
         currentSparkValue = allianceColor();
-        return;
+        break;
       default:
         currentSparkValue = process.getSparkValue();
-        return;
+        break;
     }
+    ledSpark.set(currentSparkValue);
   }
 
   private double allianceColor() {

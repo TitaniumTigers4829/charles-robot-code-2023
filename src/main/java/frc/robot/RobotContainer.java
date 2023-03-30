@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.JoystickConstants;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.drive.DriveCommand;
+import frc.robot.extras.TestLEDs;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystemImpl;
 import frc.robot.subsystems.vision.VisionSubsystem;
@@ -30,9 +31,9 @@ import frc.robot.subsystems.leds.LEDSubsystemImplSpark;
  */
 public class RobotContainer {
 
-  public final DriveSubsystem driveSubsystem;
+  //public final DriveSubsystem driveSubsystem;
   private final VisionSubsystem visionSubsystem;
-  private final LEDSubsystem leds;
+  public final LEDSubsystem leds;
 
   private final Joystick driverJoystick;
 
@@ -51,22 +52,23 @@ public class RobotContainer {
 
     buttonBoard = new Joystick(JoystickConstants.BUTTON_BOARD_ID);
 
-    driveSubsystem = new DriveSubsystemImpl();
+    //driveSubsystem = new DriveSubsystemImpl();
     visionSubsystem = new VisionSubsystemImpl();
     leds = new LEDSubsystemImplSpark();
 
     DoubleSupplier leftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.LEFT_STICK_X);
     DoubleSupplier leftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.LEFT_STICK_Y);
     DoubleSupplier rightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.RIGHT_STICK_X);
-
+    /*
     Command driveCommand = new DriveCommand(driveSubsystem, visionSubsystem,
       () -> modifyAxisSquared(leftStickY) * -1, 
       () -> modifyAxisSquared(leftStickX) * -1, 
       () -> modifyAxisSquared(rightStickX) * -1, 
       () -> !rightBumper.getAsBoolean()
     );
+    */
   
-    driveSubsystem.setDefaultCommand(driveCommand);
+    //driveSubsystem.setDefaultCommand(driveCommand);
 
     configureButtonBindings();
   }
@@ -103,7 +105,10 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     POVButton rightDirectionPad = new POVButton(driverJoystick, JoystickConstants.RIGHT_DPAD_ID);
-    rightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
+    //rightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
+
+    final JoystickButton ledButton = new JoystickButton(driverJoystick, 7);
+    ledButton.whileTrue(new TestLEDs(leds));
 
     JoystickButton bButton = new JoystickButton(driverJoystick, JoystickConstants.B_BUTTON_ID);
     // bButton.whileTrue(new FollowRealTimeTrajectory(driveSubsystem, () -> !bButton.getAsBoolean()));

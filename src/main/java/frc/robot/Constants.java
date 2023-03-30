@@ -181,7 +181,7 @@ public final class Constants {
   
   public static final class LEDConstants {
 
-    public static final int LEDPort = 0-9;
+    public static final int LEDPort = 0;
     public static final double ANIMATION_SPEED = 24; // "frames" per second
     public static final String EASTER_EGG_MESSAGE = "We'll miss you, Mr. Blanchard! -4829";
 
@@ -195,7 +195,7 @@ public final class Constants {
       public static final double SHOT_BLUE = -0.83;
       public static final double SHOT_WHITE = -0.81;
 
-      public static final double FIRE = -0.57;
+      public static final double RED_ALLIANCE_BLINKIN = -0.39;
       public static final double RAINBOW_WAVE = -0.45;
       public static final double OCEAN = -0.41;
 
@@ -210,8 +210,8 @@ public final class Constants {
       public static final double STROBE_GOLD = -0.07;
       public static final double STROBE_WHITE = -0.05;
 
-      public static final double LARSON_1 = -0.01;
-      public static final double LARSON_2 = 0.19;
+      public static final double HEARTBEAT_1 = 0.43;
+      public static final double HEARTBEAT_2 = 0.27;
 
       public static final double MAGENTA = 0.57;
       public static final double DARK_RED = 0.59;
@@ -243,10 +243,10 @@ public final class Constants {
       ALLIANCE_COLOR (0, 0, 0, 0),
       DEFAULT (0, 0, 0, 0),
       RAINBOW (SparkConstants.RAINBOW, 0, 0, 0),
-      RED_ALLIANCE (SparkConstants.FIRE, 255, 0, 0),
+      RED_ALLIANCE (SparkConstants.RED_ALLIANCE_BLINKIN, 255, 0, 0),
       BLUE_ALLIANCE (SparkConstants.OCEAN, 0, 0, 255),
-      SCORING_CUBE (SparkConstants.LARSON_1, 255, 255, 0),
-      SCORING_CONE (SparkConstants.LARSON_2, 255, 0, 200),
+      SCORING_CUBE (SparkConstants.HEARTBEAT_1, 255, 255, 0),
+      SCORING_CONE (SparkConstants.HEARTBEAT_2, 255, 0, 200),
       OFF (SparkConstants.BLACK, 0, 0, 0),
       CUBE (SparkConstants.PURPLE, 255, 0, 200),
       CONE (SparkConstants.YELLOW, 255, 255, 0),

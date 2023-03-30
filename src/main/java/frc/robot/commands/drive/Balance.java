@@ -51,8 +51,6 @@ public class Balance extends CommandBase {
   @Override
   public void execute() {
   
-    leds.setProcess(LEDProcess.BALANCE);
-
     double error = driveSubsystem.getBalanceError();
 
     if (Math.abs(error) > BalanceConstants.BALANCE_ERROR_INIT_DEGREES) {
