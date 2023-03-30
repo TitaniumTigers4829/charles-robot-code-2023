@@ -75,7 +75,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     followerRotationMotor.follow(leaderRotationMotor);
 
     extensionMotor.setInverted(ArmConstants.EXTENSION_MOTOR_INVERTED);
-    extensionMotor.setNeutralMode(NeutralMode.Coast);
+    extensionMotor.setNeutralMode(NeutralMode.Brake);
     extensionMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
     extensionMotor.configReverseSoftLimitThreshold(ArmConstants.MAX_EXTENSION_METERS * ArmConstants.EXTENSION_METERS_TO_MOTOR_POS);
     extensionMotor.configReverseSoftLimitEnable(true);

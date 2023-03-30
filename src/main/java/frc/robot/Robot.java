@@ -102,7 +102,6 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    m_robotContainer.armSubsystem.setExtensionMotorNeutralMode(NeutralMode.Coast);
     m_robotContainer.configureButtonBindings();
     // new SetArmRotation(m_robotContainer.armSubsystem, 180).schedule();
     // new SetArmExtension(m_robotContainer.armSubsystem, 0).schedule();

@@ -54,4 +54,13 @@ public interface ClawSubsystem extends Subsystem {
    */
   void switchCargoMode();
   
+  /**
+   * Sets the cargo mode to cone.
+   */
+  void setCargoModeCone();
+
+  /**
+   * Sets the cargo mode to cone.
+   */
+  void setCargoModeCube();
 }

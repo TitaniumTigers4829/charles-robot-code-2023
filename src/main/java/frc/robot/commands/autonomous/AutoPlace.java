@@ -50,7 +50,7 @@ public class AutoPlace extends DriveCommandBase {
     List<PathPoint> pathPoints = new ArrayList<PathPoint>();
     Translation2d start = new Translation2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY());
     Rotation2d startRotation = driveSubsystem.getPose().getRotation();
-    pathPoints.add(new PathPoint(start, startRotation, startRotation).withControlLengths(0.01, 0.01));
+    pathPoints.add(new PathPoint(start, startRotation, startRotation));
     double endX;
     double endY;
     Rotation2d endRotation;
@@ -77,7 +77,8 @@ public class AutoPlace extends DriveCommandBase {
       }
     } else {
       endX = TrajectoryConstants.RED_NODE_Y_POSITION;
-      endY = TrajectoryConstants.RED_NODE_Y_POSITIONS[(driveSubsystem.getSelectedNode() % 9) - 1];
+      endY = TrajectoryConstants.RED_NODE_Y_POSITIONS[(8) - 1];
+      // endY = TrajectoryConstants.RED_NODE_Y_POSITIONS[(driveSubsystem.getSelectedNode() % 9) - 1];
       endRotation = TrajectoryConstants.RED_END_ROTATION;
       if (driveSubsystem.getPose().getX() < TrajectoryConstants.RED_OUTER_WAYPOINT_X) {
         if (driveSubsystem.getPose().getY() - TrajectoryConstants.LOWER_WAYPOINT_Y > (TrajectoryConstants.UPPER_WAYPOINT_Y - TrajectoryConstants.LOWER_WAYPOINT_Y) / 2) {
@@ -100,7 +101,7 @@ public class AutoPlace extends DriveCommandBase {
 
     SmartDashboard.putString("End", end.toString());
 
-    pathPoints.add(new PathPoint(end, endRotation, endRotation).withControlLengths(0.01, 0.01));
+    pathPoints.add(new PathPoint(end, endRotation, endRotation));
 
     // You probably only want to edit the P values
     PIDController xController = new PIDController(TrajectoryConstants.X_CONTROLLER_P, 0, 0);

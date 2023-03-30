@@ -10,6 +10,8 @@ import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.DriveCommandBase;
@@ -22,8 +24,7 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
   private final String trajectoryName;
   private final boolean resetOdometryToTrajectoryStart;
   
-  private PPSwerveControllerCommand followPathPlannerTrajectoryCommand;
-  private boolean done = false;
+  private PPSwerveControllerCommand followTrajectoryCommand;
   
   /* EDIT CODE BELOW HERE */
   // You should have constants for everything in here
@@ -82,8 +83,10 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
       driveSubsystem.resetOdometryAndRotation(trajectoryToFollow.getInitialHolonomicPose(), trajectoryToFollow.getInitialHolonomicPose().getRotation().getDegrees());
     }
 
+    SmartDashboard.putString("start", driveSubsystem.getPose().toString());
+
     // Create a PPSwerveControllerCommand. This is almost identical to WPILib's SwerveControllerCommand, but it uses the holonomic rotation from the PathPlannerTrajectory to control the robot's rotation.
-    followPathPlannerTrajectoryCommand = new PPSwerveControllerCommand(
+    followTrajectoryCommand = new PPSwerveControllerCommand(
       trajectoryToFollow,
       driveSubsystem::getPose, // Functional interface to feed supplier
       driveKinematics,
@@ -95,12 +98,11 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
       driveSubsystem
     );
     
-    followPathPlannerTrajectoryCommand.schedule();
+    followTrajectoryCommand.schedule();
   }
 
   @Override
   public void execute() {
-    done = followPathPlannerTrajectoryCommand.isFinished();
     super.execute();
   }
 
@@ -109,6 +111,6 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
 
   @Override
   public boolean isFinished() {
-    return done;
+    return followTrajectoryCommand.isFinished();
   }
 }

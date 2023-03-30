@@ -26,12 +26,10 @@ public class SetArmExtension extends CommandBase {
   }
 
   @Override
-  public void end(boolean interrupted) {
-   armSubsystem.setExtensionSpeed(0.01);
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {
-    return Math.abs(extension - armSubsystem.getExtension()) < ArmConstants.EXTENSION_TOLERANCE;
+    return Math.abs(extension - armSubsystem.getExtension()) < ArmConstants.EXTENSION_ACCEPTABLE_ERROR;
   }
 }

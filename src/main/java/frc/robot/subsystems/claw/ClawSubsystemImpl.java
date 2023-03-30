@@ -107,6 +107,16 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   public void switchCargoMode() {
     isConeMode = !isConeMode;
   }
+
+  @Override
+  public void setCargoModeCone() {
+    isConeMode = true;
+  }
+
+  @Override
+  public void setCargoModeCube() {
+    isConeMode = false;
+  }
   
   @Override
   public void periodic() {

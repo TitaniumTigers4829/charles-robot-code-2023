@@ -26,10 +26,12 @@ public class PlaceGamePiece extends CommandBase {
   public void initialize() {
     armSubsystem.resetExtensionController();
     if (clawSubsystem.isConeMode()) {
-      clawSubsystem.setWristPosition(0);
-      clawSubsystem.setIntakeSpeed(-0.075);
+      if (rotation > 180) {
+        clawSubsystem.setWristPosition(0);
+      } else {
+        clawSubsystem.setWristPosition(180);
+      }
     }
-    SmartDashboard.putBoolean("running", true);
   }
 
   @Override
@@ -38,18 +40,17 @@ public class PlaceGamePiece extends CommandBase {
     if (Math.abs(rotation - armSubsystem.getRotation()) < ArmConstants.ROTATION_ACCEPTABLE_ERROR) {
       armSubsystem.setExtension(extension);
     }
-    SmartDashboard.putBoolean("running", true);
   }
 
   @Override
   public void end(boolean interrupted) {
+    SmartDashboard.putString("Done", "place done");
     armSubsystem.setRotationSpeed(0);
     armSubsystem.setExtensionSpeed(0);
     clawSubsystem.open();
     if (!clawSubsystem.isConeMode()) {
-      clawSubsystem.setIntakeSpeed(-.08);
+      clawSubsystem.setIntakeSpeed(-0.08);
     }
-    SmartDashboard.putBoolean("running", false);
   }
 
   @Override

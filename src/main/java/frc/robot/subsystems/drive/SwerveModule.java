@@ -13,6 +13,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HardwareConstants;
@@ -75,7 +76,7 @@ public class SwerveModule {
     driveMotor.config_kD(0, ModuleConstants.DRIVE_D);     
     driveMotor.setNeutralMode(NeutralMode.Brake);
     driveMotor.setInverted(driveReversed);
-    driveMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
+    driveMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND * 10);
     driveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 65, 0.1));
     driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.1));
 
@@ -160,6 +161,7 @@ public class SwerveModule {
       turnPIDController.calculate(turnRadians, optimizedDesiredState.angle.getRadians())
         + turnFeedForward.calculate(turnPIDController.getSetpoint().velocity);
         turnMotor.set(turnOutput / 12);
+    SmartDashboard.putNumber("drive vel error", desiredDriveEncoderUnitsPer100MS - driveMotor.getSelectedSensorVelocity());
   }
 
   public double getTurnRadians() {
@@ -185,5 +187,6 @@ public class SwerveModule {
     driveMotor.setSelectedSensorPosition(0);
   }
 
-  public void periodicFunction() {}
+  public void periodicFunction() {
+  }
 }

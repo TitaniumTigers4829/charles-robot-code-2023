@@ -28,12 +28,10 @@ public class SetArmRotation extends CommandBase {
   }
 
   @Override
-  public void end(boolean interrupted) {
-    armSubsystem.setRotationSpeed(0);
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(rotation - armSubsystem.getRotation()) < ArmConstants.ROTATION_ACCEPTABLE_ERROR;
   }
 }

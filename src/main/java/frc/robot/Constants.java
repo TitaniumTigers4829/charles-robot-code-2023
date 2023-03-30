@@ -100,7 +100,7 @@ public final class Constants {
     public static final int BUTTON_9 = 9;
     public static final int BUTTON_10 = 10;
     public static final int BUTTON_11 = 11;
-    public static final int BUTTON_12 = 12;
+    public static final int BUTTON_12 = 1; // Z axis going forwards
     public static final int BUTTON_13 = 0; // POV Joystick 1
     public static final int BUTTON_14 = 180; // POV Joystick 1
     public static final int BUTTON_15 = 270; // POV Joystick 1
@@ -199,16 +199,16 @@ public final class Constants {
     public static final double TURN_P = 7; // 8.1
     public static final double TURN_I = 0;
     public static final double TURN_D = 0;
-    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 3 * Math.PI;
-    public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 6 * Math.PI;
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 10 * Math.PI;
+    public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 8 * Math.PI;
     public static final TrapezoidProfile.Constraints TURN_CONSTRAINTS =
       new TrapezoidProfile.Constraints(
         MAX_ANGULAR_SPEED_RADIANS_PER_SECOND,
         MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED
       );
 
-    public static final double DRIVE_F = 0.065;
-    public static final double DRIVE_P = .1;
+    public static final double DRIVE_F = 0.059;
+    public static final double DRIVE_P = 0.3; // 0.19;
     public static final double DRIVE_I = 0;
     public static final double DRIVE_D = 0;
   }
@@ -245,26 +245,33 @@ public final class Constants {
     public static final boolean EXTENSION_MOTOR_INVERTED = true;
     public static final double EXTENSION_ACCELERATION_GAIN = 0;
     public static final double EXTENSION_VELOCITY_GAIN = 0.2;
-    public static final double EXTENSION_P = -8;
+    public static final double EXTENSION_P = -6;
     public static final double EXTENSION_I = 0;
     public static final double EXTENSION_D = 0;
     public static final double EXTENSION_F = 0;
     public static final double EXTENSION_MAX_VELOCITY = 1;
     public static final double EXTENSION_MAX_ACCELERATION = 2.5;
+    public static final double EXTENSION_ACCEPTABLE_ERROR = 0.025;
     public static final double EXTENSION_TOLERANCE = 0.025; 
     public static final TrapezoidProfile.Constraints EXTENSION_CONSTRAINTS = new TrapezoidProfile.Constraints(
       EXTENSION_MAX_VELOCITY, EXTENSION_MAX_ACCELERATION);
 
     public static final double IDLE_EXTENSION_OUTPUT = 0.025;
 
-    public static final double PICKUP_GROUND_EXTENSION = 0.875;
+    public static final double STOWED_ROTATION = 180;
+    public static final double STOWED_EXTENSION = 0.01;
+
     public static final double PICKUP_GROUND_ROTATION = 288;
-    public static final double PICKUP_LOADING_STATION_EXTENSION = .768;
+    public static final double PICKUP_GROUND_EXTENSION = 0.875;
     public static final double PICKUP_LOADING_STATION_ROTATION = 110.7;
-    public static final double PICKUP_CHUTE_EXTENSION = .45;
+    public static final double PICKUP_LOADING_STATION_EXTENSION = .768;
     public static final double PICKUP_CHUTE_ROTATION = 103;
-    public static final double PLACE_HIGH_EXTENSION = 0.99;
+    public static final double PICKUP_CHUTE_EXTENSION = .45;
+
     public static final double PLACE_HIGH_ROTATION = 240;
+    public static final double PLACE_HIGH_EXTENSION = 0.99;
+    public static final double PLACE_MIDDLE_AUTO_ROTATION = 105;
+    public static final double PLACE_MIDDLE_AUTO_EXTENSION = 0.99;
 
     public static final double ARM_WEIGHT_NEWTONS = 9.8 * 25;
     public static final double ARM_AXIS_OF_ROTATION_RADIUS = Units.inchesToMeters(2.1);
@@ -428,14 +435,14 @@ public final class Constants {
 
   public static final class TrajectoryConstants {
     // Autonomous Period Constants TODO: Tune all of these values
-    public static final double MAX_SPEED = 1; // meters/second
-    public static final double MAX_ACCELERATION = 1; // meters/second/second
-    public static final double X_CONTROLLER_P = 0.5;
-    public static final double Y_CONTROLLER_P = 0.5;
-    public static final double THETA_CONTROLLER_P = 0.1;
+    public static final double MAX_SPEED = 4; // meters/second
+    public static final double MAX_ACCELERATION = 3; // meters/second/second
+    public static final double X_CONTROLLER_P = 3.5; // .5
+    public static final double Y_CONTROLLER_P = 3.5;
+    public static final double THETA_CONTROLLER_P = 1; // .1
     public static final double THETA_PROFILED_CONTROLLER_P = 1;
-    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI / 2;
-    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = Math.PI / 2;
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 2 * Math.PI ;
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = 3 * Math.PI;
     // The length of the field in the x direction (left to right)
     public static final double FIELD_LENGTH_METERS = 16.54175;
     // The length of the field in the y direction (top to bottom)
@@ -469,8 +476,16 @@ public final class Constants {
     public static final Rotation2d RED_END_ROTATION = Rotation2d.fromDegrees(0);
 
     // Auto Trajectory Names
-    public static final String TWO_CONE_BALANCE_AUTO_FIRST = "Two Cone Balance First";
-    public static final String TWO_CONE_BALANCE_AUTO_SECOND = "Two Cone Balance Second";
-    public static final String TWO_CONE_BALANCE_AUTO_THIRD = "Two Cone Balance Third";
+    public static final String TWO_CONE_BALANCE_AUTO_FIRST = "Two Cone Balance First Red";
+    public static final String TWO_CONE_BALANCE_AUTO_SECOND = "Two Cone Balance Second Red";
+    public static final String TWO_CONE_BALANCE_AUTO_THIRD = "Two Cone Balance Third Red";
+  }
+
+  public static final class SmarterDashboardConstants {
+    public static final String botPoseKey = "botPose";
+    public static final String limelightPoseKey = "limelightPose";
+    public static final String botOrientationKey = "botAngle";
+    public static final String nodeIDKey = "selectedNode";
+    public static final String cargoModeKey = "cargoMode";
   }
 }

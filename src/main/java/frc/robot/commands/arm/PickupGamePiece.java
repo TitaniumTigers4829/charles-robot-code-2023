@@ -1,6 +1,8 @@
 package frc.robot.commands.arm;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.claw.ClawSubsystem;
 
@@ -23,30 +25,38 @@ public class PickupGamePiece extends CommandBase {
   @Override
   public void initialize() {
     armSubsystem.resetExtensionController();
-    clawSubsystem.setWristPosition(180);
     if (!clawSubsystem.isConeMode()) {
       clawSubsystem.open();
       clawSubsystem.setIntakeSpeed(.15);
+      clawSubsystem.setWristPosition(0);
     } else {
       clawSubsystem.close();
       clawSubsystem.setIntakeSpeed(.5);
+      if (rotation < 180) {
+        clawSubsystem.setWristPosition(180);
+      } else {
+        clawSubsystem.setWristPosition(0);
+      }
     }
   }
 
   @Override
   public void execute() {
     armSubsystem.setRotation(rotation);
-    armSubsystem.setExtension(extension);
+    if (Math.abs(rotation - armSubsystem.getRotation()) < ArmConstants.ROTATION_ACCEPTABLE_ERROR) {
+      armSubsystem.setExtension(extension);
+    }
   }
 
   @Override
   public void end(boolean interrupted) {
+    SmartDashboard.putString("Done", "pickup done");
     armSubsystem.setRotationSpeed(0);
     armSubsystem.setExtensionSpeed(0);
     if (clawSubsystem.isConeMode()) {
-      clawSubsystem.setIntakeSpeed(.08);
-    } else {
       clawSubsystem.setIntakeSpeed(0);
+    } else {
+      clawSubsystem.setIntakeSpeed(0.04);
     }
     clawSubsystem.setWristPosition(clawSubsystem.getWristAngle());
   }
