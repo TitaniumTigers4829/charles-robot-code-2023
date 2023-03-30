@@ -154,7 +154,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
 
   @Override
   public void zeroHeading() {
-    gyroOffset = 0;
+    gyroOffset = (DriverStation.getAlliance() == Alliance.Blue ? 0 : 180) % 360;
     gyro.reset();
   }
 
@@ -179,11 +179,6 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   
   @Override
   public void addPoseEstimatorVisionMeasurement(Pose2d visionMeasurement, double currentTimeStampSeconds) {
-    double[] limelightPose = new double[3];
-    limelightPose[0] = visionMeasurement.getX();
-    limelightPose[1] = visionMeasurement.getY();
-    limelightPose[2] = visionMeasurement.getRotation().getDegrees();
-    SmartDashboard.putNumberArray("limelight_pose", limelightPose);
     odometry.addVisionMeasurement(visionMeasurement, currentTimeStampSeconds);
   }
 
@@ -241,10 +236,9 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   public void periodic() {
     Pose2d estimatedPose = odometry.getEstimatedPosition();
     SmartDashboardLogger.infoString("Estimated pose", estimatedPose.toString());
-    SmartDashboardLogger.infoNumber("Selected Node", selectedNode);
 
-    SmartDashboard.putNumberArray("botPose", new double[]{estimatedPose.getX(), estimatedPose.getY()});
-    SmartDashboard.putNumber("pitch", getHeading());
+    // Smarter Dashboard
+    SmartDashboardLogger.infoNumber("Selected Node", selectedNode);
   }
 
 }

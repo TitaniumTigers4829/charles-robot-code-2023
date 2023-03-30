@@ -88,7 +88,7 @@ public class RobotContainer {
     double value = supplierValue.getAsDouble();
 
     // Deadband
-    value = deadband(value, 0.05);
+    value = deadband(value, 0.1);
 
     // Cube the axis
     value = Math.copySign(value * value * value, value);
@@ -97,8 +97,8 @@ public class RobotContainer {
   }
 
   private static double[] modifyAxisCubedPolar(DoubleSupplier xJoystick, DoubleSupplier yJoystick) {
-    double xInput = deadband(xJoystick.getAsDouble(), 0.05);
-    double yInput = deadband(yJoystick.getAsDouble(), 0.05);
+    double xInput = deadband(xJoystick.getAsDouble(), 0.1);
+    double yInput = deadband(yJoystick.getAsDouble(), 0.1);
     if (Math.abs(xInput) > 0 && Math.abs(yInput) > 0) {
       double theta = Math.atan(xInput / yInput);
       double hypotenuse = Math.sqrt(xInput * xInput + yInput * yInput);
@@ -129,7 +129,7 @@ public class RobotContainer {
     // reset gyro/pitch/roll
     POVButton driverRightDirectionPad = new POVButton(driverJoystick, JoystickConstants.RIGHT_DPAD_ID);
     driverRightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
-    driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometryAndRotation(driveSubsystem.getPose(), 0)));
+    driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometryAndRotation(driveSubsystem.getPose(), driveSubsystem.getHeading())));
     driverRightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroPitchAndRoll));
 
     // test trajectory
@@ -169,7 +169,7 @@ public class RobotContainer {
 
     // pickup game piece
     JoystickButton operatorBButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_B_BUTTON_ID);
-    operatorBButton.whileTrue(new PickupGamePiece(armSubsystem, clawSubsystem, ArmConstants.PICKUP_CHUTE_ROTATION, ArmConstants.PICKUP_CHUTE_EXTENSION));
+    operatorBButton.whileTrue(new PickupGamePiece(armSubsystem, clawSubsystem, ArmConstants.PICKUP_GROUND_ROTATION, ArmConstants.PICKUP_GROUND_EXTENSION));
     operatorBButton.onFalse(new MoveArmToStowed(armSubsystem, clawSubsystem));
 
     // reset encoders
@@ -184,13 +184,14 @@ public class RobotContainer {
     DoubleSupplier xAxis = () -> buttonBoard1.getRawAxis(0);
     DoubleSupplier yAxis = () -> buttonBoard1.getRawAxis(1);
     DoubleSupplier zAxis = () -> buttonBoard1.getRawAxis(2);
+    DoubleSupplier zAxis2 = () -> buttonBoard2.getRawAxis(2);
 
     BooleanSupplier isBlueButtonPressed = () -> (yAxis.getAsDouble() > 0.2);
     Trigger onBlueButtonPressed = new Trigger(isBlueButtonPressed);
     onBlueButtonPressed.onTrue(new InstantCommand(clawSubsystem::switchCargoMode));
 
-    // BooleanSupplier isRedButtonPressed = () -> (yAxis.getAsDouble() < -0.2);
-    // Trigger onRedButtonPressed = new Trigger(isRedButtonPressed);
+    BooleanSupplier isRedButtonPressed = () -> (yAxis.getAsDouble() < -0.2);
+    Trigger onRedButtonPressed = new Trigger(isRedButtonPressed);
     // onRedButtonPressed.whileTrue(new PickupGamePiece(armSubsystem, clawSubsystem));
     // onRedButtonPressed.onFalse(new MoveArmToStowedAfterPlacing(armSubsystem, clawSubsystem, operatorLeftBumperPressed));
     
@@ -242,7 +243,7 @@ public class RobotContainer {
     autoplaceButton10.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(10)));
     JoystickButton autoplaceButton11 = new JoystickButton(buttonBoard1, JoystickConstants.BUTTON_11);
     autoplaceButton11.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(11)));
-    JoystickButton autoplaceButton12 = new JoystickButton(buttonBoard1, JoystickConstants.BUTTON_12);
+    Trigger autoplaceButton12 = new Trigger(() -> (zAxis2.getAsDouble() > 0));
     autoplaceButton12.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(12)));
     POVButton autoplaceButton13 = new POVButton(buttonBoard1, JoystickConstants.BUTTON_13);
     autoplaceButton13.onTrue(new InstantCommand(() -> driveSubsystem.setSelectedNode(13)));
