@@ -18,9 +18,11 @@ import frc.robot.commands.arm.MoveArmToStowed;
 import frc.robot.commands.arm.PickupGamePiece;
 import frc.robot.commands.arm.PlaceGamePiece;
 import frc.robot.commands.arm.SetArmExtension;
+import frc.robot.commands.arm.teleop.PlaceConeHigh;
 import frc.robot.commands.autonomous.AutoPlace;
 import frc.robot.commands.autonomous.FollowPathPlannerTrajectory;
 import frc.robot.commands.autonomous.SimpleAuto;
+import frc.robot.commands.autonomous.ThreePieceBalanceAuto;
 import frc.robot.commands.autonomous.TwoConeBalanceAuto;
 import frc.robot.commands.claw.ManualClaw;
 import frc.robot.commands.claw.ToggleClaw;
@@ -134,7 +136,7 @@ public class RobotContainer {
 
     // test trajectory
     JoystickButton driverBButton = new JoystickButton(driverJoystick, JoystickConstants.DRIVER_B_BUTTON_ID);
-    driverBButton.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, () -> !driverBButton.getAsBoolean()));
+    driverBButton.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem, () -> !driverBButton.getAsBoolean()));
 
     /* Arm Buttons */
     // manual arm command
@@ -164,7 +166,8 @@ public class RobotContainer {
   
     // place game piece
     JoystickButton operatorAButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_A_BUTTON_ID);
-    operatorAButton.whileTrue(new PlaceGamePiece(armSubsystem, clawSubsystem, ArmConstants.PLACE_HIGH_ROTATION, ArmConstants.PLACE_HIGH_EXTENSION));
+    // operatorAButton.whileTrue(new PlaceGamePiece(armSubsystem, clawSubsystem, ArmConstants.PLACE_HIGH_ROTATION, ArmConstants.PLACE_HIGH_EXTENSION));
+    operatorAButton.whileTrue(new PlaceConeHigh(armSubsystem, clawSubsystem));
     operatorAButton.onFalse(new MoveArmToStowed(armSubsystem, clawSubsystem));
 
     // pickup game piece
@@ -192,9 +195,9 @@ public class RobotContainer {
 
     BooleanSupplier isRedButtonPressed = () -> (yAxis.getAsDouble() < -0.2);
     Trigger onRedButtonPressed = new Trigger(isRedButtonPressed);
-    // onRedButtonPressed.whileTrue(new PickupGamePiece(armSubsystem, clawSubsystem));
-    // onRedButtonPressed.onFalse(new MoveArmToStowedAfterPlacing(armSubsystem, clawSubsystem, operatorLeftBumperPressed));
-    
+    onRedButtonPressed.onTrue(new InstantCommand(armSubsystem::toggleControlMode));
+    onRedButtonPressed.onTrue(new InstantCommand(clawSubsystem::toggleControlMode));
+        
     // BooleanSupplier isButton1Pressed = () -> (zAxis.getAsDouble() > 0.2);
     // Trigger onButton1Pressed = new Trigger(isButton1Pressed);
     // onButton1Pressed.onTrue(new InstantCommand(clawSubsystem::switchCargoMode));
@@ -279,6 +282,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // return autoChooser.getSelected();
-    return new TwoConeBalanceAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem);
+    // return new TwoConeBalanceAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem);
+    return new ThreePieceBalanceAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem);
   }
 }

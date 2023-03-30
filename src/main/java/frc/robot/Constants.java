@@ -233,8 +233,8 @@ public final class Constants {
     public static final double ROTATION_P = 3.5;
     public static final double ROTATION_I = 0;
     public static final double ROTATION_D = 0;
-    public static final double ROTATION_MAX_VELOCITY_ENCODER_UNITS = 180;
-    public static final double ROTATION_MAX_ACCELERATION_ENCODER_UNITS = 270;
+    public static final double ROTATION_MAX_VELOCITY_ENCODER_UNITS = 240;
+    public static final double ROTATION_MAX_ACCELERATION_ENCODER_UNITS = 400;
     public static final int ROTATION_SMOOTHING = 1;
     public static final double ROTATION_ACCEPTABLE_ERROR = 1;
     public static final double ROTATION_TOLERANCE_DEGREES = 0;
@@ -272,6 +272,7 @@ public final class Constants {
     public static final double PLACE_HIGH_EXTENSION = 0.99;
     public static final double PLACE_MIDDLE_AUTO_ROTATION = 105;
     public static final double PLACE_MIDDLE_AUTO_EXTENSION = 0.99;
+    public static final double SHOOT_CUBE_MIDDLE_ROTATION = 135;
 
     public static final double ARM_WEIGHT_NEWTONS = 9.8 * 25;
     public static final double ARM_AXIS_OF_ROTATION_RADIUS = Units.inchesToMeters(2.1);
@@ -310,13 +311,17 @@ public final class Constants {
     public static final int WRIST_SMOOTHING = 0;
     
     public static final boolean INTAKE_MOTOR_INVERTED = false;
-    public static final double INTAKE_P = 0;
-    public static final double INTAKE_I = 0;
-    public static final double INTAKE_D = 0;
-    public static final double INTAKE_F = 0;
 
     public static final double MIN_WRIST_ROTATION_ENCODER_UNITS = 0 * DEG_TO_WRIST_POS;
     public static final double MAX_WRIST_ROTATION_ENCODER_UNITS = 180 * DEG_TO_WRIST_POS;
+
+    public static final double PICKUP_CONE_INTAKE_SPEED = 0.5;
+
+    public static final double HOLD_CONE_INTAKE_SPEED = 0.02;
+    public static final double HOLD_CUBE_INTAKE_SPEED = 0.05;
+
+    public static final double PLACE_CONE_INTAKE_SPEED = -0.08;
+    public static final double SHOOT_CUBE_INTAKE_SPEED = -1;
   }
 
   public static final class LimelightConstants {
@@ -434,12 +439,11 @@ public final class Constants {
   }
 
   public static final class TrajectoryConstants {
-    // Autonomous Period Constants TODO: Tune all of these values
-    public static final double MAX_SPEED = 4; // meters/second
-    public static final double MAX_ACCELERATION = 3; // meters/second/second
-    public static final double X_CONTROLLER_P = 3.5; // .5
-    public static final double Y_CONTROLLER_P = 3.5;
-    public static final double THETA_CONTROLLER_P = 1; // .1
+    public static final double MAX_SPEED = 4;
+    public static final double MAX_ACCELERATION = 3;
+    public static final double X_CONTROLLER_P = 3;
+    public static final double Y_CONTROLLER_P = 3;
+    public static final double THETA_CONTROLLER_P = 1.5;
     public static final double THETA_PROFILED_CONTROLLER_P = 1;
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 2 * Math.PI ;
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = 3 * Math.PI;
@@ -456,6 +460,10 @@ public final class Constants {
     public static final double RED_BALANCE_X_POSITION = 12.635;
     public static final double BALANCE_X_CONTROLLER_P = .3;
     public static final double BALANCE_Y_CONTROLLER_P = .3;
+
+    public static final double X_TOLERANCE = 0.02;
+    public static final double Y_TOLERANCE = 0.02;
+    public static final double THETA_TOLERANCE = 1.25;
   
     // These are ordered from top left to bottom right from driver perspective
     public static final double[] BLUE_NODE_Y_POSITIONS = 
@@ -472,13 +480,14 @@ public final class Constants {
     public static final double RED_INNER_WAYPOINT_X = 14.26;
     public static final double UPPER_WAYPOINT_Y = 4.75;
     public static final double LOWER_WAYPOINT_Y = 0.75;
-    public static final Rotation2d BLUE_END_ROTATION = Rotation2d.fromDegrees(180);
-    public static final Rotation2d RED_END_ROTATION = Rotation2d.fromDegrees(0);
+    public static final Rotation2d BLUE_END_ROTATION = Rotation2d.fromDegrees(0);
+    public static final Rotation2d RED_END_ROTATION = Rotation2d.fromDegrees(180);
 
-    // Auto Trajectory Names
     public static final String TWO_CONE_BALANCE_AUTO_FIRST = "Two Cone Balance First Red";
     public static final String TWO_CONE_BALANCE_AUTO_SECOND = "Two Cone Balance Second Red";
     public static final String TWO_CONE_BALANCE_AUTO_THIRD = "Two Cone Balance Third Red";
+
+    public static final String THREE_PIECE_BALANCE_AUTO_FIRST = "Three Piece Balance First Red";
   }
 
   public static final class SmarterDashboardConstants {

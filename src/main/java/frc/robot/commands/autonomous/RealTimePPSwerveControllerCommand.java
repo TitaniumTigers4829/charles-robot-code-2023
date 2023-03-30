@@ -19,6 +19,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.*;
+import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 
 import java.util.function.BiConsumer;
@@ -325,7 +326,10 @@ public class RealTimePPSwerveControllerCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     // Ends the command if the button being held down is released or the robot reaches the end point
-    return isFinished.getAsBoolean();
+    return isFinished.getAsBoolean() 
+      || (Math.abs(endPose.getX() - driveSubsystem.getPose().getX()) < TrajectoryConstants.X_TOLERANCE
+      && Math.abs(endPose.getY() - driveSubsystem.getPose().getY()) < TrajectoryConstants.Y_TOLERANCE
+      && Math.abs(endPose.getRotation().getDegrees() - driveSubsystem.getPose().getRotation().getDegrees()) < TrajectoryConstants.THETA_TOLERANCE);
   }
 
   private static void defaultLogError(Translation2d translationError, Rotation2d rotationError) {}

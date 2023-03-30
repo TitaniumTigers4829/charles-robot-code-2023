@@ -9,10 +9,14 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ClawConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.DriveCommandBase;
 import frc.robot.extras.SmartDashboardLogger;
+import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.claw.ClawSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
@@ -28,6 +32,8 @@ import com.pathplanner.lib.PathPoint;
 public class AutoPlace extends DriveCommandBase {
 
   private final DriveSubsystem driveSubsystem;
+  private final ArmSubsystem armSubsystem;
+  private final ClawSubsystem clawSubsystem;
   private final BooleanSupplier isFinished;
 
   /**
@@ -36,11 +42,13 @@ public class AutoPlace extends DriveCommandBase {
    * @param visionSubsystem The subsystem for vision measurements
    * @param isFinished The boolean supplier that returns true if the trajectory should be finished.
    */
-  public AutoPlace(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, BooleanSupplier isFinished) {
+  public AutoPlace(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, BooleanSupplier isFinished) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
+    this.armSubsystem = armSubsystem;
+    this.clawSubsystem = clawSubsystem;
     // Doesn't require the drive subsystem because RealTimePPSwerveControllerCommand does
-    addRequirements(visionSubsystem);
+    addRequirements(visionSubsystem, armSubsystem, clawSubsystem);
     this.isFinished = isFinished;
   }
 
@@ -147,10 +155,21 @@ public class AutoPlace extends DriveCommandBase {
   @Override
   public void execute() {
     super.execute();
+    if (DriverStation.getAlliance() == Alliance.Blue) {
+
+    } else {
+      if (driveSubsystem.getPose().getX() > TrajectoryConstants.RED_INNER_WAYPOINT_X) {
+        armSubsystem.setRotation(ArmConstants.PLACE_HIGH_ROTATION);
+        armSubsystem.setExtension(ArmConstants.PLACE_HIGH_EXTENSION);
+      }
+    }
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    clawSubsystem.open();
+    clawSubsystem.setIntakeSpeed(ClawConstants.PLACE_CONE_INTAKE_SPEED);
+  }
 
   @Override
   public boolean isFinished() {

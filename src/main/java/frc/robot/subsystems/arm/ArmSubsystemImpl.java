@@ -15,6 +15,7 @@ import frc.robot.Constants.Conversions;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.extras.SmartDashboardLogger;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
@@ -30,6 +31,8 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     ArmConstants.EXTENSION_D,
     ArmConstants.EXTENSION_CONSTRAINTS
   );
+
+  private boolean isManualControl = false;
 
   /** 
    * Creates a new ArmSubsystemImpl. 
@@ -160,8 +163,16 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   }
 
   @Override
-  public void periodic() {
-    SmartDashboardLogger.debugNumber("Arm rotation", getRotation());
-    SmartDashboardLogger.debugNumber("Arm extension", getExtension());    
+  public boolean isManualControl() {
+    return isManualControl;
   }
+
+  @Override
+  public void toggleControlMode() {
+    isManualControl = !isManualControl;
+    SmartDashboardLogger.infoString("Control Mode", isManualControl ? "Manual" : "Auto");
+  }
+
+  @Override
+  public void periodic() {   }
 }

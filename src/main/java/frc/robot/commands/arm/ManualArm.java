@@ -1,6 +1,5 @@
 package frc.robot.commands.arm;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ArmConstants;
@@ -24,25 +23,24 @@ public class ManualArm extends CommandBase {
 
   @Override
   public void execute() {
-    if (Math.abs(armRotationSpeed.getAsDouble()) > 0.1) {
-      armSubsystem.setRotationSpeed(armRotationSpeed.getAsDouble());
-    } else {
-      armSubsystem.setRotationSpeed(0);
-    }
+    if (armSubsystem.isManualControl()) {
+      if (Math.abs(armRotationSpeed.getAsDouble()) > 0.1) {
+        armSubsystem.setRotationSpeed(armRotationSpeed.getAsDouble());
+      } else {
+        armSubsystem.setRotationSpeed(0);
+      }
 
-    if (Math.abs(armExtensionSpeed.getAsDouble()) > 0.1) {
-        armSubsystem.setExtensionSpeed(armExtensionSpeed.getAsDouble());
-    } else {
-      armSubsystem.setExtensionSpeed(ArmConstants.IDLE_EXTENSION_OUTPUT);
+      if (Math.abs(armExtensionSpeed.getAsDouble()) > 0.1) {
+          armSubsystem.setExtensionSpeed(armExtensionSpeed.getAsDouble());
+      } else {
+        armSubsystem.setExtensionSpeed(ArmConstants.IDLE_EXTENSION_OUTPUT);
+      }
     }
   }
 
 
   @Override
-  public void end(boolean interrupted) {
-    // armSubsystem.setExtensionSpeed(0);
-    // armSubsystem.setRotationSpeed(0);
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {

@@ -20,6 +20,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   private boolean isClawClosed;
   private boolean isConeMode = false;
+  private boolean isManualControl = false;
 
   public ClawSubsystemImpl() {
     wristMotor = new WPI_TalonFX(ClawConstants.WRIST_MOTOR_ID, HardwareConstants.RIO_CAN_BUS_STRING);
@@ -116,6 +117,16 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   @Override
   public void setCargoModeCube() {
     isConeMode = false;
+  }
+
+  @Override
+  public boolean isManualControl() {
+    return isManualControl;
+  }
+
+  @Override
+  public void toggleControlMode() {
+    isManualControl = !isManualControl;
   }
   
   @Override

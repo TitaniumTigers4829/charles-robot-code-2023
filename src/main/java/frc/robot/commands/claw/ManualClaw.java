@@ -31,44 +31,46 @@ public class ManualClaw extends CommandBase {
 
   @Override
   public void execute() {
-    if (!clawSubsystem.isConeMode()) {
-      clawSubsystem.open();
-      if (intakeCargo.getAsBoolean()) {
-        clawSubsystem.setIntakeSpeed(0.15);
-      } else if (expelCargo.getAsBoolean()) {
-        clawSubsystem.setIntakeSpeed(-0.15);
-      } else {
-        clawSubsystem.setIntakeSpeed(0.04);
-      }
-    } else {
-      if (intakeCargo.getAsBoolean()) {
-        clawSubsystem.close();
-        clawSubsystem.setIntakeSpeed(0.25);
-      } else if (expelCargo.getAsBoolean()) {
-        clawSubsystem.setIntakeSpeed(0);
+    if (clawSubsystem.isManualControl()) {
+      if (!clawSubsystem.isConeMode()) {
         clawSubsystem.open();
-      } else {
-        clawSubsystem.close();
-        clawSubsystem.setIntakeSpeed(0);
-      }
-    }
-
-    if (lastState != rotateClaw180.getAsBoolean()) {
-        lastState = rotateClaw180.getAsBoolean();
-        initialRotation = clawSubsystem.getWristAngle();
-    }
-
-    if (rotateClaw180.getAsBoolean()) {
-      hasSetPos = false;
-      if (initialRotation > 90) {
-        clawSubsystem.setWristPosition(0);
-      } else {
-        clawSubsystem.setWristPosition(180);
+        if (intakeCargo.getAsBoolean()) {
+          clawSubsystem.setIntakeSpeed(0.15);
+        } else if (expelCargo.getAsBoolean()) {
+          clawSubsystem.setIntakeSpeed(-0.15);
+        } else {
+          clawSubsystem.setIntakeSpeed(0.04);
         }
       } else {
-        if (!hasSetPos) {
-          clawSubsystem.setWristPosition(clawSubsystem.getWristAngle());
-          hasSetPos = true;
+        if (intakeCargo.getAsBoolean()) {
+          clawSubsystem.close();
+          clawSubsystem.setIntakeSpeed(0.25);
+        } else if (expelCargo.getAsBoolean()) {
+          clawSubsystem.setIntakeSpeed(0);
+          clawSubsystem.open();
+        } else {
+          clawSubsystem.close();
+          clawSubsystem.setIntakeSpeed(0);
+        }
+      }
+
+      if (lastState != rotateClaw180.getAsBoolean()) {
+          lastState = rotateClaw180.getAsBoolean();
+          initialRotation = clawSubsystem.getWristAngle();
+      }
+
+      if (rotateClaw180.getAsBoolean()) {
+        hasSetPos = false;
+        if (initialRotation > 90) {
+          clawSubsystem.setWristPosition(0);
+        } else {
+          clawSubsystem.setWristPosition(180);
+          }
+        } else {
+          if (!hasSetPos) {
+            clawSubsystem.setWristPosition(clawSubsystem.getWristAngle());
+            hasSetPos = true;
+          }
         }
       }
   }

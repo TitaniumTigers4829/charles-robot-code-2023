@@ -39,8 +39,6 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
     currentlyUsedLimelightResults = currentlyUsedLimelight == LimelightConstants.FRONT_LIMELIGHT_NAME
       ? frontLimelightResults : backLimelightResults;
     SmartDashboard.putString("Limelight Pos", getPoseFromAprilTags().toString());
-    SmartDashboard.putString("Currently Used Limelight", currentlyUsedLimelight);
-    SmartDashboard.putNumber("Closest Distance", frontLimelightDistance);
   }
 
   @Override

@@ -161,7 +161,6 @@ public class SwerveModule {
       turnPIDController.calculate(turnRadians, optimizedDesiredState.angle.getRadians())
         + turnFeedForward.calculate(turnPIDController.getSetpoint().velocity);
         turnMotor.set(turnOutput / 12);
-    SmartDashboard.putNumber("drive vel error", desiredDriveEncoderUnitsPer100MS - driveMotor.getSelectedSensorVelocity());
   }
 
   public double getTurnRadians() {
