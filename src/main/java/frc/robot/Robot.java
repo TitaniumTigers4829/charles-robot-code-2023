@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     m_robotContainer.driveSubsystem.zeroHeading();
     m_robotContainer.driveSubsystem.resetOdometry(new Pose2d());
-    m_robotContainer.armSubsystem.lockExtensionSolenoid();
+    // m_robotContainer.armSubsystem.lockExtensionSolenoid();
 //    uncomment the line below if there is a USB camera plugged into the RoboRIO
 //    CameraServer.startAutomaticCapture();
   }
@@ -64,12 +64,11 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     m_robotContainer.driveSubsystem.resetOdometry(new Pose2d());
-    m_robotContainer.armSubsystem.setExtensionMotorNeutralMode(NeutralMode.Brake);
+    // m_robotContainer.armSubsystem.setExtensionMotorNeutralMode(NeutralMode.Brake);
   }
 
   @Override
-  public void disabledPeriodic() {
-  }
+  public void disabledPeriodic() {}
 
   /**
    * This autonomous runs the autonomous command selected by your {@link RobotContainer} class.
@@ -103,16 +102,13 @@ public class Robot extends TimedRobot {
     }
 
     m_robotContainer.configureButtonBindings();
-    // new SetArmRotation(m_robotContainer.armSubsystem, 180).schedule();
-    // new SetArmExtension(m_robotContainer.armSubsystem, 0).schedule();
   }
 
   /**
    * This function is called periodically during operator control.
    */
   @Override
-  public void teleopPeriodic() {
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void testInit() {
