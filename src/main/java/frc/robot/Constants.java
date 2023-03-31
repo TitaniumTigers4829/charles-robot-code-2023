@@ -441,17 +441,18 @@ public final class Constants {
       RED_ALLIANCE (SparkConstants.RED_ALLIANCE_BLINKIN, 255, 0, 0),
       BLUE_ALLIANCE (SparkConstants.OCEAN, 0, 0, 255),
       SCORING_CUBE (SparkConstants.HEARTBEAT_1, 255, 255, 0),
-      SCORING_CONE (SparkConstants.HEARTBEAT_2, 255, 0, 200),
+      SCORING_CONE (SparkConstants.HEARTBEAT_2, 128, 0, 255),
       OFF (SparkConstants.BLACK, 0, 0, 0),
       CUBE (SparkConstants.PURPLE, 255, 0, 200),
       CONE (SparkConstants.YELLOW, 255, 255, 0),
       AUTONOMOUS (SparkConstants.RAINBOW_WAVE, 0, 0, 0),
-      LINE_UP (SparkConstants.GREEN, 0, 255, 0);
+      LINE_UP (SparkConstants.GREEN, 0, 255, 0),
+      INTAKE (SparkConstants.MAGENTA, 255, 0, 255);
 
       private final double sparkValue;
       private final int red, green, blue;
-      LEDProcess(double sparkMaxValue, int red, int green, int blue) {
-        this.sparkValue = sparkMaxValue;
+      LEDProcess(double sparkValue, int red, int green, int blue) {
+        this.sparkValue = sparkValue;
         this.red = red;
         this.green = green;
         this.blue = blue;

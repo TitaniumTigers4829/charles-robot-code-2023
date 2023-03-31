@@ -13,11 +13,13 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ClawConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
+import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.DriveCommandBase;
 import frc.robot.extras.SmartDashboardLogger;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.claw.ClawSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 import java.util.ArrayList;
@@ -34,6 +36,7 @@ public class AutoPlace extends DriveCommandBase {
   private final DriveSubsystem driveSubsystem;
   private final ArmSubsystem armSubsystem;
   private final ClawSubsystem clawSubsystem;
+  private final LEDSubsystem leds;
   private final BooleanSupplier isFinished;
   private Pose2d endPose;
   private double armRotation;
@@ -45,13 +48,14 @@ public class AutoPlace extends DriveCommandBase {
    * @param visionSubsystem The subsystem for vision measurements
    * @param isFinished The boolean supplier that returns true if the trajectory should be finished.
    */
-  public AutoPlace(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, BooleanSupplier isFinished) {
+  public AutoPlace(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, LEDSubsystem leds, BooleanSupplier isFinished) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
     this.armSubsystem = armSubsystem;
     this.clawSubsystem = clawSubsystem;
+    this.leds = leds;
     // Doesn't require the drive subsystem because RealTimePPSwerveControllerCommand does
-    addRequirements(visionSubsystem, armSubsystem, clawSubsystem);
+    addRequirements(visionSubsystem, armSubsystem, clawSubsystem, leds);
     this.isFinished = isFinished;
   }
 
@@ -167,6 +171,12 @@ public class AutoPlace extends DriveCommandBase {
     } catch(Exception e) {
       SmartDashboardLogger.errorString("Trajectory Error Message", e.getLocalizedMessage());
     }
+
+    if (clawSubsystem.isConeMode()) {
+      leds.setProcess(LEDProcess.SCORING_CONE);
+    } else {
+      leds.setProcess(LEDProcess.SCORING_CUBE);
+    }
   }
 
   @Override
@@ -197,6 +207,7 @@ public class AutoPlace extends DriveCommandBase {
   public void end(boolean interrupted) {
     // armSubsystem.setRotation(ArmConstants.STOWED_ROTATION);
     // armSubsystem.setExtension(ArmConstants.STOWED_EXTENSION);
+    leds.setProcess(LEDProcess.DEFAULT);
   }
 
   @Override

@@ -12,22 +12,23 @@ import frc.robot.commands.arm.auto.PickupConeAuto;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.claw.ClawSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class ThreePieceBalanceAuto extends SequentialCommandGroup {
   
-  public ThreePieceBalanceAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem) {
+  public ThreePieceBalanceAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, LEDSubsystem leds) {
         
     addCommands(
       new ShootCubeAuto(armSubsystem, clawSubsystem),
       
       new ParallelCommandGroup(
-        new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, TrajectoryConstants.THREE_PIECE_BALANCE_AUTO_FIRST, true),
+        new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, leds, TrajectoryConstants.THREE_PIECE_BALANCE_AUTO_FIRST, true),
         new PickupConeAuto(armSubsystem, clawSubsystem)
       ),
 
       new ParallelCommandGroup(
-        new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, TrajectoryConstants.THREE_PIECE_BALANCE_AUTO_SECOND),
+        new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, leds, TrajectoryConstants.THREE_PIECE_BALANCE_AUTO_SECOND),
         new MoveArmToPlaceConeAuto(armSubsystem, clawSubsystem)
       ),
 
@@ -35,7 +36,7 @@ public class ThreePieceBalanceAuto extends SequentialCommandGroup {
       new WaitCommand(.3),
       new MoveArmToStowed(armSubsystem, clawSubsystem),
 
-      new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, TrajectoryConstants.THREE_PIECE_BALANCE_AUTO_THIRD)
+      new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, leds, TrajectoryConstants.THREE_PIECE_BALANCE_AUTO_THIRD)
 
     );
   }
