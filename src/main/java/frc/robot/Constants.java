@@ -208,10 +208,13 @@ public final class Constants {
         MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED
       );
 
-    public static final double DRIVE_F = 0.059;
+    public static final double DRIVE_F = 0; // 0.059;
     public static final double DRIVE_P = 0.3; // 0.19;
     public static final double DRIVE_I = 0;
     public static final double DRIVE_D = 0;
+    public static final double DRIVE_S = 0.73394;
+    public static final double DRIVE_V = 2.4068;
+    public static final double DRIVE_A = 0.28749;
   }
 
   public static final class ArmConstants {

@@ -1,6 +1,7 @@
 package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
@@ -38,6 +39,12 @@ public class SwerveModule {
     DriveConstants.TURN_S, 
     DriveConstants.TURN_V, 
     DriveConstants.TURN_A
+  );
+
+  private final SimpleMotorFeedforward driveFeedForward = new SimpleMotorFeedforward(
+    ModuleConstants.DRIVE_S,
+    ModuleConstants.DRIVE_V,
+    ModuleConstants.DRIVE_A
   );
 
   private String name;
@@ -161,7 +168,8 @@ public class SwerveModule {
     double desiredDriveEncoderUnitsPer100MS = desiredDriveRPM / 600.0 * 2048;
 
     // Sets the drive motor's speed using the built in pid controller
-    driveMotor.set(ControlMode.Velocity, desiredDriveEncoderUnitsPer100MS);
+    driveMotor.set(ControlMode.Velocity, desiredDriveEncoderUnitsPer100MS, 
+      DemandType.ArbitraryFeedForward, driveFeedForward.calculate(optimizedDesiredState.speedMetersPerSecond));
 
     // Calculate the turning motor output from the turn PID controller.
     double turnOutput =
