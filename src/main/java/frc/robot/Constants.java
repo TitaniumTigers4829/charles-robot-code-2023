@@ -13,7 +13,8 @@ public final class Constants {
   private Constants() {}
 
   public static final class HardwareConstants {
-    public static final String CANIVORE_CAN_BUS_STRING = "Canivore 1";
+    // public static final String CANIVORE_CAN_BUS_STRING = "Canivore 1";
+    public static final String CANIVORE_CAN_BUS_STRING = "rio";
     public static final String RIO_CAN_BUS_STRING = "rio";
 
     public static final double FALCON_ENCODER_RESOLUTION = 2048.0;
@@ -321,6 +322,7 @@ public final class Constants {
     public static final double HOLD_CUBE_INTAKE_SPEED = 0.05;
 
     public static final double PLACE_CONE_INTAKE_SPEED = -0.08;
+    public static final double PLACE_CUBE_INTAKE_SPEED = -0.08;
     public static final double SHOOT_CUBE_INTAKE_SPEED = -1;
   }
 
