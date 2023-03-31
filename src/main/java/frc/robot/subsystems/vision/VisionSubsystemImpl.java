@@ -19,6 +19,7 @@ public class VisionSubsystemImpl  implements VisionSubsystem {
   
   public VisionSubsystemImpl() {
     currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.FRONT_LIMELIGHT_NAME);
+    visionThread();
   }
 
   @Override
