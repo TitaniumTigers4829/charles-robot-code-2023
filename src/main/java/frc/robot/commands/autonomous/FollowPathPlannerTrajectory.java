@@ -34,9 +34,9 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
   private final double autoMaxAcceleration = TrajectoryConstants.MAX_ACCELERATION - .5;
 
   // Your probably only want to edit the P values
-  private final PIDController xController = new PIDController(TrajectoryConstants.X_CONTROLLER_P - 2.5, 0, 0);
-  private final PIDController yController = new PIDController(TrajectoryConstants.Y_CONTROLLER_P - 2.5, 0, 0);
-  private final PIDController thetaController = new PIDController(TrajectoryConstants.THETA_CONTROLLER_P - 1.3, 0, 0);
+  private final PIDController xController = new PIDController(TrajectoryConstants.DEPLOYED_X_CONTROLLER_P, 0, 0);
+  private final PIDController yController = new PIDController(TrajectoryConstants.DEPLOYED_Y_CONTROLLER_P, 0, 0);
+  private final PIDController thetaController = new PIDController(TrajectoryConstants.DEPLOYED_THETA_CONTROLLER_P, 0, 0);
   
   // IMPORTANT: Make sure your driveSubsystem has the methods resetOdometry, getPose, and setModuleStates
   
@@ -58,7 +58,7 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
     this.resetOdometryToTrajectoryStart = resetOdometryToTrajectoryStart;
 
     // Makes a trajectory                                                     
-    PathPlannerTrajectory trajectoryToFollow = PathPlanner.loadPath(trajectoryName, autoMaxVelocity, autoMaxAcceleration);
+    PathPlannerTrajectory trajectoryToFollow = PathPlanner.loadPath(trajectoryName, 3, 1.5);
 
     trajectoryInitialPose = trajectoryToFollow.getInitialHolonomicPose();
 

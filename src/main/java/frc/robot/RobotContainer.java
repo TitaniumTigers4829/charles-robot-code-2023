@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.arm.ManualArm;
 import frc.robot.commands.arm.MoveArmToStowed;
 import frc.robot.commands.arm.PickupGamePiece;
+import frc.robot.commands.arm.SetArmRotation;
 import frc.robot.commands.arm.teleop.PlaceConeHigh;
 import frc.robot.commands.autonomous.AutoPlace;
 import frc.robot.commands.autonomous.SimpleAuto;
@@ -47,7 +48,7 @@ public class RobotContainer {
   public final VisionSubsystem visionSubsystem;
   public final ArmSubsystem armSubsystem;
   public final ClawSubsystem clawSubsystem;
-  public final LEDSubsystem leds;
+  // public final LEDSubsystem leds;
 
   private final Joystick driverJoystick;
   private final Joystick operatorJoystick;
@@ -67,14 +68,13 @@ public class RobotContainer {
     visionSubsystem = new VisionSubsystemImpl();
     armSubsystem = new ArmSubsystemImpl();
     clawSubsystem = new ClawSubsystemImpl();
-    leds = new LEDSubsystemImplSpark();
+    // leds = new LEDSubsystemImplSpark();
 
     autoChooser = new SendableChooser<Command>();
     autoChooser.setDefaultOption("2 cone balance", new TwoConeBalanceAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem));
     autoChooser.addOption("Simple Auto", new SimpleAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem));
     SmartDashboard.putData("Auto chooser", autoChooser);
-
-    configureButtonBindings();
+    
   }
 
   private static double deadband(double value, double deadband) {
@@ -170,13 +170,14 @@ public class RobotContainer {
     // place game piece
     JoystickButton operatorAButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_A_BUTTON_ID);
     // operatorAButton.whileTrue(new PlaceGamePiece(armSubsystem, clawSubsystem, ArmConstants.PLACE_HIGH_ROTATION, ArmConstants.PLACE_HIGH_EXTENSION));
-    operatorAButton.whileTrue(new PlaceConeHigh(armSubsystem, clawSubsystem));
-    operatorAButton.onFalse(new MoveArmToStowed(armSubsystem, clawSubsystem));
+    // operatorAButton.whileTrue(new PlaceConeHigh(armSubsystem, clawSubsystem));
+    // operatorAButton.onFalse(new MoveArmToStowed(armSubsystem, clawSubsystem));
 
     // pickup game piece
     JoystickButton operatorBButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_B_BUTTON_ID);
-    operatorBButton.whileTrue(new PickupGamePiece(armSubsystem, clawSubsystem, ArmConstants.PICKUP_GROUND_ROTATION, ArmConstants.PICKUP_GROUND_EXTENSION));
-    operatorBButton.onFalse(new MoveArmToStowed(armSubsystem, clawSubsystem));
+    // operatorBButton.whileTrue(new PickupGamePiece(armSubsystem, clawSubsystem, ArmConstants.PICKUP_GROUND_ROTATION, ArmConstants.PICKUP_GROUND_EXTENSION));
+    // operatorBButton.onFalse(new MoveArmToStowed(armSubsystem, clawSubsystem));
+    operatorBButton.onTrue(new SetArmRotation(armSubsystem, 180));
 
     // reset encoders
     POVButton operatorRightDirectionPad = new POVButton(operatorJoystick, 90);

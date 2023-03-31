@@ -15,6 +15,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -32,7 +33,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   private final SwerveModule rearLeftSwerveModule;
   private final SwerveModule rearRightSwerveModule;
 
-  private final AHRS gyro;
+  private final Gyro gyro;
   private final SwerveDrivePoseEstimator odometry;
 
   private double gyroOffset = 0;
@@ -117,17 +118,20 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
 
   @Override
   public double getHeading() {
+    // return (-gyro.getAngle() + this.gyroOffset) % 360;
     return (-gyro.getAngle() + this.gyroOffset) % 360;
   }
 
   @Override
   public double getRoll() {
-    return (-gyro.getRoll() + this.rollOffset) % 360;
+    // return (-gyro.getRoll() + this.rollOffset) % 360;
+    return 0;
   }
 
   @Override
   public double getPitch() {
-    return (-gyro.getPitch() + this.pitchOffset) % 360;
+    // return (-gyro.getPitch() + this.pitchOffset) % 360;
+    return 0;
   }
 
   @Override
@@ -162,8 +166,8 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
 
   @Override
   public void zeroPitchAndRoll() {
-    pitchOffset = gyro.getPitch();
-    rollOffset = gyro.getRoll();
+    // pitchOffset = gyro.getPitch();
+    // rollOffset = gyro.getRoll();
   }
 
   @Override

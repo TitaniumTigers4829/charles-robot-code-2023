@@ -3,7 +3,6 @@ package frc.robot.subsystems.vision;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.TrajectoryConstants;
@@ -12,27 +11,16 @@ import frc.robot.extras.SmartDashboardLogger;
 import frc.robot.extras.LimelightHelpers.LimelightResults;
 import frc.robot.extras.LimelightHelpers.LimelightTarget_Fiducial;
 
-public class VisionSubsystemImpl  implements VisionSubsystem {
+public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsystem {
 
   private LimelightResults currentlyUsedLimelightResults;
+  private LimelightResults frontLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.FRONT_LIMELIGHT_NAME);;
+  private LimelightResults backLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.BACK_LIMELIGHT_NAME);;
   private String currentlyUsedLimelight = LimelightConstants.FRONT_LIMELIGHT_NAME;
+  private boolean wasFrontLimelightUsedLast = false;
   
   public VisionSubsystemImpl() {
     currentlyUsedLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.FRONT_LIMELIGHT_NAME);
-    visionThread();
-  }
-
-  @Override
-  public void visionThread() {
-    try {
-      new Thread(() -> {
-        while(true) {
-          periodic();
-        }
-      }).start();
-    } catch(Exception e) {
-      SmartDashboardLogger.errorString("There was an error with the vision thread", e.getMessage());
-    }
   }
 
   @Override
@@ -141,8 +129,14 @@ public class VisionSubsystemImpl  implements VisionSubsystem {
   @Override
   public void periodic() {
     // Every periodic chooses the limelight to use based off of their distance from april tags
-    LimelightResults frontLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.FRONT_LIMELIGHT_NAME);
-    LimelightResults backLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.BACK_LIMELIGHT_NAME);
+    if (wasFrontLimelightUsedLast) {
+      backLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.BACK_LIMELIGHT_NAME);
+    } else {
+      frontLimelightResults = LimelightHelpers.getLatestResults(LimelightConstants.FRONT_LIMELIGHT_NAME);
+    }
+
+    wasFrontLimelightUsedLast = !wasFrontLimelightUsedLast;
+
     LimelightTarget_Fiducial[] frontLimelightAprilTags = frontLimelightResults.targetingResults.targets_Fiducials;
     LimelightTarget_Fiducial[] backLimelightAprilTags = backLimelightResults.targetingResults.targets_Fiducials;
 
@@ -156,7 +150,7 @@ public class VisionSubsystemImpl  implements VisionSubsystem {
       ? LimelightConstants.FRONT_LIMELIGHT_NAME : LimelightConstants.BACK_LIMELIGHT_NAME;
     currentlyUsedLimelightResults = currentlyUsedLimelight == LimelightConstants.FRONT_LIMELIGHT_NAME
       ? frontLimelightResults : backLimelightResults;
-    SmartDashboard.putString("Limelight Pos", getPoseFromAprilTags().toString());
+    SmartDashboardLogger.infoString("Limelight Pos", getPoseFromAprilTags().toString());
   }
 
 }

@@ -79,9 +79,9 @@ public class AutoPickup extends DriveCommandBase {
     SmartDashboard.putString("end", end.toString());
 
     // You probably only want to edit the P values
-    PIDController xController = new PIDController(TrajectoryConstants.X_CONTROLLER_P, 0, 0);
-    PIDController yController = new PIDController(TrajectoryConstants.Y_CONTROLLER_P, 0, 0);
-    PIDController thetaController = new PIDController(TrajectoryConstants.THETA_CONTROLLER_P, 0, 0);
+    PIDController xController = new PIDController(TrajectoryConstants.DEPLOYED_X_CONTROLLER_P, 0, 0);
+    PIDController yController = new PIDController(TrajectoryConstants.REAL_TIME_Y_CONTROLLER_P, 0, 0);
+    PIDController thetaController = new PIDController(TrajectoryConstants.REAL_TIME_THETA_CONTROLLER_P, 0, 0);
 
     // This should be fine, but is here just in case so the robot doesn't crash during a match
     try {

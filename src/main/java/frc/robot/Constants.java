@@ -152,7 +152,7 @@ public final class Constants {
     public static final double FRONT_LEFT_ZERO_ANGLE = 169.716796875;
     public static final double FRONT_RIGHT_ZERO_ANGLE = -76.46484375;
     public static final double REAR_LEFT_ZERO_ANGLE = 46.58203125;
-    public static final double REAR_RIGHT_ZERO_ANGLE = -78.57421875;
+    public static final double REAR_RIGHT_ZERO_ANGLE = -78.57421875 + 90;
 
     public static final boolean FRONT_LEFT_CANCODER_REVERSED = false;
     public static final boolean FRONT_RIGHT_CANCODER_REVERSED = false;
@@ -222,7 +222,7 @@ public final class Constants {
     public static final int EXTENSION_LOCK_ENGAGED_ID = 2;
     public static final int EXTENSION_LOCK_DISENGAGED_ID = 3;
 
-    public static final double ROTATION_ENCODER_OFFSET = 95.009765625;
+    public static final double ROTATION_ENCODER_OFFSET = -9.580078125 - 180;
 
     public static final double EXTENSION_MOTOR_GEAR_RATIO = 16.0;
     public static final double EXTENSION_SPOOL_DIAMETER = Units.inchesToMeters(2.5);
@@ -269,15 +269,15 @@ public final class Constants {
     public static final double PICKUP_CHUTE_ROTATION = 103;
     public static final double PICKUP_CHUTE_EXTENSION = .45;
 
-    public static final double PLACE_HIGH_ROTATION = 240;
+    public static final double PLACE_HIGH_ROTATION = 238;
     public static final double PLACE_HIGH_EXTENSION = 0.99;
     // TODO: Get values
     public static final double PLACE_MIDDLE_ROTATION = 240;
     public static final double PLACE_MIDDLE_EXTENSION = 0.99;
     public static final double PLACE_LOW_ROTATION = 240;
     public static final double PLACE_LOW_EXTENSION = 0.99;
-    public static final double PLACE_MIDDLE_AUTO_ROTATION = 105;
-    public static final double PLACE_MIDDLE_AUTO_EXTENSION = 0.99;
+    public static final double PLACE_MIDDLE_AUTO_ROTATION = 109.5;
+    public static final double PLACE_MIDDLE_AUTO_EXTENSION = 0.9;
     public static final double SHOOT_CUBE_MIDDLE_ROTATION = 135;
 
     public static final double ARM_WEIGHT_NEWTONS = 9.8 * 25;
@@ -463,12 +463,15 @@ public final class Constants {
   public static final class TrajectoryConstants {
     public static final double MAX_SPEED = 4;
     public static final double MAX_ACCELERATION = 3;
-    public static final double X_CONTROLLER_P = 3;
-    public static final double Y_CONTROLLER_P = 3;
-    public static final double THETA_CONTROLLER_P = 1.5;
+    public static final double DEPLOYED_X_CONTROLLER_P = .25;
+    public static final double DEPLOYED_Y_CONTROLLER_P = .25;
+    public static final double DEPLOYED_THETA_CONTROLLER_P = .4;
+    public static final double REAL_TIME_X_CONTROLLER_P = 2;
+    public static final double REAL_TIME_Y_CONTROLLER_P = 2;
+    public static final double REAL_TIME_THETA_CONTROLLER_P = 3;
     public static final double THETA_PROFILED_CONTROLLER_P = 1;
-    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 2 * Math.PI ;
-    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = 3 * Math.PI;
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI ;
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = 2 * Math.PI;
     // The length of the field in the x direction (left to right)
     public static final double FIELD_LENGTH_METERS = 16.54175;
     // The length of the field in the y direction (top to bottom)
@@ -495,7 +498,7 @@ public final class Constants {
 
     // Factors in bumper width and wheelbase
     public static final double BLUE_NODE_X_POSITION = 1.96;
-    public static final double RED_NODE_Y_POSITION = 14.64;
+    public static final double RED_NODE_Y_POSITION = 14.61;
     public static final double BLUE_OUTER_WAYPOINT_X = 5.3;
     public static final double RED_OUTER_WAYPOINT_X = 11.26;
     public static final double BLUE_INNER_WAYPOINT_X = 2.5;
@@ -510,6 +513,8 @@ public final class Constants {
     public static final String TWO_CONE_BALANCE_AUTO_THIRD = "Two Cone Balance Third Red";
 
     public static final String THREE_PIECE_BALANCE_AUTO_FIRST = "Three Piece Balance First Red";
+    public static final String THREE_PIECE_BALANCE_AUTO_SECOND = "Three Piece Balance Second Red";
+    public static final String THREE_PIECE_BALANCE_AUTO_THIRD = "Three Piece Balance Third Red";
   }
 
   public static final class SmarterDashboardConstants {

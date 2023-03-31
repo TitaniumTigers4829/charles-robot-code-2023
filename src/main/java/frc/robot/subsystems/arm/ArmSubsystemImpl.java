@@ -8,6 +8,7 @@ import com.ctre.phoenix.sensors.WPI_CANCoder;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
@@ -49,11 +50,13 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     extensionMotor = new WPI_TalonFX(ArmConstants.EXTENSION_MOTOR_ID);
     // extensionLockSolenoid = new DoubleSolenoid(Constants.PNEUMATICS_MODULE_TYPE, ArmConstants.EXTENSION_LOCK_ENGAGED_ID, ArmConstants.EXTENSION_LOCK_DISENGAGED_ID);
     
+    rotationEncoder.configFactoryDefault();
     rotationEncoder.configMagnetOffset(ArmConstants.ROTATION_ENCODER_OFFSET);
     rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
     rotationEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
     rotationEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition, 0);
 
+    leaderRotationMotor.configFactoryDefault();
     leaderRotationMotor.configRemoteFeedbackFilter(rotationEncoder, 0, 0);
     leaderRotationMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
     leaderRotationMotor.config_kP(0, ArmConstants.ROTATION_P);
@@ -63,25 +66,32 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     leaderRotationMotor.configMotionAcceleration(ArmConstants.ROTATION_MAX_ACCELERATION_ENCODER_UNITS);
     leaderRotationMotor.configMotionSCurveStrength(ArmConstants.ROTATION_SMOOTHING);
     leaderRotationMotor.configAllowableClosedloopError(0, ArmConstants.ROTATION_TOLERANCE_ENCODER_UNITS);
-    leaderRotationMotor.configForwardSoftLimitThreshold(ArmConstants.MAX_ROTATION_ENCODER_UNITS);
-    leaderRotationMotor.configForwardSoftLimitEnable(true);
-    leaderRotationMotor.configReverseSoftLimitThreshold(ArmConstants.MIN_ROTATION_ENCODER_UNITS);
-    leaderRotationMotor.configReverseSoftLimitEnable(true);
+    // leaderRotationMotor.configForwardSoftLimitThreshold(ArmConstants.MAX_ROTATION_ENCODER_UNITS);
+    // leaderRotationMotor.configForwardSoftLimitEnable(true);
+    // leaderRotationMotor.configReverseSoftLimitThreshold(ArmConstants.MIN_ROTATION_ENCODER_UNITS);
+    // leaderRotationMotor.configReverseSoftLimitEnable(true);
     leaderRotationMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
+    // leaderRotationMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
 
     leaderRotationMotor.setInverted(ArmConstants.LEADER_ROTATION_MOTOR_INVERTED);
     leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
 
+    followerRotationMotor.configFactoryDefault();
     followerRotationMotor.setInverted(InvertType.OpposeMaster);
     followerRotationMotor.setNeutralMode(NeutralMode.Brake);
     followerRotationMotor.setSensorPhase(true);    
+    // followerRotationMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
     followerRotationMotor.follow(leaderRotationMotor);
 
+    extensionMotor.configFactoryDefault();
     extensionMotor.setInverted(ArmConstants.EXTENSION_MOTOR_INVERTED);
     extensionMotor.setNeutralMode(NeutralMode.Brake);
     extensionMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
     extensionMotor.configReverseSoftLimitThreshold(ArmConstants.MAX_EXTENSION_METERS * ArmConstants.EXTENSION_METERS_TO_MOTOR_POS);
     extensionMotor.configReverseSoftLimitEnable(true);
+    // TODO Test
+    // extensionMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+    // extensionMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
   }
 
   @Override
@@ -174,5 +184,8 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   }
 
   @Override
-  public void periodic() {   }
+  public void periodic() {
+    SmartDashboardLogger.debugNumber("Arm Rotation", getRotation());
+    SmartDashboardLogger.debugNumber("Arm Extension", getExtension());
+  }
 }

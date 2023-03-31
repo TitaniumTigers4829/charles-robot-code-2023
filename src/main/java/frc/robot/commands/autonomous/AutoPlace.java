@@ -61,7 +61,8 @@ public class AutoPlace extends DriveCommandBase {
     List<PathPoint> pathPoints = new ArrayList<PathPoint>();
     Translation2d start = new Translation2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY());
     Rotation2d startRotation = driveSubsystem.getPose().getRotation();
-    pathPoints.add(new PathPoint(start, startRotation, startRotation));
+    pathPoints.add(new PathPoint(start, Rotation2d.fromDegrees(0), startRotation));
+    // .withControlLengths(0.001, 0.001));)
     double endX;
     double endY;
     Rotation2d endRotation;
@@ -69,7 +70,7 @@ public class AutoPlace extends DriveCommandBase {
     // The middle waypoints and end pos change depending on alliance
     if (DriverStation.getAlliance() == Alliance.Blue) {
       endX = TrajectoryConstants.BLUE_NODE_X_POSITION;
-      endY = TrajectoryConstants.BLUE_NODE_Y_POSITIONS[(driveSubsystem.getSelectedNode() % 9) - 1]; // NodeID starts at  1
+      endY = TrajectoryConstants.BLUE_NODE_Y_POSITIONS[(driveSubsystem.getSelectedNode() - 1) % 9]; // NodeID starts at  1
       endRotation = TrajectoryConstants.BLUE_END_ROTATION;
       // Makes waypoints in the trajectory so the robot doesn't hit the charging station
       if (driveSubsystem.getPose().getX() > TrajectoryConstants.BLUE_OUTER_WAYPOINT_X) {
@@ -88,22 +89,21 @@ public class AutoPlace extends DriveCommandBase {
       }
     } else {
       endX = TrajectoryConstants.RED_NODE_Y_POSITION;
-      endY = TrajectoryConstants.RED_NODE_Y_POSITIONS[(8) - 1];
-      // endY = TrajectoryConstants.RED_NODE_Y_POSITIONS[(driveSubsystem.getSelectedNode() % 9) - 1];
+      endY = TrajectoryConstants.RED_NODE_Y_POSITIONS[(driveSubsystem.getSelectedNode() - 1) % 9];
       endRotation = TrajectoryConstants.RED_END_ROTATION;
       if (driveSubsystem.getPose().getX() < TrajectoryConstants.RED_OUTER_WAYPOINT_X) {
         if (driveSubsystem.getPose().getY() - TrajectoryConstants.LOWER_WAYPOINT_Y > (TrajectoryConstants.UPPER_WAYPOINT_Y - TrajectoryConstants.LOWER_WAYPOINT_Y) / 2) {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_OUTER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_OUTER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), Rotation2d.fromDegrees(0), endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), Rotation2d.fromDegrees(0), endRotation));
         } else {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_OUTER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_OUTER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), Rotation2d.fromDegrees(0), endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), Rotation2d.fromDegrees(0), endRotation));
         }
       } else if (driveSubsystem.getPose().getX() < TrajectoryConstants.RED_INNER_WAYPOINT_X && driveSubsystem.getPose().getY() > TrajectoryConstants.UPPER_WAYPOINT_Y && driveSubsystem.getPose().getY() < TrajectoryConstants.LOWER_WAYPOINT_Y) {
         if (driveSubsystem.getPose().getY() - TrajectoryConstants.LOWER_WAYPOINT_Y > (TrajectoryConstants.UPPER_WAYPOINT_Y - TrajectoryConstants.LOWER_WAYPOINT_Y) / 2) {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), Rotation2d.fromDegrees(0), endRotation));
         } else {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), Rotation2d.fromDegrees(0), endRotation));
         }
       }
     }
@@ -112,7 +112,7 @@ public class AutoPlace extends DriveCommandBase {
 
     SmartDashboard.putString("End", end.toString());
 
-    pathPoints.add(new PathPoint(end, endRotation, endRotation));
+    pathPoints.add(new PathPoint(end, Rotation2d.fromDegrees(0), endRotation));
 
     endPose = new Pose2d(endY, endY, endRotation);
 
@@ -129,9 +129,9 @@ public class AutoPlace extends DriveCommandBase {
     }
 
     // You probably only want to edit the P values
-    PIDController xController = new PIDController(TrajectoryConstants.X_CONTROLLER_P, 0, 0);
-    PIDController yController = new PIDController(TrajectoryConstants.Y_CONTROLLER_P, 0, 0);
-    PIDController thetaController = new PIDController(TrajectoryConstants.THETA_CONTROLLER_P, 0, 0);
+    PIDController xController = new PIDController(TrajectoryConstants.DEPLOYED_X_CONTROLLER_P, 0, 0);
+    PIDController yController = new PIDController(TrajectoryConstants.REAL_TIME_Y_CONTROLLER_P, 0, 0);
+    PIDController thetaController = new PIDController(TrajectoryConstants.REAL_TIME_THETA_CONTROLLER_P, 0, 0);
 
     // This should be fine, but is here just in case so the robot doesn't crash during a match
     try {
@@ -172,31 +172,31 @@ public class AutoPlace extends DriveCommandBase {
   @Override
   public void execute() {
     super.execute();
-    if ((DriverStation.getAlliance() == Alliance.Blue && driveSubsystem.getPose().getX() < TrajectoryConstants.BLUE_INNER_WAYPOINT_X)
-      || (DriverStation.getAlliance() == Alliance.Red && driveSubsystem.getPose().getX() > TrajectoryConstants.RED_INNER_WAYPOINT_X)) {
-        armSubsystem.setRotation(armRotation);
-        armSubsystem.setExtension(armExtension);
-        if (clawSubsystem.isConeMode()) {
-          clawSubsystem.setWristPosition(180);
-        }
-    }
+    // if ((DriverStation.getAlliance() == Alliance.Blue && driveSubsystem.getPose().getX() < TrajectoryConstants.BLUE_INNER_WAYPOINT_X)
+    //   || (DriverStation.getAlliance() == Alliance.Red && driveSubsystem.getPose().getX() > TrajectoryConstants.RED_INNER_WAYPOINT_X)) {
+    //     armSubsystem.setRotation(armRotation);
+    //     armSubsystem.setExtension(armExtension);
+    //     if (clawSubsystem.isConeMode()) {
+    //       clawSubsystem.setWristPosition(180);
+    //     }
+    // }
 
-    if (Math.abs(driveSubsystem.getPose().getX() - endPose.getX()) < TrajectoryConstants.X_TOLERANCE
-      && Math.abs(driveSubsystem.getPose().getY() - endPose.getY()) < TrajectoryConstants.Y_TOLERANCE
-      && Math.abs(driveSubsystem.getPose().getRotation().getDegrees() - endPose.getRotation().getDegrees()) < TrajectoryConstants.THETA_TOLERANCE) {
-        clawSubsystem.open();
-        if (clawSubsystem.isConeMode()) {
-          clawSubsystem.setIntakeSpeed(ClawConstants.PLACE_CONE_INTAKE_SPEED);
-        } else {
-          clawSubsystem.setIntakeSpeed(ClawConstants.PLACE_CUBE_INTAKE_SPEED);
-        }
-      }
+    // if (Math.abs(driveSubsystem.getPose().getX() - endPose.getX()) < TrajectoryConstants.X_TOLERANCE + .01
+    //   && Math.abs(driveSubsystem.getPose().getY() - endPose.getY()) < TrajectoryConstants.Y_TOLERANCE + .01
+    //   && Math.abs(driveSubsystem.getPose().getRotation().getDegrees() - endPose.getRotation().getDegrees()) < TrajectoryConstants.THETA_TOLERANCE + 1) {
+    //     clawSubsystem.open();
+    //     if (clawSubsystem.isConeMode()) {
+    //       clawSubsystem.setIntakeSpeed(ClawConstants.PLACE_CONE_INTAKE_SPEED);
+    //     } else {
+    //       clawSubsystem.setIntakeSpeed(ClawConstants.PLACE_CUBE_INTAKE_SPEED);
+    //     }
+    //   }
   }
 
   @Override
   public void end(boolean interrupted) {
-    armSubsystem.setRotation(ArmConstants.STOWED_ROTATION);
-    armSubsystem.setExtension(ArmConstants.STOWED_EXTENSION);
+    // armSubsystem.setRotation(ArmConstants.STOWED_ROTATION);
+    // armSubsystem.setExtension(ArmConstants.STOWED_EXTENSION);
   }
 
   @Override

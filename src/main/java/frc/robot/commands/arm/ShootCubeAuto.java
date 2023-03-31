@@ -15,6 +15,7 @@ public class ShootCubeAuto extends SequentialCommandGroup {
   public ShootCubeAuto(ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem) {
     addCommands(
       new InstantCommand(clawSubsystem::setCargoModeCube),
+      new InstantCommand(armSubsystem::resetExtensionController),
       new SetClawRotation(clawSubsystem, 0),
       new SetClawIntakeSpeed(clawSubsystem, ClawConstants.HOLD_CUBE_INTAKE_SPEED),
       new SetArmRotation(armSubsystem, ArmConstants.SHOOT_CUBE_MIDDLE_ROTATION),

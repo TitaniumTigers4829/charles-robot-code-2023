@@ -2,6 +2,7 @@ package frc.robot.subsystems.claw;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
@@ -44,11 +45,15 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     wristMotor.setNeutralMode(NeutralMode.Brake);
     wristMotor.setSelectedSensorPosition(0);
     wristMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
+    wristMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+    wristMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
 
     intakeMotor.configFactoryDefault();
     intakeMotor.setInverted(ClawConstants.INTAKE_MOTOR_INVERTED);
     intakeMotor.setNeutralMode(NeutralMode.Brake);
     intakeMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
+    intakeMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+    intakeMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
 
     clawSolenoid = new DoubleSolenoid(
       HardwareConstants.PNEUMATICS_MODULE_TYPE,

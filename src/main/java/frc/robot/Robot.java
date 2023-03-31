@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.LEDConstants.LEDProcess;
+import frc.robot.subsystems.arm.ArmSubsystem;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
@@ -84,7 +85,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
     }
 
-    m_robotContainer.leds.setProcess(LEDProcess.DEFAULT);
+    // m_robotContainer.leds.setProcess(LEDProcess.DEFAULT);
   }
 
   /**
@@ -105,8 +106,10 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    m_robotContainer.leds.setProcess(LEDProcess.DEFAULT);
+    // m_robotContainer.leds.setProcess(LEDProcess.DEFAULT);
     m_robotContainer.configureButtonBindings();
+    m_robotContainer.armSubsystem.setRotationSpeed(0);
+    m_robotContainer.armSubsystem.setExtensionSpeed(0);
   }
 
   /**

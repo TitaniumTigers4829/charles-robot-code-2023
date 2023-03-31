@@ -3,6 +3,7 @@ package frc.robot.subsystems.drive;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -69,6 +70,7 @@ public class SwerveModule {
     turnEncoder.configMagnetOffset(-angleZero);
     turnEncoder.configSensorDirection(encoderReversed);
 
+    driveMotor.configFactoryDefault();
     driveMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
     driveMotor.config_kF(0, ModuleConstants.DRIVE_F);
     driveMotor.config_kP(0, ModuleConstants.DRIVE_P);
@@ -79,12 +81,17 @@ public class SwerveModule {
     driveMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND * 10);
     driveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 65, 0.1));
     driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.1));
+    driveMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+    driveMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 20);
 
+    turnMotor.configFactoryDefault();
     turnMotor.setNeutralMode(NeutralMode.Brake);
     turnMotor.setInverted(true);
     turnMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
     turnMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 65, 0.1));
     turnMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.1));
+    turnMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+    turnMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
 
     // Limit the PID Controller's input range between -pi and pi and set the input to be continuous.
     turnPIDController.enableContinuousInput(-Math.PI, Math.PI);
