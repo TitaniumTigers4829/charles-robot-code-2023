@@ -7,6 +7,7 @@ package frc.robot.commands.drive;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.DriveCommandBase;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -18,7 +19,6 @@ public class DriveCommand extends DriveCommandBase {
 
   private final DoubleSupplier leftY, leftX, rightX;
   private final BooleanSupplier isFieldRelative;
-
 
   /**
    * The command for driving the robot using joystick inputs.
@@ -58,7 +58,7 @@ public class DriveCommand extends DriveCommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    driveSubsystem.drive(0, 0, 0, false);
+    driveSubsystem.drive(0, 0, 0, true);
   }
 
   @Override

@@ -1,7 +1,5 @@
 package frc.robot.extras;
 
-import frc.robot.dashboard.SmartDashboardLogger;
-
 public final class SingleLinearInterpolator {
 
   private final double[][] lookupTable;

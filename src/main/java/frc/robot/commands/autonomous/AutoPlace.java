@@ -9,9 +9,14 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ClawConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.commands.DriveCommandBase;
+import frc.robot.extras.SmartDashboardLogger;
+import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.claw.ClawSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
@@ -27,23 +32,27 @@ import com.pathplanner.lib.PathPoint;
 public class AutoPlace extends DriveCommandBase {
 
   private final DriveSubsystem driveSubsystem;
+  private final ArmSubsystem armSubsystem;
+  private final ClawSubsystem clawSubsystem;
   private final BooleanSupplier isFinished;
-  private final int nodeID;
+  private Pose2d endPose;
+  private double armRotation;
+  private double armExtension;
 
   /**
    * Makes the robot drive to the specified node and place its cargo.
    * @param driveSubsystem The subsystem for the swerve drive.
    * @param visionSubsystem The subsystem for vision measurements
    * @param isFinished The boolean supplier that returns true if the trajectory should be finished.
-   * @param nodeID The ID starting at index 1 for the node to place something at.
    */
-  public AutoPlace(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, BooleanSupplier isFinished, int nodeID) {
+  public AutoPlace(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, BooleanSupplier isFinished) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
+    this.armSubsystem = armSubsystem;
+    this.clawSubsystem = clawSubsystem;
     // Doesn't require the drive subsystem because RealTimePPSwerveControllerCommand does
-    addRequirements(visionSubsystem);
+    addRequirements(visionSubsystem, armSubsystem, clawSubsystem);
     this.isFinished = isFinished;
-    this.nodeID = nodeID;
   }
 
   @Override
@@ -60,7 +69,7 @@ public class AutoPlace extends DriveCommandBase {
     // The middle waypoints and end pos change depending on alliance
     if (DriverStation.getAlliance() == Alliance.Blue) {
       endX = TrajectoryConstants.BLUE_NODE_X_POSITION;
-      endY = TrajectoryConstants.BLUE_NODE_Y_POSITIONS[(nodeID % 9) - 1]; // NodeID starts at  1
+      endY = TrajectoryConstants.BLUE_NODE_Y_POSITIONS[(driveSubsystem.getSelectedNode() % 9) - 1]; // NodeID starts at  1
       endRotation = TrajectoryConstants.BLUE_END_ROTATION;
       // Makes waypoints in the trajectory so the robot doesn't hit the charging station
       if (driveSubsystem.getPose().getX() > TrajectoryConstants.BLUE_OUTER_WAYPOINT_X) {
@@ -70,7 +79,7 @@ public class AutoPlace extends DriveCommandBase {
         } else {
           pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_OUTER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));
           pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));        }
-      } else if (driveSubsystem.getPose().getX() > TrajectoryConstants.BLUE_INNER_WAYPOINT_X) {
+      } else if (driveSubsystem.getPose().getX() > TrajectoryConstants.BLUE_INNER_WAYPOINT_X && driveSubsystem.getPose().getY() > TrajectoryConstants.UPPER_WAYPOINT_Y && driveSubsystem.getPose().getY() < TrajectoryConstants.LOWER_WAYPOINT_Y) {
         if (driveSubsystem.getPose().getY() - TrajectoryConstants.LOWER_WAYPOINT_Y > (TrajectoryConstants.UPPER_WAYPOINT_Y - TrajectoryConstants.LOWER_WAYPOINT_Y) / 2) {
           pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
         } else {
@@ -79,7 +88,8 @@ public class AutoPlace extends DriveCommandBase {
       }
     } else {
       endX = TrajectoryConstants.RED_NODE_Y_POSITION;
-      endY = TrajectoryConstants.RED_NODE_Y_POSITIONS[(nodeID % 9) - 1];
+      endY = TrajectoryConstants.RED_NODE_Y_POSITIONS[(8) - 1];
+      // endY = TrajectoryConstants.RED_NODE_Y_POSITIONS[(driveSubsystem.getSelectedNode() % 9) - 1];
       endRotation = TrajectoryConstants.RED_END_ROTATION;
       if (driveSubsystem.getPose().getX() < TrajectoryConstants.RED_OUTER_WAYPOINT_X) {
         if (driveSubsystem.getPose().getY() - TrajectoryConstants.LOWER_WAYPOINT_Y > (TrajectoryConstants.UPPER_WAYPOINT_Y - TrajectoryConstants.LOWER_WAYPOINT_Y) / 2) {
@@ -87,9 +97,10 @@ public class AutoPlace extends DriveCommandBase {
           pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
         } else {
           pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_OUTER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));        }
-      } else if (driveSubsystem.getPose().getX() > TrajectoryConstants.RED_INNER_WAYPOINT_X) {
-        if (driveSubsystem.getPose().getY() - TrajectoryConstants.LOWER_WAYPOINT_Y < (TrajectoryConstants.UPPER_WAYPOINT_Y - TrajectoryConstants.LOWER_WAYPOINT_Y) / 2) {
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));
+        }
+      } else if (driveSubsystem.getPose().getX() < TrajectoryConstants.RED_INNER_WAYPOINT_X && driveSubsystem.getPose().getY() > TrajectoryConstants.UPPER_WAYPOINT_Y && driveSubsystem.getPose().getY() < TrajectoryConstants.LOWER_WAYPOINT_Y) {
+        if (driveSubsystem.getPose().getY() - TrajectoryConstants.LOWER_WAYPOINT_Y > (TrajectoryConstants.UPPER_WAYPOINT_Y - TrajectoryConstants.LOWER_WAYPOINT_Y) / 2) {
           pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
         } else {
           pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));
@@ -99,7 +110,23 @@ public class AutoPlace extends DriveCommandBase {
 
     Translation2d end = new Translation2d(endX, endY);
 
+    SmartDashboard.putString("End", end.toString());
+
     pathPoints.add(new PathPoint(end, endRotation, endRotation));
+
+    endPose = new Pose2d(endY, endY, endRotation);
+
+    // Gets rotation and extension based off of if scoring high, mid, low
+    if (driveSubsystem.getSelectedNode() >= 18) {
+      armRotation = ArmConstants.PLACE_HIGH_ROTATION;
+      armExtension = ArmConstants.PLACE_HIGH_EXTENSION;
+    } else if (driveSubsystem.getSelectedNode() >= 18) {
+      armRotation = ArmConstants.PLACE_MIDDLE_ROTATION;
+      armExtension = ArmConstants.PLACE_MIDDLE_EXTENSION;
+    } else {
+      armRotation = ArmConstants.PLACE_LOW_ROTATION;
+      armExtension = ArmConstants.PLACE_LOW_EXTENSION;
+    }
 
     // You probably only want to edit the P values
     PIDController xController = new PIDController(TrajectoryConstants.X_CONTROLLER_P, 0, 0);
@@ -122,6 +149,8 @@ public class AutoPlace extends DriveCommandBase {
       // Makes it so wheels don't have to turn more than 90 degrees
       thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
+      SmartDashboard.putString("end state", trajectoryToFollow.getEndState().toString());
+
       new RealTimePPSwerveControllerCommand(
         trajectoryToFollow,
         driveSubsystem::getPose, // Functional interface to feed supplier
@@ -136,17 +165,39 @@ public class AutoPlace extends DriveCommandBase {
         driveSubsystem
       ).schedule();
     } catch(Exception e) {
-      SmartDashboard.putString("Trajectory Error Message", e.getLocalizedMessage());
+      SmartDashboardLogger.errorString("Trajectory Error Message", e.getLocalizedMessage());
     }
   }
 
   @Override
   public void execute() {
     super.execute();
+    if ((DriverStation.getAlliance() == Alliance.Blue && driveSubsystem.getPose().getX() < TrajectoryConstants.BLUE_INNER_WAYPOINT_X)
+      || (DriverStation.getAlliance() == Alliance.Red && driveSubsystem.getPose().getX() > TrajectoryConstants.RED_INNER_WAYPOINT_X)) {
+        armSubsystem.setRotation(armRotation);
+        armSubsystem.setExtension(armExtension);
+        if (clawSubsystem.isConeMode()) {
+          clawSubsystem.setWristPosition(180);
+        }
+    }
+
+    if (Math.abs(driveSubsystem.getPose().getX() - endPose.getX()) < TrajectoryConstants.X_TOLERANCE
+      && Math.abs(driveSubsystem.getPose().getY() - endPose.getY()) < TrajectoryConstants.Y_TOLERANCE
+      && Math.abs(driveSubsystem.getPose().getRotation().getDegrees() - endPose.getRotation().getDegrees()) < TrajectoryConstants.THETA_TOLERANCE) {
+        clawSubsystem.open();
+        if (clawSubsystem.isConeMode()) {
+          clawSubsystem.setIntakeSpeed(ClawConstants.PLACE_CONE_INTAKE_SPEED);
+        } else {
+          clawSubsystem.setIntakeSpeed(ClawConstants.PLACE_CUBE_INTAKE_SPEED);
+        }
+      }
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    armSubsystem.setRotation(ArmConstants.STOWED_ROTATION);
+    armSubsystem.setExtension(ArmConstants.STOWED_EXTENSION);
+  }
 
   @Override
   public boolean isFinished() {
