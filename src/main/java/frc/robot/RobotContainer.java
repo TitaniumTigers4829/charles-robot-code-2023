@@ -16,11 +16,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.arm.ManualArm;
 import frc.robot.commands.arm.MoveArmToStowed;
 import frc.robot.commands.arm.PickupGamePiece;
-import frc.robot.commands.arm.PlaceGamePiece;
-import frc.robot.commands.arm.SetArmExtension;
 import frc.robot.commands.arm.teleop.PlaceConeHigh;
 import frc.robot.commands.autonomous.AutoPlace;
-import frc.robot.commands.autonomous.FollowPathPlannerTrajectory;
 import frc.robot.commands.autonomous.SimpleAuto;
 import frc.robot.commands.autonomous.ThreePieceBalanceAuto;
 import frc.robot.commands.autonomous.TwoConeBalanceAuto;
@@ -50,6 +47,7 @@ public class RobotContainer {
   public final VisionSubsystem visionSubsystem;
   public final ArmSubsystem armSubsystem;
   public final ClawSubsystem clawSubsystem;
+  public final LEDSubsystem leds;
 
   private final Joystick driverJoystick;
   private final Joystick operatorJoystick;
@@ -69,11 +67,14 @@ public class RobotContainer {
     visionSubsystem = new VisionSubsystemImpl();
     armSubsystem = new ArmSubsystemImpl();
     clawSubsystem = new ClawSubsystemImpl();
+    leds = new LEDSubsystemImplSpark();
 
     autoChooser = new SendableChooser<Command>();
     autoChooser.setDefaultOption("2 cone balance", new TwoConeBalanceAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem));
     autoChooser.addOption("Simple Auto", new SimpleAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem));
     SmartDashboard.putData("Auto chooser", autoChooser);
+
+    configureButtonBindings();
   }
 
   private static double deadband(double value, double deadband) {
