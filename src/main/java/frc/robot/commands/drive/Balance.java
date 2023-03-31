@@ -52,9 +52,6 @@ public class Balance extends CommandBase {
 
   @Override
   public void execute() {
-
-    SmartDashboardLogger.debugBoolean("First Latch", firstLatch);
-    SmartDashboardLogger.debugBoolean("Second Latch", secondLatch);
   
     double error = driveSubsystem.getBalanceError();
 
