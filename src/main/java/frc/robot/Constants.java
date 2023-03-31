@@ -271,6 +271,11 @@ public final class Constants {
 
     public static final double PLACE_HIGH_ROTATION = 240;
     public static final double PLACE_HIGH_EXTENSION = 0.99;
+    // TODO: Get values
+    public static final double PLACE_MIDDLE_ROTATION = 240;
+    public static final double PLACE_MIDDLE_EXTENSION = 0.99;
+    public static final double PLACE_LOW_ROTATION = 240;
+    public static final double PLACE_LOW_EXTENSION = 0.99;
     public static final double PLACE_MIDDLE_AUTO_ROTATION = 105;
     public static final double PLACE_MIDDLE_AUTO_EXTENSION = 0.99;
     public static final double SHOOT_CUBE_MIDDLE_ROTATION = 135;

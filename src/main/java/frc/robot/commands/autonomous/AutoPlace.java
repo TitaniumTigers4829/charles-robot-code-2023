@@ -35,6 +35,9 @@ public class AutoPlace extends DriveCommandBase {
   private final ArmSubsystem armSubsystem;
   private final ClawSubsystem clawSubsystem;
   private final BooleanSupplier isFinished;
+  private Pose2d endPose;
+  private double armRotation;
+  private double armExtension;
 
   /**
    * Makes the robot drive to the specified node and place its cargo.
@@ -111,6 +114,20 @@ public class AutoPlace extends DriveCommandBase {
 
     pathPoints.add(new PathPoint(end, endRotation, endRotation));
 
+    endPose = new Pose2d(endY, endY, endRotation);
+
+    // Gets rotation and extension based off of if scoring high, mid, low
+    if (driveSubsystem.getSelectedNode() >= 18) {
+      armRotation = ArmConstants.PLACE_HIGH_ROTATION;
+      armExtension = ArmConstants.PLACE_HIGH_EXTENSION;
+    } else if (driveSubsystem.getSelectedNode() >= 18) {
+      armRotation = ArmConstants.PLACE_MIDDLE_ROTATION;
+      armExtension = ArmConstants.PLACE_MIDDLE_EXTENSION;
+    } else {
+      armRotation = ArmConstants.PLACE_LOW_ROTATION;
+      armExtension = ArmConstants.PLACE_LOW_EXTENSION;
+    }
+
     // You probably only want to edit the P values
     PIDController xController = new PIDController(TrajectoryConstants.X_CONTROLLER_P, 0, 0);
     PIDController yController = new PIDController(TrajectoryConstants.Y_CONTROLLER_P, 0, 0);
@@ -155,20 +172,31 @@ public class AutoPlace extends DriveCommandBase {
   @Override
   public void execute() {
     super.execute();
-    if (DriverStation.getAlliance() == Alliance.Blue) {
-
-    } else {
-      if (driveSubsystem.getPose().getX() > TrajectoryConstants.RED_INNER_WAYPOINT_X) {
-        armSubsystem.setRotation(ArmConstants.PLACE_HIGH_ROTATION);
-        armSubsystem.setExtension(ArmConstants.PLACE_HIGH_EXTENSION);
-      }
+    if ((DriverStation.getAlliance() == Alliance.Blue && driveSubsystem.getPose().getX() < TrajectoryConstants.BLUE_INNER_WAYPOINT_X)
+      || (DriverStation.getAlliance() == Alliance.Red && driveSubsystem.getPose().getX() > TrajectoryConstants.RED_INNER_WAYPOINT_X)) {
+        armSubsystem.setRotation(armRotation);
+        armSubsystem.setExtension(armExtension);
+        if (clawSubsystem.isConeMode()) {
+          clawSubsystem.setWristPosition(180);
+        }
     }
+
+    if (Math.abs(driveSubsystem.getPose().getX() - endPose.getX()) < TrajectoryConstants.X_TOLERANCE
+      && Math.abs(driveSubsystem.getPose().getY() - endPose.getY()) < TrajectoryConstants.Y_TOLERANCE
+      && Math.abs(driveSubsystem.getPose().getRotation().getDegrees() - endPose.getRotation().getDegrees()) < TrajectoryConstants.THETA_TOLERANCE) {
+        clawSubsystem.open();
+        if (clawSubsystem.isConeMode()) {
+          clawSubsystem.setIntakeSpeed(ClawConstants.PLACE_CONE_INTAKE_SPEED);
+        } else {
+          clawSubsystem.setIntakeSpeed(ClawConstants.PLACE_CUBE_INTAKE_SPEED);
+        }
+      }
   }
 
   @Override
   public void end(boolean interrupted) {
-    clawSubsystem.open();
-    clawSubsystem.setIntakeSpeed(ClawConstants.PLACE_CONE_INTAKE_SPEED);
+    armSubsystem.setRotation(ArmConstants.STOWED_ROTATION);
+    armSubsystem.setExtension(ArmConstants.STOWED_EXTENSION);
   }
 
   @Override
