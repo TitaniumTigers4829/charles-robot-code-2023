@@ -382,7 +382,7 @@ public final class Constants {
 
     public static final int LEDPort = 0-9;
 
-    public static final class SparkMaxConstants {
+    public static final class SparkConstants {
       // This subclass contains the constant values for the LED patterns.
       public static final double RAINBOW = -0.99;
       public static final double SHOT_RED = -0.85;
@@ -424,24 +424,30 @@ public final class Constants {
     }
     
     public enum LEDProcess {
-      ALLIANCE_COLOR (0), // Values are null on purpose.
-      DEFAULT (0),
-      RAINBOW (SparkMaxConstants.RAINBOW),
-      RED_ALLIANCE (SparkMaxConstants.FIRE),
-      BLUE_ALLIANCE (SparkMaxConstants.OCEAN),
-      INTAKE (SparkMaxConstants.MAGENTA),
-      SCORING (SparkMaxConstants.YELLOW),
-      BALANCE (SparkMaxConstants.CYAN),
-      OFF (SparkMaxConstants.BLACK),
-      AUTONOMOUS (SparkMaxConstants.RAINBOW_WAVE),
-      LINE_UP (SparkMaxConstants.WHITE);
+      ALLIANCE_COLOR (0, 0, 0, 0), // Values are null on purpose.
+      DEFAULT (0, 0, 0, 0),
+      RAINBOW (SparkConstants.RAINBOW, 0, 0, 0),
+      RED_ALLIANCE (SparkConstants.FIRE, 255, 0, 0),
+      BLUE_ALLIANCE (SparkConstants.OCEAN, 0, 0, 255),
+      INTAKE (SparkConstants.MAGENTA, 255, 0, 255),
+      SCORING (SparkConstants.YELLOW, 255, 255, 0),
+      BALANCE (SparkConstants.CYAN, 0, 255, 255),
+      OFF (SparkConstants.BLACK, 0, 0, 0),
+      AUTONOMOUS (SparkConstants.RAINBOW_WAVE, 0, 0, 0),
+      LINE_UP (SparkConstants.WHITE, 255, 255, 255);
 
-      private final double sparkMaxValue;
-      LEDProcess(double sparkMaxValue) {
-        this.sparkMaxValue = sparkMaxValue;
+      private final double sparkValue;
+      private final int red, green, blue;
+      LEDProcess(double sparkMaxValue, int red, int green, int blue) {
+        this.sparkValue = sparkMaxValue;
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
       }
-      public double getSparkMaxValue() { return sparkMaxValue; }
-
+      public double getSparkValue() { return sparkValue; }
+      public int getRed() { return red; }
+      public int getGreen() { return green; }
+      public int getBlue() { return blue; }
     }
   }
 

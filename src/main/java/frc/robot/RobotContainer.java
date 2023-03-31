@@ -35,6 +35,8 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystemImpl;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystemImpl;
+import frc.robot.subsystems.leds.LEDSubsystem;
+import frc.robot.subsystems.leds.LEDSubsystemImplSpark;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
