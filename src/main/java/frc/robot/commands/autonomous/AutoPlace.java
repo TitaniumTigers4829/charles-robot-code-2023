@@ -8,24 +8,17 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.ClawConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.DriveCommandBase;
 import frc.robot.extras.SmartDashboardLogger;
-import frc.robot.subsystems.arm.ArmSubsystem;
-import frc.robot.subsystems.claw.ClawSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
-
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -34,13 +27,8 @@ import com.pathplanner.lib.PathPoint;
 public class AutoPlace extends DriveCommandBase {
 
   private final DriveSubsystem driveSubsystem;
-  private final ArmSubsystem armSubsystem;
-  private final ClawSubsystem clawSubsystem;
   private final LEDSubsystem leds;
   private final BooleanSupplier isFinished;
-  private Pose2d endPose;
-  private double armRotation;
-  private double armExtension;
 
   /**
    * Makes the robot drive to the specified node and place its cargo.
@@ -48,14 +36,12 @@ public class AutoPlace extends DriveCommandBase {
    * @param visionSubsystem The subsystem for vision measurements
    * @param isFinished The boolean supplier that returns true if the trajectory should be finished.
    */
-  public AutoPlace(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, LEDSubsystem leds, BooleanSupplier isFinished) {
+  public AutoPlace(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, LEDSubsystem leds, BooleanSupplier isFinished) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
-    this.armSubsystem = armSubsystem;
-    this.clawSubsystem = clawSubsystem;
     this.leds = leds;
     // Doesn't require the drive subsystem because RealTimePPSwerveControllerCommand does
-    addRequirements(visionSubsystem, armSubsystem, clawSubsystem, leds);
+    addRequirements(visionSubsystem, leds);
     this.isFinished = isFinished;
   }
 
@@ -115,26 +101,10 @@ public class AutoPlace extends DriveCommandBase {
 
     Translation2d end = new Translation2d(endX, endY);
 
-    SmartDashboard.putString("End", end.toString());
-
     pathPoints.add(new PathPoint(end, trajectoryHeading, endRotation));
 
-    endPose = new Pose2d(endY, endY, endRotation);
-
-    // Gets rotation and extension based off of if scoring high, mid, low
-    if (driveSubsystem.getSelectedNode() >= 18) {
-      armRotation = ArmConstants.PLACE_HIGH_ROTATION;
-      armExtension = ArmConstants.PLACE_HIGH_EXTENSION;
-    } else if (driveSubsystem.getSelectedNode() >= 18) {
-      armRotation = ArmConstants.PLACE_MIDDLE_ROTATION;
-      armExtension = ArmConstants.PLACE_MIDDLE_EXTENSION;
-    } else {
-      armRotation = ArmConstants.PLACE_LOW_ROTATION;
-      armExtension = ArmConstants.PLACE_LOW_EXTENSION;
-    }
-
     // You probably only want to edit the P values
-    PIDController xController = new PIDController(TrajectoryConstants.DEPLOYED_X_CONTROLLER_P, 0, 0);
+    PIDController xController = new PIDController(TrajectoryConstants.REAL_TIME_X_CONTROLLER_P, 0, 0);
     PIDController yController = new PIDController(TrajectoryConstants.REAL_TIME_Y_CONTROLLER_P, 0, 0);
     PIDController thetaController = new PIDController(TrajectoryConstants.REAL_TIME_THETA_CONTROLLER_P, 0, 0);
 
@@ -154,8 +124,6 @@ public class AutoPlace extends DriveCommandBase {
       // Makes it so wheels don't have to turn more than 90 degrees
       thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-      SmartDashboard.putString("end state", trajectoryToFollow.getEndState().toString());
-
       new RealTimePPSwerveControllerCommand(
         trajectoryToFollow,
         driveSubsystem::getPose, // Functional interface to feed supplier
@@ -172,42 +140,15 @@ public class AutoPlace extends DriveCommandBase {
     } catch(Exception e) {
       SmartDashboardLogger.errorString("Trajectory Error Message", e.getLocalizedMessage());
     }
-
-    if (clawSubsystem.isConeMode()) {
-      leds.setProcess(LEDProcess.SCORING_CONE);
-    } else {
-      leds.setProcess(LEDProcess.SCORING_CUBE);
-    }
   }
 
   @Override
   public void execute() {
     super.execute();
-    // if ((DriverStation.getAlliance() == Alliance.Blue && driveSubsystem.getPose().getX() < TrajectoryConstants.BLUE_INNER_WAYPOINT_X)
-    //   || (DriverStation.getAlliance() == Alliance.Red && driveSubsystem.getPose().getX() > TrajectoryConstants.RED_INNER_WAYPOINT_X)) {
-    //     armSubsystem.setRotation(armRotation);
-    //     armSubsystem.setExtension(armExtension);
-    //     if (clawSubsystem.isConeMode()) {
-    //       clawSubsystem.setWristPosition(180);
-    //     }
-    // }
-
-    // if (Math.abs(driveSubsystem.getPose().getX() - endPose.getX()) < TrajectoryConstants.X_TOLERANCE + .01
-    //   && Math.abs(driveSubsystem.getPose().getY() - endPose.getY()) < TrajectoryConstants.Y_TOLERANCE + .01
-    //   && Math.abs(driveSubsystem.getPose().getRotation().getDegrees() - endPose.getRotation().getDegrees()) < TrajectoryConstants.THETA_TOLERANCE + 1) {
-    //     clawSubsystem.open();
-    //     if (clawSubsystem.isConeMode()) {
-    //       clawSubsystem.setIntakeSpeed(ClawConstants.PLACE_CONE_INTAKE_SPEED);
-    //     } else {
-    //       clawSubsystem.setIntakeSpeed(ClawConstants.PLACE_CUBE_INTAKE_SPEED);
-    //     }
-    //   }
   }
 
   @Override
   public void end(boolean interrupted) {
-    // armSubsystem.setRotation(ArmConstants.STOWED_ROTATION);
-    // armSubsystem.setExtension(ArmConstants.STOWED_EXTENSION);
     leds.setProcess(LEDProcess.DEFAULT);
   }
 

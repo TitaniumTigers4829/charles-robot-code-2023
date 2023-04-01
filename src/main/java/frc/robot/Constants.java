@@ -438,7 +438,9 @@ public final class Constants {
     }
     
     public enum LEDProcess {
+      /** alliance color */
       ALLIANCE_COLOR (0, 0, 0, 0),
+      /** default */
       DEFAULT (0, 0, 0, 0),
       RAINBOW (SparkConstants.RAINBOW, 0, 0, 0),
       RED_ALLIANCE (SparkConstants.RED_ALLIANCE_BLINKIN, 255, 0, 0),

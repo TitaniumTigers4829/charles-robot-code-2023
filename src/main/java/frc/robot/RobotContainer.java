@@ -117,7 +117,7 @@ public class RobotContainer {
   }
 
   public void configureButtonBindings() {
-    // drive command
+    /* Drive Buttons */
     DoubleSupplier driverLeftStickX = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_LEFT_STICK_X);
     DoubleSupplier driverLeftStickY = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_LEFT_STICK_Y);
     DoubleSupplier driverRightStickX = () -> driverJoystick.getRawAxis(JoystickConstants.DRIVER_RIGHT_STICK_X);
@@ -132,18 +132,15 @@ public class RobotContainer {
 
     driveSubsystem.setDefaultCommand(driveCommand);
 
-    // reset gyro/pitch/roll
     POVButton driverRightDirectionPad = new POVButton(driverJoystick, JoystickConstants.RIGHT_DPAD_ID);
     driverRightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
     driverRightDirectionPad.onTrue(new InstantCommand(() -> driveSubsystem.resetOdometryAndRotation(driveSubsystem.getPose(), driveSubsystem.getHeading())));
     driverRightDirectionPad.onTrue(new InstantCommand(driveSubsystem::zeroPitchAndRoll));
 
-    // test trajectory
     JoystickButton driverBButton = new JoystickButton(driverJoystick, JoystickConstants.DRIVER_B_BUTTON_ID);
-    driverBButton.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem, leds, () -> !driverBButton.getAsBoolean()));
+    driverBButton.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, leds, () -> !driverBButton.getAsBoolean()));
 
     /* Arm Buttons */
-    // manual arm command
     DoubleSupplier operatorLeftStickY = () -> operatorJoystick.getRawAxis(JoystickConstants.OPERATOR_LEFT_STICK_Y);
     DoubleSupplier operatorRightStickY = () -> operatorJoystick.getRawAxis(JoystickConstants.OPERATOR_RIGHT_STICK_Y);
     BooleanSupplier operatorRightTrigger = () -> (operatorJoystick.getRawAxis(3) > 0.33);
