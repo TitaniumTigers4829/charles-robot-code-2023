@@ -1,40 +1,30 @@
-package frc.robot.commands.arm;
+package frc.robot.commands.deprecated;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ClawConstants;
-import frc.robot.extras.NodeRegistry;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.claw.ClawSubsystem;
 
-public class PlaceGamePiece extends CommandBase {
+public class PlaceGamePieceOld extends CommandBase {
 
   private final ArmSubsystem armSubsystem;
   private final ClawSubsystem clawSubsystem;
 
-  private double rotation;
-  private double extension;
+  private final double rotation;
+  private final double extension;
 
-  public PlaceGamePiece(ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem) {
+  public PlaceGamePieceOld(ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, double rotation, double extension) {
     this.armSubsystem = armSubsystem;
     this.clawSubsystem = clawSubsystem;
-    addRequirements(armSubsystem, clawSubsystem);
+    addRequirements(this.armSubsystem, this.clawSubsystem);
+    this.rotation = rotation;
+    this.extension = extension;
   }
 
   @Override
   public void initialize() {
-    if (NodeRegistry.getSelectedNode() > 18) {
-      rotation = ArmConstants.PLACE_HIGH_ROTATION;
-      extension = ArmConstants.PLACE_HIGH_EXTENSION;
-    } else if (NodeRegistry.getSelectedNode() > 9) {
-      rotation = ArmConstants.PLACE_MIDDLE_ROTATION;
-      extension = ArmConstants.PLACE_MIDDLE_EXTENSION;
-    } else {
-      rotation = ArmConstants.PLACE_LOW_ROTATION;
-      extension = ArmConstants.PLACE_LOW_EXTENSION;
-    }
-
     armSubsystem.resetExtensionController();
     if (clawSubsystem.isConeMode()) {
       if (rotation > 180) {

@@ -82,14 +82,17 @@ public final class Constants {
 
     // Top Six Buttons
 
-    // Z Axis
+    /** Z axis */
     public static final int BIG_BUTTON_1 = -1;
+    /** Z axis */
     public static final int BIG_BUTTON_2 = 1;
-    // X Axis
+    /** X axis */
     public static final int BIG_BUTTON_3 = -1;
+    /** X axis */
     public static final int BIG_BUTTON_4 = 1;
-    // Y Axis
+    /** Y axis */
     public static final int BIG_BUTTON_5 = -1;
+    /** Y axis */
     public static final int BIG_BUTTON_6 = 1;
 
     // Joystick 1 Autoplace Buttons
@@ -332,7 +335,7 @@ public final class Constants {
     public static final double HOLD_CONE_INTAKE_SPEED = 0.02;
     public static final double HOLD_CUBE_INTAKE_SPEED = 0.05;
 
-    public static final double PLACE_CONE_INTAKE_SPEED = -0.08;
+    public static final double PLACE_CONE_INTAKE_SPEED = -0.05;
     public static final double PLACE_CUBE_INTAKE_SPEED = -0.08;
     public static final double SHOOT_CUBE_INTAKE_SPEED = -1;
   }

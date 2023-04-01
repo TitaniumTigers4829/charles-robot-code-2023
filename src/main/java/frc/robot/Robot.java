@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -33,9 +32,6 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    m_robotContainer.driveSubsystem.zeroHeading();
-    m_robotContainer.driveSubsystem.zeroPitchAndRoll();
-    m_robotContainer.driveSubsystem.resetOdometry(new Pose2d());
     // m_robotContainer.armSubsystem.lockExtensionSolenoid();
 //    uncomment the line below if there is a USB camera plugged into the RoboRIO
 //    CameraServer.startAutomaticCapture();
@@ -62,7 +58,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    m_robotContainer.driveSubsystem.resetOdometry(new Pose2d());
+    // m_robotContainer.driveSubsystem.resetOdometry(new Pose2d());
     // m_robotContainer.armSubsystem.setExtensionMotorNeutralMode(NeutralMode.Brake);
   }
 
@@ -102,10 +98,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    // m_robotContainer.leds.setProcess(LEDProcess.DEFAULT);
-    m_robotContainer.configureButtonBindings();
-    m_robotContainer.armSubsystem.setRotationSpeed(0);
-    m_robotContainer.armSubsystem.setExtensionSpeed(0);
+    m_robotContainer.teleopInit();
   }
 
   /**

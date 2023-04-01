@@ -31,8 +31,6 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     ArmConstants.EXTENSION_CONSTRAINTS
   );
 
-  private boolean isManualControl = false;
-
   /** 
    * Creates a new ArmSubsystemImpl. 
    * Feed Forward Gain, Velocity Gain, and Acceleration Gain need to be tuned in constants
@@ -87,7 +85,6 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     extensionMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND, HardwareConstants.TIMEOUT_MS);
     extensionMotor.configReverseSoftLimitThreshold(ArmConstants.MAX_EXTENSION_METERS * ArmConstants.EXTENSION_METERS_TO_MOTOR_POS, HardwareConstants.TIMEOUT_MS);
     extensionMotor.configReverseSoftLimitEnable(true, HardwareConstants.TIMEOUT_MS);
-    isManualControl = false;
   }
 
   @Override
@@ -169,20 +166,8 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   }
 
   @Override
-  public boolean isManualControl() {
-    return isManualControl;
-  }
-
-  @Override
-  public void toggleControlMode() {
-    isManualControl = !isManualControl;
-    SmartDashboardLogger.infoString("Control Mode", isManualControl ? "Manual" : "Auto");
-  }
-
-  @Override
   public void periodic() {
-    // SmartDashboardLogger.debugNumber("Arm Rotation", getRotation());
-    // SmartDashboardLogger.debugNumber("Arm Extension", getExtension());
-    SmartDashboardLogger.infoBoolean("isManual2", isManualControl);
+    SmartDashboardLogger.debugNumber("Arm Rotation", getRotation());
+    SmartDashboardLogger.debugNumber("Arm Extension", getExtension());
   }
 }

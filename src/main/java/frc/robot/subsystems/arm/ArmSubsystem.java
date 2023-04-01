@@ -75,14 +75,4 @@ public interface ArmSubsystem extends Subsystem {
    */
   void resetExtensionController();
 
-  /**
-   * Returns true if the claw is in manual control mode.
-   */
-  boolean isManualControl();
-
-  /**
-   * Toggles the arm control mode between manual and auto
-   */
-  void toggleControlMode();
-
   }

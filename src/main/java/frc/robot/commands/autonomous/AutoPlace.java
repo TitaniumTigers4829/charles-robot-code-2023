@@ -12,6 +12,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.DriveCommandBase;
+import frc.robot.extras.NodeRegistry;
 import frc.robot.extras.SmartDashboardLogger;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
@@ -61,7 +62,7 @@ public class AutoPlace extends DriveCommandBase {
     // The middle waypoints and end pos change depending on alliance
     if (DriverStation.getAlliance() == Alliance.Blue) {
       endX = TrajectoryConstants.BLUE_NODE_X_POSITION;
-      endY = TrajectoryConstants.BLUE_NODE_Y_POSITIONS[(driveSubsystem.getSelectedNode() - 1) % 9]; // NodeID starts at  1
+      endY = TrajectoryConstants.BLUE_NODE_Y_POSITIONS[(NodeRegistry.getSelectedNode() - 1) % 9]; // NodeID starts at  1
       endRotation = TrajectoryConstants.BLUE_END_ROTATION;
       // Makes waypoints in the trajectory so the robot doesn't hit the charging station
       if (driveSubsystem.getPose().getX() > TrajectoryConstants.BLUE_OUTER_WAYPOINT_X) {
@@ -80,7 +81,7 @@ public class AutoPlace extends DriveCommandBase {
       }
     } else {
       endX = TrajectoryConstants.RED_NODE_X_POSITION;
-      endY = TrajectoryConstants.RED_NODE_Y_POSITIONS[(driveSubsystem.getSelectedNode() - 1) % 9];
+      endY = TrajectoryConstants.RED_NODE_Y_POSITIONS[(NodeRegistry.getSelectedNode() - 1) % 9];
       endRotation = TrajectoryConstants.RED_END_ROTATION;
       if (driveSubsystem.getPose().getX() < TrajectoryConstants.RED_OUTER_WAYPOINT_X) {
         if (driveSubsystem.getPose().getY() - TrajectoryConstants.LOWER_WAYPOINT_Y > (TrajectoryConstants.UPPER_WAYPOINT_Y - TrajectoryConstants.LOWER_WAYPOINT_Y) / 2) {

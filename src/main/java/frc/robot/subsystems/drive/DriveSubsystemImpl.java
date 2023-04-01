@@ -228,17 +228,6 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   }
 
   @Override
-  public int getSelectedNode() {
-    return selectedNode;
-  }
-  
-  @Override
-  public void setSelectedNode(int nodeID) {
-    selectedNode = nodeID;
-    SmartDashboardLogger.infoNumber("Selected Node", selectedNode);
-  }
-
-  @Override
   public void periodic() {
     Pose2d estimatedPose = odometry.getEstimatedPosition();
     SmartDashboardLogger.infoString("Estimated pose", estimatedPose.toString());
