@@ -17,7 +17,7 @@ public class LEDSubsystemImplSpark extends SubsystemBase implements LEDSubsystem
 
   private Spark ledSpark;
 
-  private double currentSparkValue;
+  private LEDProcess process;
 
   /** Creates a new LEDSubsystemImpl for use with LED strips made by Spark lighting (Loopy's LEDs).
    * @param port The Spark port for this LEDSubsystem.
@@ -35,35 +35,23 @@ public class LEDSubsystemImplSpark extends SubsystemBase implements LEDSubsystem
 
   @Override
   public void periodic() {
-    //ledSpark.set(currentSparkValue);
-    SmartDashboard.putNumber("leds", currentSparkValue);
-  }
-
-  /** Sets the pattern to a double value.
-   * @param value The pattern to set the LEDs to. 
-   * See Constants.LEDConstants.SparkConstants for these pattern values.
-   */
-  public void setSpark(double value) {
-    // If the value is a valid Spark Value.
-    if (-1 < value && value < 1 && ((value*100)%2) == 1) {
-      currentSparkValue = value;
-    }
+    ledSpark.set(getSparkFromProcess(process));
   }
 
   @Override
   public void setProcess(LEDProcess process) {
-    switch (process) {
+    this.process = process;
+  }
+
+  private double getSparkFromProcess(LEDProcess pr) {
+    switch (pr) {
       case DEFAULT:
-        currentSparkValue = defaultColor();
-        break;
+        return defaultColor();
       case ALLIANCE_COLOR:
-        currentSparkValue = allianceColor();
-        break;
+        return allianceColor();
       default:
-        currentSparkValue = process.getSparkValue();
-        break;
+        return pr.getSparkValue();
     }
-    ledSpark.set(currentSparkValue);
   }
 
   private double allianceColor() {
@@ -84,7 +72,7 @@ public class LEDSubsystemImplSpark extends SubsystemBase implements LEDSubsystem
 
   @Override
   public void off() {
-    currentSparkValue = SparkConstants.BLACK;
+    process = LEDProcess.OFF;
   }
 
 }

@@ -11,9 +11,11 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
+import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.DriveCommandBase;
 import frc.robot.extras.SmartDashboardLogger;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class AutoPickup extends DriveCommandBase {
 
   private final DriveSubsystem driveSubsystem;
   private final BooleanSupplier isFinished;
+  private final LEDSubsystem leds;
 
   /**
    * Makes the robot drive to the specified node and place its cargo.
@@ -36,16 +39,20 @@ public class AutoPickup extends DriveCommandBase {
    * @param visionSubsystem The subsystem for vision measurements
    * @param isFinished The boolean supplier that returns true if the trajectory should be finished.
    */
-  public AutoPickup(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, BooleanSupplier isFinished) {
+  public AutoPickup(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, LEDSubsystem leds, BooleanSupplier isFinished) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;
+    this.leds = leds;
     // Doesn't require the drive subsystem because RealTimePPSwerveControllerCommand does
-    addRequirements(visionSubsystem);
+    addRequirements(visionSubsystem, leds);
     this.isFinished = isFinished;
   }
 
   @Override
   public void initialize() {
+
+    leds.setProcess(LEDProcess.INTAKE);
+
     // Try making it do a path with hard coded setpoints
     // Make sure when the gyro is zeroes it's right
 
@@ -125,7 +132,9 @@ public class AutoPickup extends DriveCommandBase {
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    leds.setProcess(LEDProcess.DEFAULT);
+  }
 
   @Override
   public boolean isFinished() {

@@ -23,13 +23,17 @@ import frc.robot.commands.autonomous.SimpleAuto;
 import frc.robot.commands.autonomous.ThreePieceBalanceAuto;
 import frc.robot.commands.autonomous.TwoConeBalanceAuto;
 import frc.robot.commands.claw.ManualClaw;
+import frc.robot.commands.claw.SwitchCargoMode;
 import frc.robot.commands.drive.DriveCommand;
+import frc.robot.extras.TestLEDs;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.arm.ArmSubsystemImpl;
 import frc.robot.subsystems.claw.ClawSubsystem;
 import frc.robot.subsystems.claw.ClawSubsystemImpl;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystemImpl;
+import frc.robot.subsystems.leds.LEDSubsystem;
+import frc.robot.subsystems.leds.LEDSubsystemImplSpark;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystemImpl;
 
@@ -45,7 +49,7 @@ public class RobotContainer {
   public final VisionSubsystem visionSubsystem;
   public final ArmSubsystem armSubsystem;
   public final ClawSubsystem clawSubsystem;
-  // public final LEDSubsystem leds;
+  public final LEDSubsystem leds;
 
   private final Joystick driverJoystick;
   private final Joystick operatorJoystick;
@@ -65,7 +69,7 @@ public class RobotContainer {
     visionSubsystem = new VisionSubsystemImpl();
     armSubsystem = new ArmSubsystemImpl();
     clawSubsystem = new ClawSubsystemImpl();
-    // leds = new LEDSubsystemImplSpark();
+    leds = new LEDSubsystemImplSpark();
 
     autoChooser = new SendableChooser<Command>();
     autoChooser.setDefaultOption("2 cone balance", new TwoConeBalanceAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem));
@@ -136,7 +140,7 @@ public class RobotContainer {
 
     // test trajectory
     JoystickButton driverBButton = new JoystickButton(driverJoystick, JoystickConstants.DRIVER_B_BUTTON_ID);
-    driverBButton.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem, () -> !driverBButton.getAsBoolean()));
+    driverBButton.whileTrue(new AutoPlace(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem, leds, () -> !driverBButton.getAsBoolean()));
 
     /* Arm Buttons */
     // manual arm command
@@ -190,7 +194,7 @@ public class RobotContainer {
 
     BooleanSupplier isBlueButtonPressed = () -> (yAxis.getAsDouble() > 0.2);
     Trigger onBlueButtonPressed = new Trigger(isBlueButtonPressed);
-    onBlueButtonPressed.onTrue(new InstantCommand(clawSubsystem::switchCargoMode, clawSubsystem));
+    onBlueButtonPressed.onTrue(new SwitchCargoMode(clawSubsystem, leds));
 
     BooleanSupplier isRedButtonPressed = () -> (yAxis.getAsDouble() < -0.2);
     Trigger onRedButtonPressed = new Trigger(isRedButtonPressed);
@@ -281,7 +285,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // return autoChooser.getSelected();
     // return new TwoConeBalanceAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem);
-    return new ThreePieceBalanceAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem);
-    // return null;
+    return new ThreePieceBalanceAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem, leds);
   }
 }
