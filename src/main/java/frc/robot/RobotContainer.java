@@ -13,17 +13,16 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.JoystickConstants;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.ToggleControlMode;
 import frc.robot.commands.arm.ManualArm;
 import frc.robot.commands.arm.MoveArmToStowed;
 import frc.robot.commands.arm.PickupGamePiece;
-import frc.robot.commands.arm.SetArmRotation;
-import frc.robot.commands.arm.teleop.PlaceConeHigh;
+import frc.robot.commands.arm.PlaceGamePiece;
 import frc.robot.commands.autonomous.AutoPlace;
 import frc.robot.commands.autonomous.SimpleAuto;
 import frc.robot.commands.autonomous.ThreePieceBalanceAuto;
 import frc.robot.commands.autonomous.TwoConeBalanceAuto;
 import frc.robot.commands.claw.ManualClaw;
-import frc.robot.commands.claw.ToggleClaw;
 import frc.robot.commands.drive.DriveCommand;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.arm.ArmSubsystemImpl;
@@ -33,8 +32,6 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystemImpl;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystemImpl;
-import frc.robot.subsystems.leds.LEDSubsystem;
-import frc.robot.subsystems.leds.LEDSubsystemImplSpark;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -149,11 +146,13 @@ public class RobotContainer {
 
     JoystickButton operatorXButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_X_BUTTON_ID);
     JoystickButton operatorYButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_Y_BUTTON_ID);
+    JoystickButton operatorRightBumper = new JoystickButton(operatorJoystick, JoystickConstants.DRIVER_RIGHT_BUMPER_ID);
     
     Command manualArmCommand = new ManualArm(
       armSubsystem, 
       operatorLeftStickY, 
-      operatorRightStickY
+      operatorRightStickY,
+      operatorRightBumper::getAsBoolean
     );
     
     armSubsystem.setDefaultCommand(manualArmCommand);
@@ -162,30 +161,26 @@ public class RobotContainer {
       clawSubsystem, 
       operatorXButton::getAsBoolean,
       operatorYButton::getAsBoolean,
-      operatorRightTrigger
+      operatorRightTrigger,
+      operatorRightBumper::getAsBoolean
     );
     
     clawSubsystem.setDefaultCommand(manualClawCommand);
   
     // place game piece
     JoystickButton operatorAButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_A_BUTTON_ID);
-    // operatorAButton.whileTrue(new PlaceGamePiece(armSubsystem, clawSubsystem, ArmConstants.PLACE_HIGH_ROTATION, ArmConstants.PLACE_HIGH_EXTENSION));
-    // operatorAButton.whileTrue(new PlaceConeHigh(armSubsystem, clawSubsystem));
-    // operatorAButton.onFalse(new MoveArmToStowed(armSubsystem, clawSubsystem));
+    operatorAButton.whileTrue(new PlaceGamePiece(armSubsystem, clawSubsystem, ArmConstants.PLACE_HIGH_ROTATION, ArmConstants.PLACE_HIGH_EXTENSION));
+    operatorAButton.onFalse(new MoveArmToStowed(armSubsystem, clawSubsystem));
 
     // pickup game piece
     JoystickButton operatorBButton = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_B_BUTTON_ID);
-    // operatorBButton.whileTrue(new PickupGamePiece(armSubsystem, clawSubsystem, ArmConstants.PICKUP_GROUND_ROTATION, ArmConstants.PICKUP_GROUND_EXTENSION));
-    // operatorBButton.onFalse(new MoveArmToStowed(armSubsystem, clawSubsystem));
-    operatorBButton.onTrue(new SetArmRotation(armSubsystem, 180));
+    operatorBButton.whileTrue(new PickupGamePiece(armSubsystem, clawSubsystem, ArmConstants.PICKUP_LOADING_STATION_ROTATION, ArmConstants.PICKUP_LOADING_STATION_EXTENSION));
+    operatorBButton.onFalse(new MoveArmToStowed(armSubsystem, clawSubsystem));
 
     // reset encoders
     POVButton operatorRightDirectionPad = new POVButton(operatorJoystick, 90);
     operatorRightDirectionPad.onTrue(new InstantCommand(armSubsystem::resetExtensionEncoder));
     operatorRightDirectionPad.onTrue(new InstantCommand(clawSubsystem::zeroWristEncoder));
-
-    JoystickButton operatorRightBumper = new JoystickButton(operatorJoystick, JoystickConstants.OPERATOR_RIGHT_BUMPER_ID);
-    operatorRightBumper.onTrue(new ToggleClaw(clawSubsystem));
 
     /* Button Board Buttons */
     DoubleSupplier xAxis = () -> buttonBoard1.getRawAxis(0);
@@ -195,12 +190,11 @@ public class RobotContainer {
 
     BooleanSupplier isBlueButtonPressed = () -> (yAxis.getAsDouble() > 0.2);
     Trigger onBlueButtonPressed = new Trigger(isBlueButtonPressed);
-    onBlueButtonPressed.onTrue(new InstantCommand(clawSubsystem::switchCargoMode));
+    onBlueButtonPressed.onTrue(new InstantCommand(clawSubsystem::switchCargoMode, clawSubsystem));
 
     BooleanSupplier isRedButtonPressed = () -> (yAxis.getAsDouble() < -0.2);
     Trigger onRedButtonPressed = new Trigger(isRedButtonPressed);
-    onRedButtonPressed.onTrue(new InstantCommand(armSubsystem::toggleControlMode));
-    onRedButtonPressed.onTrue(new InstantCommand(clawSubsystem::toggleControlMode));
+    onRedButtonPressed.onTrue(new ToggleControlMode(armSubsystem, clawSubsystem));
         
     // BooleanSupplier isButton1Pressed = () -> (zAxis.getAsDouble() > 0.2);
     // Trigger onButton1Pressed = new Trigger(isButton1Pressed);
@@ -288,5 +282,6 @@ public class RobotContainer {
     // return autoChooser.getSelected();
     // return new TwoConeBalanceAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem);
     return new ThreePieceBalanceAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem);
+    // return null;
   }
 }

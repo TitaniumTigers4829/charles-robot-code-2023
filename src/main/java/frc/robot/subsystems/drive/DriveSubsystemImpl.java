@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.extras.SmartDashboardLogger;
@@ -37,8 +36,8 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   private final SwerveDrivePoseEstimator odometry;
 
   private double gyroOffset = 0;
-  private float rollOffset = 0;
-  private float pitchOffset = 0;
+  // private float rollOffset = 0;
+  // private float pitchOffset = 0;
 
   private int selectedNode = 1;
   
@@ -243,6 +242,10 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   public void periodic() {
     Pose2d estimatedPose = odometry.getEstimatedPosition();
     SmartDashboardLogger.infoString("Estimated pose", estimatedPose.toString());
+    frontLeftSwerveModule.periodicFunction();
+    frontRightSwerveModule.periodicFunction();
+    rearLeftSwerveModule.periodicFunction();
+    rearRightSwerveModule.periodicFunction();
   }
 
 }

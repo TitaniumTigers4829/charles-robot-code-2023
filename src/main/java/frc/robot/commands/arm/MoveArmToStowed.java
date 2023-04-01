@@ -34,11 +34,11 @@ public class MoveArmToStowed extends CommandBase {
       armSubsystem.setExtension(armExtension);
     }
 
-    if (clawSubsystem.isConeMode()) {
-      clawSubsystem.setIntakeSpeed(ClawConstants.HOLD_CONE_INTAKE_SPEED);
-    } else {
-      clawSubsystem.setIntakeSpeed(ClawConstants.HOLD_CUBE_INTAKE_SPEED);
-    }
+    // if (clawSubsystem.isConeMode()) {
+    //   clawSubsystem.setIntakeSpeed(ClawConstants.HOLD_CONE_INTAKE_SPEED);
+    // } else {
+    //   clawSubsystem.setIntakeSpeed(ClawConstants.HOLD_CUBE_INTAKE_SPEED);
+    // }
   }
 
   @Override

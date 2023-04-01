@@ -26,7 +26,7 @@ public class PlaceGamePiece extends CommandBase {
   public void initialize() {
     armSubsystem.resetExtensionController();
     if (clawSubsystem.isConeMode()) {
-      if (rotation > 180) {
+      if (rotation > 182) {
         clawSubsystem.setWristPosition(0);
       } else {
         clawSubsystem.setWristPosition(180);
@@ -44,7 +44,6 @@ public class PlaceGamePiece extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    SmartDashboard.putString("Done", "place done");
     armSubsystem.setRotationSpeed(0);
     armSubsystem.setExtensionSpeed(0);
     clawSubsystem.open();

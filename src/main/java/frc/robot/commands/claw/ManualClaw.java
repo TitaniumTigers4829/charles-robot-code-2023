@@ -2,23 +2,23 @@ package frc.robot.commands.claw;
 
 import java.util.function.BooleanSupplier;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.extras.SmartDashboardLogger;
 import frc.robot.subsystems.claw.ClawSubsystem;
 
 public class ManualClaw extends CommandBase {
 
   private ClawSubsystem clawSubsystem;
-  private BooleanSupplier intakeCargo;
-  private BooleanSupplier expelCargo;
-  private BooleanSupplier rotateClaw180;
+  private BooleanSupplier intakeCargo, expelCargo, rotateClaw180, isManual;
   private double initialRotation;
   private boolean lastState;
   private boolean hasSetPos;
 
-  public ManualClaw(ClawSubsystem clawSubsystem, BooleanSupplier intakeCargo, BooleanSupplier expelCargo, BooleanSupplier rotateClaw) {
+  public ManualClaw(ClawSubsystem clawSubsystem, BooleanSupplier intakeCargo, BooleanSupplier expelCargo, BooleanSupplier rotateClaw, BooleanSupplier isManual) {
     this.clawSubsystem = clawSubsystem;
     this.intakeCargo = intakeCargo;
     this.expelCargo = expelCargo;
     this.rotateClaw180 = rotateClaw;
+    this.isManual = isManual;
     addRequirements(clawSubsystem);
   }
 
@@ -31,9 +31,15 @@ public class ManualClaw extends CommandBase {
 
   @Override
   public void execute() {
-    if (clawSubsystem.isManualControl()) {
+    if (!clawSubsystem.isConeMode()) {
+      clawSubsystem.open();    
+    } else {
+      clawSubsystem.close();
+    }
+
+    if (isManual.getAsBoolean()) {
+      SmartDashboardLogger.infoBoolean("running", true);
       if (!clawSubsystem.isConeMode()) {
-        clawSubsystem.open();
         if (intakeCargo.getAsBoolean()) {
           clawSubsystem.setIntakeSpeed(0.15);
         } else if (expelCargo.getAsBoolean()) {
@@ -65,14 +71,16 @@ public class ManualClaw extends CommandBase {
           clawSubsystem.setWristPosition(0);
         } else {
           clawSubsystem.setWristPosition(180);
-          }
-        } else {
-          if (!hasSetPos) {
-            clawSubsystem.setWristPosition(clawSubsystem.getWristAngle());
-            hasSetPos = true;
-          }
+        }
+      } else {
+        if (!hasSetPos) {
+          clawSubsystem.setWristPosition(clawSubsystem.getWristAngle());
+          hasSetPos = true;
         }
       }
+    } else {
+      SmartDashboardLogger.infoBoolean("running", false);
+    }
   }
 
 

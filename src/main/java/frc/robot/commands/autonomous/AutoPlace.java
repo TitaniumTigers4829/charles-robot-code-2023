@@ -61,8 +61,9 @@ public class AutoPlace extends DriveCommandBase {
     List<PathPoint> pathPoints = new ArrayList<PathPoint>();
     Translation2d start = new Translation2d(driveSubsystem.getPose().getX(), driveSubsystem.getPose().getY());
     Rotation2d startRotation = driveSubsystem.getPose().getRotation();
-    pathPoints.add(new PathPoint(start, Rotation2d.fromDegrees(0), startRotation));
-    // .withControlLengths(0.001, 0.001));)
+    Rotation2d trajectoryHeading = DriverStation.getAlliance() == Alliance.Blue
+      ? TrajectoryConstants.BLUE_HEADING : TrajectoryConstants.RED_HEADING;
+    pathPoints.add(new PathPoint(start, trajectoryHeading, startRotation));
     double endX;
     double endY;
     Rotation2d endRotation;
@@ -75,35 +76,35 @@ public class AutoPlace extends DriveCommandBase {
       // Makes waypoints in the trajectory so the robot doesn't hit the charging station
       if (driveSubsystem.getPose().getX() > TrajectoryConstants.BLUE_OUTER_WAYPOINT_X) {
         if (driveSubsystem.getPose().getY() - TrajectoryConstants.LOWER_WAYPOINT_Y > (TrajectoryConstants.UPPER_WAYPOINT_Y - TrajectoryConstants.LOWER_WAYPOINT_Y) / 2) {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_OUTER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_OUTER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), trajectoryHeading, endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), trajectoryHeading, endRotation));
         } else {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_OUTER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));        }
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_OUTER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), trajectoryHeading, endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), trajectoryHeading, endRotation));        }
       } else if (driveSubsystem.getPose().getX() > TrajectoryConstants.BLUE_INNER_WAYPOINT_X && driveSubsystem.getPose().getY() > TrajectoryConstants.UPPER_WAYPOINT_Y && driveSubsystem.getPose().getY() < TrajectoryConstants.LOWER_WAYPOINT_Y) {
         if (driveSubsystem.getPose().getY() - TrajectoryConstants.LOWER_WAYPOINT_Y > (TrajectoryConstants.UPPER_WAYPOINT_Y - TrajectoryConstants.LOWER_WAYPOINT_Y) / 2) {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), endRotation, endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), trajectoryHeading, endRotation));
         } else {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), endRotation, endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.BLUE_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), trajectoryHeading, endRotation));
         }
       }
     } else {
-      endX = TrajectoryConstants.RED_NODE_Y_POSITION;
+      endX = TrajectoryConstants.RED_NODE_X_POSITION;
       endY = TrajectoryConstants.RED_NODE_Y_POSITIONS[(driveSubsystem.getSelectedNode() - 1) % 9];
       endRotation = TrajectoryConstants.RED_END_ROTATION;
       if (driveSubsystem.getPose().getX() < TrajectoryConstants.RED_OUTER_WAYPOINT_X) {
         if (driveSubsystem.getPose().getY() - TrajectoryConstants.LOWER_WAYPOINT_Y > (TrajectoryConstants.UPPER_WAYPOINT_Y - TrajectoryConstants.LOWER_WAYPOINT_Y) / 2) {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_OUTER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), Rotation2d.fromDegrees(0), endRotation));
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), Rotation2d.fromDegrees(0), endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_OUTER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), trajectoryHeading, endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), trajectoryHeading, endRotation));
         } else {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_OUTER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), Rotation2d.fromDegrees(0), endRotation));
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), Rotation2d.fromDegrees(0), endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_OUTER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), trajectoryHeading, endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), trajectoryHeading, endRotation));
         }
       } else if (driveSubsystem.getPose().getX() < TrajectoryConstants.RED_INNER_WAYPOINT_X && driveSubsystem.getPose().getY() > TrajectoryConstants.UPPER_WAYPOINT_Y && driveSubsystem.getPose().getY() < TrajectoryConstants.LOWER_WAYPOINT_Y) {
         if (driveSubsystem.getPose().getY() - TrajectoryConstants.LOWER_WAYPOINT_Y > (TrajectoryConstants.UPPER_WAYPOINT_Y - TrajectoryConstants.LOWER_WAYPOINT_Y) / 2) {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), Rotation2d.fromDegrees(0), endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.UPPER_WAYPOINT_Y), trajectoryHeading, endRotation));
         } else {
-          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), Rotation2d.fromDegrees(0), endRotation));
+          pathPoints.add(new PathPoint(new Translation2d(TrajectoryConstants.RED_INNER_WAYPOINT_X, TrajectoryConstants.LOWER_WAYPOINT_Y), trajectoryHeading, endRotation));
         }
       }
     }
@@ -112,7 +113,7 @@ public class AutoPlace extends DriveCommandBase {
 
     SmartDashboard.putString("End", end.toString());
 
-    pathPoints.add(new PathPoint(end, Rotation2d.fromDegrees(0), endRotation));
+    pathPoints.add(new PathPoint(end, trajectoryHeading, endRotation));
 
     endPose = new Pose2d(endY, endY, endRotation);
 

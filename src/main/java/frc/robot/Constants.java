@@ -12,6 +12,7 @@ public final class Constants {
 
   private Constants() {}
 
+  // TODO: make an optimizeCan function
   public static final class HardwareConstants {
     // public static final String CANIVORE_CAN_BUS_STRING = "Canivore 1";
     public static final String CANIVORE_CAN_BUS_STRING = "rio";
@@ -23,6 +24,8 @@ public final class Constants {
     public static final double MIN_FALCON_DEADBAND = 0.001;
 
     public static final PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
+
+    public static final int TIMEOUT_MS = 10;
   }
 
   public static final class Conversions {
@@ -160,7 +163,7 @@ public final class Constants {
     public static final boolean REAR_RIGHT_CANCODER_REVERSED = false;
     
     public static final boolean FRONT_LEFT_DRIVE_ENCODER_REVERSED = false;
-    public static final boolean FRONT_RIGHT_DRIVE_ENCODER_REVERSED = true;
+    public static final boolean FRONT_RIGHT_DRIVE_ENCODER_REVERSED = true; 
     public static final boolean REAR_LEFT_DRIVE_ENCODER_REVERSED = false;
     public static final boolean REAR_RIGHT_DRIVE_ENCODER_REVERSED = true;
     
@@ -212,9 +215,9 @@ public final class Constants {
     public static final double DRIVE_P = 0.3; // 0.19;
     public static final double DRIVE_I = 0;
     public static final double DRIVE_D = 0;
-    public static final double DRIVE_S = 0.73394;
-    public static final double DRIVE_V = 2.4068;
-    public static final double DRIVE_A = 0.28749;
+    public static final double DRIVE_S = 0.29155 / 12.0;
+    public static final double DRIVE_V = 2.3621 / 12.0;
+    public static final double DRIVE_A = 0.72606 / 12.0;
   }
 
   public static final class ArmConstants {
@@ -500,8 +503,8 @@ public final class Constants {
       {0.508, 1.0668, 1.6256, 2.1844, 2.7432, 3.302, 3.8608, 4.4196, 4.9784};
 
     // Factors in bumper width and wheelbase
-    public static final double BLUE_NODE_X_POSITION = 1.96;
-    public static final double RED_NODE_Y_POSITION = 14.61;
+    public static final double BLUE_NODE_X_POSITION = 1.92;
+    public static final double RED_NODE_X_POSITION = 14.61;
     public static final double BLUE_OUTER_WAYPOINT_X = 5.3;
     public static final double RED_OUTER_WAYPOINT_X = 11.26;
     public static final double BLUE_INNER_WAYPOINT_X = 2.5;
@@ -509,7 +512,9 @@ public final class Constants {
     public static final double UPPER_WAYPOINT_Y = 4.75;
     public static final double LOWER_WAYPOINT_Y = 0.75;
     public static final Rotation2d BLUE_END_ROTATION = Rotation2d.fromDegrees(0);
+    public static final Rotation2d BLUE_HEADING = Rotation2d.fromDegrees(180);
     public static final Rotation2d RED_END_ROTATION = Rotation2d.fromDegrees(180);
+    public static final Rotation2d RED_HEADING = Rotation2d.fromDegrees(0);
 
     public static final String TWO_CONE_BALANCE_AUTO_FIRST = "Two Cone Balance First Red";
     public static final String TWO_CONE_BALANCE_AUTO_SECOND = "Two Cone Balance Second Red";

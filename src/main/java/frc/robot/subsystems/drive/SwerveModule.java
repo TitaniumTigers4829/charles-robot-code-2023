@@ -16,7 +16,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.ModuleConstants;
@@ -73,30 +72,31 @@ public class SwerveModule {
     driveMotor = new WPI_TalonFX(driveMotorChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
     turnMotor = new WPI_TalonFX(turnMotorChannel, HardwareConstants.CANIVORE_CAN_BUS_STRING);
         
-    turnEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
-    turnEncoder.configMagnetOffset(-angleZero);
-    turnEncoder.configSensorDirection(encoderReversed);
+    turnEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180, HardwareConstants.TIMEOUT_MS);
+    turnEncoder.configMagnetOffset(-angleZero, HardwareConstants.TIMEOUT_MS);
+    turnEncoder.configSensorDirection(encoderReversed, HardwareConstants.TIMEOUT_MS);
 
-    driveMotor.configFactoryDefault();
-    driveMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
-    driveMotor.config_kF(0, ModuleConstants.DRIVE_F);
-    driveMotor.config_kP(0, ModuleConstants.DRIVE_P);
-    driveMotor.config_kI(0, ModuleConstants.DRIVE_I);
-    driveMotor.config_kD(0, ModuleConstants.DRIVE_D);     
+    driveMotor.configFactoryDefault(HardwareConstants.TIMEOUT_MS);
+    driveMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, HardwareConstants.TIMEOUT_MS);
+    driveMotor.config_kF(0, ModuleConstants.DRIVE_F, HardwareConstants.TIMEOUT_MS);
+    driveMotor.config_kP(0, ModuleConstants.DRIVE_P, HardwareConstants.TIMEOUT_MS);
+    driveMotor.config_kI(0, ModuleConstants.DRIVE_I, HardwareConstants.TIMEOUT_MS);
+    driveMotor.config_kD(0, ModuleConstants.DRIVE_D, HardwareConstants.TIMEOUT_MS);
     driveMotor.setNeutralMode(NeutralMode.Brake);
     driveMotor.setInverted(driveReversed);
-    driveMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND * 10);
-    driveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 65, 0.1));
-    driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.1));
-    driveMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+    driveMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND * 10, HardwareConstants.TIMEOUT_MS);
+    driveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 65, 0.1), HardwareConstants.TIMEOUT_MS);
+    driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.1), HardwareConstants.TIMEOUT_MS);
+    // driveMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+    driveMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 10);
     driveMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 20);
 
-    turnMotor.configFactoryDefault();
+    turnMotor.configFactoryDefault(HardwareConstants.TIMEOUT_MS);
     turnMotor.setNeutralMode(NeutralMode.Brake);
     turnMotor.setInverted(true);
-    turnMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
-    turnMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 65, 0.1));
-    turnMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.1));
+    turnMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND, HardwareConstants.TIMEOUT_MS);
+    turnMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 65, 0.1), HardwareConstants.TIMEOUT_MS);
+    turnMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.1), HardwareConstants.TIMEOUT_MS);
     turnMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
     turnMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
 
@@ -171,6 +171,11 @@ public class SwerveModule {
     driveMotor.set(ControlMode.Velocity, desiredDriveEncoderUnitsPer100MS, 
       DemandType.ArbitraryFeedForward, driveFeedForward.calculate(optimizedDesiredState.speedMetersPerSecond));
 
+    SmartDashboard.putNumber("ff", driveFeedForward.calculate(optimizedDesiredState.speedMetersPerSecond));
+    SmartDashboard.putNumber("desired vel", desiredDriveEncoderUnitsPer100MS);
+    SmartDashboard.putNumber("error vel", desiredDriveEncoderUnitsPer100MS - driveMotor.getSelectedSensorVelocity());
+    SmartDashboard.putString("desiredstate", desiredState.toString());
+
     // Calculate the turning motor output from the turn PID controller.
     double turnOutput =
       turnPIDController.calculate(turnRadians, optimizedDesiredState.angle.getRadians())
@@ -202,5 +207,6 @@ public class SwerveModule {
   }
 
   public void periodicFunction() {
+    SmartDashboard.putNumber(name, getAbsolutePosition());
   }
 }
