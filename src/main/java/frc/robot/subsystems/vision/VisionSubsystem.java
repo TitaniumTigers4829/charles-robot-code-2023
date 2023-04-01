@@ -94,5 +94,4 @@ public interface VisionSubsystem extends Subsystem {
       return this.ID;
     }
   }
-
 }
