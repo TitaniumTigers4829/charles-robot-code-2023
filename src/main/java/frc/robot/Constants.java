@@ -14,8 +14,8 @@ public final class Constants {
 
   // TODO: make an optimizeCan function
   public static final class HardwareConstants {
-    // public static final String CANIVORE_CAN_BUS_STRING = "Canivore 1";
-    public static final String CANIVORE_CAN_BUS_STRING = "rio";
+    public static final String CANIVORE_CAN_BUS_STRING = "Canivore 1";
+    // public static final String CANIVORE_CAN_BUS_STRING = "rio";
     public static final String RIO_CAN_BUS_STRING = "rio";
 
     public static final double FALCON_ENCODER_RESOLUTION = 2048.0;
@@ -25,7 +25,7 @@ public final class Constants {
 
     public static final PneumaticsModuleType PNEUMATICS_MODULE_TYPE = PneumaticsModuleType.CTREPCM;
 
-    public static final int TIMEOUT_MS = 10;
+    public static final int TIMEOUT_MS = 30;
   }
 
   public static final class Conversions {
@@ -192,6 +192,10 @@ public final class Constants {
       public static final double BALANCE_ERROR_INIT_DEGREES = 10;
       public static final double BALANCE_ERROR_NEAR_BALANCED = 3;
     }
+
+    public static final double BLUE_CHUTE_X = 14.20;
+    public static final double RED_CHUTE_X = 2.64;
+    public static final double LEDS_ACCEPTABLE_ERROR = 0.1;
   }
   
   public static final class ModuleConstants { 
@@ -235,7 +239,7 @@ public final class Constants {
 
     public static final double EXTENSION_MOTOR_GEAR_RATIO = 16.0;
     public static final double EXTENSION_SPOOL_DIAMETER = Units.inchesToMeters(2.5);
-    public static final double MAX_EXTENSION_METERS = 1;
+    public static final double MAX_EXTENSION_METERS = 1.2;
     public static final double EXTENSION_MOTOR_POS_TO_METERS = EXTENSION_SPOOL_DIAMETER / (HardwareConstants.FALCON_ENCODER_RESOLUTION * EXTENSION_MOTOR_GEAR_RATIO) * Math.PI;
     public static final double EXTENSION_METERS_TO_MOTOR_POS = -1.0 / EXTENSION_MOTOR_POS_TO_METERS;
 
@@ -249,8 +253,8 @@ public final class Constants {
     public static final double ROTATION_ACCEPTABLE_ERROR = 1;
     public static final double ROTATION_TOLERANCE_DEGREES = 0;
     public static final double ROTATION_TOLERANCE_ENCODER_UNITS = ROTATION_TOLERANCE_DEGREES * Conversions.DEGREES_TO_CANCODER_UNITS;
-    public static final double MAX_ROTATION_ENCODER_UNITS = 305 * Conversions.DEGREES_TO_CANCODER_UNITS;
-    public static final double MIN_ROTATION_ENCODER_UNITS = 55 * Conversions.DEGREES_TO_CANCODER_UNITS;
+    public static final double MAX_ROTATION_ENCODER_UNITS = 305.5 * Conversions.DEGREES_TO_CANCODER_UNITS;
+    public static final double MIN_ROTATION_ENCODER_UNITS = 60 * Conversions.DEGREES_TO_CANCODER_UNITS;
     
     public static final boolean EXTENSION_MOTOR_INVERTED = true;
     public static final double EXTENSION_ACCELERATION_GAIN = 0;
@@ -271,20 +275,22 @@ public final class Constants {
     public static final double STOWED_ROTATION = 180;
     public static final double STOWED_EXTENSION = 0.01;
 
-    public static final double PICKUP_GROUND_ROTATION = 288;
-    public static final double PICKUP_GROUND_EXTENSION = 0.875;
-    public static final double PICKUP_LOADING_STATION_ROTATION = 110.7;
+    public static final double PICKUP_GROUND_ROTATION_AUTO = 288;
+    public static final double PICKUP_GROUND_EXTENSION_AUTO = 0.875;
+    public static final double PICKUP_GROUND_ROTATION = 305;
+    public static final double PICKUP_GROUND_EXTENSION = 0.13;
+    public static final double PICKUP_LOADING_STATION_ROTATION = 111;
     public static final double PICKUP_LOADING_STATION_EXTENSION = .768;
-    public static final double PICKUP_CHUTE_ROTATION = 103;
-    public static final double PICKUP_CHUTE_EXTENSION = .45;
+    public static final double PICKUP_CHUTE_ROTATION = 104.3;
+    public static final double PICKUP_CHUTE_EXTENSION = 0.215;
 
-    public static final double PLACE_HIGH_ROTATION = 238;
-    public static final double PLACE_HIGH_EXTENSION = 0.99;
+    public static final double PLACE_HIGH_ROTATION = 235;
+    public static final double PLACE_HIGH_EXTENSION = 1.05;
     // TODO: Get values
-    public static final double PLACE_MIDDLE_ROTATION = 240;
-    public static final double PLACE_MIDDLE_EXTENSION = 0.99;
-    public static final double PLACE_LOW_ROTATION = 240;
-    public static final double PLACE_LOW_EXTENSION = 0.99;
+    public static final double PLACE_MIDDLE_ROTATION = 239.2;
+    public static final double PLACE_MIDDLE_EXTENSION = 0.38;
+    public static final double PLACE_LOW_ROTATION = 180;
+    public static final double PLACE_LOW_EXTENSION = 0.5;
     public static final double PLACE_MIDDLE_AUTO_ROTATION = 109.5;
     public static final double PLACE_MIDDLE_AUTO_EXTENSION = 0.9;
     public static final double SHOOT_CUBE_MIDDLE_ROTATION = 135;
@@ -341,6 +347,7 @@ public final class Constants {
   }
 
   public static final class LimelightConstants {
+    public static final int FRAMES_BEFORE_ADDING_VISION_MEASUREMENT = 5;
   
     public static final String FRONT_LIMELIGHT_NAME = "limelight-front";
     public static final String BACK_LIMELIGHT_NAME = "limelight-back";
@@ -455,6 +462,9 @@ public final class Constants {
       CONE (SparkConstants.YELLOW, 255, 255, 0),
       AUTONOMOUS (SparkConstants.RAINBOW_WAVE, 0, 0, 0),
       LINE_UP (SparkConstants.GREEN, 0, 255, 0),
+      FINISH_LINE_UP (SparkConstants.SHOT_WHITE, 255, 255, 255),
+      GREEN (SparkConstants.GREEN, 0, 255, 0),
+      RED (SparkConstants.RED, 255, 0, 0),
       INTAKE (SparkConstants.MAGENTA, 255, 0, 255);
 
       private final double sparkValue;
@@ -475,9 +485,9 @@ public final class Constants {
   public static final class TrajectoryConstants {
     public static final double MAX_SPEED = 4;
     public static final double MAX_ACCELERATION = 3;
-    public static final double DEPLOYED_X_CONTROLLER_P = .25;
-    public static final double DEPLOYED_Y_CONTROLLER_P = .25;
-    public static final double DEPLOYED_THETA_CONTROLLER_P = .4;
+    public static final double DEPLOYED_X_CONTROLLER_P = .35;
+    public static final double DEPLOYED_Y_CONTROLLER_P = .35;
+    public static final double DEPLOYED_THETA_CONTROLLER_P = .8;
     public static final double REAL_TIME_X_CONTROLLER_P = 2;
     public static final double REAL_TIME_Y_CONTROLLER_P = 2;
     public static final double REAL_TIME_THETA_CONTROLLER_P = 3;
@@ -526,9 +536,9 @@ public final class Constants {
     public static final String TWO_CONE_BALANCE_AUTO_SECOND = "Two Cone Balance Second Red";
     public static final String TWO_CONE_BALANCE_AUTO_THIRD = "Two Cone Balance Third Red";
 
-    public static final String THREE_PIECE_BALANCE_AUTO_FIRST = "Three Piece Balance First Red";
-    public static final String THREE_PIECE_BALANCE_AUTO_SECOND = "Three Piece Balance Second Red";
-    public static final String THREE_PIECE_BALANCE_AUTO_THIRD = "Three Piece Balance Third Red";
+    public static final String THREE_PIECE_BALANCE_AUTO_FIRST = "Two Piece Balance First Red";
+    public static final String THREE_PIECE_BALANCE_AUTO_SECOND = "Two Piece Balance Second Red";
+    public static final String THREE_PIECE_BALANCE_AUTO_THIRD = "Two Piece Balance Third Red";
   }
 
   public static final class SmarterDashboardConstants {

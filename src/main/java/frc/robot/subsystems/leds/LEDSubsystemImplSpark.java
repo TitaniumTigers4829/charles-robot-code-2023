@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDConstants;
 import frc.robot.Constants.LEDConstants.SparkConstants;
+import frc.robot.extras.NodeAndModeRegistry;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 
 
@@ -54,6 +55,14 @@ public class LEDSubsystemImplSpark extends SubsystemBase implements LEDSubsystem
     }
   }
 
+  private double cargoMode() {
+    if (NodeAndModeRegistry.isConeMode()) {
+      return LEDProcess.CONE.getSparkValue();
+    } else {
+      return LEDProcess.CUBE.getSparkValue();
+    }
+  }
+
   private double allianceColor() {
     if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
         return LEDProcess.RED_ALLIANCE.getSparkValue();
@@ -66,7 +75,7 @@ public class LEDSubsystemImplSpark extends SubsystemBase implements LEDSubsystem
     if (DriverStation.isAutonomous()) {
       return LEDProcess.AUTONOMOUS.getSparkValue();
     } else {
-      return allianceColor();
+      return cargoMode();
     }
   }
 

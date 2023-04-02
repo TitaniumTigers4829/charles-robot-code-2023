@@ -6,9 +6,11 @@ package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.arm.MoveArmToStowed;
 import frc.robot.commands.arm.PlaceGamePiece;
 import frc.robot.commands.drive.DriveCommand;
+import frc.robot.extras.NodeAndModeRegistry;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.claw.ClawSubsystem;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -19,20 +21,12 @@ public class SimpleAuto extends SequentialCommandGroup {
   public SimpleAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem) {
 
     addCommands(
-      // // Zero wrist
-      // new InstantCommand(clawSubsystem::zeroWristEncoder),
-      // // Place Cone
-      // new PlaceGamePiece(armSubsystem, clawSubsystem, 241, 0.97).withTimeout(2),
-      // new MoveArmToStowed(armSubsystem, clawSubsystem, () -> false).withTimeout(2),
-      // // Back up over charge station.
-      // new DriveCommand(driveSubsystem, visionSubsystem, ()->0.25, ()->0, ()->0, ()->false).withTimeout(.5),
-      // new DriveCommand(driveSubsystem, visionSubsystem, ()->0, ()->0, ()->.135, ()->false).withTimeout(2),
-      // new DriveCommand(driveSubsystem, visionSubsystem, ()->-0.25, ()->0, ()->0, ()->false).withTimeout(3.6), // 4.5
-      // // Back up to balance and stop
-      // new DriveCommand(driveSubsystem, visionSubsystem, ()->0, ()->0, ()->.135, ()->false).withTimeout(2),
-      // new DriveCommand(driveSubsystem, visionSubsystem, ()->-.25, ()->0, ()->0, ()->false).withTimeout(2.17), // 2.75
-      // new DriveCommand(driveSubsystem, visionSubsystem, ()->0, ()->0, ()->.1, ()->false).withTimeout(.2),
-      // new DriveCommand(driveSubsystem, visionSubsystem, ()->0, ()->0, ()->0, ()->false).withTimeout(.2)
+      new InstantCommand(() -> NodeAndModeRegistry.setIsConeMode(true)).withTimeout(0.1),
+      new InstantCommand(() -> NodeAndModeRegistry.setSelectedNode(19)).withTimeout(0.1),
+      new PlaceGamePiece(armSubsystem, clawSubsystem, ()->false).withTimeout(3),
+      new WaitCommand(.7),
+      new MoveArmToStowed(armSubsystem, clawSubsystem),
+      new DriveCommand(driveSubsystem, visionSubsystem, ()->0.25, ()->0, ()->0, ()-> false).withTimeout(4.3)
     );
   }
 }

@@ -19,7 +19,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   private final DoubleSolenoid clawSolenoid;
 
   private boolean isClawClosed;
-  private boolean isConeMode = false;
+  // private boolean isConeMode = false;
   private boolean isManualControl = false;
 
   public ClawSubsystemImpl() {
@@ -105,25 +105,25 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     wristMotor.set(ControlMode.MotionMagic, angle * ClawConstants.DEG_TO_WRIST_POS);
   }
 
-  @Override
-  public boolean isConeMode() {
-    return isConeMode;
-  }
+  // @Override
+  // public boolean isConeMode() {
+    // return isConeMode;
+  // }
 
-  @Override
-  public void switchCargoMode() {
-    isConeMode = !isConeMode;
-  }
+  // @Override
+  // public void switchCargoMode() {
+  //   isConeMode = !isConeMode;
+  // }
 
-  @Override
-  public void setCargoModeCone() {
-    isConeMode = true;
-  }
+  // @Override
+  // public void setCargoModeCone() {
+  //   isConeMode = true;
+  // }
 
-  @Override
-  public void setCargoModeCube() {
-    isConeMode = false;
-  }
+  // @Override
+  // public void setCargoModeCube() {
+  //   isConeMode = false;
+  // }
 
   @Override
   public boolean isManualControl() {
@@ -137,7 +137,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   
   @Override
   public void periodic() {
-    SmartDashboardLogger.infoString("Cargo Mode", isConeMode ? "Cone" : "Cube");
+    // SmartDashboardLogger.infoString("Cargo Mode", isConeMode ? "Cone" : "Cube");
     SmartDashboardLogger.infoBoolean("isManual", isManualControl);
   }
 }

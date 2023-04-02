@@ -47,22 +47,22 @@ public interface ClawSubsystem extends Subsystem {
   /**
    * Returns true if the claw is in cone mode, false for cube mode.
    */
-  boolean isConeMode();
+  // boolean isConeMode();
 
   /**
    * Switches the cargo mode from cone to cube or vice versa.
    */
-  void switchCargoMode();
+  // void switchCargoMode();
   
-  /**
-   * Sets the cargo mode to cone.
-   */
-  void setCargoModeCone();
+  // /**
+  //  * Sets the cargo mode to cone.
+  //  */
+  // void setCargoModeCone();
 
-  /**
-   * Sets the cargo mode to cone.
-   */
-  void setCargoModeCube();
+  // /**
+  //  * Sets the cargo mode to cone.
+  //  */
+  // void setCargoModeCube();
 
   /**
    * Returns true if the claw is in manual control mode.

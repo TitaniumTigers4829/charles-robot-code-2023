@@ -154,10 +154,10 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
 
     // Flashes the limelight LEDs if they can't see an april tag
     if (!canSeeAprilTags()) {
-      LimelightHelpers.setLEDMode_ForceBlink(LimelightConstants.FRONT_LIMELIGHT_NAME);
-      LimelightHelpers.setLEDMode_ForceBlink(LimelightConstants.BACK_LIMELIGHT_NAME);
+      LimelightHelpers.setLEDMode_ForceOn(LimelightConstants.FRONT_LIMELIGHT_NAME);
+      LimelightHelpers.setLEDMode_ForceOn(LimelightConstants.BACK_LIMELIGHT_NAME);
     } else {
-      LimelightHelpers.setLEDMode_ForceOff(currentlyUsedLimelight);
+      LimelightHelpers.setLEDMode_ForceOff(LimelightConstants.FRONT_LIMELIGHT_NAME);
       LimelightHelpers.setLEDMode_ForceOff(LimelightConstants.BACK_LIMELIGHT_NAME);
     }
   }

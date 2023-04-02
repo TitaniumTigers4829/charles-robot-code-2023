@@ -16,9 +16,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.extras.SmartDashboardLogger;
+import frc.robot.extras.SmarterDashboardRegistry;
 
 public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem {
 
@@ -38,8 +40,6 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   private double gyroOffset = 0;
   // private float rollOffset = 0;
   // private float pitchOffset = 0;
-
-  private int selectedNode = 1;
   
   /**
    * Creates a new DriveSubsystem.
@@ -95,8 +95,6 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
       stateStandardDeviations,
       visionMeasurementStandardDeviations
     );
-
-    SmartDashboardLogger.infoNumber("Selected Node", selectedNode);
   }
 
   @SuppressWarnings("ParameterName")
@@ -185,6 +183,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   @Override
   public void addPoseEstimatorVisionMeasurement(Pose2d visionMeasurement, double currentTimeStampSeconds) {
     odometry.addVisionMeasurement(visionMeasurement, currentTimeStampSeconds);
+    SmarterDashboardRegistry.setLimelightPose(visionMeasurement);
   }
 
   @Override
@@ -231,6 +230,12 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   public void periodic() {
     Pose2d estimatedPose = odometry.getEstimatedPosition();
     SmartDashboardLogger.infoString("Estimated pose", estimatedPose.toString());
+    
+    // smarterdashboard:
+    SmarterDashboardRegistry.setPose(estimatedPose);
+                                            //  pitch, roll, yaw
+    SmarterDashboardRegistry.setOrientation(getHeading(), 0, 0);
+
     frontLeftSwerveModule.periodicFunction();
     frontRightSwerveModule.periodicFunction();
     rearLeftSwerveModule.periodicFunction();

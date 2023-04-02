@@ -74,8 +74,8 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
     followerRotationMotor.configFactoryDefault(HardwareConstants.TIMEOUT_MS);
     followerRotationMotor.setInverted(InvertType.OpposeMaster);
-    followerRotationMotor.setNeutralMode(NeutralMode.Brake);
-    followerRotationMotor.setSensorPhase(true);    
+    followerRotationMotor.setNeutralMode(NeutralMode.Coast);
+    followerRotationMotor.setSensorPhase(true);
     // followerRotationMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
     followerRotationMotor.follow(leaderRotationMotor);
 
@@ -90,6 +90,7 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   @Override
   public void setRotation(double desiredAngle) {
     leaderRotationMotor.set(ControlMode.MotionMagic, desiredAngle * Conversions.DEGREES_TO_CANCODER_UNITS);
+    followerRotationMotor.follow(leaderRotationMotor);
   }
 
   @Override

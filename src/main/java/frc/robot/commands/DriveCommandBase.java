@@ -19,6 +19,7 @@ public abstract class DriveCommandBase extends CommandBase {
   private final VisionSubsystem visionSubsystem;
 
   private double lastTimeStampSeconds = 0;
+  private int ticksAfterSeeing = 0;
 
   /**
    * An abstract class that handles pose estimation while driving.
@@ -39,6 +40,7 @@ public abstract class DriveCommandBase extends CommandBase {
     double currentTimeStampSeconds = lastTimeStampSeconds;
 
     if (visionSubsystem.canSeeAprilTags()) {
+      ticksAfterSeeing++;
       currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
 
       double distanceFromClosestAprilTag = visionSubsystem.getDistanceFromClosestAprilTag();
@@ -52,10 +54,12 @@ public abstract class DriveCommandBase extends CommandBase {
       }
 
       // Only updates the pose estimator if the limelight pose is new and reliable
-      if (currentTimeStampSeconds > lastTimeStampSeconds) {
+      if (currentTimeStampSeconds > lastTimeStampSeconds && ticksAfterSeeing > LimelightConstants.FRAMES_BEFORE_ADDING_VISION_MEASUREMENT) {
         Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
         driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
       }
+    } else {
+      ticksAfterSeeing = 0;
     }
 
     lastTimeStampSeconds = currentTimeStampSeconds;

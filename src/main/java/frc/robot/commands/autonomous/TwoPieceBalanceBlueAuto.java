@@ -15,9 +15,9 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
-public class ThreePieceBalanceAuto extends SequentialCommandGroup {
+public class TwoPieceBalanceBlueAuto extends SequentialCommandGroup {
   
-  public ThreePieceBalanceAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, LEDSubsystem leds) {
+  public TwoPieceBalanceBlueAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, LEDSubsystem leds) {
         
     addCommands(
       new ShootCubeAuto(armSubsystem, clawSubsystem),

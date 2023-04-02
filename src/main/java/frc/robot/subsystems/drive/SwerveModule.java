@@ -87,8 +87,8 @@ public class SwerveModule {
     driveMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND * 10, HardwareConstants.TIMEOUT_MS);
     driveMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 65, 0.1), HardwareConstants.TIMEOUT_MS);
     driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 60, 65, 0.1), HardwareConstants.TIMEOUT_MS);
-    // driveMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
-    driveMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 10);
+    driveMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+    // driveMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 10);
     driveMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 20);
 
     turnMotor.configFactoryDefault(HardwareConstants.TIMEOUT_MS);
@@ -171,11 +171,6 @@ public class SwerveModule {
     driveMotor.set(ControlMode.Velocity, desiredDriveEncoderUnitsPer100MS, 
       DemandType.ArbitraryFeedForward, driveFeedForward.calculate(optimizedDesiredState.speedMetersPerSecond));
 
-    SmartDashboard.putNumber("ff", driveFeedForward.calculate(optimizedDesiredState.speedMetersPerSecond));
-    SmartDashboard.putNumber("desired vel", desiredDriveEncoderUnitsPer100MS);
-    SmartDashboard.putNumber("error vel", desiredDriveEncoderUnitsPer100MS - driveMotor.getSelectedSensorVelocity());
-    SmartDashboard.putString("desiredstate", desiredState.toString());
-
     // Calculate the turning motor output from the turn PID controller.
     double turnOutput =
       turnPIDController.calculate(turnRadians, optimizedDesiredState.angle.getRadians())
@@ -206,7 +201,5 @@ public class SwerveModule {
     driveMotor.setSelectedSensorPosition(0);
   }
 
-  public void periodicFunction() {
-    SmartDashboard.putNumber(name, getAbsolutePosition());
-  }
+  public void periodicFunction() {}
 }

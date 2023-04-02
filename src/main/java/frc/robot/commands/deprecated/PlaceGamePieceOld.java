@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ClawConstants;
+import frc.robot.extras.NodeAndModeRegistry;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.claw.ClawSubsystem;
 
@@ -26,7 +27,7 @@ public class PlaceGamePieceOld extends CommandBase {
   @Override
   public void initialize() {
     armSubsystem.resetExtensionController();
-    if (clawSubsystem.isConeMode()) {
+    if (NodeAndModeRegistry.isConeMode()) {
       if (rotation > 180) {
         clawSubsystem.setWristPosition(0);
       } else {
@@ -46,7 +47,7 @@ public class PlaceGamePieceOld extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     clawSubsystem.open();
-    if (!clawSubsystem.isConeMode()) {
+    if (!NodeAndModeRegistry.isConeMode()) {
       clawSubsystem.setIntakeSpeed(ClawConstants.PLACE_CUBE_INTAKE_SPEED);
     } else {
       clawSubsystem.setIntakeSpeed(ClawConstants.PLACE_CONE_INTAKE_SPEED);

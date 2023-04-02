@@ -16,7 +16,7 @@ public class PlaceConeHigh extends SequentialCommandGroup {
   public PlaceConeHigh(ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem) {
     addCommands(
       new SetArmRotation(armSubsystem, ArmConstants.PLACE_HIGH_ROTATION),
-      new SetArmExtension(armSubsystem, ArmConstants.PICKUP_GROUND_EXTENSION),
+      new SetArmExtension(armSubsystem, ArmConstants.PICKUP_GROUND_EXTENSION_AUTO),
       new OpenClaw(clawSubsystem),
       new SetClawIntakeSpeed(clawSubsystem, ClawConstants.PLACE_CONE_INTAKE_SPEED)
     );
