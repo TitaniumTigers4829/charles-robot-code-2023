@@ -19,7 +19,6 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   private final DoubleSolenoid clawSolenoid;
 
   private boolean isClawClosed;
-  // private boolean isConeMode = false;
   private boolean isManualControl = false;
 
   public ClawSubsystemImpl() {
@@ -27,30 +26,39 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     intakeMotor = new WPI_TalonFX(ClawConstants.INTAKE_MOTOR_ID, HardwareConstants.RIO_CAN_BUS_STRING);
 
     wristMotor.configFactoryDefault(HardwareConstants.TIMEOUT_MS);
+    
     wristMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, HardwareConstants.TIMEOUT_MS);
+
     wristMotor.config_kP(0, ClawConstants.WRIST_P, HardwareConstants.TIMEOUT_MS);
     wristMotor.config_kI(0, ClawConstants.WRIST_I, HardwareConstants.TIMEOUT_MS);
     wristMotor.config_kD(0, ClawConstants.WRIST_D, HardwareConstants.TIMEOUT_MS);
     wristMotor.config_kF(0, ClawConstants.WRIST_F, HardwareConstants.TIMEOUT_MS);
+    wristMotor.configAllowableClosedloopError(0, ClawConstants.WRIST_TOLERANCE, HardwareConstants.TIMEOUT_MS);
+
     wristMotor.configMotionCruiseVelocity(ClawConstants.WRIST_MAX_VELOCITY_ENCODER_UNITS, HardwareConstants.TIMEOUT_MS);
     wristMotor.configMotionAcceleration(ClawConstants.WRIST_MAX_ACCELERATION_ENCODER_UNITS, HardwareConstants.TIMEOUT_MS);
     wristMotor.configMotionSCurveStrength(ClawConstants.WRIST_SMOOTHING, HardwareConstants.TIMEOUT_MS);
-    wristMotor.configAllowableClosedloopError(0, ClawConstants.WRIST_TOLERANCE, HardwareConstants.TIMEOUT_MS);
+
+
     wristMotor.configForwardSoftLimitThreshold(ClawConstants.MAX_WRIST_ROTATION_ENCODER_UNITS, HardwareConstants.TIMEOUT_MS);
     wristMotor.configForwardSoftLimitEnable(true, HardwareConstants.TIMEOUT_MS);
     wristMotor.configReverseSoftLimitThreshold(ClawConstants.MIN_WRIST_ROTATION_ENCODER_UNITS, HardwareConstants.TIMEOUT_MS);
     wristMotor.configReverseSoftLimitEnable(true, HardwareConstants.TIMEOUT_MS);
+
     wristMotor.setInverted(ClawConstants.WRIST_MOTOR_INVERTED);
     wristMotor.setNeutralMode(NeutralMode.Brake);
     wristMotor.setSelectedSensorPosition(0);
     wristMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
+
     wristMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
     wristMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
 
     intakeMotor.configFactoryDefault(HardwareConstants.TIMEOUT_MS);
+
     intakeMotor.setInverted(ClawConstants.INTAKE_MOTOR_INVERTED);
     intakeMotor.setNeutralMode(NeutralMode.Brake);
     intakeMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND, HardwareConstants.TIMEOUT_MS);
+
     intakeMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
     intakeMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
 
@@ -105,25 +113,6 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     wristMotor.set(ControlMode.MotionMagic, angle * ClawConstants.DEG_TO_WRIST_POS);
   }
 
-  // @Override
-  // public boolean isConeMode() {
-    // return isConeMode;
-  // }
-
-  // @Override
-  // public void switchCargoMode() {
-  //   isConeMode = !isConeMode;
-  // }
-
-  // @Override
-  // public void setCargoModeCone() {
-  //   isConeMode = true;
-  // }
-
-  // @Override
-  // public void setCargoModeCube() {
-  //   isConeMode = false;
-  // }
 
   @Override
   public boolean isManualControl() {
@@ -137,7 +126,6 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
   
   @Override
   public void periodic() {
-    // SmartDashboardLogger.infoString("Cargo Mode", isConeMode ? "Cone" : "Cube");
     SmartDashboardLogger.infoBoolean("isManual", isManualControl);
   }
 }
