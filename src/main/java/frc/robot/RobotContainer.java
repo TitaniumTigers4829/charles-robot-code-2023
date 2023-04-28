@@ -21,12 +21,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.arm.ManualArm;
 import frc.robot.commands.arm.MoveArmToStowed;
 import frc.robot.commands.arm.PickupGamePiece;
-import frc.robot.commands.autonomous.AutoPickupChute;
 import frc.robot.commands.autonomous.AutoPickupLoadingStation;
 import frc.robot.commands.autonomous.AutoPlace;
 import frc.robot.commands.autonomous.SimpleAuto;
 import frc.robot.commands.autonomous.TwoPieceBalanceBlueAuto;
 import frc.robot.commands.autonomous.TwoPieceBalanceRedAuto;
+import frc.robot.commands.autonomous.TwoPieceBlueAuto;
+import frc.robot.commands.autonomous.TwoPieceRedAuto;
 import frc.robot.commands.autonomous.simple.DriveForwardThenDriveBackward;
 import frc.robot.commands.autonomous.simple.JustDriveForward;
 import frc.robot.commands.autonomous.simple.PlaceConeHighAuto;
@@ -87,8 +88,13 @@ public class RobotContainer {
       ? new TwoPieceBalanceBlueAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem, leds)
       : new TwoPieceBalanceRedAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem, leds);
 
-    autoChooser.setDefaultOption("2 piece balance", twoPieceBalanceAuto);
-    autoChooser.addOption("Simple Auto", new SimpleAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem));
+    Command twoPieceNoBalanceAuto = DriverStation.getAlliance() == Alliance.Blue 
+      ? new TwoPieceBlueAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem, leds)
+      : new TwoPieceRedAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem, leds);
+
+    autoChooser.setDefaultOption("Simple Auto", new SimpleAuto(driveSubsystem, visionSubsystem, armSubsystem, clawSubsystem));
+    autoChooser.addOption("2 piece balance", twoPieceBalanceAuto);
+    autoChooser.addOption("2 piece no balance", twoPieceNoBalanceAuto);
     autoChooser.addOption("Place cone", new PlaceConeHighAuto(armSubsystem, clawSubsystem));
     autoChooser.addOption("Place cube", new PlaceCubeHighAuto(armSubsystem, clawSubsystem));
     autoChooser.addOption("Drive forward then back", new DriveForwardThenDriveBackward(driveSubsystem, visionSubsystem));

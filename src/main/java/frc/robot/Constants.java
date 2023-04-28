@@ -193,9 +193,18 @@ public final class Constants {
       public static final double BALANCE_ERROR_NEAR_BALANCED = 3;
     }
 
-    public static final double BLUE_CHUTE_X = 14.20;
-    public static final double RED_CHUTE_X = 2.64;
-    public static final double LEDS_ACCEPTABLE_ERROR = 0.1;
+    public static final double RED_CHUTE_X = 2.68 - 0.29;
+    public static final double BLUE_CHUTE_X = TrajectoryConstants.FIELD_LENGTH_METERS - RED_CHUTE_X;
+    public static final double LEDS_ACCEPTABLE_ERROR = 0.2;
+
+    // < than
+    public static final double RED_CHUTE_THRESHOLD_X = 3.75;
+    // > than
+    public static final double RED_CHUTE_THRESHOLD_Y = 6.28;
+    // > than
+    public static final double BLUE_CHUTE_THRESHOLD_X = 12.75;
+    // > than
+    public static final double BLUE_CHUTE_THRESHOLD_Y = 6.28;
   }
   
   public static final class ModuleConstants { 
@@ -284,8 +293,8 @@ public final class Constants {
     public static final double PICKUP_CHUTE_ROTATION = 104.3;
     public static final double PICKUP_CHUTE_EXTENSION = 0.215;
 
-    public static final double PLACE_HIGH_ROTATION = 235;
-    public static final double PLACE_HIGH_EXTENSION = 1.05;
+    public static final double PLACE_HIGH_ROTATION = 234.5;
+    public static final double PLACE_HIGH_EXTENSION = 1.08;
     // TODO: Get values
     public static final double PLACE_MIDDLE_ROTATION = 239.2;
     public static final double PLACE_MIDDLE_EXTENSION = 0.38;
@@ -536,9 +545,13 @@ public final class Constants {
     public static final String TWO_CONE_BALANCE_AUTO_SECOND = "Two Cone Balance Second Red";
     public static final String TWO_CONE_BALANCE_AUTO_THIRD = "Two Cone Balance Third Red";
 
-    public static final String THREE_PIECE_BALANCE_AUTO_FIRST = "Two Piece Balance First Red";
-    public static final String THREE_PIECE_BALANCE_AUTO_SECOND = "Two Piece Balance Second Red";
-    public static final String THREE_PIECE_BALANCE_AUTO_THIRD = "Two Piece Balance Third Red";
+    public static final String THREE_PIECE_BALANCE_AUTO_FIRST_RED = "Two Piece Balance First Red";
+    public static final String THREE_PIECE_BALANCE_AUTO_SECOND_RED = "Two Piece Balance Second Red";
+    public static final String THREE_PIECE_BALANCE_AUTO_THIRD_RED = "Two Piece Balance Third Red";
+
+    public static final String THREE_PIECE_BALANCE_AUTO_FIRST_BLUE = "Two Piece Balance First Blue";
+    public static final String THREE_PIECE_BALANCE_AUTO_SECOND_BLUE = "Two Piece Balance Second Blue";
+    public static final String THREE_PIECE_BALANCE_AUTO_THIRD_BLUE = "Two Piece Balance Third Blue";
   }
 
   public static final class SmarterDashboardConstants {

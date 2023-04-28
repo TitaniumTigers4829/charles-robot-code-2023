@@ -69,17 +69,6 @@ public class PickupGamePiece extends CommandBase {
         armSubsystem.setExtension(extension);
       }
     }
-
-    if (!isLoadingStation && extension > 0.2) {
-      double currentX = SmarterDashboardRegistry.getPose().getX();
-      double chuteX = DriverStation.getAlliance() == Alliance.Blue ? DriveConstants.BLUE_CHUTE_X : DriveConstants.RED_CHUTE_X;
-      double error = Math.abs(currentX - chuteX);
-      if (error <= DriveConstants.LEDS_ACCEPTABLE_ERROR) {
-        leds.setProcess(LEDProcess.GREEN);
-      } else {
-        leds.setProcess(LEDProcess.RED);
-      }
-    }
   }
 
   @Override

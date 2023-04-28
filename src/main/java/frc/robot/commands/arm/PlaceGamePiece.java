@@ -48,14 +48,21 @@ public class PlaceGamePiece extends CommandBase {
   @Override
   public void execute() {
     if (incrementHeight.getAsBoolean()) {
-      armSubsystem.setRotation(rotation - 2);
-      if (Math.abs(rotation - 2 - armSubsystem.getRotation()) < ArmConstants.ROTATION_ACCEPTABLE_ERROR) {
+      armSubsystem.setRotation(rotation - 1.5);
+      if (Math.abs(rotation - 1.5 - armSubsystem.getRotation()) < ArmConstants.ROTATION_ACCEPTABLE_ERROR) {
         armSubsystem.setExtension(extension);
       }
     } else if (!incrementHeight.getAsBoolean()) {
-      armSubsystem.setRotation(rotation);
-      if (Math.abs(rotation - armSubsystem.getRotation()) < ArmConstants.ROTATION_ACCEPTABLE_ERROR) {
-        armSubsystem.setExtension(extension);
+      if (NodeAndModeRegistry.isConeMode()) {
+        armSubsystem.setRotation(rotation);
+        if (Math.abs(rotation - armSubsystem.getRotation()) < ArmConstants.ROTATION_ACCEPTABLE_ERROR) {
+          armSubsystem.setExtension(extension);
+        }
+      } else {
+        armSubsystem.setRotation(rotation + 1.5);
+        if (Math.abs(rotation + 1.5 - armSubsystem.getRotation()) < ArmConstants.ROTATION_ACCEPTABLE_ERROR) {
+          armSubsystem.setExtension(extension);
+        }
       }
     }
   }

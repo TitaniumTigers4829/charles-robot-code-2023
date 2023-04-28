@@ -16,9 +16,9 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
-public class TwoPieceBalanceRedAuto extends SequentialCommandGroup {
+public class TwoPieceRedAuto extends SequentialCommandGroup {
   
-  public TwoPieceBalanceRedAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, LEDSubsystem leds) {
+  public TwoPieceRedAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, LEDSubsystem leds) {
         
     addCommands(
       new ShootCubeAuto(armSubsystem, clawSubsystem),
@@ -35,12 +35,7 @@ public class TwoPieceBalanceRedAuto extends SequentialCommandGroup {
 
       new DropConeAuto(clawSubsystem),
       new WaitCommand(.3),
-      new MoveArmToStowed(armSubsystem, clawSubsystem),
-
-      new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, leds, TrajectoryConstants.THREE_PIECE_BALANCE_AUTO_THIRD_RED),
-
-      new DriveCommand(driveSubsystem, visionSubsystem, () -> 0, () -> 0, () -> 0.2, () -> false).withTimeout(0.3)
-
+      new MoveArmToStowed(armSubsystem, clawSubsystem)
     );
   }
 }
