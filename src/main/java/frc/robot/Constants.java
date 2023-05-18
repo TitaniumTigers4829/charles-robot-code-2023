@@ -173,9 +173,9 @@ public final class Constants {
     public static final double TURN_S = 0.77;
     public static final double TURN_V = 0.75;
     public static final double TURN_A = 0;
-    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI * 4;
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI * 4; // 4pi
 
-    public static final double MAX_SPEED_METERS_PER_SECOND = 4.5;
+    public static final double MAX_SPEED_METERS_PER_SECOND = 4.5; // 4.5
 
     public static final double FACEFORWARD_P = 0.015;
 

@@ -55,17 +55,23 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     leaderRotationMotor.configFactoryDefault(HardwareConstants.TIMEOUT_MS);
     leaderRotationMotor.configRemoteFeedbackFilter(rotationEncoder, 0, 0);
     leaderRotationMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
+
     leaderRotationMotor.config_kP(0, ArmConstants.ROTATION_P, HardwareConstants.TIMEOUT_MS);
     leaderRotationMotor.config_kI(0, ArmConstants.ROTATION_I, HardwareConstants.TIMEOUT_MS);
     leaderRotationMotor.config_kD(0, ArmConstants.ROTATION_D, HardwareConstants.TIMEOUT_MS);
+
     leaderRotationMotor.configMotionCruiseVelocity(ArmConstants.ROTATION_MAX_VELOCITY_ENCODER_UNITS, HardwareConstants.TIMEOUT_MS);
     leaderRotationMotor.configMotionAcceleration(ArmConstants.ROTATION_MAX_ACCELERATION_ENCODER_UNITS, HardwareConstants.TIMEOUT_MS);
     leaderRotationMotor.configMotionSCurveStrength(ArmConstants.ROTATION_SMOOTHING, HardwareConstants.TIMEOUT_MS);
+
     leaderRotationMotor.configAllowableClosedloopError(0, ArmConstants.ROTATION_TOLERANCE_ENCODER_UNITS, HardwareConstants.TIMEOUT_MS);
+
     leaderRotationMotor.configForwardSoftLimitThreshold(ArmConstants.MAX_ROTATION_ENCODER_UNITS, HardwareConstants.TIMEOUT_MS);
     leaderRotationMotor.configForwardSoftLimitEnable(true, HardwareConstants.TIMEOUT_MS);
+
     leaderRotationMotor.configReverseSoftLimitThreshold(ArmConstants.MIN_ROTATION_ENCODER_UNITS, HardwareConstants.TIMEOUT_MS);
     leaderRotationMotor.configReverseSoftLimitEnable(true, HardwareConstants.TIMEOUT_MS);
+
     leaderRotationMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND, HardwareConstants.TIMEOUT_MS);
     // leaderRotationMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250, HardwareConstants.TIMEOUT_MS);
 

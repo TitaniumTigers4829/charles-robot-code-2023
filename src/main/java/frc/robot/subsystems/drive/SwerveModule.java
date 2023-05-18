@@ -201,5 +201,6 @@ public class SwerveModule {
     driveMotor.setSelectedSensorPosition(0);
   }
 
-  public void periodicFunction() {}
+  public void periodicFunction() {
+  }
 }
