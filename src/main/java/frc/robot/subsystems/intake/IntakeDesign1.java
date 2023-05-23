@@ -7,12 +7,13 @@ package frc.robot.subsystems.intake;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.IntakeDesign1Constants;
 
-public class IntakeDesign1 extends SubsystemBase implements IntakeSubsystem {
+public class IntakeDesign1 extends SubsystemBase {
   WPI_TalonFX rollingMotor;
   DoubleSolenoid inAndOut;
 
@@ -25,25 +26,20 @@ public class IntakeDesign1 extends SubsystemBase implements IntakeSubsystem {
   }
 
   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  public void periodic() {}
+
+  public void extend() {
+    inAndOut.set(Value.kForward);
   }
 
-  @Override
-  public void getOutOfTheWay() {
-    // TODO Auto-generated method stub
-    
+  public void retract() {
+    inAndOut.set(Value.kReverse);
   }
 
-  @Override
   public void intake() {
-    // TODO Auto-generated method stub
     rollingMotor.set(IntakeDesign1Constants.ROLLING_MOTOR_INTAKE_SPEED);
   }
 
-  @Override
-  public void manual(double speed1, double speed2, boolean extended) {
-    // TODO Auto-generated method stub
-    
+  public void passToArm() {
   }
 }

@@ -11,7 +11,7 @@ import frc.robot.Constants.HardwareConstants;
 import frc.robot.Constants.IntakeDesign2Constants;
 import frc.robot.extras.NodeAndModeRegistry;
 
-public class IntakeDesign2 extends SubsystemBase implements IntakeSubsystem {
+public class IntakeDesign2 extends SubsystemBase {
   WPI_TalonFX leftMotor, rightMotor;
 
   /** Creates a new IntakeDesign2. */
@@ -30,23 +30,17 @@ public class IntakeDesign2 extends SubsystemBase implements IntakeSubsystem {
     // This method will be called once per scheduler run
   }
 
-  @Override
-  public void getOutOfTheWay() {}
-
-  @Override
   public void intake() {
     // TODO: figure out method for extending intake
     leftMotor.set(IntakeDesign2Constants.SUCC_SPEED);
     rightMotor.set(IntakeDesign2Constants.SUCC_SPEED);
   }
 
-  @Override
-  public void manual(double leftSpeed, double rightSpeed, boolean extended) {
+  public void manual(double leftSpeed, double rightSpeed) {
     leftMotor.set(leftSpeed);
     rightMotor.set(rightSpeed);
   }
 
-  @Override
   public void getRidOfCargo() {
     // TODO: rotate
 
