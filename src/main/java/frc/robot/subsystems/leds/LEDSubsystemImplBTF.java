@@ -74,7 +74,7 @@ public class LEDSubsystemImplBTF extends SubsystemBase implements LEDSubsystem {
         rainbowWave();
         return;
       case ALLIANCE_COLOR:
-        allainceColor();
+        allianceColor();
         return;
       case RED_ALLIANCE:
         animateColor(
@@ -137,7 +137,7 @@ public class LEDSubsystemImplBTF extends SubsystemBase implements LEDSubsystem {
   /**
    * This method sets the color of the LEDs to the current alliance color.
    */
-  private void allainceColor() {
+  private void allianceColor() {
     if (DriverStation.getAlliance() == DriverStation.Alliance.Red) {
       setProcess(LEDProcess.RED_ALLIANCE);
     } else {

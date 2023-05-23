@@ -15,7 +15,6 @@ import frc.robot.Constants.Conversions;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.extras.SmartDashboardLogger;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
 
@@ -32,8 +31,6 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     ArmConstants.EXTENSION_CONSTRAINTS
   );
 
-  private boolean isManualControl = false;
-
   /** 
    * Creates a new ArmSubsystemImpl. 
    * Feed Forward Gain, Velocity Gain, and Acceleration Gain need to be tuned in constants
@@ -49,44 +46,51 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     extensionMotor = new WPI_TalonFX(ArmConstants.EXTENSION_MOTOR_ID);
     // extensionLockSolenoid = new DoubleSolenoid(Constants.PNEUMATICS_MODULE_TYPE, ArmConstants.EXTENSION_LOCK_ENGAGED_ID, ArmConstants.EXTENSION_LOCK_DISENGAGED_ID);
     
-    rotationEncoder.configMagnetOffset(ArmConstants.ROTATION_ENCODER_OFFSET);
-    rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
-    rotationEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10);
-    rotationEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition, 0);
+    rotationEncoder.configFactoryDefault(HardwareConstants.TIMEOUT_MS);
+    rotationEncoder.configMagnetOffset(ArmConstants.ROTATION_ENCODER_OFFSET, HardwareConstants.TIMEOUT_MS);
+    rotationEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360, HardwareConstants.TIMEOUT_MS);
+    rotationEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10, HardwareConstants.TIMEOUT_MS);
+    rotationEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition, HardwareConstants.TIMEOUT_MS);
 
+    leaderRotationMotor.configFactoryDefault(HardwareConstants.TIMEOUT_MS);
     leaderRotationMotor.configRemoteFeedbackFilter(rotationEncoder, 0, 0);
     leaderRotationMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.RemoteSensor0, 0, 0);
-    leaderRotationMotor.config_kP(0, ArmConstants.ROTATION_P);
-    leaderRotationMotor.config_kI(0, ArmConstants.ROTATION_I);
-    leaderRotationMotor.config_kD(0, ArmConstants.ROTATION_D);
-    leaderRotationMotor.configMotionCruiseVelocity(ArmConstants.ROTATION_MAX_VELOCITY_ENCODER_UNITS);
-    leaderRotationMotor.configMotionAcceleration(ArmConstants.ROTATION_MAX_ACCELERATION_ENCODER_UNITS);
-    leaderRotationMotor.configMotionSCurveStrength(ArmConstants.ROTATION_SMOOTHING);
-    leaderRotationMotor.configAllowableClosedloopError(0, ArmConstants.ROTATION_TOLERANCE_ENCODER_UNITS);
-    leaderRotationMotor.configForwardSoftLimitThreshold(ArmConstants.MAX_ROTATION_ENCODER_UNITS);
-    leaderRotationMotor.configForwardSoftLimitEnable(true);
-    leaderRotationMotor.configReverseSoftLimitThreshold(ArmConstants.MIN_ROTATION_ENCODER_UNITS);
-    leaderRotationMotor.configReverseSoftLimitEnable(true);
-    leaderRotationMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
+    leaderRotationMotor.config_kP(0, ArmConstants.ROTATION_P, HardwareConstants.TIMEOUT_MS);
+    leaderRotationMotor.config_kI(0, ArmConstants.ROTATION_I, HardwareConstants.TIMEOUT_MS);
+    leaderRotationMotor.config_kD(0, ArmConstants.ROTATION_D, HardwareConstants.TIMEOUT_MS);
+    leaderRotationMotor.configMotionCruiseVelocity(ArmConstants.ROTATION_MAX_VELOCITY_ENCODER_UNITS, HardwareConstants.TIMEOUT_MS);
+    leaderRotationMotor.configMotionAcceleration(ArmConstants.ROTATION_MAX_ACCELERATION_ENCODER_UNITS, HardwareConstants.TIMEOUT_MS);
+    leaderRotationMotor.configMotionSCurveStrength(ArmConstants.ROTATION_SMOOTHING, HardwareConstants.TIMEOUT_MS);
+    leaderRotationMotor.configAllowableClosedloopError(0, ArmConstants.ROTATION_TOLERANCE_ENCODER_UNITS, HardwareConstants.TIMEOUT_MS);
+    leaderRotationMotor.configForwardSoftLimitThreshold(ArmConstants.MAX_ROTATION_ENCODER_UNITS, HardwareConstants.TIMEOUT_MS);
+    leaderRotationMotor.configForwardSoftLimitEnable(true, HardwareConstants.TIMEOUT_MS);
+    leaderRotationMotor.configReverseSoftLimitThreshold(ArmConstants.MIN_ROTATION_ENCODER_UNITS, HardwareConstants.TIMEOUT_MS);
+    leaderRotationMotor.configReverseSoftLimitEnable(true, HardwareConstants.TIMEOUT_MS);
+    leaderRotationMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND, HardwareConstants.TIMEOUT_MS);
+    // leaderRotationMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250, HardwareConstants.TIMEOUT_MS);
 
     leaderRotationMotor.setInverted(ArmConstants.LEADER_ROTATION_MOTOR_INVERTED);
     leaderRotationMotor.setNeutralMode(NeutralMode.Brake);
 
+    followerRotationMotor.configFactoryDefault(HardwareConstants.TIMEOUT_MS);
     followerRotationMotor.setInverted(InvertType.OpposeMaster);
-    followerRotationMotor.setNeutralMode(NeutralMode.Brake);
-    followerRotationMotor.setSensorPhase(true);    
+    followerRotationMotor.setNeutralMode(NeutralMode.Coast);
+    followerRotationMotor.setSensorPhase(true);
+    // followerRotationMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
     followerRotationMotor.follow(leaderRotationMotor);
 
+    extensionMotor.configFactoryDefault(HardwareConstants.TIMEOUT_MS);
     extensionMotor.setInverted(ArmConstants.EXTENSION_MOTOR_INVERTED);
     extensionMotor.setNeutralMode(NeutralMode.Brake);
-    extensionMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
-    extensionMotor.configReverseSoftLimitThreshold(ArmConstants.MAX_EXTENSION_METERS * ArmConstants.EXTENSION_METERS_TO_MOTOR_POS);
-    extensionMotor.configReverseSoftLimitEnable(true);
+    extensionMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND, HardwareConstants.TIMEOUT_MS);
+    extensionMotor.configReverseSoftLimitThreshold(ArmConstants.MAX_EXTENSION_METERS * ArmConstants.EXTENSION_METERS_TO_MOTOR_POS, HardwareConstants.TIMEOUT_MS);
+    extensionMotor.configReverseSoftLimitEnable(true, HardwareConstants.TIMEOUT_MS);
   }
 
   @Override
   public void setRotation(double desiredAngle) {
     leaderRotationMotor.set(ControlMode.MotionMagic, desiredAngle * Conversions.DEGREES_TO_CANCODER_UNITS);
+    followerRotationMotor.follow(leaderRotationMotor);
   }
 
   @Override
@@ -163,16 +167,8 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
   }
 
   @Override
-  public boolean isManualControl() {
-    return isManualControl;
+  public void periodic() {
+    SmartDashboardLogger.debugNumber("Arm Rotation", getRotation());
+    SmartDashboardLogger.debugNumber("Arm Extension", getExtension());
   }
-
-  @Override
-  public void toggleControlMode() {
-    isManualControl = !isManualControl;
-    SmartDashboardLogger.infoString("Control Mode", isManualControl ? "Manual" : "Auto");
-  }
-
-  @Override
-  public void periodic() {   }
 }

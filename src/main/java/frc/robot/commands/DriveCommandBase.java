@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.extras.MultiLinearInterpolator;
@@ -20,6 +19,7 @@ public abstract class DriveCommandBase extends CommandBase {
   private final VisionSubsystem visionSubsystem;
 
   private double lastTimeStampSeconds = 0;
+  private int ticksAfterSeeing = 0;
 
   /**
    * An abstract class that handles pose estimation while driving.
@@ -40,27 +40,26 @@ public abstract class DriveCommandBase extends CommandBase {
     double currentTimeStampSeconds = lastTimeStampSeconds;
 
     if (visionSubsystem.canSeeAprilTags()) {
+      ticksAfterSeeing++;
       currentTimeStampSeconds = visionSubsystem.getTimeStampSeconds();
 
       double distanceFromClosestAprilTag = visionSubsystem.getDistanceFromClosestAprilTag();
       // Sets the pose estimator confidence in vision based off of number of april tags and distance
       if (visionSubsystem.getNumberOfAprilTags() == 1) {
-        double xStandardDeviation = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[0];
-        double yStandardDeviation = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[1];
-        double thetaStandardDeviation = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[2];
-        driveSubsystem.setPoseEstimatorVisionConfidence(xStandardDeviation, yStandardDeviation, thetaStandardDeviation);
+        double[] standardDeviations = oneAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
+        driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
       } else if (visionSubsystem.getNumberOfAprilTags() > 1) {
-        double xStandardDeviation = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[0];
-        double yStandardDeviation = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[1];
-        double thetaStandardDeviation = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag)[2];
-        driveSubsystem.setPoseEstimatorVisionConfidence(xStandardDeviation, yStandardDeviation, thetaStandardDeviation);
+        double[] standardDeviations = twoAprilTagLookupTable.getLookupValue(distanceFromClosestAprilTag);
+        driveSubsystem.setPoseEstimatorVisionConfidence(standardDeviations[0], standardDeviations[1], standardDeviations[2]);
       }
 
       // Only updates the pose estimator if the limelight pose is new and reliable
-      if (currentTimeStampSeconds > lastTimeStampSeconds) {
+      if (currentTimeStampSeconds > lastTimeStampSeconds && ticksAfterSeeing > LimelightConstants.FRAMES_BEFORE_ADDING_VISION_MEASUREMENT) {
         Pose2d limelightVisionMeasurement = visionSubsystem.getPoseFromAprilTags();
         driveSubsystem.addPoseEstimatorVisionMeasurement(limelightVisionMeasurement, Timer.getFPGATimestamp() - visionSubsystem.getLatencySeconds());
       }
+    } else {
+      ticksAfterSeeing = 0;
     }
 
     lastTimeStampSeconds = currentTimeStampSeconds;

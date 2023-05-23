@@ -15,10 +15,12 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.extras.SmartDashboardLogger;
+import frc.robot.extras.SmarterDashboardRegistry;
 
 public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem {
 
@@ -32,14 +34,12 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   private final SwerveModule rearLeftSwerveModule;
   private final SwerveModule rearRightSwerveModule;
 
-  private final AHRS gyro;
+  private final Gyro gyro;
   private final SwerveDrivePoseEstimator odometry;
 
   private double gyroOffset = 0;
-  private float rollOffset = 0;
-  private float pitchOffset = 0;
-
-  private int selectedNode = 1;
+  // private float rollOffset = 0;
+  // private float pitchOffset = 0;
   
   /**
    * Creates a new DriveSubsystem.
@@ -95,8 +95,6 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
       stateStandardDeviations,
       visionMeasurementStandardDeviations
     );
-
-    SmartDashboardLogger.infoNumber("Selected Node", selectedNode);
   }
 
   @SuppressWarnings("ParameterName")
@@ -117,17 +115,20 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
 
   @Override
   public double getHeading() {
+    // return (-gyro.getAngle() + this.gyroOffset) % 360;
     return (-gyro.getAngle() + this.gyroOffset) % 360;
   }
 
   @Override
   public double getRoll() {
-    return (-gyro.getRoll() + this.rollOffset) % 360;
+    // return (-gyro.getRoll() + this.rollOffset) % 360;
+    return 0;
   }
 
   @Override
   public double getPitch() {
-    return (-gyro.getPitch() + this.pitchOffset) % 360;
+    // return (-gyro.getPitch() + this.pitchOffset) % 360;
+    return 0;
   }
 
   @Override
@@ -162,8 +163,8 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
 
   @Override
   public void zeroPitchAndRoll() {
-    pitchOffset = gyro.getPitch();
-    rollOffset = gyro.getRoll();
+    // pitchOffset = gyro.getPitch();
+    // rollOffset = gyro.getRoll();
   }
 
   @Override
@@ -182,6 +183,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   @Override
   public void addPoseEstimatorVisionMeasurement(Pose2d visionMeasurement, double currentTimeStampSeconds) {
     odometry.addVisionMeasurement(visionMeasurement, currentTimeStampSeconds);
+    SmarterDashboardRegistry.setLimelightPose(visionMeasurement);
   }
 
   @Override
@@ -225,20 +227,19 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   }
 
   @Override
-  public int getSelectedNode() {
-    return selectedNode;
-  }
-  
-  @Override
-  public void setSelectedNode(int nodeID) {
-    selectedNode = nodeID;
-    SmartDashboardLogger.infoNumber("Selected Node", selectedNode);
-  }
-
-  @Override
   public void periodic() {
     Pose2d estimatedPose = odometry.getEstimatedPosition();
     SmartDashboardLogger.infoString("Estimated pose", estimatedPose.toString());
+    
+    // smarterdashboard:
+    SmarterDashboardRegistry.setPose(estimatedPose);
+                                            //  pitch, roll, yaw
+    SmarterDashboardRegistry.setOrientation(getHeading(), 0, 0);
+
+    frontLeftSwerveModule.periodicFunction();
+    frontRightSwerveModule.periodicFunction();
+    rearLeftSwerveModule.periodicFunction();
+    rearRightSwerveModule.periodicFunction();
   }
 
 }

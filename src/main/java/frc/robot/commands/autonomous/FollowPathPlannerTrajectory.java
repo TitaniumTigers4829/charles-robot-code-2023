@@ -13,13 +13,16 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
+import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.DriveCommandBase;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 
 public class FollowPathPlannerTrajectory extends DriveCommandBase {
 
   private final DriveSubsystem driveSubsystem;
+  private final LEDSubsystem leds;
   private final boolean resetOdometryToTrajectoryStart;
   
   private PPSwerveControllerCommand followTrajectoryCommand;
@@ -34,9 +37,9 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
   private final double autoMaxAcceleration = TrajectoryConstants.MAX_ACCELERATION - .5;
 
   // Your probably only want to edit the P values
-  private final PIDController xController = new PIDController(TrajectoryConstants.X_CONTROLLER_P - 2.5, 0, 0);
-  private final PIDController yController = new PIDController(TrajectoryConstants.Y_CONTROLLER_P - 2.5, 0, 0);
-  private final PIDController thetaController = new PIDController(TrajectoryConstants.THETA_CONTROLLER_P - 1.3, 0, 0);
+  private final PIDController xController = new PIDController(TrajectoryConstants.DEPLOYED_X_CONTROLLER_P, 0, 0);
+  private final PIDController yController = new PIDController(TrajectoryConstants.DEPLOYED_Y_CONTROLLER_P, 0, 0);
+  private final PIDController thetaController = new PIDController(TrajectoryConstants.DEPLOYED_THETA_CONTROLLER_P, 0, 0);
   
   // IMPORTANT: Make sure your driveSubsystem has the methods resetOdometry, getPose, and setModuleStates
   
@@ -51,14 +54,15 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
    * @param resetOdometryToTrajectoryStart Set as true if you want the odometry of the robot to be set to the
    * start of the trajectory.
    */
-  public FollowPathPlannerTrajectory(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, String trajectoryName, boolean resetOdometryToTrajectoryStart) {
+  public FollowPathPlannerTrajectory(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, LEDSubsystem leds, String trajectoryName, boolean resetOdometryToTrajectoryStart) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;    
-    addRequirements(visionSubsystem);
+    this.leds = leds;
+    addRequirements(visionSubsystem, leds);
     this.resetOdometryToTrajectoryStart = resetOdometryToTrajectoryStart;
 
     // Makes a trajectory                                                     
-    PathPlannerTrajectory trajectoryToFollow = PathPlanner.loadPath(trajectoryName, autoMaxVelocity, autoMaxAcceleration);
+    PathPlannerTrajectory trajectoryToFollow = PathPlanner.loadPath(trajectoryName, 3, 1.5);
 
     trajectoryInitialPose = trajectoryToFollow.getInitialHolonomicPose();
 
@@ -86,12 +90,15 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
    * @param trajectoryName The name of the PathPlanner path file. It should not include the filepath or 
    * .path extension.
    */
-  public FollowPathPlannerTrajectory(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, String trajectoryName) {
-    this(driveSubsystem, visionSubsystem, trajectoryName, false);
+  public FollowPathPlannerTrajectory(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, LEDSubsystem leds, String trajectoryName) {
+    this(driveSubsystem, visionSubsystem, leds, trajectoryName, false);
   }
 
   @Override
   public void initialize() {
+
+    leds.setProcess(LEDProcess.LINE_UP);
+
     if (resetOdometryToTrajectoryStart) {
       driveSubsystem.resetOdometryAndRotation(trajectoryInitialPose, trajectoryInitialPose.getRotation().getDegrees());
     }
@@ -105,7 +112,9 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    leds.setProcess(LEDProcess.DEFAULT);
+  }
 
   @Override
   public boolean isFinished() {
