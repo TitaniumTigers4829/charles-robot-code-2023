@@ -4,18 +4,29 @@
 
 package frc.robot.subsystems.intake;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+public interface IntakeSubsystem extends Subsystem {
+  /**
+   * Gets out of the way of the arm
+   */
+  public void getOutOfTheWay();
 
-public class IntakeSubsystem extends SubsystemBase {
-  WPI_TalonFX leftIntakeMotor, rightIntakeMotor;
-  
-  /** Creates a new IntakeSubsystem. */
-  public IntakeSubsystem() {}
+  /**
+   * Intakes
+   */
+  public void intake();
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+  /**
+   * Manual control for the intake
+   * @param speed1 Speed for motor 1
+   * @param speed2 Speed for motor 2
+   * @param extended Whether or not to extend
+   */
+  public void manual(double speed1, double speed2, boolean extended);
+
+  /**
+   * Gets rid of cargo, either by passing it to the claw or shooting it
+   */
+  public void getRidOfCargo();
 }

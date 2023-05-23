@@ -173,9 +173,9 @@ public final class Constants {
     public static final double TURN_S = 0.77;
     public static final double TURN_V = 0.75;
     public static final double TURN_A = 0;
-    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI * 4; // 4pi
+    public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI * 1; // 4pi
 
-    public static final double MAX_SPEED_METERS_PER_SECOND = 4.5; // 4.5
+    public static final double MAX_SPEED_METERS_PER_SECOND = 1.5; // 4.5
 
     public static final double FACEFORWARD_P = 0.015;
 
@@ -286,10 +286,13 @@ public final class Constants {
 
     public static final double PICKUP_GROUND_ROTATION_AUTO = 288;
     public static final double PICKUP_GROUND_EXTENSION_AUTO = 0.875;
+
     public static final double PICKUP_GROUND_ROTATION = 305;
     public static final double PICKUP_GROUND_EXTENSION = 0.13;
+
     public static final double PICKUP_LOADING_STATION_ROTATION = 111;
     public static final double PICKUP_LOADING_STATION_EXTENSION = .768;
+
     public static final double PICKUP_CHUTE_ROTATION = 104.3;
     public static final double PICKUP_CHUTE_EXTENSION = 0.215;
 
@@ -297,7 +300,7 @@ public final class Constants {
     public static final double PLACE_HIGH_EXTENSION = 1.08;
     // TODO: Get values
     public static final double PLACE_MIDDLE_ROTATION = 239.2;
-    public static final double PLACE_MIDDLE_EXTENSION = 0.38;
+    public static final double PLACE_MIDDLE_EXTENSION = 0.4;
     public static final double PLACE_LOW_ROTATION = 180;
     public static final double PLACE_LOW_EXTENSION = 0.5;
     public static final double PLACE_MIDDLE_AUTO_ROTATION = 109.5;
@@ -353,6 +356,39 @@ public final class Constants {
     public static final double PLACE_CONE_INTAKE_SPEED = -0.05;
     public static final double PLACE_CUBE_INTAKE_SPEED = -0.08;
     public static final double SHOOT_CUBE_INTAKE_SPEED = -1;
+  }
+
+  public static final class IntakeDesign1Constants {
+    public static final int FOWARD_CHANNEL = 0-9;
+    public static final int REVERSE_CHANNEL = 0-9;
+    
+    public static final int ROLLING_MOTOR_ID = 0-9;
+    public static final double ROLLING_MOTOR_INTAKE_SPEED = 0-9;
+  }
+
+  public static final class IntakeDesign2Constants {
+    public static final int INTAKE_MOTOR_LEFT_ID = 0-9;
+    public static final int INTAKE_MOTOR_RIGHT_ID = 0-9;
+    public static final int INTAKE_MOTOR_ROTATION_ID = 0-9;
+
+    public static final boolean MOTOR_LEFT_INVERTED = false;
+    public static final boolean MOTOR_RIGHT_INVERTED = true;
+    public static final boolean MOTOR_ROTATION_INVERTED = false;
+
+    //TODO: Tune these
+    public static final double ROTATION_MOTOR_P = 0;
+    public static final double ROTATION_MOTOR_I = 0;
+    public static final double ROTATION_MOTOR_D = 0;
+    public static final double ROTATION_MOTOR_F = 0;
+    public static final double ROTATION_MOTOR_MAX_SPEED = 0-9; // encoder units / 100 ms
+    public static final double ROTATION_MOTOR_MAX_ACCEL = 0-9; // encoder units / 100 ms / second
+
+
+    public static final double SUCC_SPEED = 0.5;
+
+    public static final double HIGH_SHOOT_SPEED = 0.75;
+    public static final double MID_SHOOT_SPEED = 0.5;
+    public static final double LOW_SHOOT_SPEED = 0.4;
   }
 
   public static final class LimelightConstants {

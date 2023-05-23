@@ -175,7 +175,7 @@ public class SwerveModule {
     double turnOutput =
       turnPIDController.calculate(turnRadians, optimizedDesiredState.angle.getRadians())
         + turnFeedForward.calculate(turnPIDController.getSetpoint().velocity);
-        turnMotor.set(turnOutput / 12);
+    turnMotor.set(turnOutput / 12);
   }
 
   public double getTurnRadians() {

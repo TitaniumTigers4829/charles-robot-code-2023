@@ -153,13 +153,13 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
     SmartDashboardLogger.infoString("Limelight Pos", getPoseFromAprilTags().toString());
 
     // Flashes the limelight LEDs if they can't see an april tag
-    if (!canSeeAprilTags()) {
-      LimelightHelpers.setLEDMode_ForceOn(LimelightConstants.FRONT_LIMELIGHT_NAME);
-      LimelightHelpers.setLEDMode_ForceOn(LimelightConstants.BACK_LIMELIGHT_NAME);
-    } else {
-      LimelightHelpers.setLEDMode_ForceOff(LimelightConstants.FRONT_LIMELIGHT_NAME);
-      LimelightHelpers.setLEDMode_ForceOff(LimelightConstants.BACK_LIMELIGHT_NAME);
-    }
+    // if (!canSeeAprilTags()) {
+    //   LimelightHelpers.setLEDMode_ForceOn(LimelightConstants.FRONT_LIMELIGHT_NAME);
+    //   LimelightHelpers.setLEDMode_ForceOn(LimelightConstants.BACK_LIMELIGHT_NAME);
+    // } else {
+      // LimelightHelpers.setLEDMode_ForceOff(LimelightConstants.FRONT_LIMELIGHT_NAME);
+      // LimelightHelpers.setLEDMode_ForceOff(LimelightConstants.BACK_LIMELIGHT_NAME);
+    // }
   }
 
 }
