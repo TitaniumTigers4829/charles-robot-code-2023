@@ -5,62 +5,97 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ClawConstants;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.extras.SmartDashboardLogger;
 
 public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
-  private final WPI_TalonFX wristMotor;
-  private final WPI_TalonFX intakeMotor;
+  private final TalonFX wristMotor;
+  private final TalonFX intakeMotor;
   private final DoubleSolenoid clawSolenoid;
 
   private boolean isClawClosed;
   private boolean isManualControl = false;
 
+  private StatusSignal<Double> wristPosition;
+
+  
+
   public ClawSubsystemImpl() {
-    wristMotor = new WPI_TalonFX(ClawConstants.WRIST_MOTOR_ID, HardwareConstants.RIO_CAN_BUS_STRING);
-    intakeMotor = new WPI_TalonFX(ClawConstants.INTAKE_MOTOR_ID, HardwareConstants.RIO_CAN_BUS_STRING);
+    wristMotor = new TalonFX(ClawConstants.WRIST_MOTOR_ID, HardwareConstants.RIO_CAN_BUS_STRING);
+    intakeMotor = new TalonFX(ClawConstants.INTAKE_MOTOR_ID, HardwareConstants.RIO_CAN_BUS_STRING);
 
-    wristMotor.configFactoryDefault(HardwareConstants.TIMEOUT_MS);
+    wristPosition = wristMotor.getPosition();
+    wristMotor.getConfigurator().apply(new TalonFXConfiguration());
+    TalonFXConfiguration talonfxConfigsWrist= new TalonFXConfiguration();
+    wristMotor.getConfigurator().refresh(talonfxConfigsWrist);
+    wristMotor.getPosition().setUpdateFrequency(5);
+    wristMotor.getVelocity().setUpdateFrequency(5);
+    talonfxConfigsWrist.Slot0.kV = 0.0;
+    talonfxConfigsWrist.Slot0.kS = 0.0;
+    talonfxConfigsWrist.Slot0.kP = ClawConstants.WRIST_P;
+    talonfxConfigsWrist.Slot0.kI = ClawConstants.WRIST_I;
+    talonfxConfigsWrist.Slot0.kD = ClawConstants.WRIST_D;
+
+    talonfxConfigsWrist.CurrentLimits.SupplyCurrentLimit = 60;
+    talonfxConfigsWrist.CurrentLimits.SupplyCurrentLimitEnable = true;
+    talonfxConfigsWrist.CurrentLimits.SupplyCurrentThreshold = 65;
+    talonfxConfigsWrist.CurrentLimits.SupplyTimeThreshold = 0.1;
+    talonfxConfigsWrist.CurrentLimits.StatorCurrentLimit = 60;
+    talonfxConfigsWrist.CurrentLimits.StatorCurrentLimitEnable = true;
+
+    talonfxConfigsWrist.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    talonfxConfigsWrist.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+    talonfxConfigsWrist.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+
     
-    wristMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, HardwareConstants.TIMEOUT_MS);
+    MotionMagicConfigs wristMotionMagicConfigs = talonfxConfigsWrist.MotionMagic;
+    wristMotionMagicConfigs.MotionMagicCruiseVelocity = ClawConstants.WRIST_MAX_VELOCITY_ENCODER_UNITS; // Target cruise velocity of 80 rps
+    wristMotionMagicConfigs.MotionMagicAcceleration = ClawConstants.WRIST_MAX_ACCELERATION_ENCODER_UNITS; // Target acceleration of 160 rps/s (0.5 seconds)
+    // motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
+    SoftwareLimitSwitchConfigs wristSoftwareLimitSwitchConfigs = talonfxConfigsWrist.SoftwareLimitSwitch;
 
-    wristMotor.config_kP(0, ClawConstants.WRIST_P, HardwareConstants.TIMEOUT_MS);
-    wristMotor.config_kI(0, ClawConstants.WRIST_I, HardwareConstants.TIMEOUT_MS);
-    wristMotor.config_kD(0, ClawConstants.WRIST_D, HardwareConstants.TIMEOUT_MS);
-    wristMotor.config_kF(0, ClawConstants.WRIST_F, HardwareConstants.TIMEOUT_MS);
-    wristMotor.configAllowableClosedloopError(0, ClawConstants.WRIST_TOLERANCE, HardwareConstants.TIMEOUT_MS);
+    talonfxConfigsWrist.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+    talonfxConfigsWrist.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+    talonfxConfigsWrist.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ClawConstants.MAX_WRIST_ROTATION_ENCODER_UNITS;
+    talonfxConfigsWrist.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ClawConstants.MIN_WRIST_ROTATION_ENCODER_UNITS;
 
-    wristMotor.configMotionCruiseVelocity(ClawConstants.WRIST_MAX_VELOCITY_ENCODER_UNITS, HardwareConstants.TIMEOUT_MS);
-    wristMotor.configMotionAcceleration(ClawConstants.WRIST_MAX_ACCELERATION_ENCODER_UNITS, HardwareConstants.TIMEOUT_MS);
-    wristMotor.configMotionSCurveStrength(ClawConstants.WRIST_SMOOTHING, HardwareConstants.TIMEOUT_MS);
+    wristMotor.setRotorPosition(0, HardwareConstants.TIMEOUT_MS);//wristMotor.setSelectedSensorPosition(0);
+    //apply configs
+    wristMotor.getConfigurator().apply(talonfxConfigsWrist, HardwareConstants.TIMEOUT_MS);
+    
 
+    // wristMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
 
-    wristMotor.configForwardSoftLimitThreshold(ClawConstants.MAX_WRIST_ROTATION_ENCODER_UNITS, HardwareConstants.TIMEOUT_MS);
-    wristMotor.configForwardSoftLimitEnable(true, HardwareConstants.TIMEOUT_MS);
-    wristMotor.configReverseSoftLimitThreshold(ClawConstants.MIN_WRIST_ROTATION_ENCODER_UNITS, HardwareConstants.TIMEOUT_MS);
-    wristMotor.configReverseSoftLimitEnable(true, HardwareConstants.TIMEOUT_MS);
+    // wristMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+    // wristMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
 
-    wristMotor.setInverted(ClawConstants.WRIST_MOTOR_INVERTED);
-    wristMotor.setNeutralMode(NeutralMode.Brake);
-    wristMotor.setSelectedSensorPosition(0);
-    wristMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND);
+    intakeMotor.getConfigurator().apply(new TalonFXConfiguration(), HardwareConstants.TIMEOUT_MS);
+    TalonFXConfiguration intakeConfigs = new TalonFXConfiguration();
 
-    wristMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
-    wristMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
+    intakeConfigs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    intakeConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
-    intakeMotor.configFactoryDefault(HardwareConstants.TIMEOUT_MS);
+    intakeMotor.getConfigurator().apply(intakeConfigs, HardwareConstants.TIMEOUT_MS);
+    // intakeMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND, HardwareConstants.TIMEOUT_MS);
 
-    intakeMotor.setInverted(ClawConstants.INTAKE_MOTOR_INVERTED);
-    intakeMotor.setNeutralMode(NeutralMode.Brake);
-    intakeMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND, HardwareConstants.TIMEOUT_MS);
-
-    intakeMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
-    intakeMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
+    // intakeMotor.setStatusFramePeriod(StatusFrame.Status_1_General, 250);
+    // intakeMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
 
     clawSolenoid = new DoubleSolenoid(
       HardwareConstants.PNEUMATICS_MODULE_TYPE,
@@ -100,17 +135,19 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
 
   @Override
   public double getWristAngle() {
-    return wristMotor.getSelectedSensorPosition() * ClawConstants.WRIST_POS_TO_DEG;
+    wristPosition.refresh();
+    return wristPosition.getValue(); 
   }
 
   @Override
   public void zeroWristEncoder() {
-    wristMotor.setSelectedSensorPosition(0);
+    wristMotor.setRotorPosition(0, HardwareConstants.TIMEOUT_MS);
   }
 
   @Override
   public void setWristPosition(double angle) {
-    wristMotor.set(ControlMode.MotionMagic, angle * ClawConstants.DEG_TO_WRIST_POS);
+    MotionMagicDutyCycle mmDutyCycle = new MotionMagicDutyCycle(angle);
+    wristMotor.setControl(mmDutyCycle);
   }
 
 

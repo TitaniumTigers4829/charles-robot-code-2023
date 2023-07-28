@@ -1,5 +1,8 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix6.signals.InvertedValue;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -160,15 +163,15 @@ public final class Constants {
     public static final double REAR_LEFT_ZERO_ANGLE = 46.58203125;
     public static final double REAR_RIGHT_ZERO_ANGLE = -78.57421875 + 90;
 
-    public static final boolean FRONT_LEFT_CANCODER_REVERSED = false;
-    public static final boolean FRONT_RIGHT_CANCODER_REVERSED = false;
-    public static final boolean REAR_LEFT_CANCODER_REVERSED = false;
-    public static final boolean REAR_RIGHT_CANCODER_REVERSED = false;
+    public static final InvertedValue FRONT_LEFT_CANCODER_REVERSED = InvertedValue.CounterClockwise_Positive; //false
+    public static final InvertedValue FRONT_RIGHT_CANCODER_REVERSED = InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue REAR_LEFT_CANCODER_REVERSED = InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue REAR_RIGHT_CANCODER_REVERSED = InvertedValue.CounterClockwise_Positive;
     
-    public static final boolean FRONT_LEFT_DRIVE_ENCODER_REVERSED = false;
-    public static final boolean FRONT_RIGHT_DRIVE_ENCODER_REVERSED = true; 
-    public static final boolean REAR_LEFT_DRIVE_ENCODER_REVERSED = false;
-    public static final boolean REAR_RIGHT_DRIVE_ENCODER_REVERSED = true;
+    public static final InvertedValue FRONT_LEFT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive; //false i think
+    public static final InvertedValue REAR_LEFT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue FRONT_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.Clockwise_Positive; 
+    public static final InvertedValue REAR_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.Clockwise_Positive;
     
     public static final double TURN_S = 0.77;
     public static final double TURN_V = 0.75;
@@ -177,7 +180,7 @@ public final class Constants {
 
     public static final double MAX_SPEED_METERS_PER_SECOND = 4.5;
 
-    public static final double FACEFORWARD_P = 0.015;
+    public static final double FACE_FORWARD_P = 0.015;
 
     // TODO: Remove this if we don't end up doing auto balance
     public static final class BalanceConstants {
@@ -215,8 +218,9 @@ public final class Constants {
       WHEEL_CIRCUMFERENCE_METERS / (DRIVE_GEAR_RATIO * HardwareConstants.FALCON_ENCODER_RESOLUTION);
     public static final double DRIVE_TO_METERS_PER_SECOND =
       (10 * WHEEL_CIRCUMFERENCE_METERS) / (DRIVE_GEAR_RATIO * HardwareConstants.FALCON_ENCODER_RESOLUTION);
+    public static final double ROTATIONS_PER_METER = DRIVE_GEAR_RATIO / WHEEL_CIRCUMFERENCE_METERS;
 
-    public static final double TURN_P = 7; // 8.1
+    public static final double TURN_P = 168.1642; //7 // 8.1
     public static final double TURN_I = 0;
     public static final double TURN_D = 0;
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 10 * Math.PI;
@@ -228,7 +232,7 @@ public final class Constants {
       );
 
     public static final double DRIVE_F = 0; // 0.059;
-    public static final double DRIVE_P = 0.3; // 0.19;
+    public static final double DRIVE_P = 0.7207038;//0.3 // 0.19;
     public static final double DRIVE_I = 0;
     public static final double DRIVE_D = 0;
     public static final double DRIVE_S = 0.29155 / 12.0;

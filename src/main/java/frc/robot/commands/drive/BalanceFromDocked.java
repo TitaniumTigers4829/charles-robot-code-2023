@@ -23,7 +23,7 @@ public class BalanceFromDocked extends CommandBase {
   );
 
   private final ProfiledPIDController thetaController = new ProfiledPIDController(
-    DriveConstants.FACEFORWARD_P, 
+    DriveConstants.FACE_FORWARD_P, 
     0, 
     0, 
     TrajectoryConstants.THETA_CONTROLLER_CONSTRAINTS

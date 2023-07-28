@@ -1,5 +1,7 @@
 package frc.robot.subsystems.claw;
 
+import com.ctre.phoenix6.StatusSignal;
+
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public interface ClawSubsystem extends Subsystem {

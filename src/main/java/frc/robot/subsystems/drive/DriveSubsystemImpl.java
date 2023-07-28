@@ -115,7 +115,7 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
 
   @Override
   public double getHeading() {
-    // return (-gyro.getAngle() + this.gyroOffset) % 360;
+    
     return (-gyro.getAngle() + this.gyroOffset) % 360;
   }
 
@@ -214,17 +214,17 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     rearRightSwerveModule.setDesiredState(desiredStates[3]);
   }
 
-  @Override
-  public SwerveModulePosition[] getModulePositions() {
-    SwerveModulePosition[] swerveModulePositions = {
-      frontLeftSwerveModule.getPosition(),
-      frontRightSwerveModule.getPosition(),
-      rearLeftSwerveModule.getPosition(),
-      rearRightSwerveModule.getPosition()
-    };
+  // @Override
+  // public SwerveModulePosition[] getModulePositions() {
+  //   SwerveModulePosition[] swerveModulePositions = {
+  //     frontLeftSwerveModule.getPosition(false),
+  //     frontRightSwerveModule.getPosition(false),
+  //     rearLeftSwerveModule.getPosition(false),
+  //     rearRightSwerveModule.getPosition(false)
+  //   };
 
-    return swerveModulePositions;
-  }
+  //   return swerveModulePositions;
+  // }
 
   @Override
   public void periodic() {
@@ -240,6 +240,12 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     frontRightSwerveModule.periodicFunction();
     rearLeftSwerveModule.periodicFunction();
     rearRightSwerveModule.periodicFunction();
+  }
+
+  @Override
+  public SwerveModulePosition[] getModulePositions() {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }
