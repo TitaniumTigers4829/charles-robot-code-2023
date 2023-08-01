@@ -214,17 +214,17 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     rearRightSwerveModule.setDesiredState(desiredStates[3]);
   }
 
-  // @Override
-  // public SwerveModulePosition[] getModulePositions() {
-  //   SwerveModulePosition[] swerveModulePositions = {
-  //     frontLeftSwerveModule.getPosition(false),
-  //     frontRightSwerveModule.getPosition(false),
-  //     rearLeftSwerveModule.getPosition(false),
-  //     rearRightSwerveModule.getPosition(false)
-  //   };
+  @Override
+  public SwerveModulePosition[] getModulePositions() {
+    SwerveModulePosition[] swerveModulePositions = {
+      frontLeftSwerveModule.getPosition(true),
+      frontRightSwerveModule.getPosition(true),
+      rearLeftSwerveModule.getPosition(true),
+      rearRightSwerveModule.getPosition(true)
+    };
 
-  //   return swerveModulePositions;
-  // }
+    return swerveModulePositions;
+  }
 
   @Override
   public void periodic() {
@@ -242,10 +242,5 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
     rearRightSwerveModule.periodicFunction();
   }
 
-  @Override
-  public SwerveModulePosition[] getModulePositions() {
-    // TODO Auto-generated method stub
-    return null;
-  }
 
 }

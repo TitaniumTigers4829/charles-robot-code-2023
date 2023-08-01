@@ -1,10 +1,6 @@
 package frc.robot.subsystems.claw;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatusFrame;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -17,7 +13,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ClawConstants;
 import frc.robot.Constants.HardwareConstants;
 import frc.robot.extras.SmartDashboardLogger;
@@ -43,8 +38,8 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     wristMotor.getConfigurator().apply(new TalonFXConfiguration());
     TalonFXConfiguration talonfxConfigsWrist= new TalonFXConfiguration();
     wristMotor.getConfigurator().refresh(talonfxConfigsWrist);
-    wristMotor.getPosition().setUpdateFrequency(5);
-    wristMotor.getVelocity().setUpdateFrequency(5);
+    wristMotor.getPosition().setUpdateFrequency(5, HardwareConstants.TIMEOUT_MS);
+    wristMotor.getVelocity().setUpdateFrequency(5, HardwareConstants.TIMEOUT_MS);
     talonfxConfigsWrist.Slot0.kV = 0.0;
     talonfxConfigsWrist.Slot0.kS = 0.0;
     talonfxConfigsWrist.Slot0.kP = ClawConstants.WRIST_P;
@@ -59,9 +54,10 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     talonfxConfigsWrist.CurrentLimits.StatorCurrentLimitEnable = true;
 
     talonfxConfigsWrist.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    talonfxConfigsWrist.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    talonfxConfigsWrist.MotorOutput.Inverted = ClawConstants.WRIST_MOTOR_INVERTED;
 
     talonfxConfigsWrist.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
+    talonfxConfigsWrist.Feedback.RotorToSensorRatio = ClawConstants.WRIST_GEAR_RATIO;
 
     
     MotionMagicConfigs wristMotionMagicConfigs = talonfxConfigsWrist.MotionMagic;
@@ -70,12 +66,12 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     // motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
     SoftwareLimitSwitchConfigs wristSoftwareLimitSwitchConfigs = talonfxConfigsWrist.SoftwareLimitSwitch;
 
-    talonfxConfigsWrist.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    talonfxConfigsWrist.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-    talonfxConfigsWrist.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ClawConstants.MAX_WRIST_ROTATION_ENCODER_UNITS;
-    talonfxConfigsWrist.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ClawConstants.MIN_WRIST_ROTATION_ENCODER_UNITS;
+    wristSoftwareLimitSwitchConfigs.ForwardSoftLimitEnable = true;
+    wristSoftwareLimitSwitchConfigs.ReverseSoftLimitEnable = true;
+    wristSoftwareLimitSwitchConfigs.ForwardSoftLimitThreshold = ClawConstants.MAX_WRIST_ROTATION_ENCODER_UNITS;
+    wristSoftwareLimitSwitchConfigs.ReverseSoftLimitThreshold = ClawConstants.MIN_WRIST_ROTATION_ENCODER_UNITS;
 
-    wristMotor.setRotorPosition(0, HardwareConstants.TIMEOUT_MS);//wristMotor.setSelectedSensorPosition(0);
+    wristMotor.setRotorPosition(0, HardwareConstants.TIMEOUT_MS); //wristMotor.setSelectedSensorPosition(0);
     //apply configs
     wristMotor.getConfigurator().apply(talonfxConfigsWrist, HardwareConstants.TIMEOUT_MS);
     
@@ -88,7 +84,7 @@ public class ClawSubsystemImpl extends SubsystemBase implements ClawSubsystem {
     intakeMotor.getConfigurator().apply(new TalonFXConfiguration(), HardwareConstants.TIMEOUT_MS);
     TalonFXConfiguration intakeConfigs = new TalonFXConfiguration();
 
-    intakeConfigs.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    intakeConfigs.MotorOutput.Inverted = ClawConstants.INTAKE_MOTOR_INVERTED;
     intakeConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     intakeMotor.getConfigurator().apply(intakeConfigs, HardwareConstants.TIMEOUT_MS);
