@@ -3,6 +3,7 @@ package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
@@ -86,18 +87,21 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     leaderRotationMotor.getConfigurator().refresh(talonfxConfigsArm, HardwareConstants.TIMEOUT_MS);
     leaderRotationMotor.getPosition().setUpdateFrequency(5, HardwareConstants.TIMEOUT_MS);
     leaderRotationMotor.getVelocity().setUpdateFrequency(5, HardwareConstants.TIMEOUT_MS);
-    talonfxConfigsArm.Slot0.kV = 0.0;
-    talonfxConfigsArm.Slot0.kS = 0.0;
-    talonfxConfigsArm.Slot0.kP = ArmConstants.ROTATION_P;
-    talonfxConfigsArm.Slot0.kI = ArmConstants.ROTATION_I;
-    talonfxConfigsArm.Slot0.kD = ArmConstants.ROTATION_D;
+    Slot0Configs slot0ConfigsArm = talonfxConfigsArm.Slot0;
+    slot0ConfigsArm.kV = 0.0;
+    slot0ConfigsArm.kS = 0.0;
+    slot0ConfigsArm.kP = ArmConstants.ROTATION_P;
+    slot0ConfigsArm.kI = ArmConstants.ROTATION_I;
+    slot0ConfigsArm.kD = ArmConstants.ROTATION_D;
 
-    talonfxConfigsArm.CurrentLimits.SupplyCurrentLimit = 60;
-    talonfxConfigsArm.CurrentLimits.SupplyCurrentLimitEnable = true;
-    talonfxConfigsArm.CurrentLimits.SupplyCurrentThreshold = 65;
-    talonfxConfigsArm.CurrentLimits.SupplyTimeThreshold = 0.1;
-    talonfxConfigsArm.CurrentLimits.StatorCurrentLimit = 60;
-    talonfxConfigsArm.CurrentLimits.StatorCurrentLimitEnable = true;
+    CurrentLimitsConfigs currentLimitsConfigsArm = talonfxConfigsArm.CurrentLimits;
+    currentLimitsConfigsArm.SupplyCurrentLimit = 60;
+    currentLimitsConfigsArm.SupplyCurrentLimitEnable = true;
+    currentLimitsConfigsArm.SupplyCurrentThreshold = 65;
+    currentLimitsConfigsArm.SupplyTimeThreshold = 0.1;
+    currentLimitsConfigsArm.StatorCurrentLimit = 60;
+    currentLimitsConfigsArm.StatorCurrentLimitEnable = true;
+
     talonfxConfigsArm.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     talonfxConfigsArm.MotorOutput.Inverted = ArmConstants.LEADER_ROTATION_MOTOR_INVERTED;
     
@@ -105,12 +109,13 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     motionMagicConfigs.MotionMagicCruiseVelocity = ArmConstants.ROTATION_MAX_VELOCITY_ENCODER_UNITS; 
     motionMagicConfigs.MotionMagicAcceleration = ArmConstants.ROTATION_MAX_ACCELERATION_ENCODER_UNITS; 
     // motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
-    SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = talonfxConfigsArm.SoftwareLimitSwitch;
 
-    talonfxConfigsArm.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-    talonfxConfigsArm.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
-    talonfxConfigsArm.SoftwareLimitSwitch.ForwardSoftLimitThreshold = ArmConstants.MAX_ROTATION_ENCODER_UNITS;
-    talonfxConfigsArm.SoftwareLimitSwitch.ReverseSoftLimitThreshold = ArmConstants.MIN_ROTATION_ENCODER_UNITS;
+    SoftwareLimitSwitchConfigs softwareLimitSwitchConfigsArm = talonfxConfigsArm.SoftwareLimitSwitch;
+
+    softwareLimitSwitchConfigsArm.ForwardSoftLimitEnable = true;
+    softwareLimitSwitchConfigsArm.ReverseSoftLimitEnable = true;
+    softwareLimitSwitchConfigsArm.ForwardSoftLimitThreshold = ArmConstants.MAX_ROTATION;
+    softwareLimitSwitchConfigsArm.ReverseSoftLimitThreshold = ArmConstants.MIN_ROTATION;
     
     talonfxConfigsArm.Feedback.FeedbackRemoteSensorID = rotationEncoder.getDeviceID();
     talonfxConfigsArm.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
@@ -121,7 +126,6 @@ public class ArmSubsystemImpl extends SubsystemBase implements ArmSubsystem  {
     followerRotationMotor.getConfigurator().apply(new TalonFXConfiguration(), HardwareConstants.TIMEOUT_MS);
     TalonFXConfiguration talonfxConfigsFollower = new TalonFXConfiguration();
     talonfxConfigsFollower.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    // followerRotationMotor.setSensorPhase(true);
     // followerRotationMotor.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 250);
     followerRotationMotor.setControl(new Follower(leaderRotationMotor.getDeviceID(), true));
     followerRotationMotor.getConfigurator().apply(talonfxConfigsFollower, HardwareConstants.TIMEOUT_MS);

@@ -1,6 +1,5 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -227,6 +226,10 @@ public final class Constants {
     public static final double TURN_A = 0;
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 10 * Math.PI;
     public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 8 * Math.PI;
+
+    public static final double MAX_ANGULAR_SPEED =MAX_ANGULAR_SPEED_RADIANS_PER_SECOND/ (2*Math.PI);
+    public static final double MAX_ANGULAR_ACCELERATION = MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED / (2*Math.PI);
+
     public static final TrapezoidProfile.Constraints TURN_CONSTRAINTS =
       new TrapezoidProfile.Constraints(
         MAX_ANGULAR_SPEED_RADIANS_PER_SECOND,
@@ -264,17 +267,20 @@ public final class Constants {
     public static final double ROTATION_D = 0;
     public static final double ROTATION_MAX_VELOCITY_ENCODER_UNITS = 240;
     public static final double ROTATION_MAX_ACCELERATION_ENCODER_UNITS = 400;
-    public static final int ROTATION_SMOOTHING = 1;
+    public static final double ROTATION_JERK = 0;
     public static final double ROTATION_ACCEPTABLE_ERROR = 1;
     public static final double ROTATION_TOLERANCE_DEGREES = 0;
     public static final double ROTATION_TOLERANCE_ENCODER_UNITS = ROTATION_TOLERANCE_DEGREES * Conversions.DEGREES_TO_CANCODER_UNITS;
     public static final double MAX_ROTATION_ENCODER_UNITS = 305.5 * Conversions.DEGREES_TO_CANCODER_UNITS;
     public static final double MIN_ROTATION_ENCODER_UNITS = 60 * Conversions.DEGREES_TO_CANCODER_UNITS;
     
+    public static final double MAX_ROTATION = MAX_ROTATION_ENCODER_UNITS / HardwareConstants.CANCODER_RESOLUTION;
+    public static final double MIN_ROTATION = MIN_ROTATION_ENCODER_UNITS / HardwareConstants.CANCODER_RESOLUTION;
+
     public static final InvertedValue EXTENSION_MOTOR_INVERTED = InvertedValue.Clockwise_Positive;
     public static final double EXTENSION_ACCELERATION_GAIN = 0;
     public static final double EXTENSION_VELOCITY_GAIN = 0.2;
-    public static final double EXTENSION_P = -6;
+    public static final double EXTENSION_P = -6; //-14.414076246334313
     public static final double EXTENSION_I = 0;
     public static final double EXTENSION_D = 0;
     public static final double EXTENSION_F = 0;
