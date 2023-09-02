@@ -152,6 +152,16 @@ public class SwerveModule {
 
     // turnMotor.configNeutralDeadband(HardwareConstants.MIN_FALCON_DEADBAND, HardwareConstants.TIMEOUT_MS);
 
+    drivePosition = driveMotor.getPosition();
+    driveVelocity = driveMotor.getVelocity();
+    anglePosition = turnMotor.getPosition();
+    angleVelocity = turnMotor.getVelocity();
+
+    signals = new BaseStatusSignal[4];
+    signals[0] = drivePosition;
+    signals[1] = driveVelocity;
+    signals[2] = anglePosition;
+    signals[3] = angleVelocity;
     
   }
 

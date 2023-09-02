@@ -1,5 +1,6 @@
 package frc.robot.subsystems.drive;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
@@ -29,61 +30,113 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   // This will be changed throughout the match depending on how confident we are that the limelight is right.
   private final Vector<N3> visionMeasurementStandardDeviations = VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(50));
 
-  private final SwerveModule frontLeftSwerveModule;
-  private final SwerveModule frontRightSwerveModule;
-  private final SwerveModule rearLeftSwerveModule;
-  private final SwerveModule rearRightSwerveModule;
+  public SwerveModule[] swerveModules;
 
-  private final Gyro gyro;
+  // private final SwerveModule frontLeftSwerveModule;
+  // private final SwerveModule frontRightSwerveModule;
+  // private final SwerveModule rearLeftSwerveModule;
+  // private final SwerveModule rearRightSwerveModule;
+
+  private final AHRS gyro;
   private final SwerveDrivePoseEstimator odometry;
 
   private double gyroOffset = 0;
   // private float rollOffset = 0;
   // private float pitchOffset = 0;
+  BaseStatusSignal[] signals;
   
   /**
    * Creates a new DriveSubsystem.
    */
   public DriveSubsystemImpl() {
-    frontLeftSwerveModule = new SwerveModule(
-      DriveConstants.FRONT_LEFT_DRIVE_MOTOR_ID,
-      DriveConstants.FRONT_LEFT_TURN_MOTOR_ID,
-      DriveConstants.FRONT_LEFT_CANCODER_ID,
-      DriveConstants.FRONT_LEFT_ZERO_ANGLE,
-      DriveConstants.FRONT_LEFT_CANCODER_REVERSED,
-      DriveConstants.FRONT_LEFT_DRIVE_ENCODER_REVERSED,
-      "FL"
-    );
+    swerveModules = new SwerveModule[] {
+      new SwerveModule(
+        DriveConstants.FRONT_LEFT_DRIVE_MOTOR_ID,
+        DriveConstants.FRONT_LEFT_TURN_MOTOR_ID,
+        DriveConstants.FRONT_LEFT_CANCODER_ID,
+        DriveConstants.FRONT_LEFT_ZERO_ANGLE,
+        DriveConstants.FRONT_LEFT_CANCODER_REVERSED,
+        DriveConstants.FRONT_LEFT_DRIVE_ENCODER_REVERSED,
+        "FL"
+      ),
+
+      new SwerveModule(
+        DriveConstants.FRONT_RIGHT_DRIVE_MOTOR_ID,
+        DriveConstants.FRONT_RIGHT_TURN_MOTOR_ID,
+        DriveConstants.FRONT_RIGHT_CANCODER_ID,
+        DriveConstants.FRONT_RIGHT_ZERO_ANGLE,
+        DriveConstants.FRONT_RIGHT_CANCODER_REVERSED,
+        DriveConstants.FRONT_RIGHT_DRIVE_ENCODER_REVERSED,
+        "FR"
+      ),
+
+      new SwerveModule(
+        DriveConstants.REAR_LEFT_DRIVE_MOTOR_ID,
+        DriveConstants.REAR_LEFT_TURN_MOTOR_ID,
+        DriveConstants.REAR_LEFT_CANCODER_ID,
+        DriveConstants.REAR_LEFT_ZERO_ANGLE,
+        DriveConstants.REAR_LEFT_CANCODER_REVERSED,
+        DriveConstants.REAR_LEFT_DRIVE_ENCODER_REVERSED,
+        "RL"
+      ),
+
+      new SwerveModule(
+        DriveConstants.REAR_RIGHT_DRIVE_MOTOR_ID,
+        DriveConstants.REAR_RIGHT_TURN_MOTOR_ID,
+        DriveConstants.REAR_RIGHT_CANCODER_ID,
+        DriveConstants.REAR_RIGHT_ZERO_ANGLE,
+        DriveConstants.REAR_RIGHT_CANCODER_REVERSED,
+        DriveConstants.REAR_RIGHT_DRIVE_ENCODER_REVERSED,
+        "RR"
+      )};
+    // frontLeftSwerveModule = new SwerveModule(
+    //   DriveConstants.FRONT_LEFT_DRIVE_MOTOR_ID,
+    //   DriveConstants.FRONT_LEFT_TURN_MOTOR_ID,
+    //   DriveConstants.FRONT_LEFT_CANCODER_ID,
+    //   DriveConstants.FRONT_LEFT_ZERO_ANGLE,
+    //   DriveConstants.FRONT_LEFT_CANCODER_REVERSED,
+    //   DriveConstants.FRONT_LEFT_DRIVE_ENCODER_REVERSED,
+    //   "FL"
+    // );
     
-    frontRightSwerveModule = new SwerveModule(
-      DriveConstants.FRONT_RIGHT_DRIVE_MOTOR_ID,
-      DriveConstants.FRONT_RIGHT_TURN_MOTOR_ID,
-      DriveConstants.FRONT_RIGHT_CANCODER_ID,
-      DriveConstants.FRONT_RIGHT_ZERO_ANGLE,
-      DriveConstants.FRONT_RIGHT_CANCODER_REVERSED,
-      DriveConstants.FRONT_RIGHT_DRIVE_ENCODER_REVERSED,
-      "FR"
-    );
+    // frontRightSwerveModule = new SwerveModule(
+    //   DriveConstants.FRONT_RIGHT_DRIVE_MOTOR_ID,
+    //   DriveConstants.FRONT_RIGHT_TURN_MOTOR_ID,
+    //   DriveConstants.FRONT_RIGHT_CANCODER_ID,
+    //   DriveConstants.FRONT_RIGHT_ZERO_ANGLE,
+    //   DriveConstants.FRONT_RIGHT_CANCODER_REVERSED,
+    //   DriveConstants.FRONT_RIGHT_DRIVE_ENCODER_REVERSED,
+    //   "FR"
+    // );
     
-    rearLeftSwerveModule = new SwerveModule(
-      DriveConstants.REAR_LEFT_DRIVE_MOTOR_ID,
-      DriveConstants.REAR_LEFT_TURN_MOTOR_ID,
-      DriveConstants.REAR_LEFT_CANCODER_ID,
-      DriveConstants.REAR_LEFT_ZERO_ANGLE,
-      DriveConstants.REAR_LEFT_CANCODER_REVERSED,
-      DriveConstants.REAR_LEFT_DRIVE_ENCODER_REVERSED,
-      "RL"
-    );
+    // rearLeftSwerveModule = new SwerveModule(
+    //   DriveConstants.REAR_LEFT_DRIVE_MOTOR_ID,
+    //   DriveConstants.REAR_LEFT_TURN_MOTOR_ID,
+    //   DriveConstants.REAR_LEFT_CANCODER_ID,
+    //   DriveConstants.REAR_LEFT_ZERO_ANGLE,
+    //   DriveConstants.REAR_LEFT_CANCODER_REVERSED,
+    //   DriveConstants.REAR_LEFT_DRIVE_ENCODER_REVERSED,
+    //   "RL"
+    // );
     
-    rearRightSwerveModule = new SwerveModule(
-      DriveConstants.REAR_RIGHT_DRIVE_MOTOR_ID,
-      DriveConstants.REAR_RIGHT_TURN_MOTOR_ID,
-      DriveConstants.REAR_RIGHT_CANCODER_ID,
-      DriveConstants.REAR_RIGHT_ZERO_ANGLE,
-      DriveConstants.REAR_RIGHT_CANCODER_REVERSED,
-      DriveConstants.REAR_RIGHT_DRIVE_ENCODER_REVERSED,
-      "RR"
-    );
+    // rearRightSwerveModule = new SwerveModule(
+    //   DriveConstants.REAR_RIGHT_DRIVE_MOTOR_ID,
+    //   DriveConstants.REAR_RIGHT_TURN_MOTOR_ID,
+    //   DriveConstants.REAR_RIGHT_CANCODER_ID,
+    //   DriveConstants.REAR_RIGHT_ZERO_ANGLE,
+    //   DriveConstants.REAR_RIGHT_CANCODER_REVERSED,
+    //   DriveConstants.REAR_RIGHT_DRIVE_ENCODER_REVERSED,
+    //   "RR"
+    // );
+
+    signals = new BaseStatusSignal[16];
+    for(int i = 0; i<4; i++) {
+      BaseStatusSignal[] tempSignals = swerveModules[i].getSignals();
+      signals[i*4+0] = tempSignals[0];
+      signals[i*4+1] = tempSignals[1];
+      signals[i*4+2] = tempSignals[2];
+      signals[i*4+3] = tempSignals[3];
+    }
 
     gyro = new AHRS(SPI.Port.kMXP);
   
@@ -107,10 +160,10 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
       : new ChassisSpeeds(xSpeed, ySpeed, rotationSpeed));
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
     
-    frontLeftSwerveModule.setDesiredState(swerveModuleStates[0]);
-    frontRightSwerveModule.setDesiredState(swerveModuleStates[1]);
-    rearLeftSwerveModule.setDesiredState(swerveModuleStates[2]);
-    rearRightSwerveModule.setDesiredState(swerveModuleStates[3]);
+    swerveModules[0].setDesiredState(swerveModuleStates[0]);
+    swerveModules[1].setDesiredState(swerveModuleStates[1]);
+    swerveModules[2].setDesiredState(swerveModuleStates[2]);
+    swerveModules[3].setDesiredState(swerveModuleStates[3]);
   }
 
   @Override
@@ -208,19 +261,19 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
       desiredStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
-    frontLeftSwerveModule.setDesiredState(desiredStates[0]);
-    frontRightSwerveModule.setDesiredState(desiredStates[1]);
-    rearLeftSwerveModule.setDesiredState(desiredStates[2]);
-    rearRightSwerveModule.setDesiredState(desiredStates[3]);
+      swerveModules[0].setDesiredState(desiredStates[0]);
+      swerveModules[1].setDesiredState(desiredStates[1]);
+      swerveModules[2].setDesiredState(desiredStates[2]);
+      swerveModules[3].setDesiredState(desiredStates[3]);
   }
 
   @Override
   public SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] swerveModulePositions = {
-      frontLeftSwerveModule.getPosition(true),
-      frontRightSwerveModule.getPosition(true),
-      rearLeftSwerveModule.getPosition(true),
-      rearRightSwerveModule.getPosition(true)
+      swerveModules[0].getPosition(true),
+      swerveModules[1].getPosition(true),
+      swerveModules[2].getPosition(true),
+      swerveModules[3].getPosition(true)
     };
 
     return swerveModulePositions;
@@ -228,6 +281,11 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("FL angle", swerveModules[0].getPosition(true).angle.getRotations());
+    SmartDashboard.putNumber("FR angle", swerveModules[1].getPosition(true).angle.getRotations());
+    SmartDashboard.putNumber("RL angle", swerveModules[2].getPosition(true).angle.getRotations());
+    SmartDashboard.putNumber("RR angle", swerveModules[3].getPosition(true).angle.getRotations());
+
     Pose2d estimatedPose = odometry.getEstimatedPosition();
     SmartDashboardLogger.infoString("Estimated pose", estimatedPose.toString());
     
@@ -236,10 +294,10 @@ public class DriveSubsystemImpl extends SubsystemBase implements DriveSubsystem 
                                             //  pitch, roll, yaw
     SmarterDashboardRegistry.setOrientation(getHeading(), 0, 0);
 
-    frontLeftSwerveModule.periodicFunction();
-    frontRightSwerveModule.periodicFunction();
-    rearLeftSwerveModule.periodicFunction();
-    rearRightSwerveModule.periodicFunction();
+    swerveModules[0].periodicFunction();
+    swerveModules[1].periodicFunction();
+    swerveModules[2].periodicFunction();
+    swerveModules[3].periodicFunction();
   }
 
 
