@@ -1,5 +1,8 @@
 package frc.robot;
 
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -160,15 +163,15 @@ public final class Constants {
     public static final double REAR_LEFT_ZERO_ANGLE = 46.58203125;
     public static final double REAR_RIGHT_ZERO_ANGLE = -78.57421875 + 90;
 
-    public static final boolean FRONT_LEFT_CANCODER_REVERSED = false;
-    public static final boolean FRONT_RIGHT_CANCODER_REVERSED = false;
-    public static final boolean REAR_LEFT_CANCODER_REVERSED = false;
-    public static final boolean REAR_RIGHT_CANCODER_REVERSED = false;
+    public static final SensorDirectionValue FRONT_LEFT_CANCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
+    public static final SensorDirectionValue FRONT_RIGHT_CANCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
+    public static final SensorDirectionValue REAR_LEFT_CANCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
+    public static final SensorDirectionValue REAR_RIGHT_CANCODER_REVERSED = SensorDirectionValue.Clockwise_Positive;
     
-    public static final boolean FRONT_LEFT_DRIVE_ENCODER_REVERSED = false;
-    public static final boolean FRONT_RIGHT_DRIVE_ENCODER_REVERSED = true; 
-    public static final boolean REAR_LEFT_DRIVE_ENCODER_REVERSED = false;
-    public static final boolean REAR_RIGHT_DRIVE_ENCODER_REVERSED = true;
+    public static final InvertedValue FRONT_LEFT_DRIVE_ENCODER_REVERSED = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue FRONT_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive; 
+    public static final InvertedValue REAR_LEFT_DRIVE_ENCODER_REVERSED = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue REAR_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive;
     
     public static final double TURN_S = 0.77;
     public static final double TURN_V = 0.75;
@@ -208,6 +211,7 @@ public final class Constants {
   }
   
   public static final class ModuleConstants { 
+
     public static final double DRIVE_GEAR_RATIO = 7.36;
     public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
     public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
@@ -219,6 +223,14 @@ public final class Constants {
     public static final double TURN_P = 7; // 8.1
     public static final double TURN_I = 0;
     public static final double TURN_D = 0;
+
+    // Drive Motor Characterization Values
+    public static final double driveKS = 0.2;
+    public static final double driveKV = 2.0;
+
+    public static final double rotationsPerMeter = DRIVE_GEAR_RATIO / WHEEL_CIRCUMFERENCE_METERS;
+
+
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = 10 * Math.PI;
     public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 8 * Math.PI;
     public static final TrapezoidProfile.Constraints TURN_CONSTRAINTS =
