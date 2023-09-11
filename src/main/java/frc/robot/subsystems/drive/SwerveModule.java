@@ -187,7 +187,7 @@ public class SwerveModule {
 
   public SwerveModulePosition getPosition() {
     double position = ModuleConstants.DRIVE_TO_METERS * driveMotor.getPosition().refresh().getValue();
-    Rotation2d rotation = Rotation2d.fromDegrees(getCANCoderABS());
+    Rotation2d rotation = Rotation2d.fromRotations(getCANCoderABS());
     return new SwerveModulePosition(position, rotation);
   }
 
@@ -230,7 +230,7 @@ public class SwerveModule {
     return 2 * Math.PI * turnEncoder.getAbsolutePosition().refresh().getValue();
   }
 
-  public double getAbsolutePosition() {
+  public double getAbsoluteRotationDegrees() {
     return turnEncoder.getAbsolutePosition().refresh().getValue() * 360.0;
   }
 
