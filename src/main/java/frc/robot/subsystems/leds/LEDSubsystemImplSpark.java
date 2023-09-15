@@ -44,9 +44,9 @@ public class LEDSubsystemImplSpark extends SubsystemBase implements LEDSubsystem
     double x = pose.getX();
     double y = pose.getY();
     if (DriverStation.getAlliance() == Alliance.Blue) {
-      return x > DriveConstants.BLUE_CHUTE_THRESHOLD_X && y > DriveConstants.BLUE_CHUTE_THRESHOLD_Y;
+      return x > DriveConstants.BLUE_CHUTE_X - DriveConstants.LEDS_CHUTE_RANGE && y > DriveConstants.CHUTE_Y - DriveConstants.LEDS_CHUTE_RANGE;
     } else {
-      return x < DriveConstants.RED_CHUTE_THRESHOLD_X && y > DriveConstants.RED_CHUTE_THRESHOLD_Y;
+      return x < DriveConstants.RED_CHUTE_X + DriveConstants.LEDS_CHUTE_RANGE && y > DriveConstants.CHUTE_Y - DriveConstants.LEDS_CHUTE_RANGE;
     }
   }
 
@@ -59,11 +59,14 @@ public class LEDSubsystemImplSpark extends SubsystemBase implements LEDSubsystem
       double error = Math.abs(currentX - chuteX);
       if (error <= DriveConstants.LEDS_ACCEPTABLE_ERROR) {
         this.setProcess(LEDProcess.GREEN);
-      } else {
+      } else if (error <= DriveConstants.LEDS_CLOSE_ERROR) {
+        this.setProcess(LEDProcess.ORANGE);
+      }
+      else {
         this.setProcess(LEDProcess.RED);
       }
     } else {
-      if (process == LEDProcess.GREEN || process == LEDProcess.RED) {
+      if (process == LEDProcess.GREEN || process == LEDProcess.RED || process == LEDProcess.ORANGE) {
         this.setProcess(LEDProcess.DEFAULT);
       }
     }
