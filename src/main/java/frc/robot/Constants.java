@@ -193,18 +193,12 @@ public final class Constants {
       public static final double BALANCE_ERROR_NEAR_BALANCED = 3;
     }
 
-    public static final double RED_CHUTE_X = 2.68 - 0.29;
+    public static final double RED_CHUTE_X = Units.inchesToMeters(14.25 + 90.77 - 11.375);
     public static final double BLUE_CHUTE_X = TrajectoryConstants.FIELD_LENGTH_METERS - RED_CHUTE_X;
-    public static final double LEDS_ACCEPTABLE_ERROR = 0.2;
-
-    // < than
-    public static final double RED_CHUTE_THRESHOLD_X = 3.75;
-    // > than
-    public static final double RED_CHUTE_THRESHOLD_Y = 6.28;
-    // > than
-    public static final double BLUE_CHUTE_THRESHOLD_X = 12.75;
-    // > than
-    public static final double BLUE_CHUTE_THRESHOLD_Y = 6.28;
+    public static final double CHUTE_Y = Units.inchesToMeters(315.1 - 2.75 /* Width of the bumper */) - WHEEL_BASE/2.0;
+    public static final double LEDS_ACCEPTABLE_ERROR = 0.1;
+    public static final double LEDS_CLOSE_ERROR = 0.2;
+    public static final double LEDS_CHUTE_RANGE = 1.25;
   }
   
   public static final class ModuleConstants { 
@@ -474,7 +468,8 @@ public final class Constants {
       FINISH_LINE_UP (SparkConstants.SHOT_WHITE, 255, 255, 255),
       GREEN (SparkConstants.GREEN, 0, 255, 0),
       RED (SparkConstants.RED, 255, 0, 0),
-      INTAKE (SparkConstants.MAGENTA, 255, 0, 255);
+      INTAKE (SparkConstants.MAGENTA, 255, 0, 255),
+      ORANGE (SparkConstants.ORANGE, 255, 191, 0);
 
       private final double sparkValue;
       private final int red, green, blue;
