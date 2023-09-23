@@ -159,6 +159,7 @@ public class SwerveModule {
 
     // Optimize the reference state to avoid spinning further than 90 degrees
     SwerveModuleState optimizedDesiredState = SwerveModuleState.optimize(desiredState, new Rotation2d(turnRadians));
+    SmartDashboard.putNumber(name + " difference in speed", optimizedDesiredState.speedMetersPerSecond - getState().speedMetersPerSecond);
 
     // Converts meters per second to rpm
     double desiredDriveRPM = optimizedDesiredState.speedMetersPerSecond * 60 
@@ -201,5 +202,6 @@ public class SwerveModule {
     driveMotor.setSelectedSensorPosition(0);
   }
 
-  public void periodicFunction() {}
+  public void periodicFunction() {
+  }
 }

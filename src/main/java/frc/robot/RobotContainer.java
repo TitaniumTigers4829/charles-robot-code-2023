@@ -23,11 +23,13 @@ import frc.robot.commands.arm.MoveArmToStowed;
 import frc.robot.commands.arm.PickupGamePiece;
 import frc.robot.commands.autonomous.AutoPickupLoadingStation;
 import frc.robot.commands.autonomous.AutoPlace;
+import frc.robot.commands.autonomous.FollowPathPlannerTrajectory;
 import frc.robot.commands.autonomous.SimpleAuto;
 import frc.robot.commands.autonomous.TwoPieceBalanceBlueAuto;
 import frc.robot.commands.autonomous.TwoPieceBalanceRedAuto;
 import frc.robot.commands.autonomous.TwoPieceBlueAuto;
 import frc.robot.commands.autonomous.TwoPieceRedAuto;
+import frc.robot.commands.autonomous.simple.BlueBalance;
 import frc.robot.commands.autonomous.simple.DriveForwardThenDriveBackward;
 import frc.robot.commands.autonomous.simple.JustDriveForward;
 import frc.robot.commands.autonomous.simple.PlaceConeHighAuto;
@@ -100,6 +102,8 @@ public class RobotContainer {
     autoChooser.addOption("Drive forward then back", new DriveForwardThenDriveBackward(driveSubsystem, visionSubsystem));
     autoChooser.addOption("Just Drive Forward", new JustDriveForward(driveSubsystem));
     autoChooser.addOption("No Auto", null);
+    // autoChooser.addOption("3m backward", new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, leds, "New Path", true, 4.5, 3.5));
+    autoChooser.addOption("place high, cone", new BlueBalance(driveSubsystem, visionSubsystem, leds, armSubsystem, clawSubsystem));
     SmartDashboard.putData("Auto chooser", autoChooser);
     
     driveSubsystem.zeroHeading();

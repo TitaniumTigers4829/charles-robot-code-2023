@@ -24,7 +24,7 @@ public class TwoPieceBlueAuto extends SequentialCommandGroup {
       new ShootCubeAuto(armSubsystem, clawSubsystem),
       
       new ParallelCommandGroup(
-        new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, leds, TrajectoryConstants.THREE_PIECE_BALANCE_AUTO_FIRST_BLUE, true),
+        new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, leds, TrajectoryConstants.THREE_PIECE_BALANCE_AUTO_FIRST_BLUE, true, 4.5, 3.5),
         new PickupConeAuto(armSubsystem, clawSubsystem)
       ),
 

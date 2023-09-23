@@ -158,7 +158,7 @@ public final class Constants {
     public static final double FRONT_LEFT_ZERO_ANGLE = 169.716796875;
     public static final double FRONT_RIGHT_ZERO_ANGLE = -76.46484375;
     public static final double REAR_LEFT_ZERO_ANGLE = 46.58203125;
-    public static final double REAR_RIGHT_ZERO_ANGLE = -78.57421875 + 90;
+    public static final double REAR_RIGHT_ZERO_ANGLE = -78.57421875; // TODO: why +90?
 
     public static final boolean FRONT_LEFT_CANCODER_REVERSED = false;
     public static final boolean FRONT_RIGHT_CANCODER_REVERSED = false;
@@ -494,9 +494,9 @@ public final class Constants {
   public static final class TrajectoryConstants {
     public static final double MAX_SPEED = 4;
     public static final double MAX_ACCELERATION = 3;
-    public static final double DEPLOYED_X_CONTROLLER_P = .35;
-    public static final double DEPLOYED_Y_CONTROLLER_P = .35;
-    public static final double DEPLOYED_THETA_CONTROLLER_P = .8;
+    public static final double DEPLOYED_X_CONTROLLER_P = 0;  // 0.35 for both
+    public static final double DEPLOYED_Y_CONTROLLER_P = 0;
+    public static final double DEPLOYED_THETA_CONTROLLER_P = 0;  // 0.8
     public static final double REAL_TIME_X_CONTROLLER_P = 2;
     public static final double REAL_TIME_Y_CONTROLLER_P = 2;
     public static final double REAL_TIME_THETA_CONTROLLER_P = 3;

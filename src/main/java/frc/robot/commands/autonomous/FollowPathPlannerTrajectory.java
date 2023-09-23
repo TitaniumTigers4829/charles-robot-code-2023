@@ -4,6 +4,7 @@
 
 package frc.robot.commands.autonomous;
 
+import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
@@ -11,10 +12,12 @@ import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.Constants.LEDConstants.LEDProcess;
 import frc.robot.commands.DriveCommandBase;
+import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.leds.LEDSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
@@ -33,8 +36,8 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
 
   private final SwerveDriveKinematics driveKinematics = DriveConstants.DRIVE_KINEMATICS;
   
-  private final double autoMaxVelocity = TrajectoryConstants.MAX_SPEED;
-  private final double autoMaxAcceleration = TrajectoryConstants.MAX_ACCELERATION - .5;
+  // private final double autoMaxVelocity = TrajectoryConstants.MAX_SPEED;
+  // private final double autoMaxAcceleration = TrajectoryConstants.MAX_ACCELERATION - .5;
 
   // Your probably only want to edit the P values
   private final PIDController xController = new PIDController(TrajectoryConstants.DEPLOYED_X_CONTROLLER_P, 0, 0);
@@ -54,7 +57,7 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
    * @param resetOdometryToTrajectoryStart Set as true if you want the odometry of the robot to be set to the
    * start of the trajectory.
    */
-  public FollowPathPlannerTrajectory(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, LEDSubsystem leds, String trajectoryName, boolean resetOdometryToTrajectoryStart) {
+  public FollowPathPlannerTrajectory(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, LEDSubsystem leds, String trajectoryName, boolean resetOdometryToTrajectoryStart, double maxVel, double maxAccel) {
     super(driveSubsystem, visionSubsystem);
     this.driveSubsystem = driveSubsystem;    
     this.leds = leds;
@@ -62,7 +65,7 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
     this.resetOdometryToTrajectoryStart = resetOdometryToTrajectoryStart;
 
     // Makes a trajectory                                                     
-    PathPlannerTrajectory trajectoryToFollow = PathPlanner.loadPath(trajectoryName, 3, 1.5);
+    PathPlannerTrajectory trajectoryToFollow = PathPlanner.loadPath(trajectoryName, maxVel, maxAccel);
 
     trajectoryInitialPose = trajectoryToFollow.getInitialHolonomicPose();
 
@@ -91,12 +94,11 @@ public class FollowPathPlannerTrajectory extends DriveCommandBase {
    * .path extension.
    */
   public FollowPathPlannerTrajectory(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, LEDSubsystem leds, String trajectoryName) {
-    this(driveSubsystem, visionSubsystem, leds, trajectoryName, false);
+    this(driveSubsystem, visionSubsystem, leds, trajectoryName, false, 3.5, 1);
   }
 
   @Override
   public void initialize() {
-
     leds.setProcess(LEDProcess.LINE_UP);
 
     if (resetOdometryToTrajectoryStart) {

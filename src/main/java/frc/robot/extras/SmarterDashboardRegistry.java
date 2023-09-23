@@ -106,7 +106,7 @@ public class SmarterDashboardRegistry {
     limelightPose[0] = limelightPose_.getX();
     limelightPose[1] = limelightPose_.getY();
     limelightPose[2] = limelightPose_.getRotation().getDegrees();
-    SmartDashboard.putNumberArray("limelightPose", limelightPose);
+    SmartDashboard.putNumberArray("limelight_pose", limelightPose);
   }
 
   /**

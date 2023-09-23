@@ -21,21 +21,21 @@ public class TwoPieceRedAuto extends SequentialCommandGroup {
   public TwoPieceRedAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, ArmSubsystem armSubsystem, ClawSubsystem clawSubsystem, LEDSubsystem leds) {
         
     addCommands(
-      new ShootCubeAuto(armSubsystem, clawSubsystem),
+      // new ShootCubeAuto(armSubsystem, clawSubsystem),
       
-      new ParallelCommandGroup(
-        new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, leds, TrajectoryConstants.THREE_PIECE_BALANCE_AUTO_FIRST_RED, true),
-        new PickupConeAuto(armSubsystem, clawSubsystem)
-      ),
+      // new ParallelCommandGroup(
+        new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, leds, TrajectoryConstants.THREE_PIECE_BALANCE_AUTO_FIRST_RED, true, 4.5, 3.5).withTimeout(5),
+        // new PickupConeAuto(armSubsystem, clawSubsystem)
+      // ),
 
-      new ParallelCommandGroup(
-        new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, leds, TrajectoryConstants.THREE_PIECE_BALANCE_AUTO_SECOND_RED),
-        new MoveArmToPlaceConeAuto(armSubsystem, clawSubsystem)
-      ),
+      // new ParallelCommandGroup(
+        new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, leds, TrajectoryConstants.THREE_PIECE_BALANCE_AUTO_SECOND_RED).withTimeout(5)
+      //   new MoveArmToPlaceConeAuto(armSubsystem, clawSubsystem)
+      // ),
 
-      new DropConeAuto(clawSubsystem),
-      new WaitCommand(.3),
-      new MoveArmToStowed(armSubsystem, clawSubsystem)
+      // new DropConeAuto(clawSubsystem),
+      // new WaitCommand(.3),
+      // new MoveArmToStowed(armSubsystem, clawSubsystem)
     );
   }
 }

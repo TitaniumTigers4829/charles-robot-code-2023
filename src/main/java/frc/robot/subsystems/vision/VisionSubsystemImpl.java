@@ -8,6 +8,7 @@ import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.TrajectoryConstants;
 import frc.robot.extras.LimelightHelpers;
 import frc.robot.extras.SmartDashboardLogger;
+import frc.robot.extras.SmarterDashboardRegistry;
 import frc.robot.extras.LimelightHelpers.LimelightResults;
 import frc.robot.extras.LimelightHelpers.LimelightTarget_Fiducial;
 
@@ -160,6 +161,8 @@ public class VisionSubsystemImpl extends SubsystemBase implements VisionSubsyste
       LimelightHelpers.setLEDMode_ForceOff(LimelightConstants.FRONT_LIMELIGHT_NAME);
       LimelightHelpers.setLEDMode_ForceOff(LimelightConstants.BACK_LIMELIGHT_NAME);
     }
+
+    SmarterDashboardRegistry.setLimelightPose(getPoseFromAprilTags());
   }
 
 }

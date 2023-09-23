@@ -24,7 +24,7 @@ public class TwoPieceBalanceRedAuto extends SequentialCommandGroup {
       new ShootCubeAuto(armSubsystem, clawSubsystem),
       
       new ParallelCommandGroup(
-        new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, leds, TrajectoryConstants.THREE_PIECE_BALANCE_AUTO_FIRST_RED, true),
+        new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, leds, TrajectoryConstants.THREE_PIECE_BALANCE_AUTO_FIRST_RED, true, 4.5, 3.5),
         new PickupConeAuto(armSubsystem, clawSubsystem)
       ),
 
@@ -37,7 +37,7 @@ public class TwoPieceBalanceRedAuto extends SequentialCommandGroup {
       new WaitCommand(.3),
       new MoveArmToStowed(armSubsystem, clawSubsystem),
 
-      new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, leds, TrajectoryConstants.THREE_PIECE_BALANCE_AUTO_THIRD_RED),
+      new FollowPathPlannerTrajectory(driveSubsystem, visionSubsystem, leds, TrajectoryConstants.THREE_PIECE_BALANCE_AUTO_THIRD_RED, false, 1, 1),
 
       new DriveCommand(driveSubsystem, visionSubsystem, () -> 0, () -> 0, () -> 0.2, () -> false).withTimeout(0.3)
 
