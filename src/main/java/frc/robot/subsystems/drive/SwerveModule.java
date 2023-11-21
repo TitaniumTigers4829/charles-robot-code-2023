@@ -25,6 +25,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -99,51 +100,51 @@ public class SwerveModule {
     turnEncoder.getConfigurator().apply(angleEncoderConfigs);
 
     driveMotor.getConfigurator().apply(new TalonFXConfiguration());
-    var talonFXConfigs = new TalonFXConfiguration();
-    talonFXConfigs.Slot0.kV = ModuleConstants.driveKV;
-    talonFXConfigs.Slot0.kS = ModuleConstants.driveKV;
-    talonFXConfigs.Slot0.kP = ModuleConstants.DRIVE_P;
-    talonFXConfigs.Slot0.kI = ModuleConstants.DRIVE_I;
-    talonFXConfigs.Slot0.kD = ModuleConstants.DRIVE_D;
-    talonFXConfigs.CurrentLimits.SupplyCurrentLimit = 60;
-    talonFXConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
-    talonFXConfigs.CurrentLimits.SupplyCurrentThreshold = 65;
-    talonFXConfigs.CurrentLimits.SupplyTimeThreshold = 0.1;
-    talonFXConfigs.MotorOutput.Inverted = driveReversed;
-    talonFXConfigs.MotorOutput.DutyCycleNeutralDeadband = 0.0001;
-    turnConfig.MotionMagic.MotionMagicCruiseVelocity = ModuleConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND;
-    turnConfig.MotionMagic.MotionMagicAcceleration = ModuleConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED;
-    turnConfig.MotionMagic.MotionMagicJerk = 0;
-    turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
-    talonFXConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    talonFXConfigs.Feedback.SensorToMechanismRatio = ModuleConstants.rotationsPerMeter;
-    driveMotor.getConfigurator().apply(talonFXConfigs);
+    var driveConfig = new TalonFXConfiguration();
+    driveConfig.Slot0.kV = ModuleConstants.driveKV;
+    driveConfig.Slot0.kS = ModuleConstants.driveKV;
+    driveConfig.Slot0.kP = ModuleConstants.DRIVE_P;
+    driveConfig.Slot0.kI = ModuleConstants.DRIVE_I;
+    driveConfig.Slot0.kD = ModuleConstants.DRIVE_D;
+    driveConfig.CurrentLimits.SupplyCurrentLimit = 60;
+    driveConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    driveConfig.CurrentLimits.SupplyCurrentThreshold = 65;
+    driveConfig.CurrentLimits.SupplyTimeThreshold = 0.1;
+    driveConfig.MotorOutput.Inverted = driveReversed;
+    driveConfig.MotorOutput.DutyCycleNeutralDeadband = 0.0001;
+    driveConfig.MotionMagic.MotionMagicCruiseVelocity = ModuleConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND;
+    driveConfig.MotionMagic.MotionMagicAcceleration = ModuleConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED;
+    driveConfig.MotionMagic.MotionMagicJerk = 0;
+    driveConfig.ClosedLoopGeneral.ContinuousWrap = true;
+    driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    driveConfig.Feedback.SensorToMechanismRatio = ModuleConstants.rotationsPerMeter;
+    driveMotor.getConfigurator().apply(driveConfig);
     // driveMotor.setRotorPosition(0.0);
     // driveMotor.setInverted(driveMotorInverted);
 
 
 
     turnMotor.getConfigurator().apply(new TalonFXConfiguration());
-    var talonfxConfigs = new TalonFXConfiguration();
-    talonfxConfigs.Slot0.kV = 0.0; //Subject to change
-    talonfxConfigs.Slot0.kS = 0.0; //Subject to change
-    talonfxConfigs.Slot0.kP = ModuleConstants.TURN_P;
-    talonfxConfigs.Slot0.kI = ModuleConstants.TURN_I;
-    talonfxConfigs.Slot0.kD = ModuleConstants.TURN_D;
-    talonfxConfigs.ClosedLoopGeneral.ContinuousWrap = true;
-    talonfxConfigs.CurrentLimits.SupplyCurrentLimit = 60;
-    talonfxConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
-    talonfxConfigs.CurrentLimits.SupplyCurrentThreshold = 65;
-    talonfxConfigs.CurrentLimits.SupplyTimeThreshold = 0.1;
-    // talonfxConfigs.Voltage.PeakForwardVoltage = 10;
-    // talonfxConfigs.Voltage.PeakReverseVoltage = -10;
-    //talonfxConfigs.Feedback.SensorToMechanismRatio = ModuleConstants.DRIVE_GEAR_RATIO;
-    talonfxConfigs.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
-    talonfxConfigs.Feedback.FeedbackRemoteSensorID = turnEncoderChannel;
-    talonfxConfigs.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
-    talonfxConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    //talonfxConfigs.MotorOutput.Inverted = ModuleConstants.angleMotorInvert;
-    turnMotor.getConfigurator().apply(talonfxConfigs);
+    var turnConfig = new TalonFXConfiguration();
+    turnConfig.Slot0.kV = 0.0; //Subject to change
+    turnConfig.Slot0.kS = 0.0; //Subject to change
+    turnConfig.Slot0.kP = ModuleConstants.TURN_P;
+    turnConfig.Slot0.kI = ModuleConstants.TURN_I;
+    turnConfig.Slot0.kD = ModuleConstants.TURN_D;
+    turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
+    turnConfig.CurrentLimits.SupplyCurrentLimit = 60;
+    turnConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    turnConfig.CurrentLimits.SupplyCurrentThreshold = 65;
+    turnConfig.CurrentLimits.SupplyTimeThreshold = 0.1;
+    // turnConfig.Voltage.PeakForwardVoltage = 10;
+    // turnConfig.Voltage.PeakReverseVoltage = -10;
+    //turnConfig.Feedback.SensorToMechanismRatio = ModuleConstants.DRIVE_GEAR_RATIO;
+    turnConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+    turnConfig.Feedback.FeedbackRemoteSensorID = turnEncoderChannel;
+    turnConfig.MotorOutput.DutyCycleNeutralDeadband = HardwareConstants.MIN_FALCON_DEADBAND;
+    turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    //turnConfig.MotorOutput.Inverted = ModuleConstants.angleMotorInvert;
+    turnMotor.getConfigurator().apply(turnConfig);
 
 
   }
@@ -226,7 +227,7 @@ public class SwerveModule {
     double velocityToSet = optimizedDesiredState.speedMetersPerSecond * 60 
     * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
 
-    VelocityVoltage driveOutput = new VelocityVoltage(desiredDriveEncoderUnitsPer100MS);
+    VelocityVoltage driveOutput = new VelocityVoltage(velocityToSet / 600.0);
     driveMotor.setControl(driveOutput);
 
     // // Calculate the turning motor output from the turn PID controller.
