@@ -110,7 +110,11 @@ public class SwerveModule {
     talonFXConfigs.CurrentLimits.SupplyCurrentThreshold = 65;
     talonFXConfigs.CurrentLimits.SupplyTimeThreshold = 0.1;
     talonFXConfigs.MotorOutput.Inverted = driveReversed;
-    talonFXConfigs.MotorOutput.DutyCycleNeutralDeadband = 0.25;
+    talonFXConfigs.MotorOutput.DutyCycleNeutralDeadband = 0.0001;
+    turnConfig.MotionMagic.MotionMagicCruiseVelocity = ModuleConstants.MAX_ANGULAR_SPEED_RADIANS_PER_SECOND;
+    turnConfig.MotionMagic.MotionMagicAcceleration = ModuleConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED;
+    turnConfig.MotionMagic.MotionMagicJerk = 0;
+    turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
     talonFXConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     talonFXConfigs.Feedback.SensorToMechanismRatio = ModuleConstants.rotationsPerMeter;
     driveMotor.getConfigurator().apply(talonFXConfigs);
@@ -181,7 +185,8 @@ public class SwerveModule {
    */
   public SwerveModuleState getState() {
     double speedMetersPerSecond = ModuleConstants.DRIVE_TO_METERS_PER_SECOND * driveMotor.getVelocity().refresh().getValue();
-    double turnRadians =  2.0 * Math.PI * turnEncoder.getAbsolutePosition().refresh().getValue();
+    //double turnRadians =  2.0 * Math.PI * turnEncoder.getAbsolutePosition().refresh().getValue();
+    double turnRadians = Rotation2d.fromRotations(getModuleHeading()).getRadians();
     return new SwerveModuleState(speedMetersPerSecond, new Rotation2d(turnRadians));
   }
 
@@ -218,12 +223,21 @@ public class SwerveModule {
     //   + turnFeedForward.calculate(turnPIDController.getSetpoint().velocity);
     //   turnMotor.set(turnOutput / 12);
 
-    double velocityToSet = optimizedDesiredState.speedMetersPerSecond;
-    SmartDashboard.putNumber(String.valueOf(name) + "Request", velocityToSet);
-    driveMotor.setControl(driveSetter.withVelocity(velocityToSet));
+    double velocityToSet = optimizedDesiredState.speedMetersPerSecond * 60 
+    * ModuleConstants.DRIVE_GEAR_RATIO / ModuleConstants.WHEEL_CIRCUMFERENCE_METERS;
 
-      double angleToSet = optimizedDesiredState.angle.getRotations();
-      turnMotor.setControl(angleSetter.withPosition(angleToSet));
+    VelocityVoltage driveOutput = new VelocityVoltage(desiredDriveEncoderUnitsPer100MS);
+    driveMotor.setControl(driveOutput);
+
+    // // Calculate the turning motor output from the turn PID controller.
+    // double turnOutput =
+    //   turnPIDController.calculate(turnRadians, optimizedDesiredState.angle.getRadians())
+    //     + turnFeedForward.calculate(turnPIDController.getSetpoint().velocity);
+    //     turnMotor.set(turnOutput / 12);
+
+    MotionMagicVoltage turnOutput = new MotionMagicVoltage(optimizedDesiredState.angle.getRadians());
+    turnMotor.setControl(turnOutput);
+
   }
 
   public double getTurnRadians() {

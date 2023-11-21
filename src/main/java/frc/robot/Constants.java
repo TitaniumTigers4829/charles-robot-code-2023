@@ -173,12 +173,12 @@ public final class Constants {
     public static final InvertedValue REAR_LEFT_DRIVE_ENCODER_REVERSED = InvertedValue.Clockwise_Positive;
     public static final InvertedValue REAR_RIGHT_DRIVE_ENCODER_REVERSED = InvertedValue.CounterClockwise_Positive;
     
-    public static final double TURN_S = 0.77;
-    public static final double TURN_V = 0.75;
+    public static final double TURN_S = 0.35;
+    public static final double TURN_V = 1.12;
     public static final double TURN_A = 0;
     public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI * 4;
 
-    public static final double MAX_SPEED_METERS_PER_SECOND = 4.5;
+    public static final double MAX_SPEED_METERS_PER_SECOND = 2;
 
     public static final double FACEFORWARD_P = 0.015;
 
@@ -220,13 +220,14 @@ public final class Constants {
     public static final double DRIVE_TO_METERS_PER_SECOND =
       (10 * WHEEL_CIRCUMFERENCE_METERS) / (DRIVE_GEAR_RATIO * HardwareConstants.FALCON_ENCODER_RESOLUTION);
 
-    public static final double TURN_P = 7; // 8.1
+    public static final double TURN_GEAR_RATIO = 16.0;
+    public static final double TURN_P = 2.25; // 8.1
     public static final double TURN_I = 0;
     public static final double TURN_D = 0;
 
     // Drive Motor Characterization Values
-    public static final double driveKS = 0.2;
-    public static final double driveKV = 2.0;
+    public static final double driveKS = 0.18;
+    public static final double driveKV = 1.25;
 
     public static final double rotationsPerMeter = DRIVE_GEAR_RATIO / WHEEL_CIRCUMFERENCE_METERS;
 
